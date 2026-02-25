@@ -3,6 +3,18 @@
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import DdayWidgetPreview from "@/components/widget/DdayWidgetPreview";
+import type { FontKey } from "@/lib/fonts";
+
+const VALID_CALC_TYPES = ["down", "up"] as const;
+const VALID_LAYOUTS = ["default", "progress"] as const;
+const VALID_FONTS: FontKey[] = [
+  "noto-sans-kr",
+  "jua",
+  "do-hyeon",
+  "gothic-a1",
+  "gaegu",
+  "black-han-sans",
+];
 
 function DdayWidgetContent() {
   const searchParams = useSearchParams();
@@ -12,6 +24,26 @@ function DdayWidgetContent() {
   const bgColor = searchParams.get("bg") || "1E1E1E";
   const textColor = searchParams.get("text") || "FFFFFF";
 
+  const rawCalcType = searchParams.get("calcType");
+  const calcType = VALID_CALC_TYPES.includes(rawCalcType as "down" | "up")
+    ? (rawCalcType as "down" | "up")
+    : "down";
+
+  const isAnnual = searchParams.get("annual") === "true";
+
+  const rawLayout = searchParams.get("layout");
+  const layout = VALID_LAYOUTS.includes(rawLayout as "default" | "progress")
+    ? (rawLayout as "default" | "progress")
+    : "default";
+
+  const startDate = searchParams.get("start") || "";
+  const isTransparent = searchParams.get("transparent") === "true";
+
+  const rawFont = searchParams.get("font");
+  const font = VALID_FONTS.includes(rawFont as FontKey)
+    ? (rawFont as FontKey)
+    : "noto-sans-kr";
+
   return (
     <div className="w-screen h-screen flex items-center justify-center bg-transparent">
       <DdayWidgetPreview
@@ -19,6 +51,12 @@ function DdayWidgetContent() {
         targetDate={targetDate}
         bgColor={bgColor}
         textColor={textColor}
+        calcType={calcType}
+        isAnnual={isAnnual}
+        layout={layout}
+        startDate={startDate}
+        isTransparent={isTransparent}
+        font={font}
       />
     </div>
   );
