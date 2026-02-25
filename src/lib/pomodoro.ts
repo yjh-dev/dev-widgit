@@ -1,4 +1,4 @@
-export type PomodoroMode = "work" | "break";
+export type PomodoroMode = "work" | "break" | "longBreak";
 
 export function formatTime(totalSeconds: number): string {
   const m = Math.floor(totalSeconds / 60);

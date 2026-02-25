@@ -1,12 +1,11 @@
 "use client";
 
-import { useCallback, useMemo } from "react";
-import Link from "next/link";
 import { toast } from "sonner";
-import { ArrowLeft, Copy, RotateCcw, Sun, Moon } from "lucide-react";
+import { Sun, Moon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import ColorPicker from "@/components/ui/color-picker";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Select,
@@ -17,347 +16,206 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import DdayWidgetPreview from "@/components/widget/DdayWidgetPreview";
+import EditorLayout from "@/components/editor/EditorLayout";
+import EditorActions from "@/components/editor/EditorActions";
+import EditorSection from "@/components/editor/EditorSection";
+import CommonStyleOptions from "@/components/editor/CommonStyleOptions";
 import { useDdayWidgetStore } from "@/store/useWidgetStore";
+import { useWidgetUrl } from "@/lib/use-widget-url";
+import { copyToClipboard } from "@/lib/clipboard";
 import { FONT_OPTIONS, type FontKey } from "@/lib/fonts";
 
 export default function CreateDdayPage() {
   const {
-    title,
-    targetDate,
-    bgColor,
-    textColor,
-    isDarkMode,
-    calcType,
-    isAnnual,
-    layout,
-    startDate,
-    isTransparent,
-    font,
-    setTitle,
-    setTargetDate,
-    setBgColor,
-    setTextColor,
-    setIsDarkMode,
-    setCalcType,
-    setIsAnnual,
-    setLayout,
-    setStartDate,
-    setIsTransparent,
-    setFont,
+    title, targetDate, bgColor, textColor, isDarkMode, calcType, isAnnual,
+    layout, startDate, isTransparent, font, borderRadius, padding, fontSize,
+    showTime, blink, doneMsg,
+    setTitle, setTargetDate, setBgColor, setTextColor, setIsDarkMode, setCalcType, setIsAnnual,
+    setLayout, setStartDate, setIsTransparent, setFont, setBorderRadius, setPadding, setFontSize,
+    setShowTime, setBlink, setDoneMsg,
     reset,
   } = useDdayWidgetStore();
 
-  const buildWidgetUrl = useCallback(() => {
+  const { buildWidgetUrl, widgetUrl } = useWidgetUrl(() => {
     const base = `${window.location.origin}/widget/dday`;
     const params = new URLSearchParams();
-
     params.set("title", title);
     params.set("date", targetDate);
     params.set("bg", bgColor);
     params.set("text", textColor);
-
     if (calcType !== "down") params.set("calcType", calcType);
     if (isAnnual) params.set("annual", "true");
     if (layout !== "default") params.set("layout", layout);
     if (startDate) params.set("start", startDate);
     if (isTransparent) params.set("transparent", "true");
     if (font !== "noto-sans-kr") params.set("font", font);
-
+    if (borderRadius !== 16) params.set("radius", String(borderRadius));
+    if (padding !== 24) params.set("pad", String(padding));
+    if (fontSize !== "md") params.set("fsize", fontSize);
+    if (showTime) params.set("showTime", "true");
+    if (!blink) params.set("blink", "false");
+    if (doneMsg) params.set("doneMsg", doneMsg);
     return `${base}?${params.toString()}`;
-  }, [
-    title,
-    targetDate,
-    bgColor,
-    textColor,
-    calcType,
-    isAnnual,
-    layout,
-    startDate,
-    isTransparent,
-    font,
-  ]);
-
-  const widgetUrl = useMemo(() => {
-    if (typeof window === "undefined") return "";
-    return buildWidgetUrl();
-  }, [buildWidgetUrl]);
+  }, [title, targetDate, bgColor, textColor, calcType, isAnnual, layout, startDate, isTransparent, font, borderRadius, padding, fontSize, showTime, blink, doneMsg]);
 
   const handleCopy = async () => {
-    const url = buildWidgetUrl();
-    try {
-      await navigator.clipboard.writeText(url);
-    } catch {
-      const textarea = document.createElement("textarea");
-      textarea.value = url;
-      textarea.style.position = "fixed";
-      textarea.style.opacity = "0";
-      document.body.appendChild(textarea);
-      textarea.select();
-      document.execCommand("copy");
-      document.body.removeChild(textarea);
-    }
+    await copyToClipboard(buildWidgetUrl());
     toast.success("위젯 URL이 클립보드에 복사되었습니다!");
   };
 
   return (
-    <div className="min-h-screen bg-background p-6 md:p-12">
-      <div className="max-w-5xl mx-auto">
-        <Link href="/" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-4">
-          <ArrowLeft className="w-4 h-4" />
-          홈으로
-        </Link>
-        <h1 className="text-2xl font-bold mb-1">D-Day 위젯 만들기</h1>
-        <p className="text-muted-foreground text-sm mb-8">
-          설정을 변경하면 오른쪽 프리뷰에 실시간으로 반영됩니다.
-        </p>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* 좌측: 폼 */}
-          <Card>
-            <CardContent className="space-y-6 pt-6">
-              {/* 기본 설정 */}
-              <fieldset className="space-y-4">
-                <legend className="text-sm font-semibold text-muted-foreground mb-2">
-                  기본 설정
-                </legend>
-                <div className="space-y-2">
-                  <Label htmlFor="title">타이틀</Label>
-                  <Input
-                    id="title"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    placeholder="예: 수능, 생일, 여행"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="targetDate">목표 날짜</Label>
-                  <Input
-                    id="targetDate"
-                    type="date"
-                    value={targetDate}
-                    onChange={(e) => setTargetDate(e.target.value)}
-                  />
-                </div>
-              </fieldset>
-
-              {/* 계산 방식 */}
-              <fieldset className="space-y-4">
-                <legend className="text-sm font-semibold text-muted-foreground mb-2">
-                  계산 방식
-                </legend>
-                <div className="space-y-2">
-                  <Label>카운트 방식</Label>
-                  <Select
-                    value={calcType}
-                    onValueChange={(v) => setCalcType(v as "down" | "up")}
-                  >
-                    <SelectTrigger className="w-full">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="down">카운트다운 (D-N)</SelectItem>
-                      <SelectItem value="up">카운트업 (N일째)</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="flex items-center justify-between">
-                  <Label htmlFor="annual">매년 반복</Label>
-                  <Switch
-                    id="annual"
-                    checked={isAnnual}
-                    onCheckedChange={setIsAnnual}
-                  />
-                </div>
-              </fieldset>
-
-              {/* 레이아웃 */}
-              <fieldset className="space-y-4">
-                <legend className="text-sm font-semibold text-muted-foreground mb-2">
-                  레이아웃
-                </legend>
-                <div className="space-y-2">
-                  <Label>레이아웃</Label>
-                  <Select
-                    value={layout}
-                    onValueChange={(v) =>
-                      setLayout(v as "default" | "progress")
-                    }
-                  >
-                    <SelectTrigger className="w-full">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="default">기본</SelectItem>
-                      <SelectItem value="progress">
-                        프로그레스 바
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {layout === "progress" && (
-                  <div className="space-y-2">
-                    <Label htmlFor="startDate">시작 날짜</Label>
-                    <Input
-                      id="startDate"
-                      type="date"
-                      value={startDate}
-                      onChange={(e) => setStartDate(e.target.value)}
-                    />
-                  </div>
-                )}
-
-                <div className="space-y-2">
-                  <Label>폰트</Label>
-                  <Select
-                    value={font}
-                    onValueChange={(v) => setFont(v as FontKey)}
-                  >
-                    <SelectTrigger className="w-full">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {FONT_OPTIONS.map((opt) => (
-                        <SelectItem key={opt.value} value={opt.value}>
-                          {opt.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <Label htmlFor="transparent">투명 배경</Label>
-                  <Switch
-                    id="transparent"
-                    checked={isTransparent}
-                    onCheckedChange={setIsTransparent}
-                  />
-                </div>
-              </fieldset>
-
-              {/* 색상 */}
-              <fieldset className="space-y-4">
-                <legend className="text-sm font-semibold text-muted-foreground mb-2">
-                  색상
-                </legend>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="bgColor">배경색</Label>
-                    <div className="flex items-center gap-2">
-                      <span className="text-muted-foreground text-sm">#</span>
-                      <Input
-                        id="bgColor"
-                        value={bgColor}
-                        onChange={(e) =>
-                          setBgColor(
-                            e.target.value
-                              .replace(/[^0-9a-fA-F]/g, "")
-                              .slice(0, 6),
-                          )
-                        }
-                        maxLength={6}
-                        placeholder="1E1E1E"
-                        disabled={isTransparent}
-                      />
-                      <div
-                        className="w-8 h-8 rounded border shrink-0"
-                        style={{ backgroundColor: `#${bgColor}` }}
-                      />
+    <EditorLayout title="D-Day 위젯 만들기">
+      <Card>
+        <CardContent className="pt-6">
+          <EditorSection
+            defaultOpen={["basic", "calc", "color"]}
+            sections={[
+              {
+                id: "basic",
+                title: "기본 설정",
+                children: (
+                  <>
+                    <div className="space-y-2">
+                      <Label htmlFor="title">타이틀</Label>
+                      <Input id="title" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="예: 수능, 생일, 여행" />
                     </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="textColor">글자색</Label>
-                    <div className="flex items-center gap-2">
-                      <span className="text-muted-foreground text-sm">#</span>
-                      <Input
-                        id="textColor"
-                        value={textColor}
-                        onChange={(e) =>
-                          setTextColor(
-                            e.target.value
-                              .replace(/[^0-9a-fA-F]/g, "")
-                              .slice(0, 6),
-                          )
-                        }
-                        maxLength={6}
-                        placeholder="FFFFFF"
-                      />
-                      <div
-                        className="w-8 h-8 rounded border shrink-0"
-                        style={{ backgroundColor: `#${textColor}` }}
-                      />
+                    <div className="space-y-2">
+                      <Label htmlFor="targetDate">목표 날짜</Label>
+                      <Input id="targetDate" type="date" value={targetDate} onChange={(e) => setTargetDate(e.target.value)} />
                     </div>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-3">
-                  <Label>테마</Label>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setIsDarkMode(!isDarkMode)}
-                  >
-                    {isDarkMode ? (
-                      <>
-                        <Moon className="w-4 h-4 mr-1" /> 다크
-                      </>
-                    ) : (
-                      <>
-                        <Sun className="w-4 h-4 mr-1" /> 라이트
-                      </>
+                  </>
+                ),
+              },
+              {
+                id: "calc",
+                title: "계산 방식",
+                children: (
+                  <>
+                    <div className="space-y-2">
+                      <Label>카운트 방식</Label>
+                      <Select value={calcType} onValueChange={(v) => setCalcType(v as "down" | "up")}>
+                        <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="down">카운트다운 (D-N)</SelectItem>
+                          <SelectItem value="up">카운트업 (N일째)</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <Label htmlFor="annual">매년 반복</Label>
+                      <Switch id="annual" checked={isAnnual} onCheckedChange={setIsAnnual} />
+                    </div>
+                  </>
+                ),
+              },
+              {
+                id: "display",
+                title: "표시 옵션",
+                children: (
+                  <>
+                    <div className="flex items-center justify-between">
+                      <Label htmlFor="showTime">시간 카운트다운</Label>
+                      <Switch id="showTime" checked={showTime} onCheckedChange={setShowTime} />
+                    </div>
+                    {showTime && (
+                      <div className="flex items-center justify-between">
+                        <Label htmlFor="blink">구분자 깜빡임</Label>
+                        <Switch id="blink" checked={blink} onCheckedChange={setBlink} />
+                      </div>
                     )}
-                  </Button>
-                </div>
-              </fieldset>
-
-              {/* 액션 */}
-              <div className="flex gap-2 pt-2">
-                <Button onClick={handleCopy} className="flex-1">
-                  <Copy className="w-4 h-4 mr-2" />
-                  URL 복사
-                </Button>
-                <Button variant="outline" onClick={reset}>
-                  <RotateCcw className="w-4 h-4" />
-                </Button>
-              </div>
-
-              {/* URL 미리보기 */}
-              <div className="space-y-2">
-                <Label>위젯 URL</Label>
-                <textarea
-                  readOnly
-                  value={widgetUrl}
-                  rows={2}
-                  className="w-full rounded-md border bg-muted px-3 py-2 text-xs text-muted-foreground break-all resize-none focus:outline-none"
-                />
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* 우측: 실시간 프리뷰 */}
-          <div className="flex items-center justify-center">
-            <div className="space-y-3">
-              <p className="text-xs text-muted-foreground text-center">
-                미리보기
-              </p>
-              <DdayWidgetPreview
-                title={title}
-                targetDate={targetDate}
-                bgColor={bgColor}
-                textColor={textColor}
-                calcType={calcType}
-                isAnnual={isAnnual}
-                layout={layout}
-                startDate={startDate}
-                isTransparent={isTransparent}
-                font={font}
-              />
-            </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="doneMsg">완료 메시지</Label>
+                      <Input id="doneMsg" value={doneMsg} onChange={(e) => setDoneMsg(e.target.value)} placeholder="비우면 D+N 표시" />
+                    </div>
+                  </>
+                ),
+              },
+              {
+                id: "layout",
+                title: "레이아웃",
+                children: (
+                  <>
+                    <div className="space-y-2">
+                      <Label>레이아웃</Label>
+                      <Select value={layout} onValueChange={(v) => setLayout(v as "default" | "progress")}>
+                        <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="default">기본</SelectItem>
+                          <SelectItem value="progress">프로그레스 바</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    {layout === "progress" && (
+                      <div className="space-y-2">
+                        <Label htmlFor="startDate">시작 날짜</Label>
+                        <Input id="startDate" type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+                      </div>
+                    )}
+                    <div className="space-y-2">
+                      <Label>폰트</Label>
+                      <Select value={font} onValueChange={(v) => setFont(v as FontKey)}>
+                        <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          {FONT_OPTIONS.map((opt) => (
+                            <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <Label htmlFor="transparent">투명 배경</Label>
+                      <Switch id="transparent" checked={isTransparent} onCheckedChange={setIsTransparent} />
+                    </div>
+                  </>
+                ),
+              },
+              {
+                id: "color",
+                title: "색상",
+                children: (
+                  <>
+                    <div className="grid grid-cols-2 gap-4">
+                      <ColorPicker id="bgColor" label="배경색" value={bgColor} onChange={setBgColor} placeholder="1E1E1E" disabled={isTransparent} />
+                      <ColorPicker id="textColor" label="글자색" value={textColor} onChange={setTextColor} placeholder="FFFFFF" />
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <Label>테마</Label>
+                      <Button variant="outline" size="sm" onClick={() => setIsDarkMode(!isDarkMode)}>
+                        {isDarkMode ? (<><Moon className="w-4 h-4 mr-1" /> 다크</>) : (<><Sun className="w-4 h-4 mr-1" /> 라이트</>)}
+                      </Button>
+                    </div>
+                  </>
+                ),
+              },
+              {
+                id: "style",
+                title: "스타일",
+                children: (
+                  <CommonStyleOptions
+                    borderRadius={borderRadius} padding={padding} fontSize={fontSize}
+                    onBorderRadiusChange={setBorderRadius} onPaddingChange={setPadding} onFontSizeChange={setFontSize}
+                  />
+                ),
+              },
+            ]}
+          />
+          <div className="mt-6">
+            <EditorActions widgetUrl={widgetUrl} onCopy={handleCopy} onReset={reset} />
           </div>
+        </CardContent>
+      </Card>
+
+      <div className="flex items-center justify-center">
+        <div className="space-y-3">
+          <p className="text-xs text-muted-foreground text-center">미리보기</p>
+          <DdayWidgetPreview
+            title={title} targetDate={targetDate} bgColor={bgColor} textColor={textColor}
+            calcType={calcType} isAnnual={isAnnual} layout={layout} startDate={startDate}
+            isTransparent={isTransparent} font={font} borderRadius={borderRadius} padding={padding}
+            fontSize={fontSize} showTime={showTime} blink={blink} doneMsg={doneMsg}
+          />
         </div>
       </div>
-    </div>
+    </EditorLayout>
   );
 }

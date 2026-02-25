@@ -4,6 +4,7 @@ import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import DdayWidgetPreview from "@/components/widget/DdayWidgetPreview";
 import type { FontKey } from "@/lib/fonts";
+import { parseBorderRadius, parsePadding, parseFontSize } from "@/lib/common-widget-options";
 
 const VALID_CALC_TYPES = ["down", "up"] as const;
 const VALID_LAYOUTS = ["default", "progress"] as const;
@@ -44,6 +45,14 @@ function DdayWidgetContent() {
     ? (rawFont as FontKey)
     : "noto-sans-kr";
 
+  const borderRadius = parseBorderRadius(searchParams.get("radius"));
+  const padding = parsePadding(searchParams.get("pad"));
+  const fontSize = parseFontSize(searchParams.get("fsize"));
+
+  const showTime = searchParams.get("showTime") === "true";
+  const blink = searchParams.get("blink") !== "false";
+  const doneMsg = searchParams.get("doneMsg") || "";
+
   return (
     <div className="w-screen h-screen flex items-center justify-center bg-transparent">
       <DdayWidgetPreview
@@ -57,6 +66,12 @@ function DdayWidgetContent() {
         startDate={startDate}
         isTransparent={isTransparent}
         font={font}
+        borderRadius={borderRadius}
+        padding={padding}
+        fontSize={fontSize}
+        showTime={showTime}
+        blink={blink}
+        doneMsg={doneMsg}
       />
     </div>
   );

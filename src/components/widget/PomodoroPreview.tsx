@@ -3,6 +3,14 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Play, Pause, RotateCcw } from "lucide-react";
 import { formatTime, type PomodoroMode } from "@/lib/pomodoro";
+import type { FontSizeKey } from "@/lib/common-widget-options";
+
+const FONT_SIZE_MAP: Record<FontSizeKey, string> = {
+  sm: "text-3xl",
+  md: "text-5xl",
+  lg: "text-6xl",
+  xl: "text-7xl",
+};
 
 interface PomodoroPreviewProps {
   workTime?: number;
@@ -10,6 +18,14 @@ interface PomodoroPreviewProps {
   color?: string;
   bg?: string;
   transparentBg?: boolean;
+  borderRadius?: number;
+  padding?: number;
+  fontSize?: FontSizeKey;
+  longBreak?: number;
+  rounds?: number;
+  showRounds?: boolean;
+  breakColor?: string;
+  autoStart?: boolean;
 }
 
 export default function PomodoroPreview({
@@ -18,18 +34,27 @@ export default function PomodoroPreview({
   color = "E11D48",
   bg = "FFFFFF",
   transparentBg = false,
+  borderRadius = 16,
+  padding = 24,
+  fontSize = "md",
+  longBreak = 15,
+  rounds = 4,
+  showRounds = true,
+  breakColor = "22C55E",
+  autoStart = false,
 }: PomodoroPreviewProps) {
   const [mode, setMode] = useState<PomodoroMode>("work");
   const [timeLeft, setTimeLeft] = useState(workTime * 60);
-  const [isRunning, setIsRunning] = useState(false);
+  const [isRunning, setIsRunning] = useState(autoStart);
+  const [currentRound, setCurrentRound] = useState(1);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  // workTime/breakTime prop이 바뀌면 리셋
   useEffect(() => {
     setMode("work");
     setTimeLeft(workTime * 60);
-    setIsRunning(false);
-  }, [workTime, breakTime]);
+    setIsRunning(autoStart);
+    setCurrentRound(1);
+  }, [workTime, breakTime, longBreak, rounds, autoStart]);
 
   useEffect(() => {
     if (!isRunning) {
@@ -40,11 +65,25 @@ export default function PomodoroPreview({
     intervalRef.current = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
-          // 모드 전환
           setMode((m) => {
-            const next: PomodoroMode = m === "work" ? "break" : "work";
-            setTimeLeft(next === "work" ? workTime * 60 : breakTime * 60);
-            return next;
+            if (m === "work") {
+              if (currentRound >= rounds) {
+                setTimeLeft(longBreak * 60);
+                setCurrentRound(1);
+                if (autoStart) setIsRunning(true);
+                return "longBreak";
+              }
+              setTimeLeft(breakTime * 60);
+              if (autoStart) setIsRunning(true);
+              return "break";
+            }
+            // break or longBreak → next work
+            if (m === "break") {
+              setCurrentRound((r) => r + 1);
+            }
+            setTimeLeft(workTime * 60);
+            if (autoStart) setIsRunning(true);
+            return "work";
           });
           return 0;
         }
@@ -55,25 +94,31 @@ export default function PomodoroPreview({
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
-  }, [isRunning, workTime, breakTime]);
+  }, [isRunning, workTime, breakTime, longBreak, rounds, currentRound, autoStart]);
 
   const handleReset = useCallback(() => {
     setIsRunning(false);
     setMode("work");
     setTimeLeft(workTime * 60);
+    setCurrentRound(1);
   }, [workTime]);
 
-  const totalSeconds = mode === "work" ? workTime * 60 : breakTime * 60;
+  const totalSeconds =
+    mode === "work" ? workTime * 60
+    : mode === "longBreak" ? longBreak * 60
+    : breakTime * 60;
   const progress = totalSeconds > 0 ? ((totalSeconds - timeLeft) / totalSeconds) * 100 : 0;
 
-  const modeLabel = mode === "work" ? "집중" : "휴식";
-  const modeColor = mode === "work" ? `#${color}` : "#22C55E";
+  const modeLabel = mode === "work" ? "집중" : mode === "longBreak" ? "긴 휴식" : "휴식";
+  const modeColor = mode === "work" ? `#${color}` : `#${breakColor}`;
 
   return (
     <div
-      className="w-full h-full flex flex-col items-center justify-center gap-4 p-6"
+      className="w-full h-full flex flex-col items-center justify-center gap-4"
       style={{
         backgroundColor: transparentBg ? "transparent" : `#${bg}`,
+        borderRadius,
+        padding,
       }}
     >
       {/* 모드 라벨 */}
@@ -89,7 +134,7 @@ export default function PomodoroPreview({
 
       {/* 타이머 */}
       <p
-        className="text-5xl font-light tabular-nums tracking-tight"
+        className={`${FONT_SIZE_MAP[fontSize]} font-light tabular-nums tracking-tight`}
         style={{
           color: modeColor,
           fontFamily: "ui-monospace, SFMono-Regular, monospace",
@@ -97,6 +142,13 @@ export default function PomodoroPreview({
       >
         {formatTime(timeLeft)}
       </p>
+
+      {/* 라운드 표시 */}
+      {showRounds && (
+        <p className="text-xs font-medium opacity-60" style={{ color: modeColor }}>
+          {currentRound} / {rounds}
+        </p>
+      )}
 
       {/* 프로그레스 바 */}
       <div className="w-full max-w-[220px]">

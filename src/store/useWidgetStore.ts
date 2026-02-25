@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import type { FontKey } from "@/lib/fonts";
+import type { FontSizeKey } from "@/lib/common-widget-options";
 
 type CalcType = "down" | "up";
 type LayoutType = "default" | "progress";
@@ -16,6 +17,12 @@ interface DdayWidgetState {
   startDate: string;
   isTransparent: boolean;
   font: FontKey;
+  borderRadius: number;
+  padding: number;
+  fontSize: FontSizeKey;
+  showTime: boolean;
+  blink: boolean;
+  doneMsg: string;
 
   setTitle: (title: string) => void;
   setTargetDate: (date: string) => void;
@@ -28,6 +35,12 @@ interface DdayWidgetState {
   setStartDate: (date: string) => void;
   setIsTransparent: (isTransparent: boolean) => void;
   setFont: (font: FontKey) => void;
+  setBorderRadius: (borderRadius: number) => void;
+  setPadding: (padding: number) => void;
+  setFontSize: (fontSize: FontSizeKey) => void;
+  setShowTime: (showTime: boolean) => void;
+  setBlink: (blink: boolean) => void;
+  setDoneMsg: (doneMsg: string) => void;
   reset: () => void;
 }
 
@@ -43,6 +56,12 @@ const initialState = {
   startDate: "",
   isTransparent: false,
   font: "noto-sans-kr" as FontKey,
+  borderRadius: 16,
+  padding: 24,
+  fontSize: "md" as FontSizeKey,
+  showTime: false,
+  blink: true,
+  doneMsg: "",
 };
 
 export const useDdayWidgetStore = create<DdayWidgetState>((set) => ({
@@ -64,5 +83,11 @@ export const useDdayWidgetStore = create<DdayWidgetState>((set) => ({
   setStartDate: (date) => set({ startDate: date }),
   setIsTransparent: (isTransparent) => set({ isTransparent }),
   setFont: (font) => set({ font }),
+  setBorderRadius: (borderRadius) => set({ borderRadius }),
+  setPadding: (padding) => set({ padding }),
+  setFontSize: (fontSize) => set({ fontSize }),
+  setShowTime: (showTime) => set({ showTime }),
+  setBlink: (blink) => set({ blink }),
+  setDoneMsg: (doneMsg) => set({ doneMsg }),
   reset: () => set(initialState),
 }));

@@ -20,24 +20,46 @@ src/
 │   ├── page.tsx                          # 홈 — 위젯 목록
 │   ├── create/
 │   │   ├── dday/page.tsx                 # D-Day 위젯 에디터
-│   │   └── life-calendar/page.tsx        # 인생 달력 위젯 에디터
+│   │   ├── life-calendar/page.tsx        # 인생 달력 위젯 에디터
+│   │   ├── time-progress/page.tsx        # 시간 진행률 바 위젯 에디터
+│   │   ├── clock/page.tsx                # 미니멀 시계 위젯 에디터
+│   │   ├── quote/page.tsx                # 명언 카드 위젯 에디터
+│   │   └── pomodoro/page.tsx             # 뽀모도로 타이머 위젯 에디터
 │   └── widget/
 │       ├── dday/page.tsx                 # D-Day 위젯 렌더링 (iframe용)
-│       └── life-calendar/page.tsx        # 인생 달력 위젯 렌더링 (iframe용)
+│       ├── life-calendar/page.tsx        # 인생 달력 위젯 렌더링 (iframe용)
+│       ├── time-progress/page.tsx        # 시간 진행률 바 위젯 렌더링
+│       ├── clock/page.tsx                # 미니멀 시계 위젯 렌더링
+│       ├── quote/page.tsx                # 명언 카드 위젯 렌더링
+│       └── pomodoro/page.tsx             # 뽀모도로 타이머 위젯 렌더링
 ├── components/
-│   ├── ui/                               # shadcn 공통 UI (button, card, input, label, select, switch)
+│   ├── ui/                               # shadcn 공통 UI + 커스텀 공통 컴포넌트
+│   │   ├── button, card, input, label, select, switch, sonner  # shadcn
+│   │   └── color-picker.tsx              # 커스텀 — hex 입력 + 네이티브 피커 + 프리셋 스워치
 │   └── widget/                           # 위젯 프리뷰 컴포넌트
 │       ├── DdayWidgetPreview.tsx
 │       ├── DdayProgressBar.tsx
-│       └── LifeCalendarPreview.tsx
+│       ├── LifeCalendarPreview.tsx
+│       ├── TimeProgressPreview.tsx
+│       ├── ClockPreview.tsx
+│       ├── QuotePreview.tsx
+│       └── PomodoroPreview.tsx
 ├── lib/                                  # 순수 유틸리티 (UI 무관)
 │   ├── dday.ts
 │   ├── life-calendar.ts
+│   ├── time-progress.ts
+│   ├── clock.ts
+│   ├── quote.ts
+│   ├── pomodoro.ts
 │   ├── fonts.ts
 │   └── utils.ts                          # cn() — clsx + tailwind-merge
 └── store/                                # Zustand 스토어 (에디터 페이지 전용)
     ├── useWidgetStore.ts                 # D-Day 위젯 상태
-    └── useLifeCalendarStore.ts           # 인생 달력 위젯 상태
+    ├── useLifeCalendarStore.ts           # 인생 달력 위젯 상태
+    ├── useTimeProgressStore.ts           # 시간 진행률 바 위젯 상태
+    ├── useClockStore.ts                  # 미니멀 시계 위젯 상태
+    ├── useQuoteStore.ts                  # 명언 카드 위젯 상태
+    └── usePomodoroStore.ts               # 뽀모도로 타이머 위젯 상태
 ```
 
 ## 핵심 아키텍처 패턴
@@ -46,6 +68,10 @@ src/
 모든 위젯 설정은 URL 쿼리 파라미터로 전달된다. DB/API 호출 없음.
 - `/widget/dday?title=수능&date=2026-11-19&bg=1E1E1E&text=FFFFFF`
 - `/widget/life-calendar?birthdate=1995-03-15&lifespan=90&color=22C55E`
+- `/widget/time-progress?type=year&color=2563EB`
+- `/widget/clock?timezone=Asia/Seoul&format=24h&font=mono`
+- `/widget/quote?text=오늘도+화이팅&author=작자미상&font=serif`
+- `/widget/pomodoro?work=25&break=5&color=E11D48`
 
 ### 위젯 추가 시 따라야 할 패턴 (5개 파일)
 1. `src/lib/<widget>.ts` — 계산 로직 (순수 함수)
@@ -62,6 +88,7 @@ src/
 ### 색상 값
 Hex 값을 `#` 없이 저장/전달 (`"2563EB"`, `"FFFFFF"`).
 렌더링 시 `#${color}` 형태로 조합. `"transparent"`는 별도 처리.
+에디터 페이지의 색상 입력은 `<ColorPicker>` 공통 컴포넌트를 사용한다 (`src/components/ui/color-picker.tsx`).
 
 ## 스크립트
 ```bash

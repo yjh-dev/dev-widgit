@@ -5,7 +5,7 @@ import {
   isLeapYear,
 } from "date-fns";
 
-export type ProgressType = "day" | "month" | "year";
+export type ProgressType = "day" | "week" | "month" | "year";
 
 interface TimeProgressResult {
   percentage: number;
@@ -31,6 +31,13 @@ function calcMonthProgress(d: Date): TimeProgressResult {
   return { percentage, label: `${month}월` };
 }
 
+function calcWeekProgress(d: Date): TimeProgressResult {
+  const dayOfWeek = d.getDay(); // 0=Sun ... 6=Sat
+  const elapsed = dayOfWeek + (d.getHours() * 3600 + d.getMinutes() * 60 + d.getSeconds()) / 86400;
+  const percentage = (elapsed / 7) * 100;
+  return { percentage, label: "이번 주" };
+}
+
 function calcYearProgress(d: Date): TimeProgressResult {
   const totalDays = getDaysInYear(d);
   const dayOfYear = getDayOfYear(d);
@@ -45,6 +52,8 @@ export function calculateTimeProgress(type: ProgressType): TimeProgressResult {
   switch (type) {
     case "day":
       return calcDayProgress(d);
+    case "week":
+      return calcWeekProgress(d);
     case "month":
       return calcMonthProgress(d);
     case "year":

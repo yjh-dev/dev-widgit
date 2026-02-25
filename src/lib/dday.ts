@@ -66,6 +66,35 @@ export function calculateDday(
   return { dday, ddayLabel, effectiveDate };
 }
 
+export interface DdayTimeResult {
+  hours: string;
+  minutes: string;
+  seconds: string;
+}
+
+export function calculateDdayWithTime(
+  targetDate: string,
+  isAnnual: boolean = false,
+): DdayTimeResult | null {
+  const effectiveDate = isAnnual ? resolveAnnualDate(targetDate) : targetDate;
+  const parsed = effectiveDate ? toLocalDate(effectiveDate) : null;
+
+  if (!parsed) return null;
+
+  const now = new Date();
+  const target = new Date(parsed.getFullYear(), parsed.getMonth(), parsed.getDate());
+  const diffMs = target.getTime() - now.getTime();
+
+  if (diffMs <= 0) return null;
+
+  const totalSeconds = Math.floor(diffMs / 1000);
+  const hours = String(Math.floor((totalSeconds % 86400) / 3600)).padStart(2, "0");
+  const minutes = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, "0");
+  const seconds = String(totalSeconds % 60).padStart(2, "0");
+
+  return { hours, minutes, seconds };
+}
+
 export function calculateProgress(
   startDate: string,
   targetDate: string,

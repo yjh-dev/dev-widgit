@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cd /c/dev/2026/dev-widgit && npm run build 2>&1)",
+      "Bash(cd /c/dev/2026/dev-widgit && npx next build 2>&1)",
+      "Bash(cd /c/dev/2026/dev-widgit && npx tsc --noEmit 2>&1)",
+      "Bash(cd C:/dev/2026/dev-widgit && npm run build 2>&1)",
+      "WebSearch",
+      "WebFetch(domain:indify.co)",
+      "WebFetch(domain:www.nodi.so)",
+      "WebFetch(domain:www.commoninja.com)",
+      "Bash(cd /c/dev/2026/dev-widgit && npx shadcn@latest add accordion -y 2>&1)"
+    ]
+  }
+}

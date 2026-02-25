@@ -1,7 +1,21 @@
 "use client";
 
 import { Quote } from "lucide-react";
-import { QUOTE_FONT_FAMILY_MAP, type QuoteFont } from "@/lib/quote";
+import {
+  QUOTE_FONT_FAMILY_MAP,
+  LINE_HEIGHT_MAP,
+  type QuoteFont,
+  type TextAlign,
+  type LineHeight,
+} from "@/lib/quote";
+import type { FontSizeKey } from "@/lib/common-widget-options";
+
+const FONT_SIZE_MAP: Record<FontSizeKey, string> = {
+  sm: "text-base",
+  md: "text-xl",
+  lg: "text-2xl",
+  xl: "text-3xl",
+};
 
 interface QuotePreviewProps {
   text?: string;
@@ -10,6 +24,13 @@ interface QuotePreviewProps {
   textColor?: string;
   bg?: string;
   transparentBg?: boolean;
+  borderRadius?: number;
+  padding?: number;
+  fontSize?: FontSizeKey;
+  align?: TextAlign;
+  showMarks?: boolean;
+  italic?: boolean;
+  lineHeight?: LineHeight;
 }
 
 export default function QuotePreview({
@@ -19,26 +40,43 @@ export default function QuotePreview({
   textColor = "1E1E1E",
   bg = "FFFFFF",
   transparentBg = false,
+  borderRadius = 16,
+  padding = 24,
+  fontSize = "md",
+  align = "center",
+  showMarks = true,
+  italic = false,
+  lineHeight = "relaxed",
 }: QuotePreviewProps) {
   const displayText = text || "여기에 문구를 입력하세요";
 
+  const alignClass = align === "left" ? "text-left" : align === "right" ? "text-right" : "text-center";
+  const quoteAlignClass = align === "left" ? "" : align === "right" ? "ml-auto" : "mx-auto";
+
   return (
     <div
-      className="w-full h-full flex items-center justify-center p-8"
+      className="w-full h-full flex items-center justify-center"
       style={{
         backgroundColor: transparentBg ? "transparent" : `#${bg}`,
         fontFamily: QUOTE_FONT_FAMILY_MAP[font],
+        borderRadius,
+        padding,
       }}
     >
-      <div className="max-w-md text-center space-y-4">
-        <Quote
-          className="mx-auto opacity-20"
-          style={{ color: `#${textColor}` }}
-          size={32}
-        />
+      <div className={`max-w-md ${alignClass} space-y-4`}>
+        {showMarks && (
+          <Quote
+            className={`${quoteAlignClass} opacity-20`}
+            style={{ color: `#${textColor}` }}
+            size={32}
+          />
+        )}
         <p
-          className="text-xl leading-relaxed font-medium whitespace-pre-line"
-          style={{ color: `#${textColor}` }}
+          className={`${FONT_SIZE_MAP[fontSize]} font-medium whitespace-pre-line ${italic ? "italic" : ""}`}
+          style={{
+            color: `#${textColor}`,
+            lineHeight: LINE_HEIGHT_MAP[lineHeight],
+          }}
         >
           {displayText}
         </p>

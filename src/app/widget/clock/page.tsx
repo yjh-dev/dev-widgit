@@ -4,6 +4,7 @@ import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import ClockPreview from "@/components/widget/ClockPreview";
 import type { ClockFormat, ClockFont } from "@/lib/clock";
+import { parseBorderRadius, parsePadding, parseFontSize } from "@/lib/common-widget-options";
 
 const VALID_FORMATS: ClockFormat[] = ["12h", "24h"];
 const VALID_FONTS: ClockFont[] = ["sans", "serif", "mono"];
@@ -28,6 +29,14 @@ function ClockWidgetContent() {
   const transparentBg = rawBg === "transparent";
   const bg = transparentBg ? "FFFFFF" : rawBg;
 
+  const borderRadius = parseBorderRadius(searchParams.get("radius"));
+  const padding = parsePadding(searchParams.get("pad"));
+  const fontSize = parseFontSize(searchParams.get("fsize"));
+
+  const showSeconds = searchParams.get("seconds") !== "false";
+  const showDate = searchParams.get("date") === "true";
+  const blink = searchParams.get("blink") !== "false";
+
   return (
     <div className="w-screen h-screen bg-transparent">
       <ClockPreview
@@ -37,6 +46,12 @@ function ClockWidgetContent() {
         color={color}
         bg={bg}
         transparentBg={transparentBg}
+        borderRadius={borderRadius}
+        padding={padding}
+        fontSize={fontSize}
+        showSeconds={showSeconds}
+        showDate={showDate}
+        blink={blink}
       />
     </div>
   );

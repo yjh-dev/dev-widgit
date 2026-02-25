@@ -1,4 +1,8 @@
 import { create } from "zustand";
+import type { FontSizeKey } from "@/lib/common-widget-options";
+
+export type CellShape = "square" | "round";
+export type CellSize = "sm" | "md" | "lg";
 
 interface LifeCalendarState {
   birthdate: string;
@@ -7,6 +11,12 @@ interface LifeCalendarState {
   bg: string;
   transparentBg: boolean;
   showStats: boolean;
+  borderRadius: number;
+  padding: number;
+  fontSize: FontSizeKey;
+  shape: CellShape;
+  cellSize: CellSize;
+  futureColor: string;
 
   setBirthdate: (birthdate: string) => void;
   setLifespan: (lifespan: number) => void;
@@ -14,6 +24,12 @@ interface LifeCalendarState {
   setBg: (bg: string) => void;
   setTransparentBg: (transparentBg: boolean) => void;
   setShowStats: (showStats: boolean) => void;
+  setBorderRadius: (borderRadius: number) => void;
+  setPadding: (padding: number) => void;
+  setFontSize: (fontSize: FontSizeKey) => void;
+  setShape: (shape: CellShape) => void;
+  setCellSize: (cellSize: CellSize) => void;
+  setFutureColor: (futureColor: string) => void;
   reset: () => void;
 }
 
@@ -24,6 +40,12 @@ const initialState = {
   bg: "FFFFFF",
   transparentBg: false,
   showStats: true,
+  borderRadius: 16,
+  padding: 24,
+  fontSize: "md" as FontSizeKey,
+  shape: "square" as CellShape,
+  cellSize: "sm" as CellSize,
+  futureColor: "",
 };
 
 export const useLifeCalendarStore = create<LifeCalendarState>((set) => ({
@@ -35,5 +57,11 @@ export const useLifeCalendarStore = create<LifeCalendarState>((set) => ({
   setBg: (bg) => set({ bg }),
   setTransparentBg: (transparentBg) => set({ transparentBg }),
   setShowStats: (showStats) => set({ showStats }),
+  setBorderRadius: (borderRadius) => set({ borderRadius }),
+  setPadding: (padding) => set({ padding }),
+  setFontSize: (fontSize) => set({ fontSize }),
+  setShape: (shape) => set({ shape }),
+  setCellSize: (cellSize) => set({ cellSize }),
+  setFutureColor: (futureColor) => set({ futureColor }),
   reset: () => set(initialState),
 }));

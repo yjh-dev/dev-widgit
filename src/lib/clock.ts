@@ -26,6 +26,18 @@ export const FONT_FAMILY_MAP: Record<ClockFont, string> = {
   mono: "ui-monospace, SFMono-Regular, monospace",
 };
 
+export function getClockDate(timezone: string): string {
+  const now = new Date();
+  const formatter = new Intl.DateTimeFormat("ko-KR", {
+    timeZone: timezone,
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    weekday: "short",
+  });
+  return formatter.format(now);
+}
+
 export function getClockTime(
   timezone: string,
   format: ClockFormat,
