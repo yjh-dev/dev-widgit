@@ -2,16 +2,20 @@
 
 import Link from "next/link";
 import {
+  BookOpen,
   CalendarDays,
+  CheckSquare,
   Clock,
   CloudSun,
   Gauge,
   Grid3X3,
   Hash,
   Calendar,
+  ListTodo,
   Quote,
   Timer,
   TrendingUp,
+  Type,
 } from "lucide-react";
 import ThemeToggle from "@/components/ui/theme-toggle";
 import WidgetThumbnail from "@/components/home/WidgetThumbnail";
@@ -86,6 +90,34 @@ const widgets = [
     icon: CloudSun,
     name: "날씨",
     desc: "현재 날씨와 예보를 표시합니다",
+  },
+  {
+    href: "/create/reading",
+    type: "reading" as const,
+    icon: BookOpen,
+    name: "읽기 진행률",
+    desc: "책 읽기 목표 진행률을 표시합니다",
+  },
+  {
+    href: "/create/habit",
+    type: "habit" as const,
+    icon: CheckSquare,
+    name: "습관 트래커",
+    desc: "주간·월간 습관 체크를 관리합니다",
+  },
+  {
+    href: "/create/timeline",
+    type: "timeline" as const,
+    icon: ListTodo,
+    name: "타임라인",
+    desc: "여러 일정을 타임라인으로 나열합니다",
+  },
+  {
+    href: "/create/banner",
+    type: "banner" as const,
+    icon: Type,
+    name: "텍스트 배너",
+    desc: "애니메이션 텍스트 배너를 만듭니다",
   },
 ];
 

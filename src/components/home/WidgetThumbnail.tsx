@@ -10,6 +10,10 @@ import PomodoroPreview from "@/components/widget/PomodoroPreview";
 import MiniCalendarPreview from "@/components/widget/MiniCalendarPreview";
 import AnalogClockPreview from "@/components/widget/AnalogClockPreview";
 import CounterPreview from "@/components/widget/CounterPreview";
+import ReadingPreview from "@/components/widget/ReadingPreview";
+import HabitPreview from "@/components/widget/HabitPreview";
+import TimelinePreview from "@/components/widget/TimelinePreview";
+import BannerPreview from "@/components/widget/BannerPreview";
 
 type WidgetType =
   | "dday"
@@ -21,7 +25,11 @@ type WidgetType =
   | "mini-calendar"
   | "analog-clock"
   | "counter"
-  | "weather";
+  | "weather"
+  | "reading"
+  | "habit"
+  | "timeline"
+  | "banner";
 
 interface WidgetThumbnailProps {
   type: WidgetType;
@@ -159,6 +167,61 @@ function WidgetContent({ type }: { type: WidgetType }) {
           </div>
           <span className="text-xs opacity-70">맑음</span>
         </div>
+      );
+    case "reading":
+      return (
+        <ReadingPreview
+          title="클린 코드"
+          currentPage={180}
+          totalPages={300}
+          color="2563EB"
+          bg="FFFFFF"
+          borderRadius={0}
+          padding={24}
+          fontSize="sm"
+        />
+      );
+    case "habit":
+      return (
+        <HabitPreview
+          title="운동"
+          view="week"
+          weekStart="mon"
+          checkedDates={new Set(["2026-02-23", "2026-02-24", "2026-02-25"])}
+          interactive={false}
+          color="22C55E"
+          bg="FFFFFF"
+          borderRadius={0}
+          padding={16}
+        />
+      );
+    case "timeline":
+      return (
+        <TimelinePreview
+          events={[
+            { title: "기말고사", date: "2026-06-15" },
+            { title: "여름방학", date: "2026-07-20" },
+            { title: "수능", date: "2026-11-19" },
+          ]}
+          color="2563EB"
+          bg="FFFFFF"
+          borderRadius={0}
+          padding={16}
+          fontSize="sm"
+        />
+      );
+    case "banner":
+      return (
+        <BannerPreview
+          texts={["오늘도 화이팅! 💪"]}
+          animation="none"
+          bold={true}
+          color="1E1E1E"
+          bg="FFFFFF"
+          borderRadius={0}
+          padding={24}
+          fontSize="md"
+        />
       );
     default:
       return null;
