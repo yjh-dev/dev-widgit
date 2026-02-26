@@ -14,6 +14,10 @@ import ReadingPreview from "@/components/widget/ReadingPreview";
 import HabitPreview from "@/components/widget/HabitPreview";
 import TimelinePreview from "@/components/widget/TimelinePreview";
 import BannerPreview from "@/components/widget/BannerPreview";
+import BookmarkPreview from "@/components/widget/BookmarkPreview";
+import GoalPreview from "@/components/widget/GoalPreview";
+import StopwatchPreview from "@/components/widget/StopwatchPreview";
+import MusicPreview from "@/components/widget/MusicPreview";
 
 type WidgetType =
   | "dday"
@@ -29,7 +33,11 @@ type WidgetType =
   | "reading"
   | "habit"
   | "timeline"
-  | "banner";
+  | "banner"
+  | "bookmark"
+  | "goal"
+  | "stopwatch"
+  | "music";
 
 interface WidgetThumbnailProps {
   type: WidgetType;
@@ -221,6 +229,58 @@ function WidgetContent({ type }: { type: WidgetType }) {
           borderRadius={0}
           padding={24}
           fontSize="md"
+        />
+      );
+    case "bookmark":
+      return (
+        <BookmarkPreview
+          url="https://github.com"
+          title="GitHub"
+          desc="내 깃허브 프로필"
+          color="1E1E1E"
+          bg="FFFFFF"
+          borderRadius={0}
+          padding={24}
+          fontSize="sm"
+        />
+      );
+    case "goal":
+      return (
+        <GoalPreview
+          title="저축 목표"
+          current={35}
+          target={100}
+          unit="만원"
+          color="22C55E"
+          bg="FFFFFF"
+          borderRadius={0}
+          padding={24}
+          fontSize="sm"
+        />
+      );
+    case "stopwatch":
+      return (
+        <StopwatchPreview
+          color="1E1E1E"
+          btnColor="2563EB"
+          bg="FFFFFF"
+          borderRadius={0}
+          padding={16}
+          fontSize="sm"
+        />
+      );
+    case "music":
+      return (
+        <MusicPreview
+          title="Chill Beats"
+          artist="Lo-Fi Radio"
+          progress={45}
+          artColor="6366F1"
+          color="1E1E1E"
+          bg="FFFFFF"
+          borderRadius={0}
+          padding={16}
+          fontSize="sm"
         />
       );
     default:

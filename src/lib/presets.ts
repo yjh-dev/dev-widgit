@@ -222,6 +222,92 @@ export const bannerPresets: Preset[] = [
   },
 ];
 
+// Bookmark
+export const bookmarkPresets: Preset[] = [
+  {
+    id: "bookmark-github",
+    name: "깃허브 프로필",
+    data: {
+      url: "https://github.com",
+      title: "GitHub",
+      desc: "내 깃허브 프로필",
+      showIcon: true,
+      showUrl: true,
+      color: "1E1E1E",
+      bg: "FFFFFF",
+    },
+  },
+  {
+    id: "bookmark-blog",
+    name: "블로그 링크",
+    data: {
+      url: "https://blog.example.com",
+      title: "내 블로그",
+      desc: "개발 블로그입니다",
+      showIcon: true,
+      showUrl: true,
+      color: "FFFFFF",
+      bg: "1E1E1E",
+    },
+  },
+];
+
+// Goal
+export const goalPresets: Preset[] = [
+  {
+    id: "goal-saving",
+    name: "저축 목표",
+    data: {
+      title: "여행 자금",
+      current: 350000,
+      target: 1000000,
+      unit: "원",
+      style: "bar",
+      color: "22C55E",
+    },
+  },
+  {
+    id: "goal-exercise",
+    name: "운동 목표",
+    data: {
+      title: "이번 달 운동",
+      current: 12,
+      target: 30,
+      unit: "회",
+      style: "ring",
+      color: "E11D48",
+    },
+  },
+];
+
+// Music
+export const musicPresets: Preset[] = [
+  {
+    id: "music-lofi",
+    name: "Lo-Fi 감성",
+    data: {
+      title: "Chill Beats",
+      artist: "Lo-Fi Radio",
+      progress: 45,
+      artColor: "7C3AED",
+      color: "F8F8F2",
+      bg: "1E1E1E",
+    },
+  },
+  {
+    id: "music-kpop",
+    name: "K-Pop 스타일",
+    data: {
+      title: "좋은 날",
+      artist: "아이유",
+      progress: 60,
+      artColor: "EC4899",
+      color: "1E1E1E",
+      bg: "FDF2F8",
+    },
+  },
+];
+
 // Widgets without presets — empty arrays
 export const miniCalendarPresets: Preset[] = [];
 export const analogClockPresets: Preset[] = [];
@@ -230,3 +316,4 @@ export const weatherPresets: Preset[] = [];
 export const readingPresets: Preset[] = [];
 export const habitPresets: Preset[] = [];
 export const timelinePresets: Preset<{ events?: TimelineEvent[] }>[] = [];
+export const stopwatchPresets: Preset[] = [];
