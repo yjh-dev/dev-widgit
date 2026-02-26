@@ -69,7 +69,7 @@ export default function CreateTimelinePage() {
       <Card>
         <CardContent className="pt-6">
           <EditorSection
-            defaultOpen={["events", "display", "color"]}
+            defaultOpen={["events"]}
             sections={[
               {
                 id: "events",

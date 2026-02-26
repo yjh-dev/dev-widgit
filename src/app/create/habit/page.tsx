@@ -64,7 +64,7 @@ export default function CreateHabitPage() {
       <Card>
         <CardContent className="pt-6">
           <EditorSection
-            defaultOpen={["basic", "display", "color"]}
+            defaultOpen={["basic"]}
             sections={[
               {
                 id: "basic",

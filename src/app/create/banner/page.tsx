@@ -89,7 +89,7 @@ export default function CreateBannerPage() {
       <Card>
         <CardContent className="pt-6">
           <EditorSection
-            defaultOpen={["texts", "display", "color"]}
+            defaultOpen={["texts"]}
             sections={[
               {
                 id: "texts",
