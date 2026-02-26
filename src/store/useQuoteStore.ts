@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import type { QuoteFont } from "@/lib/quote";
 import type { FontSizeKey } from "@/lib/common-widget-options";
 
 export type TextAlign = "left" | "center" | "right";
@@ -8,7 +7,7 @@ export type LineHeight = "tight" | "normal" | "relaxed";
 interface QuoteState {
   text: string;
   author: string;
-  font: QuoteFont;
+  font: string;
   textColor: string;
   bg: string;
   transparentBg: boolean;
@@ -19,10 +18,12 @@ interface QuoteState {
   showMarks: boolean;
   italic: boolean;
   lineHeight: LineHeight;
+  authorColor: string;
+  divider: boolean;
 
   setText: (text: string) => void;
   setAuthor: (author: string) => void;
-  setFont: (font: QuoteFont) => void;
+  setFont: (font: string) => void;
   setTextColor: (textColor: string) => void;
   setBg: (bg: string) => void;
   setTransparentBg: (transparentBg: boolean) => void;
@@ -33,13 +34,15 @@ interface QuoteState {
   setShowMarks: (showMarks: boolean) => void;
   setItalic: (italic: boolean) => void;
   setLineHeight: (lineHeight: LineHeight) => void;
+  setAuthorColor: (authorColor: string) => void;
+  setDivider: (divider: boolean) => void;
   reset: () => void;
 }
 
 const initialState = {
   text: "",
   author: "",
-  font: "serif" as QuoteFont,
+  font: "serif",
   textColor: "1E1E1E",
   bg: "FFFFFF",
   transparentBg: false,
@@ -50,6 +53,8 @@ const initialState = {
   showMarks: true,
   italic: false,
   lineHeight: "relaxed" as LineHeight,
+  authorColor: "",
+  divider: false,
 };
 
 export const useQuoteStore = create<QuoteState>((set) => ({
@@ -68,5 +73,7 @@ export const useQuoteStore = create<QuoteState>((set) => ({
   setShowMarks: (showMarks) => set({ showMarks }),
   setItalic: (italic) => set({ italic }),
   setLineHeight: (lineHeight) => set({ lineHeight }),
+  setAuthorColor: (authorColor) => set({ authorColor }),
+  setDivider: (divider) => set({ divider }),
   reset: () => set(initialState),
 }));

@@ -1,9 +1,10 @@
 import { create } from "zustand";
-import type { ProgressType } from "@/lib/time-progress";
+import type { ProgressType, WeekStart } from "@/lib/time-progress";
 import type { FontSizeKey } from "@/lib/common-widget-options";
 
 export type BarStyle = "bar" | "ring";
 export type BarHeight = "thin" | "default" | "thick";
+export type RingSize = "sm" | "md" | "lg";
 
 interface TimeProgressState {
   type: ProgressType;
@@ -17,6 +18,10 @@ interface TimeProgressState {
   showLabel: boolean;
   showPercent: boolean;
   barHeight: BarHeight;
+  textColor: string;
+  weekStart: WeekStart;
+  ringSize: RingSize;
+  showRemain: boolean;
 
   setType: (type: ProgressType) => void;
   setColor: (color: string) => void;
@@ -29,6 +34,10 @@ interface TimeProgressState {
   setShowLabel: (showLabel: boolean) => void;
   setShowPercent: (showPercent: boolean) => void;
   setBarHeight: (barHeight: BarHeight) => void;
+  setTextColor: (textColor: string) => void;
+  setWeekStart: (weekStart: WeekStart) => void;
+  setRingSize: (ringSize: RingSize) => void;
+  setShowRemain: (showRemain: boolean) => void;
   reset: () => void;
 }
 
@@ -44,6 +53,10 @@ const initialState = {
   showLabel: true,
   showPercent: true,
   barHeight: "default" as BarHeight,
+  textColor: "",
+  weekStart: "mon" as WeekStart,
+  ringSize: "md" as RingSize,
+  showRemain: false,
 };
 
 export const useTimeProgressStore = create<TimeProgressState>((set) => ({
@@ -60,5 +73,9 @@ export const useTimeProgressStore = create<TimeProgressState>((set) => ({
   setShowLabel: (showLabel) => set({ showLabel }),
   setShowPercent: (showPercent) => set({ showPercent }),
   setBarHeight: (barHeight) => set({ barHeight }),
+  setTextColor: (textColor) => set({ textColor }),
+  setWeekStart: (weekStart) => set({ weekStart }),
+  setRingSize: (ringSize) => set({ ringSize }),
+  setShowRemain: (showRemain) => set({ showRemain }),
   reset: () => set(initialState),
 }));

@@ -6,21 +6,29 @@ import { Label } from "@/components/ui/label";
 import ColorPicker from "@/components/ui/color-picker";
 import { Card, CardContent } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import PomodoroPreview from "@/components/widget/PomodoroPreview";
 import EditorLayout from "@/components/editor/EditorLayout";
 import EditorActions from "@/components/editor/EditorActions";
 import EditorSection from "@/components/editor/EditorSection";
 import CommonStyleOptions from "@/components/editor/CommonStyleOptions";
 import { usePomodoroStore } from "@/store/usePomodoroStore";
+import type { PomodoroProgressStyle } from "@/store/usePomodoroStore";
 import { useWidgetUrl } from "@/lib/use-widget-url";
 import { copyToClipboard } from "@/lib/clipboard";
 
 export default function CreatePomodoroPage() {
   const {
     workTime, breakTime, color, bg, transparentBg,
-    borderRadius, padding, fontSize, longBreak, rounds, showRounds, breakColor, autoStart,
+    borderRadius, padding, fontSize, longBreak, rounds, showRounds, breakColor, autoStart, pStyle,
     setWorkTime, setBreakTime, setColor, setBg, setTransparentBg,
-    setBorderRadius, setPadding, setFontSize, setLongBreak, setRounds, setShowRounds, setBreakColor, setAutoStart,
+    setBorderRadius, setPadding, setFontSize, setLongBreak, setRounds, setShowRounds, setBreakColor, setAutoStart, setPStyle,
     reset,
   } = usePomodoroStore();
 
@@ -43,9 +51,10 @@ export default function CreatePomodoroPage() {
     if (!showRounds) params.set("showRounds", "false");
     if (breakColor !== "22C55E") params.set("breakColor", breakColor);
     if (autoStart) params.set("autoStart", "true");
+    if (pStyle !== "bar") params.set("pStyle", pStyle);
     const qs = params.toString();
     return qs ? `${base}?${qs}` : base;
-  }, [workTime, breakTime, color, bg, transparentBg, borderRadius, padding, fontSize, longBreak, rounds, showRounds, breakColor, autoStart]);
+  }, [workTime, breakTime, color, bg, transparentBg, borderRadius, padding, fontSize, longBreak, rounds, showRounds, breakColor, autoStart, pStyle]);
 
   const handleCopy = async () => {
     await copyToClipboard(buildWidgetUrl());
@@ -57,7 +66,7 @@ export default function CreatePomodoroPage() {
       <Card>
         <CardContent className="pt-6">
           <EditorSection
-            defaultOpen={["basic", "color"]}
+            defaultOpen={["basic"]}
             sections={[
               {
                 id: "basic",
@@ -92,6 +101,16 @@ export default function CreatePomodoroPage() {
                 title: "표시 옵션",
                 children: (
                   <>
+                    <div className="space-y-2">
+                      <Label>프로그레스 스타일</Label>
+                      <Select value={pStyle} onValueChange={(v) => setPStyle(v as PomodoroProgressStyle)}>
+                        <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="bar">바</SelectItem>
+                          <SelectItem value="ring">링</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
                     <div className="flex items-center justify-between">
                       <Label htmlFor="showRounds">라운드 표시</Label>
                       <Switch id="showRounds" checked={showRounds} onCheckedChange={setShowRounds} />
@@ -138,7 +157,7 @@ export default function CreatePomodoroPage() {
         </CardContent>
       </Card>
 
-      <div className="flex items-center justify-center">
+      <div className="flex items-center justify-center md:sticky md:top-8">
         <div className="space-y-3 w-full max-w-[320px]">
           <p className="text-xs text-muted-foreground text-center">미리보기</p>
           <div className="border rounded-lg overflow-hidden aspect-[4/3]">
@@ -146,7 +165,7 @@ export default function CreatePomodoroPage() {
               workTime={workTime} breakTime={breakTime} color={color} bg={bg}
               transparentBg={transparentBg} borderRadius={borderRadius} padding={padding}
               fontSize={fontSize} longBreak={longBreak} rounds={rounds} showRounds={showRounds}
-              breakColor={breakColor} autoStart={autoStart}
+              breakColor={breakColor} autoStart={autoStart} pStyle={pStyle}
             />
           </div>
         </div>

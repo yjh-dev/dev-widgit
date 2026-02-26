@@ -9,7 +9,12 @@
       "WebFetch(domain:indify.co)",
       "WebFetch(domain:www.nodi.so)",
       "WebFetch(domain:www.commoninja.com)",
-      "Bash(cd /c/dev/2026/dev-widgit && npx shadcn@latest add accordion -y 2>&1)"
+      "Bash(cd /c/dev/2026/dev-widgit && npx shadcn@latest add accordion -y 2>&1)",
+      "Bash(npm run build:*)",
+      "WebFetch(domain:www.notion-box.com)",
+      "WebFetch(domain:www.productivetemply.com)",
+      "Bash(jq:*)",
+      "Bash(python3:*)"
     ]
   }
 }

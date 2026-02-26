@@ -1,93 +1,134 @@
+"use client";
+
 import Link from "next/link";
-import { CalendarDays, Clock, Grid3X3, Quote, Timer, TrendingUp } from "lucide-react";
+import {
+  CalendarDays,
+  Clock,
+  CloudSun,
+  Gauge,
+  Grid3X3,
+  Hash,
+  Calendar,
+  Quote,
+  Timer,
+  TrendingUp,
+} from "lucide-react";
+import ThemeToggle from "@/components/ui/theme-toggle";
+import WidgetThumbnail from "@/components/home/WidgetThumbnail";
+
+const widgets = [
+  {
+    href: "/create/dday",
+    type: "dday" as const,
+    icon: CalendarDays,
+    name: "D-Day 위젯",
+    desc: "목표일까지 남은 일수를 표시합니다",
+  },
+  {
+    href: "/create/life-calendar",
+    type: "life-calendar" as const,
+    icon: Grid3X3,
+    name: "인생 달력 위젯",
+    desc: "기대수명을 주 단위로 시각화합니다",
+  },
+  {
+    href: "/create/time-progress",
+    type: "time-progress" as const,
+    icon: TrendingUp,
+    name: "시간 진행률 바",
+    desc: "오늘·이번 달·올해의 진행률을 표시합니다",
+  },
+  {
+    href: "/create/clock",
+    type: "clock" as const,
+    icon: Clock,
+    name: "미니멀 시계",
+    desc: "미니멀한 타이포그래피 시계를 표시합니다",
+  },
+  {
+    href: "/create/quote",
+    type: "quote" as const,
+    icon: Quote,
+    name: "명언 카드",
+    desc: "감성 명언 텍스트 카드를 만듭니다",
+  },
+  {
+    href: "/create/pomodoro",
+    type: "pomodoro" as const,
+    icon: Timer,
+    name: "뽀모도로 타이머",
+    desc: "집중·휴식을 번갈아 관리하는 타이머입니다",
+  },
+  {
+    href: "/create/mini-calendar",
+    type: "mini-calendar" as const,
+    icon: Calendar,
+    name: "미니 캘린더",
+    desc: "깔끔한 월간 캘린더를 표시합니다",
+  },
+  {
+    href: "/create/analog-clock",
+    type: "analog-clock" as const,
+    icon: Gauge,
+    name: "아날로그 시계",
+    desc: "클래식한 아날로그 시계를 표시합니다",
+  },
+  {
+    href: "/create/counter",
+    type: "counter" as const,
+    icon: Hash,
+    name: "카운터",
+    desc: "숫자를 세고 기록하는 카운터입니다",
+  },
+  {
+    href: "/create/weather",
+    type: "weather" as const,
+    icon: CloudSun,
+    name: "날씨",
+    desc: "현재 날씨와 예보를 표시합니다",
+  },
+];
 
 export default function Home() {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-background p-6">
-      <h1 className="text-4xl font-bold tracking-tight mb-2">Widgit</h1>
-      <p className="text-muted-foreground mb-10">
-        URL 하나로 동작하는 노션 전용 위젯
-      </p>
+    <div className="min-h-screen bg-background">
+      {/* Hero */}
+      <header className="pt-16 pb-12 px-6 text-center">
+        <div className="flex items-center justify-center gap-3 mb-4">
+          <h1 className="text-4xl font-bold tracking-tight">Widgit</h1>
+          <ThemeToggle />
+        </div>
+        <p className="text-muted-foreground max-w-md mx-auto">
+          URL 하나로 동작하는 노션 전용 위젯을 만들어보세요.
+          <br />
+          서버 없이, 무한히 커스터마이징 가능합니다.
+        </p>
+      </header>
 
-      <div className="grid gap-4 w-full max-w-sm">
-        <Link
-          href="/create/dday"
-          className="flex items-center gap-3 rounded-xl border p-4 transition-colors hover:bg-accent"
-        >
-          <CalendarDays className="w-6 h-6 text-primary" />
-          <div>
-            <p className="font-semibold">D-Day 위젯</p>
-            <p className="text-sm text-muted-foreground">
-              목표일까지 남은 일수를 표시합니다
-            </p>
-          </div>
-        </Link>
-
-        <Link
-          href="/create/life-calendar"
-          className="flex items-center gap-3 rounded-xl border p-4 transition-colors hover:bg-accent"
-        >
-          <Grid3X3 className="w-6 h-6 text-primary" />
-          <div>
-            <p className="font-semibold">인생 달력 위젯</p>
-            <p className="text-sm text-muted-foreground">
-              기대수명을 주 단위로 시각화합니다
-            </p>
-          </div>
-        </Link>
-
-        <Link
-          href="/create/time-progress"
-          className="flex items-center gap-3 rounded-xl border p-4 transition-colors hover:bg-accent"
-        >
-          <TrendingUp className="w-6 h-6 text-primary" />
-          <div>
-            <p className="font-semibold">시간 진행률 바</p>
-            <p className="text-sm text-muted-foreground">
-              오늘·이번 달·올해의 진행률을 표시합니다
-            </p>
-          </div>
-        </Link>
-
-        <Link
-          href="/create/clock"
-          className="flex items-center gap-3 rounded-xl border p-4 transition-colors hover:bg-accent"
-        >
-          <Clock className="w-6 h-6 text-primary" />
-          <div>
-            <p className="font-semibold">미니멀 시계</p>
-            <p className="text-sm text-muted-foreground">
-              미니멀한 타이포그래피 시계를 표시합니다
-            </p>
-          </div>
-        </Link>
-
-        <Link
-          href="/create/quote"
-          className="flex items-center gap-3 rounded-xl border p-4 transition-colors hover:bg-accent"
-        >
-          <Quote className="w-6 h-6 text-primary" />
-          <div>
-            <p className="font-semibold">명언 카드</p>
-            <p className="text-sm text-muted-foreground">
-              감성 명언 텍스트 카드를 만듭니다
-            </p>
-          </div>
-        </Link>
-
-        <Link
-          href="/create/pomodoro"
-          className="flex items-center gap-3 rounded-xl border p-4 transition-colors hover:bg-accent"
-        >
-          <Timer className="w-6 h-6 text-primary" />
-          <div>
-            <p className="font-semibold">뽀모도로 타이머</p>
-            <p className="text-sm text-muted-foreground">
-              집중·휴식을 번갈아 관리하는 타이머입니다
-            </p>
-          </div>
-        </Link>
-      </div>
+      {/* Grid */}
+      <main className="max-w-5xl mx-auto px-6 pb-20">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          {widgets.map((w) => {
+            const Icon = w.icon;
+            return (
+              <Link
+                key={w.href}
+                href={w.href}
+                className="group rounded-xl border bg-card overflow-hidden transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
+              >
+                <WidgetThumbnail type={w.type} />
+                <div className="p-4 flex items-start gap-3">
+                  <Icon className="w-5 h-5 text-primary mt-0.5 shrink-0" />
+                  <div>
+                    <p className="font-semibold text-card-foreground">{w.name}</p>
+                    <p className="text-sm text-muted-foreground">{w.desc}</p>
+                  </div>
+                </div>
+              </Link>
+            );
+          })}
+        </div>
+      </main>
     </div>
   );
 }

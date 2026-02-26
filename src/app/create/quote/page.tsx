@@ -22,14 +22,17 @@ import { useQuoteStore } from "@/store/useQuoteStore";
 import type { TextAlign, LineHeight } from "@/store/useQuoteStore";
 import { useWidgetUrl } from "@/lib/use-widget-url";
 import { copyToClipboard } from "@/lib/clipboard";
-import { QUOTE_FONT_OPTIONS, ALIGN_OPTIONS, LINE_HEIGHT_OPTIONS, type QuoteFont } from "@/lib/quote";
+import { ALIGN_OPTIONS, LINE_HEIGHT_OPTIONS } from "@/lib/quote";
+import { QUOTE_FONT_OPTIONS_EXTENDED } from "@/lib/fonts";
 
 export default function CreateQuotePage() {
   const {
     text, author, font, textColor, bg, transparentBg,
     borderRadius, padding, fontSize, align, showMarks, italic, lineHeight,
+    authorColor, divider,
     setText, setAuthor, setFont, setTextColor, setBg, setTransparentBg,
     setBorderRadius, setPadding, setFontSize, setAlign, setShowMarks, setItalic, setLineHeight,
+    setAuthorColor, setDivider,
     reset,
   } = useQuoteStore();
 
@@ -52,9 +55,11 @@ export default function CreateQuotePage() {
     if (!showMarks) params.set("marks", "false");
     if (italic) params.set("italic", "true");
     if (lineHeight !== "relaxed") params.set("lh", lineHeight);
+    if (authorColor) params.set("authorColor", authorColor);
+    if (divider) params.set("divider", "true");
     const qs = params.toString();
     return qs ? `${base}?${qs}` : base;
-  }, [text, author, font, textColor, bg, transparentBg, borderRadius, padding, fontSize, align, showMarks, italic, lineHeight]);
+  }, [text, author, font, textColor, bg, transparentBg, borderRadius, padding, fontSize, align, showMarks, italic, lineHeight, authorColor, divider]);
 
   const handleCopy = async () => {
     await copyToClipboard(buildWidgetUrl());
@@ -66,7 +71,7 @@ export default function CreateQuotePage() {
       <Card>
         <CardContent className="pt-6">
           <EditorSection
-            defaultOpen={["basic", "text", "color"]}
+            defaultOpen={["basic"]}
             sections={[
               {
                 id: "basic",
@@ -90,10 +95,10 @@ export default function CreateQuotePage() {
                     </div>
                     <div className="space-y-2">
                       <Label>폰트</Label>
-                      <Select value={font} onValueChange={(v) => setFont(v as QuoteFont)}>
+                      <Select value={font} onValueChange={setFont}>
                         <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
                         <SelectContent>
-                          {QUOTE_FONT_OPTIONS.map((opt) => (
+                          {QUOTE_FONT_OPTIONS_EXTENDED.map((opt) => (
                             <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
                           ))}
                         </SelectContent>
@@ -137,6 +142,10 @@ export default function CreateQuotePage() {
                       <Label htmlFor="italic">이탤릭</Label>
                       <Switch id="italic" checked={italic} onCheckedChange={setItalic} />
                     </div>
+                    <div className="flex items-center justify-between">
+                      <Label htmlFor="divider">구분선</Label>
+                      <Switch id="divider" checked={divider} onCheckedChange={setDivider} />
+                    </div>
                   </>
                 ),
               },
@@ -146,6 +155,7 @@ export default function CreateQuotePage() {
                 children: (
                   <>
                     <ColorPicker id="textColor" label="글자 색상" value={textColor} onChange={setTextColor} placeholder="1E1E1E" />
+                    <ColorPicker id="authorColor" label="저자 색상 (비우면 글자 색상)" value={authorColor} onChange={setAuthorColor} placeholder="비우면 글자 색상" />
                     <div className="flex items-center justify-between">
                       <Label htmlFor="transparent">투명 배경</Label>
                       <Switch id="transparent" checked={transparentBg} onCheckedChange={setTransparentBg} />
@@ -174,7 +184,7 @@ export default function CreateQuotePage() {
         </CardContent>
       </Card>
 
-      <div className="flex items-center justify-center">
+      <div className="flex items-center justify-center md:sticky md:top-8">
         <div className="space-y-3 w-full max-w-[400px]">
           <p className="text-xs text-muted-foreground text-center">미리보기</p>
           <div className="border rounded-lg overflow-hidden aspect-[4/3]">
@@ -182,6 +192,7 @@ export default function CreateQuotePage() {
               text={text} author={author} font={font} textColor={textColor} bg={bg}
               transparentBg={transparentBg} borderRadius={borderRadius} padding={padding}
               fontSize={fontSize} align={align} showMarks={showMarks} italic={italic} lineHeight={lineHeight}
+              authorColor={authorColor} divider={divider}
             />
           </div>
         </div>

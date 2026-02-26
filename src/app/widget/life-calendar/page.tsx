@@ -4,7 +4,7 @@ import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import LifeCalendarPreview from "@/components/widget/LifeCalendarPreview";
 import type { CellShape, CellSize } from "@/components/widget/LifeCalendarPreview";
-import { parseBorderRadius, parsePadding, parseFontSize } from "@/lib/common-widget-options";
+import { parseBorderRadius, parsePadding, parseFontSize, parseHexColor } from "@/lib/common-widget-options";
 
 const VALID_SHAPES: CellShape[] = ["square", "round"];
 const VALID_CELL_SIZES: CellSize[] = ["sm", "md", "lg"];
@@ -15,10 +15,11 @@ function LifeCalendarWidgetContent() {
   const birthdate = searchParams.get("birthdate") || "";
   const rawLifespan = Number(searchParams.get("lifespan"));
   const lifespan = rawLifespan > 0 && rawLifespan <= 120 ? rawLifespan : 80;
-  const color = searchParams.get("color") || "2563EB";
+  const color = parseHexColor(searchParams.get("color"), "2563EB");
   const rawBg = searchParams.get("bg") || "FFFFFF";
+  const futureColor = parseHexColor(searchParams.get("futureColor"), "");
   const transparentBg = rawBg === "transparent";
-  const bg = transparentBg ? "FFFFFF" : rawBg;
+  const bg = transparentBg ? "FFFFFF" : parseHexColor(rawBg, "FFFFFF");
   const showStats = searchParams.get("stats") !== "false";
 
   const borderRadius = parseBorderRadius(searchParams.get("radius"));
@@ -35,7 +36,8 @@ function LifeCalendarWidgetContent() {
     ? (rawCellSize as CellSize)
     : "sm";
 
-  const futureColor = searchParams.get("futureColor") || "";
+  const showYears = searchParams.get("years") === "true";
+  const nowColor = parseHexColor(searchParams.get("nowColor"), "");
 
   return (
     <div className="w-screen h-screen bg-transparent">
@@ -52,6 +54,8 @@ function LifeCalendarWidgetContent() {
         shape={shape}
         cellSize={cellSize}
         futureColor={futureColor}
+        showYears={showYears}
+        nowColor={nowColor}
       />
     </div>
   );

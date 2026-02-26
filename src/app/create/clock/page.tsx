@@ -20,14 +20,17 @@ import CommonStyleOptions from "@/components/editor/CommonStyleOptions";
 import { useClockStore } from "@/store/useClockStore";
 import { useWidgetUrl } from "@/lib/use-widget-url";
 import { copyToClipboard } from "@/lib/clipboard";
-import { TIMEZONE_OPTIONS, type ClockFormat, type ClockFont } from "@/lib/clock";
+import { TIMEZONE_OPTIONS, CLOCK_DATE_FORMAT_OPTIONS, type ClockFormat, type ClockDateFormat } from "@/lib/clock";
+import { CLOCK_FONT_OPTIONS } from "@/lib/fonts";
 
 export default function CreateClockPage() {
   const {
     timezone, format, font, color, bg, transparentBg,
     borderRadius, padding, fontSize, showSeconds, showDate, blink,
+    dateColor, dateFmt,
     setTimezone, setFormat, setFont, setColor, setBg, setTransparentBg,
     setBorderRadius, setPadding, setFontSize, setShowSeconds, setShowDate, setBlink,
+    setDateColor, setDateFmt,
     reset,
   } = useClockStore();
 
@@ -49,9 +52,11 @@ export default function CreateClockPage() {
     if (!showSeconds) params.set("seconds", "false");
     if (showDate) params.set("date", "true");
     if (!blink) params.set("blink", "false");
+    if (dateColor) params.set("dateColor", dateColor);
+    if (dateFmt !== "kr") params.set("dateFmt", dateFmt);
     const qs = params.toString();
     return qs ? `${base}?${qs}` : base;
-  }, [timezone, format, font, color, bg, transparentBg, borderRadius, padding, fontSize, showSeconds, showDate, blink]);
+  }, [timezone, format, font, color, bg, transparentBg, borderRadius, padding, fontSize, showSeconds, showDate, blink, dateColor, dateFmt]);
 
   const handleCopy = async () => {
     await copyToClipboard(buildWidgetUrl());
@@ -63,7 +68,7 @@ export default function CreateClockPage() {
       <Card>
         <CardContent className="pt-6">
           <EditorSection
-            defaultOpen={["basic", "display", "color"]}
+            defaultOpen={["basic"]}
             sections={[
               {
                 id: "basic",
@@ -93,12 +98,12 @@ export default function CreateClockPage() {
                     </div>
                     <div className="space-y-2">
                       <Label>폰트</Label>
-                      <Select value={font} onValueChange={(v) => setFont(v as ClockFont)}>
+                      <Select value={font} onValueChange={setFont}>
                         <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="mono">Mono</SelectItem>
-                          <SelectItem value="sans">Sans</SelectItem>
-                          <SelectItem value="serif">Serif</SelectItem>
+                          {CLOCK_FONT_OPTIONS.map((opt) => (
+                            <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                     </div>
@@ -118,6 +123,19 @@ export default function CreateClockPage() {
                       <Label htmlFor="showDate">날짜 표시</Label>
                       <Switch id="showDate" checked={showDate} onCheckedChange={setShowDate} />
                     </div>
+                    {showDate && (
+                      <div className="space-y-2">
+                        <Label>날짜 형식</Label>
+                        <Select value={dateFmt} onValueChange={(v) => setDateFmt(v as ClockDateFormat)}>
+                          <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
+                          <SelectContent>
+                            {CLOCK_DATE_FORMAT_OPTIONS.map((opt) => (
+                              <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    )}
                     <div className="flex items-center justify-between">
                       <Label htmlFor="blink">구분자 깜빡임</Label>
                       <Switch id="blink" checked={blink} onCheckedChange={setBlink} />
@@ -131,6 +149,9 @@ export default function CreateClockPage() {
                 children: (
                   <>
                     <ColorPicker id="color" label="글자 색상" value={color} onChange={setColor} placeholder="1E1E1E" />
+                    {showDate && (
+                      <ColorPicker id="dateColor" label="날짜 색상 (비우면 글자 색상)" value={dateColor} onChange={setDateColor} placeholder="비우면 글자 색상" />
+                    )}
                     <div className="flex items-center justify-between">
                       <Label htmlFor="transparent">투명 배경</Label>
                       <Switch id="transparent" checked={transparentBg} onCheckedChange={setTransparentBg} />
@@ -159,7 +180,7 @@ export default function CreateClockPage() {
         </CardContent>
       </Card>
 
-      <div className="flex items-center justify-center">
+      <div className="flex items-center justify-center md:sticky md:top-8">
         <div className="space-y-3 w-full max-w-[400px]">
           <p className="text-xs text-muted-foreground text-center">미리보기</p>
           <div className="border rounded-lg overflow-hidden aspect-[16/7]">
@@ -167,6 +188,7 @@ export default function CreateClockPage() {
               timezone={timezone} format={format} font={font} color={color} bg={bg}
               transparentBg={transparentBg} borderRadius={borderRadius} padding={padding}
               fontSize={fontSize} showSeconds={showSeconds} showDate={showDate} blink={blink}
+              dateColor={dateColor} dateFmt={dateFmt}
             />
           </div>
         </div>

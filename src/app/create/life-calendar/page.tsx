@@ -27,8 +27,10 @@ export default function CreateLifeCalendarPage() {
   const {
     birthdate, lifespan, color, bg, transparentBg, showStats,
     borderRadius, padding, fontSize, shape, cellSize, futureColor,
+    showYears, nowColor,
     setBirthdate, setLifespan, setColor, setBg, setTransparentBg, setShowStats,
     setBorderRadius, setPadding, setFontSize, setShape, setCellSize, setFutureColor,
+    setShowYears, setNowColor,
     reset,
   } = useLifeCalendarStore();
 
@@ -50,9 +52,11 @@ export default function CreateLifeCalendarPage() {
     if (shape !== "square") params.set("shape", shape);
     if (cellSize !== "sm") params.set("cellSize", cellSize);
     if (futureColor) params.set("futureColor", futureColor);
+    if (showYears) params.set("years", "true");
+    if (nowColor) params.set("nowColor", nowColor);
     const qs = params.toString();
     return qs ? `${base}?${qs}` : base;
-  }, [birthdate, lifespan, color, bg, transparentBg, showStats, borderRadius, padding, fontSize, shape, cellSize, futureColor]);
+  }, [birthdate, lifespan, color, bg, transparentBg, showStats, borderRadius, padding, fontSize, shape, cellSize, futureColor, showYears, nowColor]);
 
   const handleCopy = async () => {
     await copyToClipboard(buildWidgetUrl());
@@ -64,7 +68,7 @@ export default function CreateLifeCalendarPage() {
       <Card>
         <CardContent className="pt-6">
           <EditorSection
-            defaultOpen={["basic", "cell", "color"]}
+            defaultOpen={["basic"]}
             sections={[
               {
                 id: "basic",
@@ -115,7 +119,10 @@ export default function CreateLifeCalendarPage() {
                         </SelectContent>
                       </Select>
                     </div>
-                    <ColorPicker id="futureColor" label="미래 셀 색상 (비우면 테두리)" value={futureColor} onChange={setFutureColor} placeholder="비우면 테두리 스타일" />
+                    <div className="flex items-center justify-between">
+                      <Label htmlFor="showYears">나이 라벨</Label>
+                      <Switch id="showYears" checked={showYears} onCheckedChange={setShowYears} />
+                    </div>
                   </>
                 ),
               },
@@ -125,6 +132,8 @@ export default function CreateLifeCalendarPage() {
                 children: (
                   <>
                     <ColorPicker id="color" label="칸 색상" value={color} onChange={setColor} placeholder="2563EB" />
+                    <ColorPicker id="futureColor" label="미래 셀 색상 (비우면 테두리)" value={futureColor} onChange={setFutureColor} placeholder="비우면 테두리 스타일" />
+                    <ColorPicker id="nowColor" label="현재 주 색상 (비우면 칸 색상)" value={nowColor} onChange={setNowColor} placeholder="비우면 칸 색상" />
                     <div className="flex items-center justify-between">
                       <Label htmlFor="transparent">투명 배경</Label>
                       <Switch id="transparent" checked={transparentBg} onCheckedChange={setTransparentBg} />
@@ -153,7 +162,7 @@ export default function CreateLifeCalendarPage() {
         </CardContent>
       </Card>
 
-      <div className="flex items-center justify-center">
+      <div className="flex items-center justify-center md:sticky md:top-8">
         <div className="space-y-3 w-full max-w-[400px]">
           <p className="text-xs text-muted-foreground text-center">미리보기</p>
           <div className="border rounded-lg overflow-hidden aspect-[52/80]">
@@ -161,6 +170,7 @@ export default function CreateLifeCalendarPage() {
               birthdate={birthdate} lifespan={lifespan} color={color} bg={bg}
               transparentBg={transparentBg} showStats={showStats} borderRadius={borderRadius}
               padding={padding} fontSize={fontSize} shape={shape} cellSize={cellSize} futureColor={futureColor}
+              showYears={showYears} nowColor={nowColor}
             />
           </div>
         </div>

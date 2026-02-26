@@ -3,7 +3,10 @@
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import PomodoroPreview from "@/components/widget/PomodoroPreview";
-import { parseBorderRadius, parsePadding, parseFontSize } from "@/lib/common-widget-options";
+import type { PomodoroProgressStyle } from "@/components/widget/PomodoroPreview";
+import { parseBorderRadius, parsePadding, parseFontSize, parseHexColor } from "@/lib/common-widget-options";
+
+const VALID_PSTYLES: PomodoroProgressStyle[] = ["bar", "ring"];
 
 function PomodoroWidgetContent() {
   const searchParams = useSearchParams();
@@ -14,10 +17,10 @@ function PomodoroWidgetContent() {
   const rawBreak = Number(searchParams.get("break"));
   const breakTime = rawBreak > 0 && rawBreak <= 60 ? rawBreak : 5;
 
-  const color = searchParams.get("color") || "E11D48";
+  const color = parseHexColor(searchParams.get("color"), "E11D48");
   const rawBg = searchParams.get("bg") || "FFFFFF";
   const transparentBg = rawBg === "transparent";
-  const bg = transparentBg ? "FFFFFF" : rawBg;
+  const bg = transparentBg ? "FFFFFF" : parseHexColor(rawBg, "FFFFFF");
 
   const borderRadius = parseBorderRadius(searchParams.get("radius"));
   const padding = parsePadding(searchParams.get("pad"));
@@ -30,8 +33,13 @@ function PomodoroWidgetContent() {
   const rounds = rawRounds > 0 && rawRounds <= 10 ? rawRounds : 4;
 
   const showRounds = searchParams.get("showRounds") !== "false";
-  const breakColor = searchParams.get("breakColor") || "22C55E";
+  const breakColor = parseHexColor(searchParams.get("breakColor"), "22C55E");
   const autoStart = searchParams.get("autoStart") === "true";
+
+  const rawPStyle = searchParams.get("pStyle");
+  const pStyle: PomodoroProgressStyle = VALID_PSTYLES.includes(rawPStyle as PomodoroProgressStyle)
+    ? (rawPStyle as PomodoroProgressStyle)
+    : "bar";
 
   return (
     <div className="w-screen h-screen bg-transparent">
@@ -49,6 +57,7 @@ function PomodoroWidgetContent() {
         showRounds={showRounds}
         breakColor={breakColor}
         autoStart={autoStart}
+        pStyle={pStyle}
       />
     </div>
   );

@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { format, isValid, parseISO } from "date-fns";
+import { format, isValid } from "date-fns";
 import { ko } from "date-fns/locale";
-import { calculateDday, calculateDdayWithTime, calculateProgress } from "@/lib/dday";
+import { calculateDday, calculateDdayWithTime, calculateProgress, toLocalDate } from "@/lib/dday";
 import { fontMap, type FontKey } from "@/lib/fonts";
 import type { FontSizeKey } from "@/lib/common-widget-options";
 import DdayProgressBar from "./DdayProgressBar";
@@ -14,6 +14,8 @@ const FONT_SIZE_MAP: Record<FontSizeKey, string> = {
   lg: "text-6xl",
   xl: "text-7xl",
 };
+
+export type DdayDateFormat = "full" | "short" | "dot" | "none";
 
 interface DdayWidgetPreviewProps {
   title: string;
@@ -32,6 +34,22 @@ interface DdayWidgetPreviewProps {
   showTime?: boolean;
   blink?: boolean;
   doneMsg?: string;
+  barColor?: string;
+  dateFmt?: DdayDateFormat;
+}
+
+function formatDdayDate(parsed: Date, dateFmt: DdayDateFormat): string {
+  switch (dateFmt) {
+    case "none":
+      return "";
+    case "short":
+      return format(parsed, "MM.dd (EEE)", { locale: ko });
+    case "dot":
+      return format(parsed, "yyyy.MM.dd");
+    case "full":
+    default:
+      return format(parsed, "yyyy.MM.dd (EEE)", { locale: ko });
+  }
 }
 
 export default function DdayWidgetPreview({
@@ -51,6 +69,8 @@ export default function DdayWidgetPreview({
   showTime = false,
   blink = true,
   doneMsg = "",
+  barColor = "",
+  dateFmt = "full",
 }: DdayWidgetPreviewProps) {
   const { dday, ddayLabel, effectiveDate } = calculateDday(
     targetDate,
@@ -74,10 +94,10 @@ export default function DdayWidgetPreview({
     return () => clearInterval(interval);
   }, [showTime, targetDate, isAnnual]);
 
-  const parsed = effectiveDate ? parseISO(effectiveDate) : null;
+  const parsed = effectiveDate ? toLocalDate(effectiveDate) : null;
   const formattedDate =
     parsed && isValid(parsed)
-      ? format(parsed, "yyyy.MM.dd (EEE)", { locale: ko })
+      ? formatDdayDate(parsed, dateFmt)
       : "";
 
   const showProgress = layout === "progress";
@@ -104,7 +124,10 @@ export default function DdayWidgetPreview({
       }}
     >
       <p className="text-sm font-medium opacity-70 mb-1">{title}</p>
-      <p className={`${FONT_SIZE_MAP[fontSize]} font-extrabold tracking-tight`}>
+      <p
+        className={`${FONT_SIZE_MAP[fontSize]} font-extrabold tracking-tight`}
+        aria-label={`${title} ${displayLabel}`}
+      >
         {displayLabel}
       </p>
       {showTime && timeResult && (
@@ -120,7 +143,7 @@ export default function DdayWidgetPreview({
         <p className="text-xs opacity-50 mt-3">{formattedDate}</p>
       )}
       {showProgress && (
-        <DdayProgressBar percentage={percentage} textColor={textColor} />
+        <DdayProgressBar percentage={percentage} textColor={textColor} barColor={barColor} />
       )}
     </div>
   );

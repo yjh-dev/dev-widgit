@@ -2,12 +2,11 @@
 
 import { Quote } from "lucide-react";
 import {
-  QUOTE_FONT_FAMILY_MAP,
   LINE_HEIGHT_MAP,
-  type QuoteFont,
   type TextAlign,
   type LineHeight,
 } from "@/lib/quote";
+import { resolveFontStyle } from "@/lib/fonts";
 import type { FontSizeKey } from "@/lib/common-widget-options";
 
 const FONT_SIZE_MAP: Record<FontSizeKey, string> = {
@@ -20,7 +19,7 @@ const FONT_SIZE_MAP: Record<FontSizeKey, string> = {
 interface QuotePreviewProps {
   text?: string;
   author?: string;
-  font?: QuoteFont;
+  font?: string;
   textColor?: string;
   bg?: string;
   transparentBg?: boolean;
@@ -31,6 +30,8 @@ interface QuotePreviewProps {
   showMarks?: boolean;
   italic?: boolean;
   lineHeight?: LineHeight;
+  authorColor?: string;
+  divider?: boolean;
 }
 
 export default function QuotePreview({
@@ -47,18 +48,23 @@ export default function QuotePreview({
   showMarks = true,
   italic = false,
   lineHeight = "relaxed",
+  authorColor = "",
+  divider = false,
 }: QuotePreviewProps) {
   const displayText = text || "여기에 문구를 입력하세요";
 
   const alignClass = align === "left" ? "text-left" : align === "right" ? "text-right" : "text-center";
   const quoteAlignClass = align === "left" ? "" : align === "right" ? "ml-auto" : "mx-auto";
 
+  const fontStyle = resolveFontStyle(font);
+  const resolvedAuthorColor = authorColor || textColor;
+
   return (
     <div
-      className="w-full h-full flex items-center justify-center"
+      className={`w-full h-full flex items-center justify-center ${fontStyle.className ?? ""}`}
       style={{
         backgroundColor: transparentBg ? "transparent" : `#${bg}`,
-        fontFamily: QUOTE_FONT_FAMILY_MAP[font],
+        fontFamily: fontStyle.fontFamily,
         borderRadius,
         padding,
       }}
@@ -71,7 +77,7 @@ export default function QuotePreview({
             size={32}
           />
         )}
-        <p
+        <blockquote
           className={`${FONT_SIZE_MAP[fontSize]} font-medium whitespace-pre-line ${italic ? "italic" : ""}`}
           style={{
             color: `#${textColor}`,
@@ -79,14 +85,20 @@ export default function QuotePreview({
           }}
         >
           {displayText}
-        </p>
+        </blockquote>
+        {divider && author && (
+          <hr
+            className="opacity-20"
+            style={{ borderColor: `#${textColor}` }}
+          />
+        )}
         {author && (
-          <p
+          <footer
             className="text-sm opacity-50"
-            style={{ color: `#${textColor}` }}
+            style={{ color: `#${resolvedAuthorColor}` }}
           >
-            &mdash; {author}
-          </p>
+            &mdash; <cite>{author}</cite>
+          </footer>
         )}
       </div>
     </div>

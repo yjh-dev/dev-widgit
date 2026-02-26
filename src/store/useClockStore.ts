@@ -1,11 +1,11 @@
 import { create } from "zustand";
-import type { ClockFormat, ClockFont } from "@/lib/clock";
+import type { ClockFormat, ClockDateFormat } from "@/lib/clock";
 import type { FontSizeKey } from "@/lib/common-widget-options";
 
 interface ClockState {
   timezone: string;
   format: ClockFormat;
-  font: ClockFont;
+  font: string;
   color: string;
   bg: string;
   transparentBg: boolean;
@@ -15,10 +15,12 @@ interface ClockState {
   showSeconds: boolean;
   showDate: boolean;
   blink: boolean;
+  dateColor: string;
+  dateFmt: ClockDateFormat;
 
   setTimezone: (timezone: string) => void;
   setFormat: (format: ClockFormat) => void;
-  setFont: (font: ClockFont) => void;
+  setFont: (font: string) => void;
   setColor: (color: string) => void;
   setBg: (bg: string) => void;
   setTransparentBg: (transparentBg: boolean) => void;
@@ -28,13 +30,15 @@ interface ClockState {
   setShowSeconds: (showSeconds: boolean) => void;
   setShowDate: (showDate: boolean) => void;
   setBlink: (blink: boolean) => void;
+  setDateColor: (dateColor: string) => void;
+  setDateFmt: (dateFmt: ClockDateFormat) => void;
   reset: () => void;
 }
 
 const initialState = {
   timezone: "Asia/Seoul",
   format: "24h" as ClockFormat,
-  font: "mono" as ClockFont,
+  font: "mono",
   color: "1E1E1E",
   bg: "FFFFFF",
   transparentBg: false,
@@ -44,6 +48,8 @@ const initialState = {
   showSeconds: true,
   showDate: false,
   blink: true,
+  dateColor: "",
+  dateFmt: "kr" as ClockDateFormat,
 };
 
 export const useClockStore = create<ClockState>((set) => ({
@@ -61,5 +67,7 @@ export const useClockStore = create<ClockState>((set) => ({
   setShowSeconds: (showSeconds) => set({ showSeconds }),
   setShowDate: (showDate) => set({ showDate }),
   setBlink: (blink) => set({ blink }),
+  setDateColor: (dateColor) => set({ dateColor }),
+  setDateFmt: (dateFmt) => set({ dateFmt }),
   reset: () => set(initialState),
 }));

@@ -25,14 +25,16 @@ import { useWidgetUrl } from "@/lib/use-widget-url";
 import { copyToClipboard } from "@/lib/clipboard";
 import { FONT_OPTIONS, type FontKey } from "@/lib/fonts";
 
+type DdayDateFormat = "full" | "short" | "dot" | "none";
+
 export default function CreateDdayPage() {
   const {
     title, targetDate, bgColor, textColor, isDarkMode, calcType, isAnnual,
     layout, startDate, isTransparent, font, borderRadius, padding, fontSize,
-    showTime, blink, doneMsg,
+    showTime, blink, doneMsg, barColor, dateFmt,
     setTitle, setTargetDate, setBgColor, setTextColor, setIsDarkMode, setCalcType, setIsAnnual,
     setLayout, setStartDate, setIsTransparent, setFont, setBorderRadius, setPadding, setFontSize,
-    setShowTime, setBlink, setDoneMsg,
+    setShowTime, setBlink, setDoneMsg, setBarColor, setDateFmt,
     reset,
   } = useDdayWidgetStore();
 
@@ -55,8 +57,10 @@ export default function CreateDdayPage() {
     if (showTime) params.set("showTime", "true");
     if (!blink) params.set("blink", "false");
     if (doneMsg) params.set("doneMsg", doneMsg);
+    if (barColor) params.set("barColor", barColor);
+    if (dateFmt !== "full") params.set("dateFmt", dateFmt);
     return `${base}?${params.toString()}`;
-  }, [title, targetDate, bgColor, textColor, calcType, isAnnual, layout, startDate, isTransparent, font, borderRadius, padding, fontSize, showTime, blink, doneMsg]);
+  }, [title, targetDate, bgColor, textColor, calcType, isAnnual, layout, startDate, isTransparent, font, borderRadius, padding, fontSize, showTime, blink, doneMsg, barColor, dateFmt]);
 
   const handleCopy = async () => {
     await copyToClipboard(buildWidgetUrl());
@@ -68,7 +72,7 @@ export default function CreateDdayPage() {
       <Card>
         <CardContent className="pt-6">
           <EditorSection
-            defaultOpen={["basic", "calc", "color"]}
+            defaultOpen={["basic"]}
             sections={[
               {
                 id: "basic",
@@ -113,6 +117,18 @@ export default function CreateDdayPage() {
                 title: "표시 옵션",
                 children: (
                   <>
+                    <div className="space-y-2">
+                      <Label>날짜 표시 형식</Label>
+                      <Select value={dateFmt} onValueChange={(v) => setDateFmt(v as DdayDateFormat)}>
+                        <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="full">전체 (2026.11.19 (목))</SelectItem>
+                          <SelectItem value="short">짧게 (11.19 (목))</SelectItem>
+                          <SelectItem value="dot">날짜만 (2026.11.19)</SelectItem>
+                          <SelectItem value="none">숨김</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
                     <div className="flex items-center justify-between">
                       <Label htmlFor="showTime">시간 카운트다운</Label>
                       <Switch id="showTime" checked={showTime} onCheckedChange={setShowTime} />
@@ -174,10 +190,11 @@ export default function CreateDdayPage() {
                 title: "색상",
                 children: (
                   <>
-                    <div className="grid grid-cols-2 gap-4">
-                      <ColorPicker id="bgColor" label="배경색" value={bgColor} onChange={setBgColor} placeholder="1E1E1E" disabled={isTransparent} />
-                      <ColorPicker id="textColor" label="글자색" value={textColor} onChange={setTextColor} placeholder="FFFFFF" />
-                    </div>
+                    <ColorPicker id="bgColor" label="배경색" value={bgColor} onChange={setBgColor} placeholder="1E1E1E" disabled={isTransparent} />
+                    <ColorPicker id="textColor" label="글자색" value={textColor} onChange={setTextColor} placeholder="FFFFFF" />
+                    {layout === "progress" && (
+                      <ColorPicker id="barColor" label="바 색상 (비우면 글자색)" value={barColor} onChange={setBarColor} placeholder="비우면 글자색" />
+                    )}
                     <div className="flex items-center gap-3">
                       <Label>테마</Label>
                       <Button variant="outline" size="sm" onClick={() => setIsDarkMode(!isDarkMode)}>
@@ -205,15 +222,18 @@ export default function CreateDdayPage() {
         </CardContent>
       </Card>
 
-      <div className="flex items-center justify-center">
-        <div className="space-y-3">
+      <div className="flex items-center justify-center md:sticky md:top-8">
+        <div className="space-y-3 w-full max-w-[400px]">
           <p className="text-xs text-muted-foreground text-center">미리보기</p>
-          <DdayWidgetPreview
+          <div className="border rounded-lg overflow-hidden aspect-[4/3] flex items-center justify-center">
+            <DdayWidgetPreview
             title={title} targetDate={targetDate} bgColor={bgColor} textColor={textColor}
             calcType={calcType} isAnnual={isAnnual} layout={layout} startDate={startDate}
             isTransparent={isTransparent} font={font} borderRadius={borderRadius} padding={padding}
             fontSize={fontSize} showTime={showTime} blink={blink} doneMsg={doneMsg}
+            barColor={barColor} dateFmt={dateFmt}
           />
+          </div>
         </div>
       </div>
     </EditorLayout>

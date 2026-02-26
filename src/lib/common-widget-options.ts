@@ -41,3 +41,9 @@ export function parseFontSize(raw: string | null): FontSizeKey {
   const valid: FontSizeKey[] = ["sm", "md", "lg", "xl"];
   return valid.includes(raw as FontSizeKey) ? (raw as FontSizeKey) : "md";
 }
+
+export function parseHexColor(raw: string | null, fallback: string): string {
+  if (!raw) return fallback;
+  if (raw === "transparent") return raw;
+  return /^[0-9a-fA-F]{6}$/.test(raw) ? raw : fallback;
+}

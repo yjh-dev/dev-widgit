@@ -4,11 +4,13 @@ import { useEffect, useState } from "react";
 import {
   calculateTimeProgress,
   type ProgressType,
+  type WeekStart,
 } from "@/lib/time-progress";
 import type { FontSizeKey } from "@/lib/common-widget-options";
 
 export type BarStyle = "bar" | "ring";
 export type BarHeight = "thin" | "default" | "thick";
+export type RingSize = "sm" | "md" | "lg";
 
 const FONT_SIZE_MAP: Record<FontSizeKey, string> = {
   sm: "text-2xl",
@@ -23,6 +25,12 @@ const BAR_HEIGHT_MAP: Record<BarHeight, string> = {
   thick: "h-5",
 };
 
+const RING_SIZE_MAP: Record<RingSize, number> = {
+  sm: 80,
+  md: 120,
+  lg: 160,
+};
+
 interface TimeProgressPreviewProps {
   type?: ProgressType;
   color?: string;
@@ -35,6 +43,10 @@ interface TimeProgressPreviewProps {
   showLabel?: boolean;
   showPercent?: boolean;
   barHeight?: BarHeight;
+  textColor?: string;
+  weekStart?: WeekStart;
+  ringSize?: RingSize;
+  showRemain?: boolean;
 }
 
 export default function TimeProgressPreview({
@@ -49,18 +61,24 @@ export default function TimeProgressPreview({
   showLabel = true,
   showPercent = true,
   barHeight = "default",
+  textColor = "",
+  weekStart = "sun",
+  ringSize = "md",
+  showRemain = false,
 }: TimeProgressPreviewProps) {
-  const [progress, setProgress] = useState(() => calculateTimeProgress(type));
+  const [progress, setProgress] = useState(() => calculateTimeProgress(type, weekStart));
 
   useEffect(() => {
-    setProgress(calculateTimeProgress(type));
+    setProgress(calculateTimeProgress(type, weekStart));
     const interval = setInterval(() => {
-      setProgress(calculateTimeProgress(type));
+      setProgress(calculateTimeProgress(type, weekStart));
     }, 1000);
     return () => clearInterval(interval);
-  }, [type]);
+  }, [type, weekStart]);
 
   const pct = Math.min(progress.percentage, 100);
+  const resolvedTextColor = textColor || color;
+  const ringSizePx = RING_SIZE_MAP[ringSize];
   const circumference = 2 * Math.PI * 54;
 
   return (
@@ -74,7 +92,7 @@ export default function TimeProgressPreview({
     >
       {style === "ring" ? (
         <div className="relative flex items-center justify-center">
-          <svg viewBox="0 0 120 120" width="120" height="120">
+          <svg viewBox="0 0 120 120" width={ringSizePx} height={ringSizePx} role="img" aria-label={`${progress.label} ${pct.toFixed(1)}%`}>
             <circle
               cx="60"
               cy="60"
@@ -101,7 +119,7 @@ export default function TimeProgressPreview({
             {showLabel && (
               <p
                 className="text-xs font-medium opacity-70"
-                style={{ color: `#${color}` }}
+                style={{ color: `#${resolvedTextColor}` }}
               >
                 {progress.label}
               </p>
@@ -109,7 +127,7 @@ export default function TimeProgressPreview({
             {showPercent && (
               <p
                 className="text-lg font-bold tabular-nums"
-                style={{ color: `#${color}` }}
+                style={{ color: `#${resolvedTextColor}` }}
               >
                 {pct.toFixed(1)}%
               </p>
@@ -121,7 +139,7 @@ export default function TimeProgressPreview({
           {showLabel && (
             <p
               className="text-sm font-medium mb-1 opacity-70"
-              style={{ color: `#${color}` }}
+              style={{ color: `#${resolvedTextColor}` }}
             >
               {progress.label}
             </p>
@@ -129,7 +147,7 @@ export default function TimeProgressPreview({
           {showPercent && (
             <p
               className={`${FONT_SIZE_MAP[fontSize]} font-bold tabular-nums mb-4`}
-              style={{ color: `#${color}` }}
+              style={{ color: `#${resolvedTextColor}` }}
             >
               {pct.toFixed(1)}%
             </p>
@@ -149,6 +167,14 @@ export default function TimeProgressPreview({
             </div>
           </div>
         </>
+      )}
+      {showRemain && (
+        <p
+          className="text-xs font-medium mt-2 opacity-50"
+          style={{ color: `#${resolvedTextColor}` }}
+        >
+          {progress.remaining} 남음
+        </p>
       )}
     </div>
   );

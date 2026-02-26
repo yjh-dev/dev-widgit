@@ -3,10 +3,10 @@
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import QuotePreview from "@/components/widget/QuotePreview";
-import type { QuoteFont, TextAlign, LineHeight } from "@/lib/quote";
-import { parseBorderRadius, parsePadding, parseFontSize } from "@/lib/common-widget-options";
+import type { TextAlign, LineHeight } from "@/lib/quote";
+import { ALL_FONT_KEYS } from "@/lib/fonts";
+import { parseBorderRadius, parsePadding, parseFontSize, parseHexColor } from "@/lib/common-widget-options";
 
-const VALID_FONTS: QuoteFont[] = ["sans", "serif", "script"];
 const VALID_ALIGNS: TextAlign[] = ["left", "center", "right"];
 const VALID_LINE_HEIGHTS: LineHeight[] = ["tight", "normal", "relaxed"];
 
@@ -16,15 +16,13 @@ function QuoteWidgetContent() {
   const text = searchParams.get("text") || "";
   const author = searchParams.get("author") || "";
 
-  const rawFont = searchParams.get("font");
-  const font: QuoteFont = VALID_FONTS.includes(rawFont as QuoteFont)
-    ? (rawFont as QuoteFont)
-    : "serif";
+  const rawFont = searchParams.get("font") || "serif";
+  const font = ALL_FONT_KEYS.includes(rawFont) ? rawFont : "serif";
 
-  const textColor = searchParams.get("textColor") || "1E1E1E";
+  const textColor = parseHexColor(searchParams.get("textColor"), "1E1E1E");
   const rawBg = searchParams.get("bg") || "FFFFFF";
   const transparentBg = rawBg === "transparent";
-  const bg = transparentBg ? "FFFFFF" : rawBg;
+  const bg = transparentBg ? "FFFFFF" : parseHexColor(rawBg, "FFFFFF");
 
   const borderRadius = parseBorderRadius(searchParams.get("radius"));
   const padding = parsePadding(searchParams.get("pad"));
@@ -43,6 +41,9 @@ function QuoteWidgetContent() {
     ? (rawLh as LineHeight)
     : "relaxed";
 
+  const authorColor = parseHexColor(searchParams.get("authorColor"), "");
+  const divider = searchParams.get("divider") === "true";
+
   return (
     <div className="w-screen h-screen bg-transparent">
       <QuotePreview
@@ -59,6 +60,8 @@ function QuoteWidgetContent() {
         showMarks={showMarks}
         italic={italic}
         lineHeight={lineHeight}
+        authorColor={authorColor}
+        divider={divider}
       />
     </div>
   );

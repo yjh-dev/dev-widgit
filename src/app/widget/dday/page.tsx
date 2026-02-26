@@ -3,8 +3,9 @@
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import DdayWidgetPreview from "@/components/widget/DdayWidgetPreview";
+import type { DdayDateFormat } from "@/components/widget/DdayWidgetPreview";
 import type { FontKey } from "@/lib/fonts";
-import { parseBorderRadius, parsePadding, parseFontSize } from "@/lib/common-widget-options";
+import { parseBorderRadius, parsePadding, parseFontSize, parseHexColor } from "@/lib/common-widget-options";
 
 const VALID_CALC_TYPES = ["down", "up"] as const;
 const VALID_LAYOUTS = ["default", "progress"] as const;
@@ -16,14 +17,15 @@ const VALID_FONTS: FontKey[] = [
   "gaegu",
   "black-han-sans",
 ];
+const VALID_DATE_FORMATS: DdayDateFormat[] = ["full", "short", "dot", "none"];
 
 function DdayWidgetContent() {
   const searchParams = useSearchParams();
 
   const title = searchParams.get("title") || "D-Day";
   const targetDate = searchParams.get("date") || "";
-  const bgColor = searchParams.get("bg") || "1E1E1E";
-  const textColor = searchParams.get("text") || "FFFFFF";
+  const bgColor = parseHexColor(searchParams.get("bg"), "1E1E1E");
+  const textColor = parseHexColor(searchParams.get("text"), "FFFFFF");
 
   const rawCalcType = searchParams.get("calcType");
   const calcType = VALID_CALC_TYPES.includes(rawCalcType as "down" | "up")
@@ -53,6 +55,13 @@ function DdayWidgetContent() {
   const blink = searchParams.get("blink") !== "false";
   const doneMsg = searchParams.get("doneMsg") || "";
 
+  const barColor = parseHexColor(searchParams.get("barColor"), "");
+
+  const rawDateFmt = searchParams.get("dateFmt");
+  const dateFmt: DdayDateFormat = VALID_DATE_FORMATS.includes(rawDateFmt as DdayDateFormat)
+    ? (rawDateFmt as DdayDateFormat)
+    : "full";
+
   return (
     <div className="w-screen h-screen flex items-center justify-center bg-transparent">
       <DdayWidgetPreview
@@ -72,6 +81,8 @@ function DdayWidgetContent() {
         showTime={showTime}
         blink={blink}
         doneMsg={doneMsg}
+        barColor={barColor}
+        dateFmt={dateFmt}
       />
     </div>
   );

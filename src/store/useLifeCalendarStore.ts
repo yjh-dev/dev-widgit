@@ -17,6 +17,8 @@ interface LifeCalendarState {
   shape: CellShape;
   cellSize: CellSize;
   futureColor: string;
+  showYears: boolean;
+  nowColor: string;
 
   setBirthdate: (birthdate: string) => void;
   setLifespan: (lifespan: number) => void;
@@ -30,6 +32,8 @@ interface LifeCalendarState {
   setShape: (shape: CellShape) => void;
   setCellSize: (cellSize: CellSize) => void;
   setFutureColor: (futureColor: string) => void;
+  setShowYears: (showYears: boolean) => void;
+  setNowColor: (nowColor: string) => void;
   reset: () => void;
 }
 
@@ -46,6 +50,8 @@ const initialState = {
   shape: "square" as CellShape,
   cellSize: "sm" as CellSize,
   futureColor: "",
+  showYears: false,
+  nowColor: "",
 };
 
 export const useLifeCalendarStore = create<LifeCalendarState>((set) => ({
@@ -63,5 +69,7 @@ export const useLifeCalendarStore = create<LifeCalendarState>((set) => ({
   setShape: (shape) => set({ shape }),
   setCellSize: (cellSize) => set({ cellSize }),
   setFutureColor: (futureColor) => set({ futureColor }),
+  setShowYears: (showYears) => set({ showYears }),
+  setNowColor: (nowColor) => set({ nowColor }),
   reset: () => set(initialState),
 }));

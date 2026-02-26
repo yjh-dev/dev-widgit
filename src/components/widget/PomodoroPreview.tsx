@@ -5,6 +5,8 @@ import { Play, Pause, RotateCcw } from "lucide-react";
 import { formatTime, type PomodoroMode } from "@/lib/pomodoro";
 import type { FontSizeKey } from "@/lib/common-widget-options";
 
+export type PomodoroProgressStyle = "bar" | "ring";
+
 const FONT_SIZE_MAP: Record<FontSizeKey, string> = {
   sm: "text-3xl",
   md: "text-5xl",
@@ -26,6 +28,7 @@ interface PomodoroPreviewProps {
   showRounds?: boolean;
   breakColor?: string;
   autoStart?: boolean;
+  pStyle?: PomodoroProgressStyle;
 }
 
 export default function PomodoroPreview({
@@ -42,11 +45,14 @@ export default function PomodoroPreview({
   showRounds = true,
   breakColor = "22C55E",
   autoStart = false,
+  pStyle = "bar",
 }: PomodoroPreviewProps) {
   const [mode, setMode] = useState<PomodoroMode>("work");
   const [timeLeft, setTimeLeft] = useState(workTime * 60);
   const [isRunning, setIsRunning] = useState(autoStart);
   const [currentRound, setCurrentRound] = useState(1);
+  const currentRoundRef = useRef(currentRound);
+  currentRoundRef.current = currentRound;
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
@@ -67,7 +73,7 @@ export default function PomodoroPreview({
         if (prev <= 1) {
           setMode((m) => {
             if (m === "work") {
-              if (currentRound >= rounds) {
+              if (currentRoundRef.current >= rounds) {
                 setTimeLeft(longBreak * 60);
                 setCurrentRound(1);
                 if (autoStart) setIsRunning(true);
@@ -94,7 +100,7 @@ export default function PomodoroPreview({
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
-  }, [isRunning, workTime, breakTime, longBreak, rounds, currentRound, autoStart]);
+  }, [isRunning, workTime, breakTime, longBreak, rounds, autoStart]);
 
   const handleReset = useCallback(() => {
     setIsRunning(false);
@@ -111,6 +117,8 @@ export default function PomodoroPreview({
 
   const modeLabel = mode === "work" ? "집중" : mode === "longBreak" ? "긴 휴식" : "휴식";
   const modeColor = mode === "work" ? `#${color}` : `#${breakColor}`;
+
+  const circumference = 2 * Math.PI * 54;
 
   return (
     <div
@@ -132,45 +140,96 @@ export default function PomodoroPreview({
         {modeLabel}
       </span>
 
-      {/* 타이머 */}
-      <p
-        className={`${FONT_SIZE_MAP[fontSize]} font-light tabular-nums tracking-tight`}
-        style={{
-          color: modeColor,
-          fontFamily: "ui-monospace, SFMono-Regular, monospace",
-        }}
-      >
-        {formatTime(timeLeft)}
-      </p>
+      {pStyle === "ring" ? (
+        /* 링 프로그레스 */
+        <div className="relative flex items-center justify-center">
+          <svg viewBox="0 0 120 120" width="120" height="120">
+            <circle
+              cx="60"
+              cy="60"
+              r="54"
+              fill="none"
+              stroke={`${modeColor}20`}
+              strokeWidth="8"
+            />
+            <circle
+              cx="60"
+              cy="60"
+              r="54"
+              fill="none"
+              stroke={modeColor}
+              strokeWidth="8"
+              strokeLinecap="round"
+              strokeDasharray={circumference}
+              strokeDashoffset={circumference * (1 - progress / 100)}
+              transform="rotate(-90 60 60)"
+              className="transition-all duration-1000 ease-linear"
+            />
+          </svg>
+          <div className="absolute inset-0 flex flex-col items-center justify-center">
+            <p
+              className={`${FONT_SIZE_MAP[fontSize]} font-light tabular-nums tracking-tight`}
+              style={{
+                color: modeColor,
+                fontFamily: "ui-monospace, SFMono-Regular, monospace",
+                fontSize: "1.5rem",
+              }}
+            >
+              {formatTime(timeLeft)}
+            </p>
+          </div>
+        </div>
+      ) : (
+        <>
+          {/* 타이머 */}
+          <p
+            className={`${FONT_SIZE_MAP[fontSize]} font-light tabular-nums tracking-tight`}
+            style={{
+              color: modeColor,
+              fontFamily: "ui-monospace, SFMono-Regular, monospace",
+            }}
+          >
+            {formatTime(timeLeft)}
+          </p>
 
-      {/* 라운드 표시 */}
-      {showRounds && (
+          {/* 라운드 표시 */}
+          {showRounds && (
+            <p className="text-xs font-medium opacity-60" style={{ color: modeColor }}>
+              {currentRound} / {rounds}
+            </p>
+          )}
+
+          {/* 프로그레스 바 */}
+          <div className="w-full max-w-[220px]">
+            <div
+              className="w-full h-1.5 rounded-full overflow-hidden"
+              style={{ backgroundColor: `${modeColor}20` }}
+            >
+              <div
+                className="h-full rounded-full transition-all duration-1000 ease-linear"
+                style={{
+                  width: `${progress}%`,
+                  backgroundColor: modeColor,
+                }}
+              />
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* 링 모드에서의 라운드 표시 */}
+      {pStyle === "ring" && showRounds && (
         <p className="text-xs font-medium opacity-60" style={{ color: modeColor }}>
           {currentRound} / {rounds}
         </p>
       )}
-
-      {/* 프로그레스 바 */}
-      <div className="w-full max-w-[220px]">
-        <div
-          className="w-full h-1.5 rounded-full overflow-hidden"
-          style={{ backgroundColor: `${modeColor}20` }}
-        >
-          <div
-            className="h-full rounded-full transition-all duration-1000 ease-linear"
-            style={{
-              width: `${progress}%`,
-              backgroundColor: modeColor,
-            }}
-          />
-        </div>
-      </div>
 
       {/* 컨트롤 버튼 */}
       <div className="flex items-center gap-3">
         <button
           type="button"
           onClick={() => setIsRunning((r) => !r)}
+          aria-label={isRunning ? "일시 정지" : "시작"}
           className="w-10 h-10 rounded-full flex items-center justify-center transition-colors"
           style={{
             backgroundColor: modeColor,
@@ -182,6 +241,7 @@ export default function PomodoroPreview({
         <button
           type="button"
           onClick={handleReset}
+          aria-label="초기화"
           className="w-10 h-10 rounded-full flex items-center justify-center transition-colors"
           style={{
             backgroundColor: `${modeColor}18`,

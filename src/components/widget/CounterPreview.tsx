@@ -1,0 +1,154 @@
+"use client";
+
+import { useState, useEffect, useCallback } from "react";
+import { Minus, Plus, RotateCcw } from "lucide-react";
+import {
+  buildStorageKey,
+  loadCount,
+  saveCount,
+  clampCount,
+  formatCount,
+} from "@/lib/counter";
+import type { FontSizeKey } from "@/lib/common-widget-options";
+
+const NUM_SIZE_MAP: Record<FontSizeKey, string> = {
+  sm: "text-3xl",
+  md: "text-4xl",
+  lg: "text-5xl",
+  xl: "text-6xl",
+};
+
+const LABEL_SIZE_MAP: Record<FontSizeKey, string> = {
+  sm: "text-xs",
+  md: "text-sm",
+  lg: "text-base",
+  xl: "text-lg",
+};
+
+const BTN_SIZE_MAP: Record<FontSizeKey, string> = {
+  sm: "w-7 h-7",
+  md: "w-9 h-9",
+  lg: "w-11 h-11",
+  xl: "w-13 h-13",
+};
+
+interface CounterPreviewProps {
+  label?: string;
+  initial?: number;
+  step?: number;
+  min?: number;
+  max?: number;
+  showReset?: boolean;
+  color?: string;
+  btnColor?: string;
+  bg?: string;
+  transparentBg?: boolean;
+  borderRadius?: number;
+  padding?: number;
+  fontSize?: FontSizeKey;
+  persist?: boolean;
+}
+
+export default function CounterPreview({
+  label = "카운터",
+  initial = 0,
+  step = 1,
+  min,
+  max,
+  showReset = true,
+  color = "1E1E1E",
+  btnColor = "2563EB",
+  bg = "FFFFFF",
+  transparentBg = false,
+  borderRadius = 16,
+  padding = 24,
+  fontSize = "md",
+  persist = false,
+}: CounterPreviewProps) {
+  const storageKey = buildStorageKey({ label, initial, step, min, max });
+
+  const [count, setCount] = useState(() => {
+    if (persist) return loadCount(storageKey, initial);
+    return initial;
+  });
+
+  useEffect(() => {
+    if (persist) {
+      saveCount(storageKey, count);
+    }
+  }, [count, persist, storageKey]);
+
+  useEffect(() => {
+    if (!persist) {
+      setCount(initial);
+    }
+  }, [initial, persist]);
+
+  const increment = useCallback(() => {
+    setCount((prev) => clampCount(prev + step, min, max));
+  }, [step, min, max]);
+
+  const decrement = useCallback(() => {
+    setCount((prev) => clampCount(prev - step, min, max));
+  }, [step, min, max]);
+
+  const handleReset = useCallback(() => {
+    setCount(initial);
+    if (persist) saveCount(storageKey, initial);
+  }, [initial, persist, storageKey]);
+
+  const atMin = min !== undefined && count <= min;
+  const atMax = max !== undefined && count >= max;
+
+  return (
+    <div
+      className="w-full h-full flex flex-col items-center justify-center gap-3"
+      style={{
+        backgroundColor: transparentBg ? "transparent" : `#${bg}`,
+        borderRadius,
+        padding,
+        color: `#${color}`,
+      }}
+    >
+      <p className={`${LABEL_SIZE_MAP[fontSize]} opacity-60 font-medium`}>{label}</p>
+
+      <p className={`${NUM_SIZE_MAP[fontSize]} font-bold tabular-nums`}>
+        {formatCount(count)}
+      </p>
+
+      <div className="flex items-center gap-3">
+        <button
+          type="button"
+          onClick={decrement}
+          disabled={atMin}
+          className={`${BTN_SIZE_MAP[fontSize]} rounded-full flex items-center justify-center text-white transition-opacity disabled:opacity-30`}
+          style={{ backgroundColor: `#${btnColor}` }}
+        >
+          <Minus className="w-4 h-4" />
+        </button>
+
+        <button
+          type="button"
+          onClick={increment}
+          disabled={atMax}
+          className={`${BTN_SIZE_MAP[fontSize]} rounded-full flex items-center justify-center text-white transition-opacity disabled:opacity-30`}
+          style={{ backgroundColor: `#${btnColor}` }}
+        >
+          <Plus className="w-4 h-4" />
+        </button>
+      </div>
+
+      {showReset && (
+        <button
+          type="button"
+          onClick={handleReset}
+          className="flex items-center gap-1 text-xs opacity-40 hover:opacity-70 transition-opacity mt-1"
+          style={{ color: `#${color}` }}
+        >
+          <RotateCcw className="w-3 h-3" />
+          초기화
+        </button>
+      )}
+    </div>
+  );
+}

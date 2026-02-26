@@ -5,6 +5,8 @@ import type { FontSizeKey } from "@/lib/common-widget-options";
 type CalcType = "down" | "up";
 type LayoutType = "default" | "progress";
 
+type DdayDateFormat = "full" | "short" | "dot" | "none";
+
 interface DdayWidgetState {
   title: string;
   targetDate: string;
@@ -23,6 +25,8 @@ interface DdayWidgetState {
   showTime: boolean;
   blink: boolean;
   doneMsg: string;
+  barColor: string;
+  dateFmt: DdayDateFormat;
 
   setTitle: (title: string) => void;
   setTargetDate: (date: string) => void;
@@ -41,6 +45,8 @@ interface DdayWidgetState {
   setShowTime: (showTime: boolean) => void;
   setBlink: (blink: boolean) => void;
   setDoneMsg: (doneMsg: string) => void;
+  setBarColor: (barColor: string) => void;
+  setDateFmt: (dateFmt: DdayDateFormat) => void;
   reset: () => void;
 }
 
@@ -62,6 +68,8 @@ const initialState = {
   showTime: false,
   blink: true,
   doneMsg: "",
+  barColor: "",
+  dateFmt: "full" as DdayDateFormat,
 };
 
 export const useDdayWidgetStore = create<DdayWidgetState>((set) => ({
@@ -89,5 +97,7 @@ export const useDdayWidgetStore = create<DdayWidgetState>((set) => ({
   setShowTime: (showTime) => set({ showTime }),
   setBlink: (blink) => set({ blink }),
   setDoneMsg: (doneMsg) => set({ doneMsg }),
+  setBarColor: (barColor) => set({ barColor }),
+  setDateFmt: (dateFmt) => set({ dateFmt }),
   reset: () => set(initialState),
 }));

@@ -147,6 +147,8 @@ Hex 값을 `#` 없이 저장/전달 (`"2563EB"`, `"FFFFFF"`).
 | 시간 카운트다운 | `showTime` | boolean | `false` |
 | 구분자 깜빡임 | `blink` | boolean | `true` |
 | 완료 메시지 | `doneMsg` | string | `""` |
+| 바 색상 | `barColor` | hex | `""` (textColor fallback) |
+| 날짜 표시 형식 | `dateFmt` | `full\|short\|dot\|none` | `full` |
 
 ### Clock 위젯
 | 옵션 | URL 파라미터 | 타입 | 기본값 |
@@ -154,6 +156,11 @@ Hex 값을 `#` 없이 저장/전달 (`"2563EB"`, `"FFFFFF"`).
 | 초 표시 | `seconds` | boolean | `true` |
 | 날짜 표시 | `date` | boolean | `false` |
 | 구분자 깜빡임 | `blink` | boolean | `true` |
+| 날짜 색상 | `dateColor` | hex | `""` (color fallback) |
+| 날짜 표시 형식 | `dateFmt` | `kr\|en\|short` | `kr` |
+| 폰트 | `font` | CSS키 + Google Font키 | `mono` |
+
+타임존 19개 지원: 서울, 도쿄, 상하이, 홍콩, 방콕, 싱가포르, 뭄바이, 두바이, 시드니, 오클랜드, 런던, 파리, 베를린, 모스크바, 뉴욕, 시카고, LA, 상파울루, 하와이
 
 ### Quote 위젯
 | 옵션 | URL 파라미터 | 타입 | 기본값 |
@@ -162,6 +169,9 @@ Hex 값을 `#` 없이 저장/전달 (`"2563EB"`, `"FFFFFF"`).
 | 따옴표 아이콘 | `marks` | boolean | `true` |
 | 이탤릭 | `italic` | boolean | `false` |
 | 줄 간격 | `lh` | `tight\|normal\|relaxed` | `relaxed` |
+| 저자 색상 | `authorColor` | hex | `""` (textColor fallback) |
+| 구분선 표시 | `divider` | boolean | `false` |
+| 폰트 | `font` | CSS키 + Google Font키 | `serif` |
 
 ### Time Progress 위젯
 | 옵션 | URL 파라미터 | 타입 | 기본값 |
@@ -171,6 +181,10 @@ Hex 값을 `#` 없이 저장/전달 (`"2563EB"`, `"FFFFFF"`).
 | 라벨 표시 | `label` | boolean | `true` |
 | 퍼센트 표시 | `percent` | boolean | `true` |
 | 바 높이 | `barH` | `thin\|default\|thick` | `default` |
+| 텍스트 색상 | `textColor` | hex | `""` (color fallback) |
+| 주 시작일 | `weekStart` | `sun\|mon` | `sun` (URL) / `mon` (에디터) |
+| 링 크기 | `ringSize` | `sm\|md\|lg` | `md` |
+| 남은 시간 표시 | `remain` | boolean | `false` |
 
 ### Life Calendar 위젯
 | 옵션 | URL 파라미터 | 타입 | 기본값 |
@@ -178,6 +192,8 @@ Hex 값을 `#` 없이 저장/전달 (`"2563EB"`, `"FFFFFF"`).
 | 셀 모양 | `shape` | `square\|round` | `square` |
 | 셀 크기 | `cellSize` | `sm\|md\|lg` | `sm` |
 | 미래 셀 색상 | `futureColor` | hex string | `""` |
+| 나이 라벨 | `years` | boolean | `false` |
+| 현재 주 색상 | `nowColor` | hex | `""` (color fallback) |
 
 ### Pomodoro 위젯
 | 옵션 | URL 파라미터 | 타입 | 기본값 |
@@ -187,6 +203,7 @@ Hex 값을 `#` 없이 저장/전달 (`"2563EB"`, `"FFFFFF"`).
 | 라운드 표시 | `showRounds` | boolean | `true` |
 | 휴식 색상 | `breakColor` | hex | `22C55E` |
 | 자동 시작 | `autoStart` | boolean | `false` |
+| 프로그레스 스타일 | `pStyle` | `bar\|ring` | `bar` |
 
 ## 완료된 작업 이력
 
@@ -212,6 +229,20 @@ Hex 값을 `#` 없이 저장/전달 (`"2563EB"`, `"FFFFFF"`).
 - `EditorSection` 아코디언 래퍼 컴포넌트 생성
 - 6개 에디터 페이지를 기능별 접이식 그룹으로 재구성
 - 핵심 설정은 기본 열림, 부가 스타일은 접힘 상태
+
+### v4 — 기존 위젯 기능 강화
+- **폰트 시스템 통합**: `resolveFontStyle()` 유틸로 CSS 제네릭 + Google Font 통합. Clock, Quote에서 6개 한국어 Google Font 선택 가능
+- **Clock 타임존 확장**: 9개 → 19개 (싱가포르, 두바이, 시드니, 방콕, 홍콩, 베를린, 모스크바, 뭄바이, 상파울루, 하와이 추가)
+- **개별 텍스트 색상 분리**: Clock(`dateColor`), TimeProgress(`textColor`), Quote(`authorColor`), D-Day(`barColor`)
+- **Pomodoro 링 프로그레스**: `pStyle=ring` 옵션으로 원형 프로그레스 지원
+- **TimeProgress 주간 시작 요일**: `weekStart=mon|sun` (에디터 기본값 mon, URL 기본값 sun)
+- **TimeProgress 링 크기**: `ringSize=sm|md|lg` (80/120/160px)
+- **TimeProgress 남은 시간 표시**: `remain=true`로 "14시간 30분 남음" 형식 표시
+- **Quote 구분선**: `divider=true`로 본문-저자 사이 구분선 삽입
+- **Life Calendar 나이 라벨**: `years=true`로 10년 단위 나이 표시
+- **Life Calendar 현재 주 색상**: `nowColor`로 현재 주 별도 색상 지정
+- **D-Day 날짜 포맷**: `dateFmt=full|short|dot|none`
+- **Clock 날짜 포맷**: `dateFmt=kr|en|short`
 
 ## 스크립트
 ```bash

@@ -9,7 +9,7 @@ interface DdayResult {
 }
 
 /** "2026-02-25" → 로컬 자정 Date (시간대 안전) */
-function toLocalDate(dateStr: string): Date | null {
+export function toLocalDate(dateStr: string): Date | null {
   const m = dateStr.match(/^(\d{4})-(\d{2})-(\d{2})$/);
   if (!m) return null;
   const d = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));

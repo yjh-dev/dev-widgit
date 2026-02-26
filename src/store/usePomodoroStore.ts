@@ -1,6 +1,8 @@
 import { create } from "zustand";
 import type { FontSizeKey } from "@/lib/common-widget-options";
 
+export type PomodoroProgressStyle = "bar" | "ring";
+
 interface PomodoroState {
   workTime: number;
   breakTime: number;
@@ -15,6 +17,7 @@ interface PomodoroState {
   showRounds: boolean;
   breakColor: string;
   autoStart: boolean;
+  pStyle: PomodoroProgressStyle;
 
   setWorkTime: (workTime: number) => void;
   setBreakTime: (breakTime: number) => void;
@@ -29,6 +32,7 @@ interface PomodoroState {
   setShowRounds: (showRounds: boolean) => void;
   setBreakColor: (breakColor: string) => void;
   setAutoStart: (autoStart: boolean) => void;
+  setPStyle: (pStyle: PomodoroProgressStyle) => void;
   reset: () => void;
 }
 
@@ -46,6 +50,7 @@ const initialState = {
   showRounds: true,
   breakColor: "22C55E",
   autoStart: false,
+  pStyle: "bar" as PomodoroProgressStyle,
 };
 
 export const usePomodoroStore = create<PomodoroState>((set) => ({
@@ -64,5 +69,6 @@ export const usePomodoroStore = create<PomodoroState>((set) => ({
   setShowRounds: (showRounds) => set({ showRounds }),
   setBreakColor: (breakColor) => set({ breakColor }),
   setAutoStart: (autoStart) => set({ autoStart }),
+  setPStyle: (pStyle) => set({ pStyle }),
   reset: () => set(initialState),
 }));

@@ -87,3 +87,34 @@ export const FONT_OPTIONS: { value: FontKey; label: string }[] = [
   { value: "gaegu", label: "Gaegu" },
   { value: "black-han-sans", label: "Black Han Sans" },
 ];
+
+const CSS_FAMILIES: Record<string, string> = {
+  sans: "ui-sans-serif, system-ui, sans-serif",
+  serif: "ui-serif, Georgia, serif",
+  mono: "ui-monospace, SFMono-Regular, monospace",
+  script: "'Segoe Script', 'Apple Chancery', cursive",
+};
+
+export function resolveFontStyle(key: string): { className?: string; fontFamily?: string } {
+  if (key in fontMap) return { className: fontMap[key as FontKey].className };
+  return { fontFamily: CSS_FAMILIES[key] ?? CSS_FAMILIES.sans };
+}
+
+export const CLOCK_FONT_OPTIONS: { value: string; label: string }[] = [
+  { value: "mono", label: "Mono" },
+  { value: "sans", label: "Sans (고딕)" },
+  { value: "serif", label: "Serif (명조)" },
+  ...FONT_OPTIONS,
+];
+
+export const QUOTE_FONT_OPTIONS_EXTENDED: { value: string; label: string }[] = [
+  { value: "sans", label: "Sans (고딕)" },
+  { value: "serif", label: "Serif (명조)" },
+  { value: "script", label: "Script (필기)" },
+  ...FONT_OPTIONS,
+];
+
+export const ALL_FONT_KEYS: string[] = [
+  "sans", "serif", "mono", "script",
+  ...Object.keys(fontMap),
+];
