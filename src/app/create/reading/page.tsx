@@ -18,7 +18,9 @@ import EditorLayout from "@/components/editor/EditorLayout";
 import EditorActions from "@/components/editor/EditorActions";
 import EditorSection from "@/components/editor/EditorSection";
 import CommonStyleOptions from "@/components/editor/CommonStyleOptions";
+import PresetSelector from "@/components/editor/PresetSelector";
 import { useReadingStore } from "@/store/useReadingStore";
+import { readingPresets } from "@/lib/presets";
 import { useWidgetUrl } from "@/lib/use-widget-url";
 import { copyToClipboard } from "@/lib/clipboard";
 import type { ReadingStyle } from "@/lib/reading";
@@ -31,7 +33,7 @@ export default function CreateReadingPage() {
     setTitle, setCurrentPage, setTotalPages, setStyle, setShowPages,
     setColor, setTextColor, setBg, setTransparentBg,
     setBorderRadius, setPadding, setFontSize,
-    reset,
+    loadPreset, reset,
   } = useReadingStore();
 
   const { buildWidgetUrl, widgetUrl } = useWidgetUrl(() => {
@@ -65,6 +67,7 @@ export default function CreateReadingPage() {
     <EditorLayout title="읽기 진행률 위젯 만들기">
       <Card>
         <CardContent className="pt-6">
+          <PresetSelector presets={readingPresets} onSelect={loadPreset} />
           <EditorSection
             defaultOpen={["basic"]}
             sections={[

@@ -33,6 +33,7 @@ interface PomodoroState {
   setBreakColor: (breakColor: string) => void;
   setAutoStart: (autoStart: boolean) => void;
   setPStyle: (pStyle: PomodoroProgressStyle) => void;
+  loadPreset: (preset: Partial<typeof initialState>) => void;
   reset: () => void;
 }
 
@@ -70,5 +71,6 @@ export const usePomodoroStore = create<PomodoroState>((set) => ({
   setBreakColor: (breakColor) => set({ breakColor }),
   setAutoStart: (autoStart) => set({ autoStart }),
   setPStyle: (pStyle) => set({ pStyle }),
+  loadPreset: (preset) => set({ ...initialState, ...preset }),
   reset: () => set(initialState),
 }));

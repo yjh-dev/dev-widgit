@@ -18,7 +18,9 @@ import EditorLayout from "@/components/editor/EditorLayout";
 import EditorActions from "@/components/editor/EditorActions";
 import EditorSection from "@/components/editor/EditorSection";
 import CommonStyleOptions from "@/components/editor/CommonStyleOptions";
+import PresetSelector from "@/components/editor/PresetSelector";
 import { useHabitStore } from "@/store/useHabitStore";
+import { habitPresets } from "@/lib/presets";
 import { useWidgetUrl } from "@/lib/use-widget-url";
 import { copyToClipboard } from "@/lib/clipboard";
 import type { HabitView } from "@/lib/habit";
@@ -31,7 +33,7 @@ export default function CreateHabitPage() {
     setTitle, setView, setWeekStart,
     setColor, setTextColor, setBg, setTransparentBg,
     setBorderRadius, setPadding, setFontSize,
-    reset,
+    loadPreset, reset,
   } = useHabitStore();
 
   const { buildWidgetUrl, widgetUrl } = useWidgetUrl(() => {
@@ -63,6 +65,7 @@ export default function CreateHabitPage() {
     <EditorLayout title="습관 트래커 위젯 만들기">
       <Card>
         <CardContent className="pt-6">
+          <PresetSelector presets={habitPresets} onSelect={loadPreset} />
           <EditorSection
             defaultOpen={["basic"]}
             sections={[

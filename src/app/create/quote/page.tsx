@@ -18,7 +18,9 @@ import EditorLayout from "@/components/editor/EditorLayout";
 import EditorActions from "@/components/editor/EditorActions";
 import EditorSection from "@/components/editor/EditorSection";
 import CommonStyleOptions from "@/components/editor/CommonStyleOptions";
+import PresetSelector from "@/components/editor/PresetSelector";
 import { useQuoteStore } from "@/store/useQuoteStore";
+import { quotePresets } from "@/lib/presets";
 import type { TextAlign, LineHeight } from "@/store/useQuoteStore";
 import { useWidgetUrl } from "@/lib/use-widget-url";
 import { copyToClipboard } from "@/lib/clipboard";
@@ -33,7 +35,7 @@ export default function CreateQuotePage() {
     setText, setAuthor, setFont, setTextColor, setBg, setTransparentBg,
     setBorderRadius, setPadding, setFontSize, setAlign, setShowMarks, setItalic, setLineHeight,
     setAuthorColor, setDivider,
-    reset,
+    loadPreset, reset,
   } = useQuoteStore();
 
   const { buildWidgetUrl, widgetUrl } = useWidgetUrl(() => {
@@ -70,6 +72,7 @@ export default function CreateQuotePage() {
     <EditorLayout title="명언 카드 위젯 만들기">
       <Card>
         <CardContent className="pt-6">
+          <PresetSelector presets={quotePresets} onSelect={loadPreset} />
           <EditorSection
             defaultOpen={["basic"]}
             sections={[

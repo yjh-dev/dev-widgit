@@ -30,6 +30,7 @@ interface MiniCalendarState {
   setBorderRadius: (v: number) => void;
   setPadding: (v: number) => void;
   setFontSize: (v: FontSizeKey) => void;
+  loadPreset: (preset: Partial<typeof initialState>) => void;
   reset: () => void;
 }
 
@@ -65,5 +66,6 @@ export const useMiniCalendarStore = create<MiniCalendarState>((set) => ({
   setBorderRadius: (borderRadius) => set({ borderRadius }),
   setPadding: (padding) => set({ padding }),
   setFontSize: (fontSize) => set({ fontSize }),
+  loadPreset: (preset) => set({ ...initialState, ...preset }),
   reset: () => set(initialState),
 }));

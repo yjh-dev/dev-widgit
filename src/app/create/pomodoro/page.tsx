@@ -18,7 +18,9 @@ import EditorLayout from "@/components/editor/EditorLayout";
 import EditorActions from "@/components/editor/EditorActions";
 import EditorSection from "@/components/editor/EditorSection";
 import CommonStyleOptions from "@/components/editor/CommonStyleOptions";
+import PresetSelector from "@/components/editor/PresetSelector";
 import { usePomodoroStore } from "@/store/usePomodoroStore";
+import { pomodoroPresets } from "@/lib/presets";
 import type { PomodoroProgressStyle } from "@/store/usePomodoroStore";
 import { useWidgetUrl } from "@/lib/use-widget-url";
 import { copyToClipboard } from "@/lib/clipboard";
@@ -29,7 +31,7 @@ export default function CreatePomodoroPage() {
     borderRadius, padding, fontSize, longBreak, rounds, showRounds, breakColor, autoStart, pStyle,
     setWorkTime, setBreakTime, setColor, setBg, setTransparentBg,
     setBorderRadius, setPadding, setFontSize, setLongBreak, setRounds, setShowRounds, setBreakColor, setAutoStart, setPStyle,
-    reset,
+    loadPreset, reset,
   } = usePomodoroStore();
 
   const { buildWidgetUrl, widgetUrl } = useWidgetUrl(() => {
@@ -65,6 +67,7 @@ export default function CreatePomodoroPage() {
     <EditorLayout title="뽀모도로 타이머 위젯 만들기">
       <Card>
         <CardContent className="pt-6">
+          <PresetSelector presets={pomodoroPresets} onSelect={loadPreset} />
           <EditorSection
             defaultOpen={["basic"]}
             sections={[

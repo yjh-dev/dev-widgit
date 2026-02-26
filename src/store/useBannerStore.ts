@@ -28,6 +28,7 @@ interface BannerState {
   setPadding: (v: number) => void;
   setFontSize: (v: FontSizeKey) => void;
   setFont: (v: string) => void;
+  loadPreset: (preset: Partial<typeof initialState>) => void;
   reset: () => void;
 }
 
@@ -61,5 +62,6 @@ export const useBannerStore = create<BannerState>((set) => ({
   setPadding: (padding) => set({ padding }),
   setFontSize: (fontSize) => set({ fontSize }),
   setFont: (font) => set({ font }),
+  loadPreset: (preset) => set({ ...initialState, ...preset }),
   reset: () => set(initialState),
 }));

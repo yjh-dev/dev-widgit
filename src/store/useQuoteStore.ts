@@ -36,6 +36,7 @@ interface QuoteState {
   setLineHeight: (lineHeight: LineHeight) => void;
   setAuthorColor: (authorColor: string) => void;
   setDivider: (divider: boolean) => void;
+  loadPreset: (preset: Partial<typeof initialState>) => void;
   reset: () => void;
 }
 
@@ -75,5 +76,6 @@ export const useQuoteStore = create<QuoteState>((set) => ({
   setLineHeight: (lineHeight) => set({ lineHeight }),
   setAuthorColor: (authorColor) => set({ authorColor }),
   setDivider: (divider) => set({ divider }),
+  loadPreset: (preset) => set({ ...initialState, ...preset }),
   reset: () => set(initialState),
 }));

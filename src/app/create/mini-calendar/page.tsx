@@ -17,7 +17,9 @@ import EditorLayout from "@/components/editor/EditorLayout";
 import EditorActions from "@/components/editor/EditorActions";
 import EditorSection from "@/components/editor/EditorSection";
 import CommonStyleOptions from "@/components/editor/CommonStyleOptions";
+import PresetSelector from "@/components/editor/PresetSelector";
 import { useMiniCalendarStore } from "@/store/useMiniCalendarStore";
+import { miniCalendarPresets } from "@/lib/presets";
 import { useWidgetUrl } from "@/lib/use-widget-url";
 import { copyToClipboard } from "@/lib/clipboard";
 import type { WeekStartDay, HeaderFormat, DayNameLang } from "@/lib/mini-calendar";
@@ -30,7 +32,7 @@ export default function CreateMiniCalendarPage() {
     setWeekStart, setHeader, setShowDayNames, setLang, setShowOtherDays, setShowNav,
     setHighlight, setColor, setBg, setTransparentBg,
     setBorderRadius, setPadding, setFontSize,
-    reset,
+    loadPreset, reset,
   } = useMiniCalendarStore();
 
   const { buildWidgetUrl, widgetUrl } = useWidgetUrl(() => {
@@ -65,6 +67,7 @@ export default function CreateMiniCalendarPage() {
     <EditorLayout title="미니 캘린더 위젯 만들기">
       <Card>
         <CardContent className="pt-6">
+          <PresetSelector presets={miniCalendarPresets} onSelect={loadPreset} />
           <EditorSection
             defaultOpen={["basic"]}
             sections={[

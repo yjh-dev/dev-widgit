@@ -34,6 +34,7 @@ interface LifeCalendarState {
   setFutureColor: (futureColor: string) => void;
   setShowYears: (showYears: boolean) => void;
   setNowColor: (nowColor: string) => void;
+  loadPreset: (preset: Partial<typeof initialState>) => void;
   reset: () => void;
 }
 
@@ -71,5 +72,6 @@ export const useLifeCalendarStore = create<LifeCalendarState>((set) => ({
   setFutureColor: (futureColor) => set({ futureColor }),
   setShowYears: (showYears) => set({ showYears }),
   setNowColor: (nowColor) => set({ nowColor }),
+  loadPreset: (preset) => set({ ...initialState, ...preset }),
   reset: () => set(initialState),
 }));

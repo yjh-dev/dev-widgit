@@ -32,6 +32,7 @@ interface ClockState {
   setBlink: (blink: boolean) => void;
   setDateColor: (dateColor: string) => void;
   setDateFmt: (dateFmt: ClockDateFormat) => void;
+  loadPreset: (preset: Partial<typeof initialState>) => void;
   reset: () => void;
 }
 
@@ -69,5 +70,6 @@ export const useClockStore = create<ClockState>((set) => ({
   setBlink: (blink) => set({ blink }),
   setDateColor: (dateColor) => set({ dateColor }),
   setDateFmt: (dateFmt) => set({ dateFmt }),
+  loadPreset: (preset) => set({ ...initialState, ...preset }),
   reset: () => set(initialState),
 }));

@@ -20,7 +20,9 @@ import EditorLayout from "@/components/editor/EditorLayout";
 import EditorActions from "@/components/editor/EditorActions";
 import EditorSection from "@/components/editor/EditorSection";
 import CommonStyleOptions from "@/components/editor/CommonStyleOptions";
+import PresetSelector from "@/components/editor/PresetSelector";
 import { useDdayWidgetStore } from "@/store/useWidgetStore";
+import { ddayPresets } from "@/lib/presets";
 import { useWidgetUrl } from "@/lib/use-widget-url";
 import { copyToClipboard } from "@/lib/clipboard";
 import { FONT_OPTIONS, type FontKey } from "@/lib/fonts";
@@ -35,7 +37,7 @@ export default function CreateDdayPage() {
     setTitle, setTargetDate, setBgColor, setTextColor, setIsDarkMode, setCalcType, setIsAnnual,
     setLayout, setStartDate, setIsTransparent, setFont, setBorderRadius, setPadding, setFontSize,
     setShowTime, setBlink, setDoneMsg, setBarColor, setDateFmt,
-    reset,
+    loadPreset, reset,
   } = useDdayWidgetStore();
 
   const { buildWidgetUrl, widgetUrl } = useWidgetUrl(() => {
@@ -71,6 +73,7 @@ export default function CreateDdayPage() {
     <EditorLayout title="D-Day 위젯 만들기">
       <Card>
         <CardContent className="pt-6">
+          <PresetSelector presets={ddayPresets} onSelect={loadPreset} />
           <EditorSection
             defaultOpen={["basic"]}
             sections={[

@@ -21,7 +21,9 @@ import EditorLayout from "@/components/editor/EditorLayout";
 import EditorActions from "@/components/editor/EditorActions";
 import EditorSection from "@/components/editor/EditorSection";
 import CommonStyleOptions from "@/components/editor/CommonStyleOptions";
+import PresetSelector from "@/components/editor/PresetSelector";
 import { useBannerStore } from "@/store/useBannerStore";
+import { bannerPresets } from "@/lib/presets";
 import { useWidgetUrl } from "@/lib/use-widget-url";
 import { copyToClipboard } from "@/lib/clipboard";
 import type { BannerAnimation, BannerAlign } from "@/lib/banner";
@@ -34,7 +36,7 @@ export default function CreateBannerPage() {
     setTexts, setAnimation, setSpeed, setAlign, setBold, setFont,
     setColor, setBg, setTransparentBg,
     setBorderRadius, setPadding, setFontSize,
-    reset,
+    loadPreset, reset,
   } = useBannerStore();
 
   const [newText, setNewText] = useState("");
@@ -88,6 +90,7 @@ export default function CreateBannerPage() {
     <EditorLayout title="텍스트 배너 위젯 만들기">
       <Card>
         <CardContent className="pt-6">
+          <PresetSelector presets={bannerPresets} onSelect={loadPreset} />
           <EditorSection
             defaultOpen={["texts"]}
             sections={[

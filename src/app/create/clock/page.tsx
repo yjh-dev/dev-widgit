@@ -17,7 +17,9 @@ import EditorLayout from "@/components/editor/EditorLayout";
 import EditorActions from "@/components/editor/EditorActions";
 import EditorSection from "@/components/editor/EditorSection";
 import CommonStyleOptions from "@/components/editor/CommonStyleOptions";
+import PresetSelector from "@/components/editor/PresetSelector";
 import { useClockStore } from "@/store/useClockStore";
+import { clockPresets } from "@/lib/presets";
 import { useWidgetUrl } from "@/lib/use-widget-url";
 import { copyToClipboard } from "@/lib/clipboard";
 import { TIMEZONE_OPTIONS, CLOCK_DATE_FORMAT_OPTIONS, type ClockFormat, type ClockDateFormat } from "@/lib/clock";
@@ -31,7 +33,7 @@ export default function CreateClockPage() {
     setTimezone, setFormat, setFont, setColor, setBg, setTransparentBg,
     setBorderRadius, setPadding, setFontSize, setShowSeconds, setShowDate, setBlink,
     setDateColor, setDateFmt,
-    reset,
+    loadPreset, reset,
   } = useClockStore();
 
   const { buildWidgetUrl, widgetUrl } = useWidgetUrl(() => {
@@ -67,6 +69,7 @@ export default function CreateClockPage() {
     <EditorLayout title="미니멀 시계 위젯 만들기">
       <Card>
         <CardContent className="pt-6">
+          <PresetSelector presets={clockPresets} onSelect={loadPreset} />
           <EditorSection
             defaultOpen={["basic"]}
             sections={[

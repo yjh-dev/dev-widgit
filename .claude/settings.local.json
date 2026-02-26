@@ -14,7 +14,13 @@
       "WebFetch(domain:www.notion-box.com)",
       "WebFetch(domain:www.productivetemply.com)",
       "Bash(jq:*)",
-      "Bash(python3:*)"
+      "Bash(python3:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(for f in /Users/yjh/yjh_project/2026/dev_widgit/src/app/create/*/page.tsx)",
+      "Bash(do sed -i '' 's|className=\"\"flex items-center justify-center md:sticky md:top-8\"\"|className=\"\"flex items-center justify-center order-first md:order-last md:sticky md:top-8\"\"|g' \"$f\")",
+      "Bash(done)",
+      "Bash(grep:*)"
     ]
   }
 }

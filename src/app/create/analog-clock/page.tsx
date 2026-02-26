@@ -17,7 +17,9 @@ import EditorLayout from "@/components/editor/EditorLayout";
 import EditorActions from "@/components/editor/EditorActions";
 import EditorSection from "@/components/editor/EditorSection";
 import CommonStyleOptions from "@/components/editor/CommonStyleOptions";
+import PresetSelector from "@/components/editor/PresetSelector";
 import { useAnalogClockStore } from "@/store/useAnalogClockStore";
+import { analogClockPresets } from "@/lib/presets";
 import { useWidgetUrl } from "@/lib/use-widget-url";
 import { copyToClipboard } from "@/lib/clipboard";
 import { TIMEZONE_OPTIONS } from "@/lib/clock";
@@ -31,7 +33,7 @@ export default function CreateAnalogClockPage() {
     setTimezone, setShowNumbers, setNumStyle, setShowSeconds, setShowTicks, setShowBorder,
     setHandColor, setSecHandColor, setFaceColor, setTickColor, setBorderColor,
     setBg, setTransparentBg, setBorderRadius, setPadding, setFontSize,
-    reset,
+    loadPreset, reset,
   } = useAnalogClockStore();
 
   const { buildWidgetUrl, widgetUrl } = useWidgetUrl(() => {
@@ -69,6 +71,7 @@ export default function CreateAnalogClockPage() {
     <EditorLayout title="아날로그 시계 위젯 만들기">
       <Card>
         <CardContent className="pt-6">
+          <PresetSelector presets={analogClockPresets} onSelect={loadPreset} />
           <EditorSection
             defaultOpen={["basic"]}
             sections={[

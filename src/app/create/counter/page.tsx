@@ -11,7 +11,9 @@ import EditorLayout from "@/components/editor/EditorLayout";
 import EditorActions from "@/components/editor/EditorActions";
 import EditorSection from "@/components/editor/EditorSection";
 import CommonStyleOptions from "@/components/editor/CommonStyleOptions";
+import PresetSelector from "@/components/editor/PresetSelector";
 import { useCounterStore } from "@/store/useCounterStore";
+import { counterPresets } from "@/lib/presets";
 import { useWidgetUrl } from "@/lib/use-widget-url";
 import { copyToClipboard } from "@/lib/clipboard";
 
@@ -23,7 +25,7 @@ export default function CreateCounterPage() {
     setLabel, setInitial, setStep, setMin, setMax, setShowReset,
     setColor, setBtnColor, setBg, setTransparentBg,
     setBorderRadius, setPadding, setFontSize,
-    reset,
+    loadPreset, reset,
   } = useCounterStore();
 
   const minNum = min !== "" ? Number(min) : undefined;
@@ -61,6 +63,7 @@ export default function CreateCounterPage() {
     <EditorLayout title="카운터 위젯 만들기">
       <Card>
         <CardContent className="pt-6">
+          <PresetSelector presets={counterPresets} onSelect={loadPreset} />
           <EditorSection
             defaultOpen={["basic"]}
             sections={[

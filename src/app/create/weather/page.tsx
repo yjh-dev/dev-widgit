@@ -18,7 +18,9 @@ import EditorLayout from "@/components/editor/EditorLayout";
 import EditorActions from "@/components/editor/EditorActions";
 import EditorSection from "@/components/editor/EditorSection";
 import CommonStyleOptions from "@/components/editor/CommonStyleOptions";
+import PresetSelector from "@/components/editor/PresetSelector";
 import { useWeatherStore } from "@/store/useWeatherStore";
+import { weatherPresets } from "@/lib/presets";
 import { useWidgetUrl } from "@/lib/use-widget-url";
 import { copyToClipboard } from "@/lib/clipboard";
 import type { TemperatureUnit, WeatherIconStyle } from "@/lib/weather";
@@ -46,7 +48,7 @@ export default function CreateWeatherPage() {
     setLat, setLon, setCity, setUnit, setShowForecast, setShowHumidity, setShowWind,
     setIconStyle, setRefresh, setColor, setBg, setTransparentBg,
     setBorderRadius, setPadding, setFontSize,
-    reset,
+    loadPreset, reset,
   } = useWeatherStore();
 
   const { buildWidgetUrl, widgetUrl } = useWidgetUrl(() => {
@@ -92,6 +94,7 @@ export default function CreateWeatherPage() {
     <EditorLayout title="날씨 위젯 만들기">
       <Card>
         <CardContent className="pt-6">
+          <PresetSelector presets={weatherPresets} onSelect={loadPreset} />
           <EditorSection
             defaultOpen={["location"]}
             sections={[

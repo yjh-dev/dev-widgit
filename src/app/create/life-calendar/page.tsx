@@ -18,7 +18,9 @@ import EditorLayout from "@/components/editor/EditorLayout";
 import EditorActions from "@/components/editor/EditorActions";
 import EditorSection from "@/components/editor/EditorSection";
 import CommonStyleOptions from "@/components/editor/CommonStyleOptions";
+import PresetSelector from "@/components/editor/PresetSelector";
 import { useLifeCalendarStore } from "@/store/useLifeCalendarStore";
+import { lifeCalendarPresets } from "@/lib/presets";
 import type { CellShape, CellSize } from "@/store/useLifeCalendarStore";
 import { useWidgetUrl } from "@/lib/use-widget-url";
 import { copyToClipboard } from "@/lib/clipboard";
@@ -31,7 +33,7 @@ export default function CreateLifeCalendarPage() {
     setBirthdate, setLifespan, setColor, setBg, setTransparentBg, setShowStats,
     setBorderRadius, setPadding, setFontSize, setShape, setCellSize, setFutureColor,
     setShowYears, setNowColor,
-    reset,
+    loadPreset, reset,
   } = useLifeCalendarStore();
 
   const { buildWidgetUrl, widgetUrl } = useWidgetUrl(() => {
@@ -67,6 +69,7 @@ export default function CreateLifeCalendarPage() {
     <EditorLayout title="인생 달력 위젯 만들기">
       <Card>
         <CardContent className="pt-6">
+          <PresetSelector presets={lifeCalendarPresets} onSelect={loadPreset} />
           <EditorSection
             defaultOpen={["basic"]}
             sections={[

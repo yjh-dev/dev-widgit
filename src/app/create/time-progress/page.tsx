@@ -17,7 +17,9 @@ import EditorLayout from "@/components/editor/EditorLayout";
 import EditorActions from "@/components/editor/EditorActions";
 import EditorSection from "@/components/editor/EditorSection";
 import CommonStyleOptions from "@/components/editor/CommonStyleOptions";
+import PresetSelector from "@/components/editor/PresetSelector";
 import { useTimeProgressStore } from "@/store/useTimeProgressStore";
+import { timeProgressPresets } from "@/lib/presets";
 import type { BarStyle, BarHeight, RingSize } from "@/store/useTimeProgressStore";
 import { useWidgetUrl } from "@/lib/use-widget-url";
 import { copyToClipboard } from "@/lib/clipboard";
@@ -29,7 +31,7 @@ export default function CreateTimeProgressPage() {
     style, showLabel, showPercent, barHeight, textColor, weekStart, ringSize, showRemain,
     setType, setColor, setBg, setTransparentBg, setBorderRadius, setPadding, setFontSize,
     setStyle, setShowLabel, setShowPercent, setBarHeight, setTextColor, setWeekStart, setRingSize, setShowRemain,
-    reset,
+    loadPreset, reset,
   } = useTimeProgressStore();
 
   const { buildWidgetUrl, widgetUrl } = useWidgetUrl(() => {
@@ -68,6 +70,7 @@ export default function CreateTimeProgressPage() {
     <EditorLayout title="시간 진행률 바 위젯 만들기">
       <Card>
         <CardContent className="pt-6">
+          <PresetSelector presets={timeProgressPresets} onSelect={loadPreset} />
           <EditorSection
             defaultOpen={["basic"]}
             sections={[

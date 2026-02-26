@@ -38,6 +38,7 @@ interface TimeProgressState {
   setWeekStart: (weekStart: WeekStart) => void;
   setRingSize: (ringSize: RingSize) => void;
   setShowRemain: (showRemain: boolean) => void;
+  loadPreset: (preset: Partial<typeof initialState>) => void;
   reset: () => void;
 }
 
@@ -77,5 +78,6 @@ export const useTimeProgressStore = create<TimeProgressState>((set) => ({
   setWeekStart: (weekStart) => set({ weekStart }),
   setRingSize: (ringSize) => set({ ringSize }),
   setShowRemain: (showRemain) => set({ showRemain }),
+  loadPreset: (preset) => set({ ...initialState, ...preset }),
   reset: () => set(initialState),
 }));

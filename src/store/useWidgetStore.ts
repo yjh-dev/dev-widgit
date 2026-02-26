@@ -47,6 +47,7 @@ interface DdayWidgetState {
   setDoneMsg: (doneMsg: string) => void;
   setBarColor: (barColor: string) => void;
   setDateFmt: (dateFmt: DdayDateFormat) => void;
+  loadPreset: (preset: Partial<typeof initialState>) => void;
   reset: () => void;
 }
 
@@ -99,5 +100,6 @@ export const useDdayWidgetStore = create<DdayWidgetState>((set) => ({
   setDoneMsg: (doneMsg) => set({ doneMsg }),
   setBarColor: (barColor) => set({ barColor }),
   setDateFmt: (dateFmt) => set({ dateFmt }),
+  loadPreset: (preset) => set({ ...initialState, ...preset }),
   reset: () => set(initialState),
 }));
