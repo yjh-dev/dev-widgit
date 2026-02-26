@@ -170,7 +170,7 @@ export default function WidgetThumbnail({ type }: WidgetThumbnailProps) {
   useEffect(() => setMounted(true), []);
 
   return (
-    <div className="relative w-full aspect-[4/3] overflow-hidden rounded-t-xl bg-white">
+    <div className="relative w-full aspect-[4/3] overflow-hidden rounded-t-xl bg-muted">
       {mounted && (
         <div
           className="absolute inset-0 origin-top-left"
