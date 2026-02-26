@@ -16,6 +16,10 @@ import {
   Timer,
   TrendingUp,
   Type,
+  MousePointerClick,
+  Palette,
+  Copy,
+  Code,
 } from "lucide-react";
 import ThemeToggle from "@/components/ui/theme-toggle";
 import WidgetThumbnail from "@/components/home/WidgetThumbnail";
@@ -136,6 +140,29 @@ export default function Home() {
           서버 없이, 무한히 커스터마이징 가능합니다.
         </p>
       </header>
+
+      {/* How to use */}
+      <section className="max-w-3xl mx-auto px-6 pb-14">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
+          {[
+            { icon: MousePointerClick, label: "위젯 선택", desc: "원하는 위젯 고르기" },
+            { icon: Palette, label: "커스터마이징", desc: "색상·스타일 설정" },
+            { icon: Copy, label: "URL 복사", desc: "생성된 URL 복사" },
+            { icon: Code, label: "노션 임베드", desc: "/embed로 붙여넣기" },
+          ].map((step, i) => {
+            const StepIcon = step.icon;
+            return (
+              <div key={i} className="flex flex-col items-center gap-2 p-3">
+                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                  <StepIcon className="w-5 h-5 text-primary" />
+                </div>
+                <p className="text-sm font-medium">{step.label}</p>
+                <p className="text-xs text-muted-foreground">{step.desc}</p>
+              </div>
+            );
+          })}
+        </div>
+      </section>
 
       {/* Grid */}
       <main className="max-w-5xl mx-auto px-6 pb-20">

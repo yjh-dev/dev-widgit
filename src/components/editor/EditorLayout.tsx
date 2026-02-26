@@ -26,10 +26,10 @@ export default function EditorLayout({ title, children }: EditorLayoutProps) {
         </div>
         <h1 className="text-2xl font-bold mb-1">{title}</h1>
         <p className="text-muted-foreground text-sm mb-8">
-          설정을 변경하면 오른쪽 프리뷰에 실시간으로 반영됩니다.
+          설정을 변경하면 프리뷰에 실시간으로 반영됩니다.
         </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 items-start">
           {children}
         </div>
       </div>
