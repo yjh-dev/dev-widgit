@@ -28,4 +28,5 @@ export const widgetMetadata: Record<string, WidgetMeta> = {
   "moon-phase": { name: "달 위상", desc: "현재 달 모양과 조도를 표시하는 노션 위젯" },
   "sticky-note": { name: "메모지", desc: "포스트잇 스타일 메모 카드 노션 위젯" },
   "gradient": { name: "그라데이션", desc: "CSS 그라데이션 배너/구분선 노션 위젯" },
+  "typewriter": { name: "타이핑 효과", desc: "텍스트가 타이핑되는 애니메이션 노션 위젯" },
 };

@@ -308,6 +308,206 @@ export const musicPresets: Preset[] = [
   },
 ];
 
+// Gradient
+export const gradientPresets: Preset[] = [
+  {
+    id: "gradient-sunset",
+    name: "선셋 그라데이션",
+    data: {
+      colors: ["F97316", "EC4899", "8B5CF6"],
+      dir: 135,
+      type: "linear",
+      animate: false,
+    },
+  },
+  {
+    id: "gradient-ocean-anim",
+    name: "오션 (애니메이션)",
+    data: {
+      colors: ["06B6D4", "3B82F6", "8B5CF6"],
+      dir: 180,
+      type: "linear",
+      animate: true,
+      speed: 8,
+    },
+  },
+];
+
+// Sticky Note
+export const stickyNotePresets: Preset[] = [
+  {
+    id: "sticky-todo",
+    name: "할 일 메모 (노랑)",
+    data: {
+      text: "오늘 할 일\n1. 독서\n2. 운동\n3. 정리",
+      noteColor: "FBBF24",
+      textColor: "1E1E1E",
+      pin: "pin",
+      rotation: 2,
+      font: "gaegu",
+    },
+  },
+  {
+    id: "sticky-pink-tape",
+    name: "핑크 메모 (테이프)",
+    data: {
+      text: "잊지 말기! 🌸\n내일 미팅 10시",
+      noteColor: "F9A8D4",
+      textColor: "1E1E1E",
+      pin: "tape",
+      rotation: -1,
+      font: "gaegu",
+    },
+  },
+];
+
+// Flip Clock
+export const flipClockPresets: Preset[] = [
+  {
+    id: "flip-dark",
+    name: "다크 플립",
+    data: {
+      flipColor: "1E1E1E",
+      textColor: "FFFFFF",
+      gapColor: "333333",
+      bg: "0F172A",
+      showDate: true,
+      dateFmt: "kr",
+      fontSize: "lg",
+    },
+  },
+  {
+    id: "flip-retro",
+    name: "레트로 스타일",
+    data: {
+      flipColor: "78350F",
+      textColor: "FEF3C7",
+      gapColor: "92400E",
+      bg: "FFFBEB",
+      showDate: false,
+      fontSize: "md",
+    },
+  },
+];
+
+// Moon Phase
+export const moonPhasePresets: Preset[] = [
+  {
+    id: "moon-dark",
+    name: "다크 달 위상",
+    data: {
+      style: "realistic",
+      moonColor: "F5F5DC",
+      shadowColor: "1A1A2E",
+      bg: "0F172A",
+      textColor: "E0E0E0",
+      moonSize: "lg",
+      showName: true,
+      showPercent: true,
+    },
+  },
+  {
+    id: "moon-emoji",
+    name: "이모지 달",
+    data: {
+      style: "emoji",
+      bg: "FFFFFF",
+      textColor: "1E1E1E",
+      moonSize: "lg",
+      showName: true,
+      showPercent: false,
+    },
+  },
+];
+
+// Dice
+export const dicePresets: Preset[] = [
+  {
+    id: "dice-classic",
+    name: "클래식 주사위",
+    data: {
+      mode: "dice",
+      count: 2,
+      sides: 6,
+      color: "2563EB",
+      textColor: "FFFFFF",
+      showTotal: true,
+    },
+  },
+  {
+    id: "dice-coin",
+    name: "동전 던지기",
+    data: {
+      mode: "coin",
+      color: "F59E0B",
+      textColor: "FFFFFF",
+      bg: "FFFBEB",
+    },
+  },
+];
+
+// QR Code
+export const qrCodePresets: Preset[] = [
+  {
+    id: "qr-github",
+    name: "깃허브 QR",
+    data: {
+      data: "https://github.com",
+      label: "GitHub",
+      fgColor: "1E1E1E",
+      bgColor: "FFFFFF",
+      size: "md",
+      module: "square",
+    },
+  },
+  {
+    id: "qr-rounded-dark",
+    name: "라운드 다크 QR",
+    data: {
+      data: "https://example.com",
+      label: "링크",
+      fgColor: "F8F8F2",
+      bgColor: "1E1E1E",
+      size: "md",
+      module: "rounded",
+    },
+  },
+];
+
+// Typewriter
+export const typewriterPresets: Preset[] = [
+  {
+    id: "typewriter-terminal",
+    name: "다크 터미널",
+    data: {
+      texts: ["$ npm run build", "$ deploy --production", "✓ 배포 완료!"],
+      speed: 60,
+      pause: 1500,
+      cursor: "block",
+      bold: true,
+      font: "mono",
+      color: "22C55E",
+      bg: "0F172A",
+      fontSize: "lg",
+    },
+  },
+  {
+    id: "typewriter-greeting",
+    name: "감성 인사",
+    data: {
+      texts: ["안녕하세요 👋", "오늘도 좋은 하루 되세요", "화이팅! 🔥"],
+      speed: 80,
+      pause: 2000,
+      cursor: "bar",
+      bold: true,
+      font: "sans",
+      color: "1E1E1E",
+      bg: "FFF7ED",
+      fontSize: "lg",
+    },
+  },
+];
+
 // Widgets without presets — empty arrays
 export const miniCalendarPresets: Preset[] = [];
 export const analogClockPresets: Preset[] = [];

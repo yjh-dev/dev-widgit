@@ -2,23 +2,332 @@ export type WidgetType =
   | "dday" | "life-calendar" | "time-progress" | "clock" | "quote"
   | "pomodoro" | "mini-calendar" | "analog-clock" | "counter" | "weather"
   | "reading" | "habit" | "timeline" | "banner"
-  | "bookmark" | "goal" | "stopwatch" | "music";
+  | "bookmark" | "goal" | "stopwatch" | "music"
+  | "gradient" | "sticky-note" | "flip-clock" | "moon-phase" | "dice" | "qr-code"
+  | "typewriter";
+
+// --- Color Theme System ---
+
+export interface ColorTheme {
+  id: string;
+  name: string;
+  bg: string;
+  text: string;
+  accent: string;
+  secondary: string;
+}
+
+export const colorThemes: ColorTheme[] = [
+  { id: "light-default", name: "라이트 기본", bg: "FFFFFF", text: "1E1E1E", accent: "2563EB", secondary: "22C55E" },
+  { id: "dark-night", name: "다크 나이트", bg: "1A1A2E", text: "E0E0E0", accent: "7C3AED", secondary: "06B6D4" },
+  { id: "warm-pastel", name: "웜 파스텔", bg: "FFF7ED", text: "78350F", accent: "F97316", secondary: "FB923C" },
+  { id: "cool-pastel", name: "쿨 파스텔", bg: "F0F9FF", text: "1E3A5F", accent: "3B82F6", secondary: "818CF8" },
+  { id: "forest", name: "포레스트", bg: "F0FDF4", text: "14532D", accent: "16A34A", secondary: "22D3EE" },
+  { id: "midnight", name: "미드나이트", bg: "0F172A", text: "F1F5F9", accent: "3B82F6", secondary: "F59E0B" },
+  { id: "rose", name: "로제", bg: "FFF1F2", text: "881337", accent: "E11D48", secondary: "F472B6" },
+  { id: "monochrome", name: "모노크롬", bg: "F5F5F5", text: "262626", accent: "525252", secondary: "A3A3A3" },
+  { id: "sunset", name: "선셋", bg: "1C1917", text: "FEF3C7", accent: "F59E0B", secondary: "EF4444" },
+  { id: "ocean", name: "오션", bg: "0C4A6E", text: "E0F2FE", accent: "06B6D4", secondary: "22D3EE" },
+];
+
+export function getThemeById(id: string): ColorTheme {
+  return colorThemes.find((t) => t.id === id) ?? colorThemes[0];
+}
+
+export function applyThemeToWidget(
+  type: WidgetType,
+  theme: ColorTheme,
+  config: Record<string, unknown> = {},
+): Record<string, unknown> {
+  const base = { borderRadius: 16, padding: 24, fontSize: "md" as const };
+
+  switch (type) {
+    case "dday":
+      return { ...base, bgColor: theme.accent, textColor: "FFFFFF", ...config };
+    case "clock":
+      return { ...base, color: theme.text, bg: theme.bg, showSeconds: true, blink: true, ...config };
+    case "analog-clock":
+      return { ...base, padding: 16, faceColor: theme.bg, handColor: theme.text, secHandColor: theme.accent, tickColor: theme.secondary, borderColor: theme.text, bg: theme.bg, ...config };
+    case "quote":
+      return { ...base, textColor: theme.text, bg: theme.bg, ...config };
+    case "pomodoro":
+      return { ...base, color: theme.accent, bg: theme.bg, ...config };
+    case "time-progress":
+      return { ...base, color: theme.accent, bg: theme.bg, ...config };
+    case "life-calendar":
+      return { ...base, color: theme.accent, bg: theme.bg, ...config };
+    case "mini-calendar":
+      return { ...base, highlight: theme.accent, bg: theme.bg, ...config };
+    case "counter":
+      return { ...base, btnColor: theme.accent, bg: theme.bg, ...config };
+    case "weather":
+      return { ...base, bg: theme.bg, color: theme.text, ...config };
+    case "reading":
+      return { ...base, color: theme.accent, bg: theme.bg, textColor: theme.text, ...config };
+    case "habit":
+      return { ...base, color: theme.accent, bg: theme.bg, textColor: theme.text, interactive: false, ...config };
+    case "timeline":
+      return { ...base, color: theme.accent, bg: theme.bg, ...config };
+    case "banner":
+      return { ...base, color: theme.text, bg: theme.bg, ...config };
+    case "bookmark":
+      return { ...base, color: theme.text, bg: theme.bg, linkable: false, ...config };
+    case "goal":
+      return { ...base, color: theme.accent, bg: theme.bg, textColor: theme.text, ...config };
+    case "stopwatch":
+      return { ...base, btnColor: theme.accent, bg: theme.bg, color: theme.text, ...config };
+    case "music":
+      return { ...base, artColor: theme.accent, color: theme.text, bg: theme.bg, ...config };
+    case "gradient":
+      return { ...base, padding: 0, ...config };
+    case "sticky-note":
+      return { ...base, noteColor: theme.secondary, textColor: theme.text, ...config };
+    case "flip-clock":
+      return { ...base, flipColor: theme.text, textColor: theme.bg, gapColor: theme.secondary, bg: theme.bg, ...config };
+    case "moon-phase":
+      return { ...base, bg: "0F172A", textColor: "E0E0E0", ...config };
+    case "dice":
+      return { ...base, color: theme.accent, textColor: "FFFFFF", bg: theme.bg, ...config };
+    case "qr-code":
+      return { ...base, fgColor: theme.text, bgColor: theme.bg, ...config };
+    case "typewriter":
+      return { ...base, color: theme.text, bg: theme.bg, ...config };
+    default:
+      return { ...base, bg: theme.bg, color: theme.text, ...config };
+  }
+}
+
+export function buildThemedWidgetUrl(
+  type: WidgetType,
+  theme: ColorTheme,
+  config: Record<string, unknown> = {},
+): string {
+  const base = `/widget/${type}`;
+  const params = new URLSearchParams();
+
+  const addIfPresent = (key: string, val: unknown) => {
+    if (val !== undefined && val !== null && val !== "") {
+      params.set(key, String(val));
+    }
+  };
+
+  switch (type) {
+    case "dday":
+      addIfPresent("title", config.title);
+      addIfPresent("date", config.targetDate);
+      addIfPresent("bg", config.bgColor ?? theme.accent);
+      addIfPresent("text", config.textColor ?? "FFFFFF");
+      if (config.showTime) addIfPresent("showTime", "true");
+      break;
+    case "clock":
+      addIfPresent("timezone", config.timezone ?? "Asia/Seoul");
+      addIfPresent("format", config.format ?? "24h");
+      addIfPresent("font", config.font ?? "mono");
+      addIfPresent("color", theme.text);
+      addIfPresent("bg", theme.bg);
+      if (config.showDate) addIfPresent("date", "true");
+      if (config.seconds === false) addIfPresent("seconds", "false");
+      break;
+    case "analog-clock":
+      addIfPresent("timezone", config.timezone ?? "Asia/Seoul");
+      addIfPresent("faceColor", theme.bg);
+      addIfPresent("handColor", theme.text);
+      addIfPresent("secHandColor", theme.accent);
+      addIfPresent("tickColor", theme.secondary);
+      addIfPresent("borderColor", theme.text);
+      if (config.showNumbers !== undefined) addIfPresent("showNumbers", String(config.showNumbers));
+      if (config.numStyle) addIfPresent("numStyle", config.numStyle);
+      break;
+    case "quote":
+      addIfPresent("text", config.text);
+      addIfPresent("author", config.author);
+      addIfPresent("font", config.font ?? "serif");
+      addIfPresent("textColor", theme.text);
+      addIfPresent("bg", theme.bg);
+      if (config.italic) addIfPresent("italic", "true");
+      break;
+    case "pomodoro":
+      addIfPresent("work", config.workTime ?? 25);
+      addIfPresent("break", config.breakTime ?? 5);
+      addIfPresent("color", theme.accent);
+      addIfPresent("bg", theme.bg);
+      if (config.pStyle) addIfPresent("pStyle", config.pStyle);
+      break;
+    case "time-progress":
+      addIfPresent("type", config.type ?? "year");
+      addIfPresent("color", theme.accent);
+      addIfPresent("bg", theme.bg);
+      if (config.style) addIfPresent("style", config.style);
+      break;
+    case "life-calendar":
+      addIfPresent("birthdate", config.birthdate ?? "2000-01-01");
+      addIfPresent("lifespan", config.lifespan ?? 80);
+      addIfPresent("color", theme.accent);
+      addIfPresent("bg", theme.bg);
+      if (config.shape) addIfPresent("shape", config.shape);
+      break;
+    case "mini-calendar":
+      addIfPresent("weekStart", config.weekStart ?? "mon");
+      addIfPresent("lang", config.lang ?? "ko");
+      addIfPresent("highlight", theme.accent);
+      addIfPresent("bg", theme.bg);
+      break;
+    case "counter":
+      addIfPresent("label", config.label ?? "카운터");
+      addIfPresent("initial", config.initial ?? 0);
+      addIfPresent("step", config.step ?? 1);
+      addIfPresent("btnColor", theme.accent);
+      addIfPresent("bg", theme.bg);
+      break;
+    case "weather":
+      addIfPresent("lat", config.lat ?? 37.5665);
+      addIfPresent("lon", config.lon ?? 126.978);
+      addIfPresent("city", config.city ?? "서울");
+      addIfPresent("bg", theme.bg);
+      break;
+    case "reading":
+      addIfPresent("title", config.title);
+      addIfPresent("current", config.currentPage);
+      addIfPresent("total", config.totalPages);
+      addIfPresent("color", theme.accent);
+      addIfPresent("bg", theme.bg);
+      break;
+    case "habit":
+      addIfPresent("title", config.title);
+      addIfPresent("view", config.view ?? "week");
+      addIfPresent("weekStart", config.weekStart ?? "mon");
+      addIfPresent("color", theme.accent);
+      addIfPresent("bg", theme.bg);
+      break;
+    case "timeline": {
+      const events = config.events as { title: string; date: string }[] | undefined;
+      if (events?.length) {
+        params.set("events", events.map((e) => `${e.title}~${e.date}`).join("|"));
+      }
+      addIfPresent("color", theme.accent);
+      addIfPresent("bg", theme.bg);
+      break;
+    }
+    case "banner": {
+      const texts = config.texts as string[] | undefined;
+      if (texts?.length) {
+        params.set("texts", texts.join("|"));
+      }
+      if (config.animation && config.animation !== "none") addIfPresent("anim", config.animation);
+      if (config.bold) addIfPresent("bold", "true");
+      addIfPresent("color", theme.text);
+      addIfPresent("bg", theme.bg);
+      if (config.font && config.font !== "sans") addIfPresent("font", config.font);
+      break;
+    }
+    case "bookmark":
+      addIfPresent("url", config.url);
+      addIfPresent("title", config.title);
+      addIfPresent("desc", config.desc);
+      addIfPresent("bg", theme.bg);
+      break;
+    case "goal":
+      addIfPresent("title", config.title);
+      addIfPresent("current", config.current);
+      addIfPresent("target", config.target);
+      if (config.unit) addIfPresent("unit", config.unit);
+      if (config.style) addIfPresent("style", config.style);
+      addIfPresent("color", theme.accent);
+      addIfPresent("bg", theme.bg);
+      break;
+    case "stopwatch":
+      if (config.showMs) addIfPresent("showMs", "true");
+      if (config.showLap) addIfPresent("showLap", "true");
+      addIfPresent("btnColor", theme.accent);
+      addIfPresent("bg", theme.bg);
+      break;
+    case "music":
+      addIfPresent("title", config.title);
+      addIfPresent("artist", config.artist);
+      if (config.progress !== undefined) addIfPresent("progress", config.progress);
+      addIfPresent("artColor", theme.accent);
+      addIfPresent("bg", theme.bg);
+      break;
+    case "gradient": {
+      const colors = config.colors as string[] | undefined;
+      if (colors?.length) params.set("colors", colors.join("|"));
+      if (config.dir !== undefined) addIfPresent("dir", config.dir);
+      if (config.animate) addIfPresent("animate", "true");
+      if (config.text) addIfPresent("text", config.text);
+      break;
+    }
+    case "sticky-note":
+      addIfPresent("text", config.text);
+      addIfPresent("noteColor", config.noteColor ?? theme.secondary);
+      addIfPresent("textColor", config.textColor ?? theme.text);
+      if (config.font) addIfPresent("font", config.font);
+      break;
+    case "flip-clock":
+      addIfPresent("timezone", config.timezone ?? "Asia/Seoul");
+      addIfPresent("flipColor", config.flipColor ?? theme.text);
+      addIfPresent("textColor", config.textColor ?? theme.bg);
+      addIfPresent("bg", theme.bg);
+      if (config.showSeconds) addIfPresent("showSeconds", "true");
+      if (config.showDate) addIfPresent("showDate", "true");
+      break;
+    case "moon-phase":
+      addIfPresent("bg", config.bg ?? "0F172A");
+      addIfPresent("textColor", config.textColor ?? "E0E0E0");
+      if (config.style) addIfPresent("style", config.style);
+      break;
+    case "dice":
+      addIfPresent("color", config.color ?? theme.accent);
+      addIfPresent("bg", theme.bg);
+      if (config.mode) addIfPresent("mode", config.mode);
+      if (config.sides) addIfPresent("sides", config.sides);
+      break;
+    case "qr-code":
+      addIfPresent("data", config.data);
+      if (config.label) addIfPresent("label", config.label);
+      addIfPresent("fgColor", config.fgColor ?? theme.text);
+      addIfPresent("bgColor", config.bgColor ?? theme.bg);
+      break;
+    case "typewriter": {
+      const twTexts = config.texts as string[] | undefined;
+      if (twTexts?.length) {
+        params.set("texts", twTexts.map(encodeURIComponent).join("|"));
+      }
+      if (config.speed && config.speed !== 80) addIfPresent("speed", config.speed);
+      if (config.pause && config.pause !== 2000) addIfPresent("pause", config.pause);
+      if (config.cursor && config.cursor !== "bar") addIfPresent("cursor", config.cursor);
+      if (config.loop === false) addIfPresent("loop", "false");
+      if (config.deleteAnim === false) addIfPresent("deleteAnim", "false");
+      if (config.bold) addIfPresent("bold", "true");
+      addIfPresent("text", theme.text);
+      addIfPresent("bg", theme.bg);
+      if (config.font && config.font !== "sans") addIfPresent("font", config.font);
+      break;
+    }
+  }
+
+  const qs = params.toString();
+  return qs ? `${base}?${qs}` : base;
+}
+
+// --- Template Types ---
 
 export interface TemplateWidget {
   type: WidgetType;
   name: string;
-  url: string;
-  editorUrl: string;
-  previewProps: Record<string, unknown>;
+  widgetConfig: Record<string, unknown>;
 }
 
 export interface Template {
   id: string;
   title: string;
   desc: string;
+  themeId: string;
   layout: number[][];
   widgets: TemplateWidget[];
+  notionTip: string;
 }
+
+// --- Layout Presets ---
 
 export interface LayoutPreset {
   id: string;
@@ -39,6 +348,8 @@ export const layoutPresets: LayoutPreset[] = [
   { id: "sandwich", name: "샌드위치", desc: "전폭+2열+전폭", slots: 4, grid: [[1], [1, 1], [1]] },
   { id: "dashboard", name: "대시보드", desc: "2+2+1", slots: 5, grid: [[1, 1], [1, 1], [1]] },
 ];
+
+// --- Widget Defaults (for builder) ---
 
 export interface WidgetDefault {
   type: WidgetType;
@@ -65,751 +376,200 @@ export const widgetDefaults: WidgetDefault[] = [
   { type: "bookmark", name: "북마크", defaultUrl: "/widget/bookmark?url=https://example.com&title=북마크&desc=설명" },
   { type: "music", name: "음악 플레이어", defaultUrl: "/widget/music?title=Song&artist=Artist&artColor=6366F1" },
   { type: "weather", name: "날씨", defaultUrl: "/widget/weather?lat=37.5665&lon=126.978&city=서울" },
+  { type: "gradient", name: "그라데이션", defaultUrl: "/widget/gradient?colors=6366F1|EC4899" },
+  { type: "sticky-note", name: "메모지", defaultUrl: "/widget/sticky-note?text=메모를+입력하세요" },
+  { type: "flip-clock", name: "플립 시계", defaultUrl: "/widget/flip-clock?timezone=Asia/Seoul" },
+  { type: "moon-phase", name: "달 위상", defaultUrl: "/widget/moon-phase" },
+  { type: "dice", name: "주사위", defaultUrl: "/widget/dice?color=2563EB" },
+  { type: "qr-code", name: "QR 코드", defaultUrl: "/widget/qr-code?data=https://example.com" },
+  { type: "typewriter", name: "타이핑 효과", defaultUrl: "/widget/typewriter?texts=%ED%83%80%EC%9D%B4%ED%95%91+%ED%9A%A8%EA%B3%BC+%EC%9C%84%EC%A0%AF" },
 ];
+
+// --- Home thumbnail default props ---
+
+export function getHomeThumbnailProps(type: WidgetType): Record<string, unknown> {
+  const common = { borderRadius: 0, fontSize: "sm" as const };
+  switch (type) {
+    case "dday":
+      return { ...common, title: "수능", targetDate: "2026-11-19", bgColor: "1E1E1E", textColor: "FFFFFF", padding: 24 };
+    case "life-calendar":
+      return { ...common, birthdate: "2000-01-01", lifespan: 80, color: "2563EB", bg: "FFFFFF", showStats: false, padding: 12, cellSize: "sm" };
+    case "time-progress":
+      return { ...common, type: "year", color: "2563EB", bg: "FFFFFF", padding: 24 };
+    case "clock":
+      return { ...common, timezone: "Asia/Seoul", format: "24h", font: "mono", color: "1E1E1E", bg: "FFFFFF", padding: 24, showSeconds: false, blink: false };
+    case "quote":
+      return { ...common, text: "오늘이 가장 젊은 날이다", author: "작자미상", font: "serif", textColor: "1E1E1E", bg: "FFFFFF", padding: 24 };
+    case "pomodoro":
+      return { ...common, workTime: 25, breakTime: 5, color: "E11D48", bg: "FFFFFF", padding: 16 };
+    case "mini-calendar":
+      return { ...common, weekStart: "mon", lang: "ko", color: "1E1E1E", highlight: "2563EB", bg: "FFFFFF", padding: 12, showNav: false };
+    case "analog-clock":
+      return { ...common, timezone: "Asia/Seoul", bg: "FFFFFF", padding: 12 };
+    case "counter":
+      return { ...common, label: "카운터", initial: 42, color: "1E1E1E", btnColor: "2563EB", bg: "FFFFFF", padding: 16, showReset: false };
+    case "weather":
+      return { ...common, city: "서울", bg: "FFFFFF", padding: 24 };
+    case "reading":
+      return { ...common, title: "클린 코드", currentPage: 180, totalPages: 300, color: "2563EB", bg: "FFFFFF", padding: 24 };
+    case "habit":
+      return { ...common, title: "운동", view: "week", weekStart: "mon", checkedDates: new Set(["2026-02-23", "2026-02-24", "2026-02-25"]), interactive: false, color: "22C55E", bg: "FFFFFF", padding: 16 };
+    case "timeline":
+      return { ...common, events: [{ title: "기말고사", date: "2026-06-15" }, { title: "여름방학", date: "2026-07-20" }, { title: "수능", date: "2026-11-19" }], color: "2563EB", bg: "FFFFFF", padding: 16 };
+    case "banner":
+      return { ...common, texts: ["오늘도 화이팅! 💪"], animation: "none", bold: true, color: "1E1E1E", bg: "FFFFFF", padding: 24, fontSize: "md" };
+    case "bookmark":
+      return { ...common, url: "https://github.com", title: "GitHub", desc: "내 깃허브 프로필", color: "1E1E1E", bg: "FFFFFF", padding: 24, linkable: false };
+    case "goal":
+      return { ...common, title: "저축 목표", current: 35, target: 100, unit: "만원", color: "22C55E", bg: "FFFFFF", padding: 24 };
+    case "stopwatch":
+      return { ...common, color: "1E1E1E", btnColor: "2563EB", bg: "FFFFFF", padding: 16 };
+    case "music":
+      return { ...common, title: "Chill Beats", artist: "Lo-Fi Radio", progress: 45, artColor: "6366F1", color: "1E1E1E", bg: "FFFFFF", padding: 16 };
+    case "gradient":
+      return { ...common, colors: ["6366F1", "EC4899"], dir: 135, type: "linear", padding: 0 };
+    case "sticky-note":
+      return { ...common, text: "오늘 할 일\n1. 독서\n2. 운동", noteColor: "FBBF24", textColor: "1E1E1E", pin: "pin", rotation: 2, font: "gaegu", padding: 16, shadow: true };
+    case "flip-clock":
+      return { ...common, timezone: "Asia/Seoul", format: "24h", flipColor: "1E1E1E", textColor: "FFFFFF", gapColor: "333333", bg: "FFFFFF", padding: 16 };
+    case "moon-phase":
+      return { ...common, style: "realistic", showName: true, showPercent: true, moonColor: "F5F5DC", shadowColor: "1A1A2E", bg: "0F172A", textColor: "E0E0E0", moonSize: "sm", padding: 16 };
+    case "dice":
+      return { ...common, mode: "dice", count: 1, sides: 6, color: "2563EB", textColor: "FFFFFF", bg: "FFFFFF", padding: 16 };
+    case "qr-code":
+      return { ...common, data: "https://widgit.dev", fgColor: "1E1E1E", bgColor: "FFFFFF", size: "sm", padding: 16 };
+    case "typewriter":
+      return { ...common, texts: ["타이핑 효과 위젯"], speed: 80, pause: 2000, cursor: "bar", bold: true, color: "1E1E1E", bg: "FFFFFF", padding: 24, fontSize: "md" };
+    default:
+      return common;
+  }
+}
+
+// --- 8 Templates (theme-differentiated) ---
 
 export const templates: Template[] = [
   {
     id: "student",
     title: "학생 대시보드",
     desc: "수능/시험 D-Day + 공부 타이머 + 진행률 관리를 한 곳에",
+    themeId: "cool-pastel",
     layout: [[0, 4], [1, 2], [3, 5]],
+    notionTip: "D-Day를 상단 좌측에 크게, 아래에 타이머와 진행률을 2열로 배치하세요.",
     widgets: [
-      {
-        type: "dday",
-        name: "수능 D-Day",
-        url: "/widget/dday?title=%EC%88%98%EB%8A%A5&date=2026-11-19&bg=1E1E1E&text=FFFFFF",
-        editorUrl: "/create/dday",
-        previewProps: {
-          title: "수능",
-          targetDate: "2026-11-19",
-          bgColor: "1E1E1E",
-          textColor: "FFFFFF",
-          borderRadius: 16,
-          padding: 24,
-          fontSize: "md",
-        },
-      },
-      {
-        type: "pomodoro",
-        name: "뽀모도로 타이머",
-        url: "/widget/pomodoro?work=25&break=5&color=E11D48",
-        editorUrl: "/create/pomodoro",
-        previewProps: {
-          workTime: 25,
-          breakTime: 5,
-          color: "E11D48",
-          bg: "FFFFFF",
-          borderRadius: 16,
-          padding: 24,
-          fontSize: "md",
-        },
-      },
-      {
-        type: "time-progress",
-        name: "올해 진행률",
-        url: "/widget/time-progress?type=year&color=2563EB",
-        editorUrl: "/create/time-progress",
-        previewProps: {
-          type: "year",
-          color: "2563EB",
-          bg: "FFFFFF",
-          borderRadius: 16,
-          padding: 24,
-          fontSize: "md",
-        },
-      },
-      {
-        type: "habit",
-        name: "공부 습관 트래커",
-        url: "/widget/habit?title=%EA%B3%B5%EB%B6%80&view=week&weekStart=mon&color=22C55E",
-        editorUrl: "/create/habit",
-        previewProps: {
-          title: "공부",
-          view: "week",
-          weekStart: "mon",
-          checkedDates: new Set(["2026-02-23", "2026-02-24", "2026-02-26"]),
-          interactive: false,
-          color: "22C55E",
-          bg: "FFFFFF",
-          borderRadius: 16,
-          padding: 24,
-        },
-      },
-      {
-        type: "mini-calendar",
-        name: "학사 캘린더",
-        url: "/widget/mini-calendar?weekStart=mon&lang=ko&highlight=2563EB",
-        editorUrl: "/create/mini-calendar",
-        previewProps: {
-          weekStart: "mon",
-          lang: "ko",
-          highlight: "2563EB",
-          bg: "FFFFFF",
-          borderRadius: 16,
-          padding: 24,
-          fontSize: "md",
-        },
-      },
-      {
-        type: "timeline",
-        name: "시험 일정",
-        url: "/widget/timeline?events=%EC%A4%91%EA%B0%84%EA%B3%A0%EC%82%AC~2026-04-20|%EA%B8%B0%EB%A7%90%EA%B3%A0%EC%82%AC~2026-06-25|%EC%88%98%EB%8A%A5~2026-11-19&color=E11D48",
-        editorUrl: "/create/timeline",
-        previewProps: {
-          events: [
-            { title: "중간고사", date: "2026-04-20" },
-            { title: "기말고사", date: "2026-06-25" },
-            { title: "수능", date: "2026-11-19" },
-          ],
-          color: "E11D48",
-          bg: "FFFFFF",
-          borderRadius: 16,
-          padding: 24,
-          fontSize: "md",
-        },
-      },
+      { type: "dday", name: "수능 D-Day", widgetConfig: { title: "수능", targetDate: "2026-11-19" } },
+      { type: "pomodoro", name: "뽀모도로 타이머", widgetConfig: { workTime: 25, breakTime: 5 } },
+      { type: "time-progress", name: "올해 진행률", widgetConfig: { type: "year" } },
+      { type: "habit", name: "공부 습관", widgetConfig: { title: "공부", view: "week", weekStart: "mon", checkedDates: new Set(["2026-02-23", "2026-02-24", "2026-02-26"]) } },
+      { type: "mini-calendar", name: "학사 캘린더", widgetConfig: { weekStart: "mon", lang: "ko" } },
+      { type: "timeline", name: "시험 일정", widgetConfig: { events: [{ title: "중간고사", date: "2026-04-20" }, { title: "기말고사", date: "2026-06-25" }, { title: "수능", date: "2026-11-19" }] } },
     ],
   },
   {
     id: "minimal",
     title: "미니멀 워크스페이스",
     desc: "깔끔한 노션 헤더를 위한 시계 + 날씨 + 명언 세트",
-    layout: [[0, 1, 2], [3, 4]],
+    themeId: "monochrome",
+    layout: [[0, 1, 2], [4], [3]],
+    notionTip: "3열로 나란히 배치하면 깔끔한 헤더가 됩니다. 그라데이션 구분선 아래 배너를 전폭으로 추가하세요.",
     widgets: [
-      {
-        type: "clock",
-        name: "모노 시계",
-        url: "/widget/clock?timezone=Asia/Seoul&format=24h&font=mono&color=1E1E1E&bg=FFFFFF",
-        editorUrl: "/create/clock",
-        previewProps: {
-          timezone: "Asia/Seoul",
-          format: "24h",
-          font: "mono",
-          color: "1E1E1E",
-          bg: "FFFFFF",
-          borderRadius: 16,
-          padding: 24,
-          fontSize: "md",
-          showSeconds: true,
-          blink: true,
-        },
-      },
-      {
-        type: "weather",
-        name: "서울 날씨",
-        url: "/widget/weather?lat=37.5665&lon=126.978&city=%EC%84%9C%EC%9A%B8&unit=celsius",
-        editorUrl: "/create/weather",
-        previewProps: {
-          city: "서울",
-          bg: "FFFFFF",
-          borderRadius: 16,
-          padding: 24,
-          fontSize: "md",
-        },
-      },
-      {
-        type: "quote",
-        name: "명언 카드",
-        url: "/widget/quote?text=%EC%98%A4%EB%8A%98%EC%9D%B4+%EA%B0%80%EC%9E%A5+%EC%A0%8A%EC%9D%80+%EB%82%A0%EC%9D%B4%EB%8B%A4&author=%EC%9E%91%EC%9E%90%EB%AF%B8%EC%83%81&font=serif",
-        editorUrl: "/create/quote",
-        previewProps: {
-          text: "오늘이 가장 젊은 날이다",
-          author: "작자미상",
-          font: "serif",
-          textColor: "1E1E1E",
-          bg: "FFFFFF",
-          borderRadius: 16,
-          padding: 24,
-          fontSize: "md",
-        },
-      },
-      {
-        type: "time-progress",
-        name: "하루 진행률",
-        url: "/widget/time-progress?type=day&color=2563EB",
-        editorUrl: "/create/time-progress",
-        previewProps: {
-          type: "day",
-          color: "2563EB",
-          bg: "FFFFFF",
-          borderRadius: 16,
-          padding: 24,
-          fontSize: "md",
-        },
-      },
-      {
-        type: "mini-calendar",
-        name: "미니 캘린더",
-        url: "/widget/mini-calendar?weekStart=mon&lang=ko&highlight=2563EB",
-        editorUrl: "/create/mini-calendar",
-        previewProps: {
-          weekStart: "mon",
-          lang: "ko",
-          highlight: "2563EB",
-          bg: "FFFFFF",
-          borderRadius: 16,
-          padding: 24,
-          fontSize: "md",
-        },
-      },
+      { type: "clock", name: "모노 시계", widgetConfig: { timezone: "Asia/Seoul", format: "24h", font: "mono" } },
+      { type: "weather", name: "서울 날씨", widgetConfig: { city: "서울" } },
+      { type: "quote", name: "명언 카드", widgetConfig: { text: "오늘이 가장 젊은 날이다", author: "작자미상", font: "serif" } },
+      { type: "banner", name: "모노 배너", widgetConfig: { texts: ["Keep it simple."], bold: true, animation: "none" } },
+      { type: "gradient", name: "그라데이션 구분선", widgetConfig: { colors: ["D4D4D8", "A1A1AA"], dir: 90 } },
     ],
   },
   {
     id: "reading",
-    title: "독서 관리",
+    title: "독서 & 배움",
     desc: "읽기 목표 추적 + 독서 계획 타임라인으로 독서 습관 만들기",
-    layout: [[5], [0, 1], [2, 4], [3]],
+    themeId: "warm-pastel",
+    layout: [[4], [0, 1], [2, 3]],
+    notionTip: "배너를 전폭 상단에, 읽기 진행률과 목표를 2열로 배치하세요.",
     widgets: [
-      {
-        type: "reading",
-        name: "읽기 진행률",
-        url: "/widget/reading?title=%ED%81%B4%EB%A6%B0+%EC%BD%94%EB%93%9C&current=180&total=300&color=2563EB",
-        editorUrl: "/create/reading",
-        previewProps: {
-          title: "클린 코드",
-          currentPage: 180,
-          totalPages: 300,
-          color: "2563EB",
-          bg: "FFFFFF",
-          borderRadius: 16,
-          padding: 24,
-          fontSize: "md",
-        },
-      },
-      {
-        type: "goal",
-        name: "올해 독서 목표",
-        url: "/widget/goal?title=%EC%98%AC%ED%95%B4+%EB%8F%85%EC%84%9C&current=8&target=24&unit=%EA%B6%8C&color=22C55E",
-        editorUrl: "/create/goal",
-        previewProps: {
-          title: "올해 독서",
-          current: 8,
-          target: 24,
-          unit: "권",
-          color: "22C55E",
-          bg: "FFFFFF",
-          borderRadius: 16,
-          padding: 24,
-          fontSize: "md",
-        },
-      },
-      {
-        type: "quote",
-        name: "독서 명언",
-        url: "/widget/quote?text=%EC%B1%85%EC%9D%80+%EB%8F%84%EB%81%BC%EB%82%A0+%EC%88%98+%EC%9E%88%EB%8A%94+%EA%BF%88%EC%9D%B4%EB%8B%A4&author=%EB%84%AC+%EA%B2%8C%EC%9D%B4%EB%A8%BC&font=serif",
-        editorUrl: "/create/quote",
-        previewProps: {
-          text: "책은 도끼날 수 있는 꿈이다",
-          author: "닐 게이먼",
-          font: "serif",
-          textColor: "1E1E1E",
-          bg: "FFFFFF",
-          borderRadius: 16,
-          padding: 24,
-          fontSize: "md",
-        },
-      },
-      {
-        type: "timeline",
-        name: "독서 계획",
-        url: "/widget/timeline?events=%ED%81%B4%EB%A6%B0+%EC%BD%94%EB%93%9C~2026-03-15|%EB%94%A5+%EC%9B%8C%ED%81%AC~2026-04-30|%EC%9B%90%EC%94%BD+%EC%96%B4%EB%A6%B0%EC%99%95%EC%9E%90~2026-06-15&color=6366F1",
-        editorUrl: "/create/timeline",
-        previewProps: {
-          events: [
-            { title: "클린 코드", date: "2026-03-15" },
-            { title: "딥 워크", date: "2026-04-30" },
-            { title: "원씽 어린왕자", date: "2026-06-15" },
-          ],
-          color: "6366F1",
-          bg: "FFFFFF",
-          borderRadius: 16,
-          padding: 24,
-          fontSize: "md",
-        },
-      },
-      {
-        type: "counter",
-        name: "완독 카운터",
-        url: "/widget/counter?label=%EC%99%84%EB%8F%85&initial=0&step=1&btnColor=6366F1",
-        editorUrl: "/create/counter",
-        previewProps: {
-          label: "완독",
-          initial: 0,
-          step: 1,
-          btnColor: "6366F1",
-          bg: "FFFFFF",
-          borderRadius: 16,
-          padding: 24,
-          fontSize: "md",
-        },
-      },
-      {
-        type: "banner",
-        name: "독서 격려 배너",
-        url: "/widget/banner?texts=%EC%98%A4%EB%8A%98%EB%8F%84+%ED%95%9C+%ED%8E%98%EC%9D%B4%EC%A7%80+%EB%8D%94+%F0%9F%93%96&anim=scroll&bold=true",
-        editorUrl: "/create/banner",
-        previewProps: {
-          texts: ["오늘도 한 페이지 더 📖"],
-          animation: "scroll",
-          bold: true,
-          color: "1E1E1E",
-          bg: "FFFFFF",
-          borderRadius: 16,
-          padding: 24,
-          fontSize: "md",
-        },
-      },
+      { type: "reading", name: "읽기 진행률", widgetConfig: { title: "클린 코드", currentPage: 180, totalPages: 300 } },
+      { type: "goal", name: "올해 독서 목표", widgetConfig: { title: "올해 독서", current: 8, target: 24, unit: "권" } },
+      { type: "quote", name: "독서 명언", widgetConfig: { text: "책은 도끼날 수 있는 꿈이다", author: "닐 게이먼", font: "serif" } },
+      { type: "counter", name: "완독 카운터", widgetConfig: { label: "완독", initial: 0, step: 1 } },
+      { type: "banner", name: "독서 격려 배너", widgetConfig: { texts: ["오늘도 한 페이지 더"], animation: "scroll", bold: true } },
     ],
   },
   {
-    id: "goals",
-    title: "목표 & 습관",
-    desc: "저축·운동 목표 달성률 + 습관 관리 + D-Day 카운트다운",
-    layout: [[0, 1], [2, 3], [4, 5]],
+    id: "dark-productivity",
+    title: "다크 생산성",
+    desc: "어두운 테마로 집중력을 높이는 생산성 대시보드",
+    themeId: "midnight",
+    layout: [[0, 1], [2, 3], [4]],
+    notionTip: "노션을 다크모드로 설정하면 위젯과 조화롭습니다. 시계와 타이머를 상단에 배치하세요.",
     widgets: [
-      {
-        type: "goal",
-        name: "저축 목표",
-        url: "/widget/goal?title=%EC%A0%80%EC%B6%95&current=350000&target=1000000&unit=%EC%9B%90&style=bar&color=22C55E",
-        editorUrl: "/create/goal",
-        previewProps: {
-          title: "저축",
-          current: 350000,
-          target: 1000000,
-          unit: "원",
-          style: "bar",
-          color: "22C55E",
-          bg: "FFFFFF",
-          borderRadius: 16,
-          padding: 24,
-          fontSize: "md",
-        },
-      },
-      {
-        type: "goal",
-        name: "운동 목표",
-        url: "/widget/goal?title=%EC%9A%B4%EB%8F%99&current=12&target=30&unit=%ED%9A%8C&style=ring&color=E11D48",
-        editorUrl: "/create/goal",
-        previewProps: {
-          title: "운동",
-          current: 12,
-          target: 30,
-          unit: "회",
-          style: "ring",
-          color: "E11D48",
-          bg: "FFFFFF",
-          borderRadius: 16,
-          padding: 24,
-          fontSize: "md",
-        },
-      },
-      {
-        type: "habit",
-        name: "운동 습관 트래커",
-        url: "/widget/habit?title=%EC%9A%B4%EB%8F%99&view=week&weekStart=mon&color=F59E0B",
-        editorUrl: "/create/habit",
-        previewProps: {
-          title: "운동",
-          view: "week",
-          weekStart: "mon",
-          checkedDates: new Set(["2026-02-23", "2026-02-25", "2026-02-27"]),
-          interactive: false,
-          color: "F59E0B",
-          bg: "FFFFFF",
-          borderRadius: 16,
-          padding: 24,
-        },
-      },
-      {
-        type: "dday",
-        name: "목표 달성일",
-        url: "/widget/dday?title=%EB%AA%A9%ED%91%9C+%EB%8B%AC%EC%84%B1%EC%9D%BC&date=2026-12-31&bg=7C3AED&text=FFFFFF",
-        editorUrl: "/create/dday",
-        previewProps: {
-          title: "목표 달성일",
-          targetDate: "2026-12-31",
-          bgColor: "7C3AED",
-          textColor: "FFFFFF",
-          borderRadius: 16,
-          padding: 24,
-          fontSize: "md",
-        },
-      },
-      {
-        type: "life-calendar",
-        name: "인생 달력",
-        url: "/widget/life-calendar?birthdate=2000-01-01&lifespan=80&color=7C3AED&shape=round",
-        editorUrl: "/create/life-calendar",
-        previewProps: {
-          birthdate: "2000-01-01",
-          lifespan: 80,
-          color: "7C3AED",
-          shape: "round",
-          bg: "FFFFFF",
-          borderRadius: 16,
-          padding: 24,
-          fontSize: "md",
-        },
-      },
-      {
-        type: "time-progress",
-        name: "올해 진행률",
-        url: "/widget/time-progress?type=year&color=2563EB",
-        editorUrl: "/create/time-progress",
-        previewProps: {
-          type: "year",
-          color: "2563EB",
-          bg: "FFFFFF",
-          borderRadius: 16,
-          padding: 24,
-          fontSize: "md",
-        },
-      },
+      { type: "flip-clock", name: "플립 시계", widgetConfig: { timezone: "Asia/Seoul", showDate: true, flipColor: "E0E0E0", textColor: "0F172A", gapColor: "94A3B8" } },
+      { type: "pomodoro", name: "뽀모도로", widgetConfig: { workTime: 25, breakTime: 5, pStyle: "ring" } },
+      { type: "stopwatch", name: "스톱워치", widgetConfig: { showMs: true, showLap: true } },
+      { type: "time-progress", name: "하루 진행률", widgetConfig: { type: "day", style: "ring" } },
+      { type: "counter", name: "집중 카운터", widgetConfig: { label: "집중 세션", initial: 0, step: 1 } },
     ],
   },
   {
     id: "aesthetic",
     title: "감성 꾸미기",
-    desc: "노션 페이지를 예쁘게 꾸미는 장식용 위젯 모음",
-    layout: [[0], [1, 3], [4], [2]],
+    desc: "노션 페이지를 예쁘게 꾸미는 로제 감성 위젯 모음",
+    themeId: "rose",
+    layout: [[5], [0], [1, 3], [4, 6], [2]],
+    notionTip: "그라데이션 헤더를 최상단에, 배너와 음악+시계를 중간에, 메모지와 명언을 함께 배치하세요.",
     widgets: [
-      {
-        type: "banner",
-        name: "텍스트 배너",
-        url: "/widget/banner?texts=%EC%98%A4%EB%8A%98%EB%8F%84+%ED%99%94%EC%9D%B4%ED%8C%85!+%F0%9F%92%AA&anim=scroll&bold=true",
-        editorUrl: "/create/banner",
-        previewProps: {
-          texts: ["오늘도 화이팅! 💪"],
-          animation: "scroll",
-          bold: true,
-          color: "1E1E1E",
-          bg: "FFFFFF",
-          borderRadius: 16,
-          padding: 24,
-          fontSize: "md",
-        },
-      },
-      {
-        type: "music",
-        name: "음악 플레이어",
-        url: "/widget/music?title=Chill+Beats&artist=Lo-Fi+Radio&progress=45&artColor=6366F1",
-        editorUrl: "/create/music",
-        previewProps: {
-          title: "Chill Beats",
-          artist: "Lo-Fi Radio",
-          progress: 45,
-          artColor: "6366F1",
-          color: "1E1E1E",
-          bg: "FFFFFF",
-          borderRadius: 16,
-          padding: 24,
-          fontSize: "md",
-        },
-      },
-      {
-        type: "bookmark",
-        name: "북마크 카드",
-        url: "/widget/bookmark?url=https://github.com&title=GitHub&desc=%EB%82%B4+%EA%B9%83%ED%97%88%EB%B8%8C+%ED%94%84%EB%A1%9C%ED%95%84&showIcon=true",
-        editorUrl: "/create/bookmark",
-        previewProps: {
-          url: "https://github.com",
-          title: "GitHub",
-          desc: "내 깃허브 프로필",
-          color: "1E1E1E",
-          bg: "FFFFFF",
-          borderRadius: 16,
-          padding: 24,
-          fontSize: "md",
-          linkable: false,
-        },
-      },
-      {
-        type: "analog-clock",
-        name: "아날로그 시계",
-        url: "/widget/analog-clock?timezone=Asia/Seoul&showNumbers=true&numStyle=quarter",
-        editorUrl: "/create/analog-clock",
-        previewProps: {
-          timezone: "Asia/Seoul",
-          bg: "FFFFFF",
-          borderRadius: 16,
-          padding: 16,
-          fontSize: "md",
-        },
-      },
-      {
-        type: "quote",
-        name: "감성 명언",
-        url: "/widget/quote?text=%EA%BD%83%EC%9D%B4+%EC%A7%80%EA%B3%A0+%EB%82%98%EC%84%9C%EC%95%BC+%EB%B4%84%EC%9D%B8+%EC%A4%84+%EC%95%88%EB%8B%A4&author=%EC%9D%B4%ED%95%B4%EC%9D%B8&font=serif&italic=true",
-        editorUrl: "/create/quote",
-        previewProps: {
-          text: "꽃이 지고 나서야 봄인 줄 안다",
-          author: "이해인",
-          font: "serif",
-          textColor: "1E1E1E",
-          bg: "FFFFFF",
-          borderRadius: 16,
-          padding: 24,
-          fontSize: "md",
-        },
-      },
+      { type: "banner", name: "감성 배너", widgetConfig: { texts: ["오늘도 화이팅!"], animation: "fade", bold: true } },
+      { type: "music", name: "음악 플레이어", widgetConfig: { title: "Spring Day", artist: "Lo-Fi Chill", progress: 42 } },
+      { type: "bookmark", name: "북마크 카드", widgetConfig: { url: "https://github.com", title: "GitHub", desc: "내 깃허브 프로필" } },
+      { type: "analog-clock", name: "아날로그 시계", widgetConfig: { timezone: "Asia/Seoul", showNumbers: true, numStyle: "quarter" } },
+      { type: "quote", name: "감성 명언", widgetConfig: { text: "꽃이 지고 나서야 봄인 줄 안다", author: "이해인", font: "serif", italic: true } },
+      { type: "gradient", name: "그라데이션 헤더", widgetConfig: { colors: ["EC4899", "F472B6", "FB923C"], dir: 135, animate: false } },
+      { type: "sticky-note", name: "메모지", widgetConfig: { text: "오늘의 기분 💭", noteColor: "F9A8D4", pin: "tape", rotation: -2, font: "gaegu" } },
     ],
   },
   {
-    id: "time-master",
-    title: "시간 관리 마스터",
-    desc: "시간 관련 위젯을 총집합한 생산성 대시보드",
+    id: "goals",
+    title: "목표 달성",
+    desc: "저축·운동·습관 목표를 한 곳에서 관리하는 목표 대시보드",
+    themeId: "forest",
     layout: [[0, 1], [2, 3], [4]],
+    notionTip: "목표 2개를 상단에 나란히, 습관과 인생달력을 중간에, D-Day를 하단 전폭에 배치하세요.",
     widgets: [
-      {
-        type: "clock",
-        name: "디지털 시계",
-        url: "/widget/clock?timezone=Asia/Seoul&format=24h&font=mono&color=1E1E1E&bg=FFFFFF",
-        editorUrl: "/create/clock",
-        previewProps: {
-          timezone: "Asia/Seoul",
-          format: "24h",
-          font: "mono",
-          color: "1E1E1E",
-          bg: "FFFFFF",
-          borderRadius: 16,
-          padding: 24,
-          fontSize: "md",
-          showSeconds: true,
-          blink: true,
-        },
-      },
-      {
-        type: "analog-clock",
-        name: "아날로그 시계",
-        url: "/widget/analog-clock?timezone=Asia/Seoul&showNumbers=true&numStyle=all",
-        editorUrl: "/create/analog-clock",
-        previewProps: {
-          timezone: "Asia/Seoul",
-          bg: "FFFFFF",
-          borderRadius: 16,
-          padding: 16,
-          fontSize: "md",
-        },
-      },
-      {
-        type: "stopwatch",
-        name: "스톱워치",
-        url: "/widget/stopwatch?showMs=true&showLap=true&btnColor=E11D48",
-        editorUrl: "/create/stopwatch",
-        previewProps: {
-          showMs: true,
-          showLap: true,
-          btnColor: "E11D48",
-          bg: "FFFFFF",
-          borderRadius: 16,
-          padding: 24,
-          fontSize: "md",
-        },
-      },
-      {
-        type: "pomodoro",
-        name: "뽀모도로 타이머",
-        url: "/widget/pomodoro?work=25&break=5&color=2563EB&pStyle=ring",
-        editorUrl: "/create/pomodoro",
-        previewProps: {
-          workTime: 25,
-          breakTime: 5,
-          color: "2563EB",
-          bg: "FFFFFF",
-          borderRadius: 16,
-          padding: 24,
-          fontSize: "md",
-        },
-      },
-      {
-        type: "time-progress",
-        name: "하루 진행률",
-        url: "/widget/time-progress?type=day&color=F59E0B&style=ring",
-        editorUrl: "/create/time-progress",
-        previewProps: {
-          type: "day",
-          color: "F59E0B",
-          bg: "FFFFFF",
-          borderRadius: 16,
-          padding: 24,
-          fontSize: "md",
-        },
-      },
+      { type: "goal", name: "저축 목표", widgetConfig: { title: "저축", current: 350000, target: 1000000, unit: "원", style: "bar" } },
+      { type: "goal", name: "운동 목표", widgetConfig: { title: "운동", current: 12, target: 30, unit: "회", style: "ring" } },
+      { type: "habit", name: "운동 습관", widgetConfig: { title: "운동", view: "week", weekStart: "mon", checkedDates: new Set(["2026-02-23", "2026-02-25", "2026-02-27"]) } },
+      { type: "life-calendar", name: "인생 달력", widgetConfig: { birthdate: "2000-01-01", lifespan: 80, shape: "round" } },
+      { type: "dday", name: "목표 달성일", widgetConfig: { title: "목표 달성일", targetDate: "2026-12-31" } },
     ],
   },
   {
     id: "daily",
-    title: "데일리 대시보드",
+    title: "데일리 루틴",
     desc: "매일 체크하는 일상 관리 대시보드",
+    themeId: "light-default",
     layout: [[2, 0], [1, 3], [4]],
+    notionTip: "시계를 좌측 상단에, 날씨를 우측에 배치해 매일 확인하세요.",
     widgets: [
-      {
-        type: "weather",
-        name: "오늘 날씨",
-        url: "/widget/weather?lat=37.5665&lon=126.978&city=%EC%84%9C%EC%9A%B8&unit=celsius",
-        editorUrl: "/create/weather",
-        previewProps: {
-          city: "서울",
-          bg: "FFFFFF",
-          borderRadius: 16,
-          padding: 24,
-          fontSize: "md",
-        },
-      },
-      {
-        type: "mini-calendar",
-        name: "이번 달 캘린더",
-        url: "/widget/mini-calendar?weekStart=mon&lang=ko&highlight=2563EB",
-        editorUrl: "/create/mini-calendar",
-        previewProps: {
-          weekStart: "mon",
-          lang: "ko",
-          highlight: "2563EB",
-          bg: "FFFFFF",
-          borderRadius: 16,
-          padding: 24,
-          fontSize: "md",
-        },
-      },
-      {
-        type: "clock",
-        name: "현재 시각",
-        url: "/widget/clock?timezone=Asia/Seoul&format=24h&font=mono&date=true&color=1E1E1E&bg=FFFFFF",
-        editorUrl: "/create/clock",
-        previewProps: {
-          timezone: "Asia/Seoul",
-          format: "24h",
-          font: "mono",
-          color: "1E1E1E",
-          bg: "FFFFFF",
-          borderRadius: 16,
-          padding: 24,
-          fontSize: "md",
-          showSeconds: true,
-          blink: true,
-          showDate: true,
-        },
-      },
-      {
-        type: "counter",
-        name: "물 마시기",
-        url: "/widget/counter?label=%EB%AC%BC+%EB%A7%88%EC%8B%9C%EA%B8%B0+(%EC%9E%94)&initial=0&step=1&btnColor=2563EB",
-        editorUrl: "/create/counter",
-        previewProps: {
-          label: "물 마시기 (잔)",
-          initial: 0,
-          step: 1,
-          btnColor: "2563EB",
-          bg: "FFFFFF",
-          borderRadius: 16,
-          padding: 24,
-          fontSize: "md",
-        },
-      },
-      {
-        type: "time-progress",
-        name: "하루 진행률",
-        url: "/widget/time-progress?type=day&color=22C55E",
-        editorUrl: "/create/time-progress",
-        previewProps: {
-          type: "day",
-          color: "22C55E",
-          bg: "FFFFFF",
-          borderRadius: 16,
-          padding: 24,
-          fontSize: "md",
-        },
-      },
+      { type: "weather", name: "오늘 날씨", widgetConfig: { city: "서울" } },
+      { type: "mini-calendar", name: "이번 달 캘린더", widgetConfig: { weekStart: "mon", lang: "ko" } },
+      { type: "clock", name: "현재 시각", widgetConfig: { timezone: "Asia/Seoul", format: "24h", font: "mono", showDate: true } },
+      { type: "counter", name: "물 마시기", widgetConfig: { label: "물 마시기 (잔)", initial: 0, step: 1 } },
+      { type: "habit", name: "하루 습관", widgetConfig: { title: "루틴 체크", view: "week", weekStart: "mon", checkedDates: new Set(["2026-02-24", "2026-02-25", "2026-02-26"]) } },
     ],
   },
   {
-    id: "self-growth",
-    title: "자기 성장 일지",
-    desc: "인생 전체를 조망하는 자기계발 대시보드",
-    layout: [[0], [1, 2], [3, 4]],
+    id: "night-owl",
+    title: "나이트 아울",
+    desc: "따뜻한 색감의 야간용 위젯 조합",
+    themeId: "sunset",
+    layout: [[0, 1], [2, 3], [4, 5]],
+    notionTip: "노션 다크모드와 함께 사용하면 눈이 편합니다. 플립 시계와 진행률을 상단에, 달 위상을 하단에 배치하세요.",
     widgets: [
-      {
-        type: "life-calendar",
-        name: "인생 달력",
-        url: "/widget/life-calendar?birthdate=2000-01-01&lifespan=80&color=22C55E&shape=round",
-        editorUrl: "/create/life-calendar",
-        previewProps: {
-          birthdate: "2000-01-01",
-          lifespan: 80,
-          color: "22C55E",
-          shape: "round",
-          bg: "FFFFFF",
-          borderRadius: 16,
-          padding: 24,
-          fontSize: "md",
-        },
-      },
-      {
-        type: "goal",
-        name: "올해 목표",
-        url: "/widget/goal?title=%EC%98%AC%ED%95%B4+%EB%AA%A9%ED%91%9C&current=25&target=100&unit=%25&style=ring&color=6366F1",
-        editorUrl: "/create/goal",
-        previewProps: {
-          title: "올해 목표",
-          current: 25,
-          target: 100,
-          unit: "%",
-          style: "ring",
-          color: "6366F1",
-          bg: "FFFFFF",
-          borderRadius: 16,
-          padding: 24,
-          fontSize: "md",
-        },
-      },
-      {
-        type: "habit",
-        name: "자기계발 습관",
-        url: "/widget/habit?title=%EC%9E%90%EA%B8%B0%EA%B3%84%EB%B0%9C&view=week&weekStart=mon&color=F59E0B",
-        editorUrl: "/create/habit",
-        previewProps: {
-          title: "자기계발",
-          view: "week",
-          weekStart: "mon",
-          checkedDates: new Set(["2026-02-23", "2026-02-24", "2026-02-26", "2026-02-27"]),
-          interactive: false,
-          color: "F59E0B",
-          bg: "FFFFFF",
-          borderRadius: 16,
-          padding: 24,
-        },
-      },
-      {
-        type: "dday",
-        name: "목표 달성일",
-        url: "/widget/dday?title=%EB%AA%A9%ED%91%9C+%EB%8B%AC%EC%84%B1%EC%9D%BC&date=2026-12-31&bg=1E1E1E&text=FFFFFF",
-        editorUrl: "/create/dday",
-        previewProps: {
-          title: "목표 달성일",
-          targetDate: "2026-12-31",
-          bgColor: "1E1E1E",
-          textColor: "FFFFFF",
-          borderRadius: 16,
-          padding: 24,
-          fontSize: "md",
-        },
-      },
-      {
-        type: "quote",
-        name: "동기부여 명언",
-        url: "/widget/quote?text=%EC%9E%91%EC%9D%80+%EC%A7%84%EC%A0%84%EC%9D%B4+%ED%81%B0+%EB%B3%80%ED%99%94%EB%A5%BC+%EB%A7%8C%EB%93%A0%EB%8B%A4&author=%EC%A0%9C%EC%9E%84%EC%8A%A4+%ED%81%B4%EB%A6%AC%EC%96%B4&font=serif",
-        editorUrl: "/create/quote",
-        previewProps: {
-          text: "작은 진전이 큰 변화를 만든다",
-          author: "제임스 클리어",
-          font: "serif",
-          textColor: "1E1E1E",
-          bg: "FFFFFF",
-          borderRadius: 16,
-          padding: 24,
-          fontSize: "md",
-        },
-      },
+      { type: "flip-clock", name: "플립 시계", widgetConfig: { timezone: "Asia/Seoul", flipColor: "FEF3C7", textColor: "1C1917", gapColor: "D97706", showDate: true, dateFmt: "kr" } },
+      { type: "time-progress", name: "올해 진행률", widgetConfig: { type: "year" } },
+      { type: "music", name: "음악 플레이어", widgetConfig: { title: "Midnight Jazz", artist: "Night Vibes", progress: 65 } },
+      { type: "quote", name: "밤 명언", widgetConfig: { text: "밤은 낮보다 더 많은 별을 가지고 있다", author: "헤밍웨이", font: "serif" } },
+      { type: "timeline", name: "이번 주 일정", widgetConfig: { events: [{ title: "프로젝트 마감", date: "2026-03-06" }, { title: "미팅", date: "2026-03-10" }, { title: "발표", date: "2026-03-15" }] } },
+      { type: "moon-phase", name: "달 위상", widgetConfig: { style: "realistic", moonSize: "md", showName: true, showPercent: true } },
     ],
   },
 ];

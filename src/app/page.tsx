@@ -33,6 +33,7 @@ import {
   Moon,
   Dice5,
   QrCode,
+  TextCursorInput,
   Search,
   X,
   History,
@@ -48,7 +49,8 @@ type WidgetType =
   | "pomodoro" | "mini-calendar" | "analog-clock" | "counter" | "weather"
   | "reading" | "habit" | "timeline" | "banner"
   | "bookmark" | "goal" | "stopwatch" | "music"
-  | "gradient" | "sticky-note" | "flip-clock" | "moon-phase" | "dice" | "qr-code";
+  | "gradient" | "sticky-note" | "flip-clock" | "moon-phase" | "dice" | "qr-code"
+  | "typewriter";
 
 interface Widget {
   href: string;
@@ -106,6 +108,7 @@ const categories: WidgetCategory[] = [
       { href: "/create/moon-phase", type: "moon-phase", icon: Moon, name: "달 위상", desc: "현재 달 모양과 조도를 표시합니다" },
       { href: "/create/sticky-note", type: "sticky-note", icon: StickyNote, name: "메모지", desc: "포스트잇 스타일 메모 카드입니다" },
       { href: "/create/gradient", type: "gradient", icon: Blend, name: "그라데이션", desc: "CSS 그라데이션 배너/구분선입니다" },
+      { href: "/create/typewriter", type: "typewriter", icon: TextCursorInput, name: "타이핑 효과", desc: "텍스트가 타이핑되는 애니메이션 위젯입니다" },
     ],
   },
 ];
