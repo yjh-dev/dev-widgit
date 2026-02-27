@@ -1,6 +1,6 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
+import { useWidgetParams } from "@/lib/use-widget-params";
 import { Suspense } from "react";
 import AnalogClockPreview from "@/components/widget/AnalogClockPreview";
 import type { NumberStyle } from "@/lib/analog-clock";
@@ -9,7 +9,7 @@ import { parseBorderRadius, parsePadding, parseFontSize, parseHexColor } from "@
 const VALID_NUM_STYLE: NumberStyle[] = ["quarter", "all"];
 
 function AnalogClockWidgetContent() {
-  const searchParams = useSearchParams();
+  const searchParams = useWidgetParams();
 
   const timezone = searchParams.get("timezone") || "Asia/Seoul";
 

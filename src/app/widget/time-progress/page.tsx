@@ -1,6 +1,6 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
+import { useWidgetParams } from "@/lib/use-widget-params";
 import { Suspense } from "react";
 import TimeProgressPreview from "@/components/widget/TimeProgressPreview";
 import type { ProgressType, WeekStart } from "@/lib/time-progress";
@@ -14,7 +14,7 @@ const VALID_WEEK_STARTS: WeekStart[] = ["sun", "mon"];
 const VALID_RING_SIZES: RingSize[] = ["sm", "md", "lg"];
 
 function TimeProgressWidgetContent() {
-  const searchParams = useSearchParams();
+  const searchParams = useWidgetParams();
 
   const rawType = searchParams.get("type");
   const type: ProgressType = VALID_TYPES.includes(rawType as ProgressType)

@@ -1,6 +1,6 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
+import { useWidgetParams } from "@/lib/use-widget-params";
 import { Suspense } from "react";
 import ClockPreview from "@/components/widget/ClockPreview";
 import type { ClockFormat, ClockDateFormat } from "@/lib/clock";
@@ -11,7 +11,7 @@ const VALID_FORMATS: ClockFormat[] = ["12h", "24h"];
 const VALID_DATE_FORMATS: ClockDateFormat[] = ["kr", "en", "short"];
 
 function ClockWidgetContent() {
-  const searchParams = useSearchParams();
+  const searchParams = useWidgetParams();
 
   const timezone = searchParams.get("timezone") || "Asia/Seoul";
 

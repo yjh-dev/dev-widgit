@@ -1,6 +1,6 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
+import { useWidgetParams } from "@/lib/use-widget-params";
 import { Suspense } from "react";
 import LifeCalendarPreview from "@/components/widget/LifeCalendarPreview";
 import type { CellShape, CellSize } from "@/components/widget/LifeCalendarPreview";
@@ -10,7 +10,7 @@ const VALID_SHAPES: CellShape[] = ["square", "round"];
 const VALID_CELL_SIZES: CellSize[] = ["sm", "md", "lg"];
 
 function LifeCalendarWidgetContent() {
-  const searchParams = useSearchParams();
+  const searchParams = useWidgetParams();
 
   const birthdate = searchParams.get("birthdate") || "";
   const rawLifespan = Number(searchParams.get("lifespan"));

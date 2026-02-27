@@ -1,6 +1,6 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
+import { useWidgetParams } from "@/lib/use-widget-params";
 import { Suspense } from "react";
 import MiniCalendarPreview from "@/components/widget/MiniCalendarPreview";
 import type { WeekStartDay, HeaderFormat, DayNameLang } from "@/lib/mini-calendar";
@@ -11,7 +11,7 @@ const VALID_HEADER: HeaderFormat[] = ["full", "short", "none"];
 const VALID_LANG: DayNameLang[] = ["ko", "en"];
 
 function MiniCalendarWidgetContent() {
-  const searchParams = useSearchParams();
+  const searchParams = useWidgetParams();
 
   const rawWeekStart = searchParams.get("weekStart");
   const weekStart: WeekStartDay = VALID_WEEK_START.includes(rawWeekStart as WeekStartDay)

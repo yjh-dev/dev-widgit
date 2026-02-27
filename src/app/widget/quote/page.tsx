@@ -1,6 +1,6 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
+import { useWidgetParams } from "@/lib/use-widget-params";
 import { Suspense } from "react";
 import QuotePreview from "@/components/widget/QuotePreview";
 import type { TextAlign, LineHeight } from "@/lib/quote";
@@ -11,7 +11,7 @@ const VALID_ALIGNS: TextAlign[] = ["left", "center", "right"];
 const VALID_LINE_HEIGHTS: LineHeight[] = ["tight", "normal", "relaxed"];
 
 function QuoteWidgetContent() {
-  const searchParams = useSearchParams();
+  const searchParams = useWidgetParams();
 
   const text = searchParams.get("text") || "";
   const author = searchParams.get("author") || "";

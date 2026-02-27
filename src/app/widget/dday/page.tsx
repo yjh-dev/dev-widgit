@@ -1,6 +1,6 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
+import { useWidgetParams } from "@/lib/use-widget-params";
 import { Suspense } from "react";
 import DdayWidgetPreview from "@/components/widget/DdayWidgetPreview";
 import type { DdayDateFormat } from "@/components/widget/DdayWidgetPreview";
@@ -20,7 +20,7 @@ const VALID_FONTS: FontKey[] = [
 const VALID_DATE_FORMATS: DdayDateFormat[] = ["full", "short", "dot", "none"];
 
 function DdayWidgetContent() {
-  const searchParams = useSearchParams();
+  const searchParams = useWidgetParams();
 
   const title = searchParams.get("title") || "D-Day";
   const targetDate = searchParams.get("date") || "";

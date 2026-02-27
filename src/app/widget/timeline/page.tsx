@@ -1,13 +1,13 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
+import { useWidgetParams } from "@/lib/use-widget-params";
 import { Suspense } from "react";
 import TimelinePreview from "@/components/widget/TimelinePreview";
 import { parseEvents } from "@/lib/timeline";
 import { parseBorderRadius, parsePadding, parseFontSize, parseHexColor } from "@/lib/common-widget-options";
 
 function TimelineWidgetContent() {
-  const searchParams = useSearchParams();
+  const searchParams = useWidgetParams();
 
   const events = parseEvents(searchParams.get("events") || "");
   const showPast = searchParams.get("past") === "true";

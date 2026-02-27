@@ -1,6 +1,6 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
+import { useWidgetParams } from "@/lib/use-widget-params";
 import { Suspense } from "react";
 import ReadingPreview from "@/components/widget/ReadingPreview";
 import { parseBorderRadius, parsePadding, parseFontSize, parseHexColor } from "@/lib/common-widget-options";
@@ -9,7 +9,7 @@ import type { ReadingStyle } from "@/lib/reading";
 const VALID_STYLES: ReadingStyle[] = ["bar", "ring"];
 
 function ReadingWidgetContent() {
-  const searchParams = useSearchParams();
+  const searchParams = useWidgetParams();
 
   const title = searchParams.get("title") || "";
   const currentPage = Math.max(0, Number(searchParams.get("current")) || 0);

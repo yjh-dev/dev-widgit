@@ -2,32 +2,40 @@
 
 import { useWidgetParams } from "@/lib/use-widget-params";
 import { Suspense } from "react";
-import GoalPreview from "@/components/widget/GoalPreview";
+import DicePreview from "@/components/widget/DicePreview";
 import { parseBorderRadius, parsePadding, parseFontSize, parseHexColor } from "@/lib/common-widget-options";
-import type { GoalStyle } from "@/lib/goal";
+import type { DiceMode, DiceSides } from "@/lib/dice";
 
-const VALID_STYLES: GoalStyle[] = ["bar", "ring"];
+const VALID_MODES: DiceMode[] = ["dice", "coin", "picker"];
+const VALID_SIDES: number[] = [4, 6, 8, 10, 12, 20];
 
-function GoalWidgetContent() {
+function DiceWidgetContent() {
   const searchParams = useWidgetParams();
 
-  const title = searchParams.get("title") || "";
-  const current = Math.max(0, Number(searchParams.get("current")) || 0);
-  const target = Math.max(1, Number(searchParams.get("target")) || 100);
-  const unit = searchParams.get("unit") || "";
+  const rawMode = searchParams.get("mode");
+  const mode: DiceMode = VALID_MODES.includes(rawMode as DiceMode)
+    ? (rawMode as DiceMode)
+    : "dice";
 
-  const rawStyle = searchParams.get("style");
-  const style: GoalStyle = VALID_STYLES.includes(rawStyle as GoalStyle)
-    ? (rawStyle as GoalStyle)
-    : "bar";
+  const count = Math.max(1, Math.min(4, Number(searchParams.get("count")) || 1));
 
-  const showValue = searchParams.get("showValue") !== "false";
+  const rawSides = Number(searchParams.get("sides")) || 6;
+  const sides: DiceSides = VALID_SIDES.includes(rawSides)
+    ? (rawSides as DiceSides)
+    : 6;
 
   const color = parseHexColor(searchParams.get("color"), "2563EB");
-  const textColor = parseHexColor(searchParams.get("textColor"), "");
+  const textColor = parseHexColor(searchParams.get("textColor"), "FFFFFF");
+
   const rawBg = searchParams.get("bg") || "FFFFFF";
   const transparentBg = rawBg === "transparent";
   const bg = transparentBg ? "FFFFFF" : parseHexColor(rawBg, "FFFFFF");
+
+  const rawItems = searchParams.get("items") || "";
+  const items = rawItems ? rawItems.split("|").map(decodeURIComponent).filter(Boolean) : [];
+
+  const showTotal = searchParams.get("showTotal") !== "false";
+  const history = searchParams.get("history") === "true";
 
   const borderRadius = parseBorderRadius(searchParams.get("radius"));
   const padding = parsePadding(searchParams.get("pad"));
@@ -35,17 +43,17 @@ function GoalWidgetContent() {
 
   return (
     <div className="w-screen h-screen bg-transparent">
-      <GoalPreview
-        title={title}
-        current={current}
-        target={target}
-        unit={unit}
-        style={style}
-        showValue={showValue}
+      <DicePreview
+        mode={mode}
+        count={count}
+        sides={sides}
         color={color}
         textColor={textColor}
         bg={bg}
         transparentBg={transparentBg}
+        items={items}
+        showTotal={showTotal}
+        history={history}
         borderRadius={borderRadius}
         padding={padding}
         fontSize={fontSize}
@@ -54,7 +62,7 @@ function GoalWidgetContent() {
   );
 }
 
-export default function WidgetGoalPage() {
+export default function WidgetDicePage() {
   return (
     <Suspense
       fallback={
@@ -63,7 +71,7 @@ export default function WidgetGoalPage() {
         </div>
       }
     >
-      <GoalWidgetContent />
+      <DiceWidgetContent />
     </Suspense>
   );
 }

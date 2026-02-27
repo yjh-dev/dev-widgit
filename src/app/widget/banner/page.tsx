@@ -1,6 +1,6 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
+import { useWidgetParams } from "@/lib/use-widget-params";
 import { Suspense } from "react";
 import BannerPreview from "@/components/widget/BannerPreview";
 import { parseBorderRadius, parsePadding, parseFontSize, parseHexColor } from "@/lib/common-widget-options";
@@ -10,7 +10,7 @@ const VALID_ANIMATIONS: BannerAnimation[] = ["none", "scroll", "fade"];
 const VALID_ALIGNS: BannerAlign[] = ["left", "center", "right"];
 
 function BannerWidgetContent() {
-  const searchParams = useSearchParams();
+  const searchParams = useWidgetParams();
 
   const rawTexts = searchParams.get("texts") || "";
   const texts = rawTexts ? rawTexts.split("|").map(decodeURIComponent) : ["텍스트를 입력하세요"];

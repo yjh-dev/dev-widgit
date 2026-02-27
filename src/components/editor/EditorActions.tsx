@@ -1,9 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { Copy, RotateCcw, ExternalLink, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { toast } from "sonner";
+import { useEditorActions } from "./EditorActionsContext";
+import { compressWidgetUrl } from "@/lib/url-compression";
+
+const LS_KEY = "widgit-short-url";
 
 interface EditorActionsProps {
   widgetUrl: string;
@@ -17,28 +23,68 @@ export default function EditorActions({
   onReset,
 }: EditorActionsProps) {
   const [guideOpen, setGuideOpen] = useState(false);
+  const [shortUrl, setShortUrl] = useState(false);
+  const { register } = useEditorActions();
+
+  // localStorage에서 토글 상태 복원
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(LS_KEY);
+      if (saved === "true") setShortUrl(true);
+    } catch { /* SSR / 접근 불가 무시 */ }
+  }, []);
+
+  const handleToggle = (checked: boolean) => {
+    setShortUrl(checked);
+    try { localStorage.setItem(LS_KEY, String(checked)); } catch { /* 무시 */ }
+  };
+
+  const displayUrl = useMemo(
+    () => (shortUrl ? compressWidgetUrl(widgetUrl) : widgetUrl),
+    [shortUrl, widgetUrl],
+  );
+
+  const wrappedOnCopy = useCallback(() => {
+    if (shortUrl) {
+      navigator.clipboard.writeText(displayUrl).then(() => {
+        toast.success("짧은 URL이 복사되었습니다!");
+      });
+    } else {
+      onCopy();
+    }
+  }, [shortUrl, displayUrl, onCopy]);
+
+  useEffect(() => {
+    register({ widgetUrl: displayUrl, onCopy: wrappedOnCopy, onReset });
+  }, [displayUrl, wrappedOnCopy, onReset, register]);
 
   return (
     <div className="space-y-4">
       <div className="space-y-2">
-        <Label>위젯 URL</Label>
+        <div className="flex items-center justify-between">
+          <Label>위젯 URL</Label>
+          <label className="flex items-center gap-1.5 cursor-pointer">
+            <span className="text-xs text-muted-foreground">짧은 URL</span>
+            <Switch checked={shortUrl} onCheckedChange={handleToggle} />
+          </label>
+        </div>
         <textarea
           readOnly
-          value={widgetUrl}
+          value={displayUrl}
           rows={2}
           className="w-full rounded-md border bg-muted px-3 py-2 text-xs text-muted-foreground break-all resize-none focus:outline-none"
         />
       </div>
 
       <div className="flex gap-2">
-        <Button onClick={onCopy} className="flex-1">
+        <Button onClick={wrappedOnCopy} className="flex-1">
           <Copy className="w-4 h-4 mr-2" />
           URL 복사
         </Button>
         <Button
           variant="outline"
           size="icon"
-          onClick={() => window.open(widgetUrl, "_blank")}
+          onClick={() => window.open(displayUrl, "_blank")}
           title="새 탭에서 열기"
         >
           <ExternalLink className="w-4 h-4" />

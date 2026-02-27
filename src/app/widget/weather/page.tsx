@@ -1,6 +1,6 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
+import { useWidgetParams } from "@/lib/use-widget-params";
 import { Suspense } from "react";
 import WeatherPreview from "@/components/widget/WeatherPreview";
 import type { TemperatureUnit, WeatherIconStyle } from "@/lib/weather";
@@ -10,7 +10,7 @@ const VALID_UNITS: TemperatureUnit[] = ["celsius", "fahrenheit"];
 const VALID_ICON_STYLES: WeatherIconStyle[] = ["emoji", "minimal"];
 
 function WeatherWidgetContent() {
-  const searchParams = useSearchParams();
+  const searchParams = useWidgetParams();
 
   const lat = Number(searchParams.get("lat")) || 37.5665;
   const lon = Number(searchParams.get("lon")) || 126.978;

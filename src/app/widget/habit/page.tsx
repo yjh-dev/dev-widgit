@@ -1,6 +1,6 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
+import { useWidgetParams } from "@/lib/use-widget-params";
 import { Suspense } from "react";
 import HabitPreview from "@/components/widget/HabitPreview";
 import { parseCheckedDates, type HabitView } from "@/lib/habit";
@@ -9,7 +9,7 @@ import { parseBorderRadius, parsePadding, parseFontSize, parseHexColor } from "@
 const VALID_VIEWS: HabitView[] = ["week", "month"];
 
 function HabitWidgetContent() {
-  const searchParams = useSearchParams();
+  const searchParams = useWidgetParams();
 
   const title = searchParams.get("title") || "";
 

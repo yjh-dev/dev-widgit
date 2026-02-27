@@ -1,6 +1,6 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
+import { useWidgetParams } from "@/lib/use-widget-params";
 import { Suspense } from "react";
 import PomodoroPreview from "@/components/widget/PomodoroPreview";
 import type { PomodoroProgressStyle } from "@/components/widget/PomodoroPreview";
@@ -9,7 +9,7 @@ import { parseBorderRadius, parsePadding, parseFontSize, parseHexColor } from "@
 const VALID_PSTYLES: PomodoroProgressStyle[] = ["bar", "ring"];
 
 function PomodoroWidgetContent() {
-  const searchParams = useSearchParams();
+  const searchParams = useWidgetParams();
 
   const rawWork = Number(searchParams.get("work"));
   const workTime = rawWork > 0 && rawWork <= 120 ? rawWork : 25;
