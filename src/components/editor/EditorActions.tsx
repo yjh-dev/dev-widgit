@@ -1,13 +1,14 @@
 "use client";
 
 import { useState, useEffect, useMemo, useCallback } from "react";
-import { Copy, RotateCcw, ExternalLink, ChevronDown } from "lucide-react";
+import { Copy, RotateCcw, ExternalLink, ChevronDown, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import { useEditorActions } from "./EditorActionsContext";
 import { compressWidgetUrl } from "@/lib/url-compression";
+import { toPng } from "html-to-image";
 
 const LS_KEY = "widgit-short-url";
 
@@ -88,6 +89,27 @@ export default function EditorActions({
           title="새 탭에서 열기"
         >
           <ExternalLink className="w-4 h-4" />
+        </Button>
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={async () => {
+            const preview = document.getElementById("widget-preview");
+            if (!preview) { toast.error("프리뷰를 찾을 수 없습니다."); return; }
+            try {
+              const dataUrl = await toPng(preview, { pixelRatio: 2 });
+              const a = document.createElement("a");
+              a.download = "widget.png";
+              a.href = dataUrl;
+              a.click();
+              toast.success("이미지가 다운로드되었습니다!");
+            } catch {
+              toast.error("이미지 내보내기에 실패했습니다.");
+            }
+          }}
+          title="이미지로 저장"
+        >
+          <Download className="w-4 h-4" />
         </Button>
         <Button variant="outline" size="icon" onClick={onReset} title="초기화">
           <RotateCcw className="w-4 h-4" />
