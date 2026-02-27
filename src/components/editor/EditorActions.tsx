@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo, useCallback } from "react";
-import { Copy, RotateCcw, ExternalLink, ChevronDown, Download } from "lucide-react";
+import { Copy, RotateCcw, ExternalLink, ChevronDown, Download, Save, Trash2, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -9,6 +9,12 @@ import { toast } from "sonner";
 import { useEditorActions } from "./EditorActionsContext";
 import { compressWidgetUrl } from "@/lib/url-compression";
 import { toPng } from "html-to-image";
+import {
+  getCustomPresets,
+  saveCustomPreset,
+  deleteCustomPreset,
+  type CustomPreset,
+} from "@/lib/custom-presets";
 
 const LS_KEY = "widgit-short-url";
 
@@ -18,6 +24,15 @@ interface EditorActionsProps {
   onReset: () => void;
 }
 
+function extractWidgetType(url: string): string {
+  try {
+    const path = new URL(url).pathname; // /widget/dday
+    return path.split("/").pop() || "";
+  } catch {
+    return "";
+  }
+}
+
 export default function EditorActions({
   widgetUrl,
   onCopy,
@@ -25,7 +40,12 @@ export default function EditorActions({
 }: EditorActionsProps) {
   const [guideOpen, setGuideOpen] = useState(false);
   const [shortUrl, setShortUrl] = useState(false);
+  const [customPresets, setCustomPresets] = useState<CustomPreset[]>([]);
+  const [savingName, setSavingName] = useState("");
+  const [showSaveInput, setShowSaveInput] = useState(false);
   const { register } = useEditorActions();
+
+  const widgetType = useMemo(() => extractWidgetType(widgetUrl), [widgetUrl]);
 
   // localStorage에서 토글 상태 복원
   useEffect(() => {
@@ -34,6 +54,31 @@ export default function EditorActions({
       if (saved === "true") setShortUrl(true);
     } catch { /* SSR / 접근 불가 무시 */ }
   }, []);
+
+  // 커스텀 프리셋 로드
+  useEffect(() => {
+    if (widgetType) setCustomPresets(getCustomPresets(widgetType));
+  }, [widgetType]);
+
+  const handleSavePreset = () => {
+    const name = savingName.trim();
+    if (!name) { toast.error("프리셋 이름을 입력하세요."); return; }
+    saveCustomPreset(widgetType, name, widgetUrl);
+    setCustomPresets(getCustomPresets(widgetType));
+    setSavingName("");
+    setShowSaveInput(false);
+    toast.success(`"${name}" 프리셋이 저장되었습니다!`);
+  };
+
+  const handleDeletePreset = (id: string) => {
+    deleteCustomPreset(widgetType, id);
+    setCustomPresets(getCustomPresets(widgetType));
+    toast.success("프리셋이 삭제되었습니다.");
+  };
+
+  const handleLoadPreset = (preset: CustomPreset) => {
+    window.location.href = preset.url.replace("/widget/", "/create/");
+  };
 
   const handleToggle = (checked: boolean) => {
     setShortUrl(checked);
@@ -142,6 +187,81 @@ export default function EditorActions({
           </div>
         </div>
       )}
+
+      {/* Custom presets */}
+      <div className="border-t pt-4 space-y-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-1.5">
+            <Star className="w-3.5 h-3.5 text-muted-foreground" />
+            <span className="text-xs font-medium text-muted-foreground">내 프리셋</span>
+          </div>
+          {!showSaveInput && (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-7 text-xs"
+              onClick={() => setShowSaveInput(true)}
+            >
+              <Save className="w-3.5 h-3.5 mr-1" />
+              현재 설정 저장
+            </Button>
+          )}
+        </div>
+
+        {showSaveInput && (
+          <div className="flex gap-2">
+            <input
+              type="text"
+              value={savingName}
+              onChange={(e) => setSavingName(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleSavePreset()}
+              placeholder="프리셋 이름"
+              className="flex-1 rounded-md border bg-background px-3 py-1.5 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+              autoFocus
+            />
+            <Button size="sm" className="h-8" onClick={handleSavePreset}>저장</Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8"
+              onClick={() => { setShowSaveInput(false); setSavingName(""); }}
+            >
+              취소
+            </Button>
+          </div>
+        )}
+
+        {customPresets.length > 0 ? (
+          <div className="flex flex-wrap gap-2">
+            {customPresets.map((p) => (
+              <div key={p.id} className="group flex items-center gap-0.5">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="h-7 text-xs"
+                  onClick={() => handleLoadPreset(p)}
+                >
+                  {p.name}
+                </Button>
+                <button
+                  type="button"
+                  onClick={() => handleDeletePreset(p.id)}
+                  className="opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-destructive p-0.5"
+                  title="삭제"
+                >
+                  <Trash2 className="w-3 h-3" />
+                </button>
+              </div>
+            ))}
+          </div>
+        ) : (
+          !showSaveInput && (
+            <p className="text-xs text-muted-foreground">
+              현재 설정을 저장하면 다음에 빠르게 불러올 수 있습니다.
+            </p>
+          )
+        )}
+      </div>
     </div>
   );
 }
