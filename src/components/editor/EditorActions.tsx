@@ -1,13 +1,13 @@
 "use client";
 
 import { useState, useEffect, useMemo, useCallback } from "react";
-import { Copy, RotateCcw, ExternalLink, ChevronDown, Download, Save, Trash2, Star } from "lucide-react";
+import { Copy, RotateCcw, ExternalLink, ChevronDown, Download, Save, Trash2, Star, Import } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import { useEditorActions } from "./EditorActionsContext";
-import { compressWidgetUrl } from "@/lib/url-compression";
+import { compressWidgetUrl, decompressToParams } from "@/lib/url-compression";
 import { toPng } from "html-to-image";
 import {
   getCustomPresets,
@@ -43,6 +43,8 @@ export default function EditorActions({
   const [customPresets, setCustomPresets] = useState<CustomPreset[]>([]);
   const [savingName, setSavingName] = useState("");
   const [showSaveInput, setShowSaveInput] = useState(false);
+  const [showImport, setShowImport] = useState(false);
+  const [importUrl, setImportUrl] = useState("");
   const { register } = useEditorActions();
 
   const widgetType = useMemo(() => extractWidgetType(widgetUrl), [widgetUrl]);
@@ -78,6 +80,36 @@ export default function EditorActions({
 
   const handleLoadPreset = (preset: CustomPreset) => {
     window.location.href = preset.url.replace("/widget/", "/create/");
+  };
+
+  const handleImport = () => {
+    const raw = importUrl.trim();
+    if (!raw) { toast.error("URL을 입력하세요."); return; }
+    try {
+      const parsed = new URL(raw);
+      const path = parsed.pathname;
+
+      // /widget/xxx → /create/xxx
+      if (!path.startsWith("/widget/")) {
+        toast.error("위젯 URL 형식이 아닙니다. (/widget/... 형태)");
+        return;
+      }
+
+      // 압축 URL 처리: ?c=... → 개별 파라미터로 전개
+      const compressed = parsed.searchParams.get("c");
+      let qs = parsed.search;
+      if (compressed) {
+        const decompressed = decompressToParams(compressed);
+        if (decompressed) {
+          qs = `?${decompressed.toString()}`;
+        }
+      }
+
+      const createPath = path.replace("/widget/", "/create/");
+      window.location.href = `${createPath}${qs}`;
+    } catch {
+      toast.error("올바른 URL을 입력하세요.");
+    }
   };
 
   const handleToggle = (checked: boolean) => {
@@ -161,16 +193,41 @@ export default function EditorActions({
         </Button>
       </div>
 
-      <button
-        type="button"
-        onClick={() => setGuideOpen(!guideOpen)}
-        className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
-      >
-        <ChevronDown
-          className={`w-3.5 h-3.5 transition-transform ${guideOpen ? "rotate-180" : ""}`}
-        />
-        노션에 임베드하는 방법
-      </button>
+      <div className="flex gap-3">
+        <button
+          type="button"
+          onClick={() => setShowImport(!showImport)}
+          className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
+        >
+          <Import className={`w-3.5 h-3.5 transition-transform ${showImport ? "rotate-180" : ""}`} />
+          기존 URL 불러오기
+        </button>
+        <button
+          type="button"
+          onClick={() => setGuideOpen(!guideOpen)}
+          className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
+        >
+          <ChevronDown
+            className={`w-3.5 h-3.5 transition-transform ${guideOpen ? "rotate-180" : ""}`}
+          />
+          노션에 임베드하는 방법
+        </button>
+      </div>
+
+      {showImport && (
+        <div className="flex gap-2">
+          <input
+            type="text"
+            value={importUrl}
+            onChange={(e) => setImportUrl(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handleImport()}
+            placeholder="기존 위젯 URL 붙여넣기"
+            className="flex-1 rounded-md border bg-background px-3 py-1.5 text-xs placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+            autoFocus
+          />
+          <Button size="sm" className="h-8 text-xs" onClick={handleImport}>불러오기</Button>
+        </div>
+      )}
       {guideOpen && (
         <div className="rounded-lg border bg-muted/50 p-4 space-y-2.5 text-sm text-muted-foreground">
           <div className="flex items-start gap-2.5">

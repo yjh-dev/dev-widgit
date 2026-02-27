@@ -316,6 +316,31 @@ export default function Home() {
           ))
         )}
       </main>
+
+      {/* Footer */}
+      <footer className="border-t bg-muted/30">
+        <div className="max-w-5xl mx-auto px-6 py-10">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-6 text-sm text-muted-foreground">
+              <span className="font-semibold text-foreground">Widgit</span>
+              <span>{allWidgets.length}종 위젯</span>
+              <span>서버리스</span>
+              <span>무료</span>
+            </div>
+            <div className="flex items-center gap-4 text-sm text-muted-foreground">
+              <Link href="/guide" className="hover:text-foreground transition-colors">
+                임베드 가이드
+              </Link>
+              <Link href="/templates" className="hover:text-foreground transition-colors">
+                추천 조합
+              </Link>
+            </div>
+          </div>
+          <p className="text-center text-xs text-muted-foreground mt-6">
+            URL 파라미터만으로 동작하는 무상태 노션 위젯. 서버·DB 없이, 무한히 커스터마이징 가능합니다.
+          </p>
+        </div>
+      </footer>
     </div>
   );
 }
