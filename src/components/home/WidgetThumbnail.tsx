@@ -242,6 +242,7 @@ function WidgetContent({ type }: { type: WidgetType }) {
           borderRadius={0}
           padding={24}
           fontSize="sm"
+          linkable={false}
         />
       );
     case "goal":

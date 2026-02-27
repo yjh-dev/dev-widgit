@@ -55,9 +55,11 @@ export default function AnalogClockPreview({
   padding = 24,
   fontSize = "md",
 }: AnalogClockPreviewProps) {
-  const [angles, setAngles] = useState<HandAngles>(() => getHandAngles(timezone));
+  const [angles, setAngles] = useState<HandAngles>({ hour: 0, minute: 0, second: 0 });
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     setAngles(getHandAngles(timezone));
     const interval = setInterval(() => {
       setAngles(getHandAngles(timezone));
@@ -125,48 +127,53 @@ export default function AnalogClockPreview({
           </text>
         ))}
 
-        {/* Hour hand */}
-        <line
-          x1="100"
-          y1="100"
-          x2="100"
-          y2="40"
-          stroke={`#${handColor}`}
-          strokeWidth="4"
-          strokeLinecap="round"
-          transform={`rotate(${angles.hour} 100 100)`}
-        />
+        {/* Hands — rendered only after mount to avoid hydration mismatch */}
+        {mounted && (
+          <>
+            {/* Hour hand */}
+            <line
+              x1="100"
+              y1="100"
+              x2="100"
+              y2="40"
+              stroke={`#${handColor}`}
+              strokeWidth="4"
+              strokeLinecap="round"
+              transform={`rotate(${angles.hour} 100 100)`}
+            />
 
-        {/* Minute hand */}
-        <line
-          x1="100"
-          y1="100"
-          x2="100"
-          y2="25"
-          stroke={`#${handColor}`}
-          strokeWidth="3"
-          strokeLinecap="round"
-          transform={`rotate(${angles.minute} 100 100)`}
-        />
+            {/* Minute hand */}
+            <line
+              x1="100"
+              y1="100"
+              x2="100"
+              y2="25"
+              stroke={`#${handColor}`}
+              strokeWidth="3"
+              strokeLinecap="round"
+              transform={`rotate(${angles.minute} 100 100)`}
+            />
 
-        {/* Second hand */}
-        {showSeconds && (
-          <line
-            x1="100"
-            y1="115"
-            x2="100"
-            y2="20"
-            stroke={`#${secHandColor}`}
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            transform={`rotate(${angles.second} 100 100)`}
-          />
-        )}
+            {/* Second hand */}
+            {showSeconds && (
+              <line
+                x1="100"
+                y1="115"
+                x2="100"
+                y2="20"
+                stroke={`#${secHandColor}`}
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                transform={`rotate(${angles.second} 100 100)`}
+              />
+            )}
 
-        {/* Center dot */}
-        <circle cx="100" cy="100" r="4" fill={`#${handColor}`} />
-        {showSeconds && (
-          <circle cx="100" cy="100" r="2" fill={`#${secHandColor}`} />
+            {/* Center dot */}
+            <circle cx="100" cy="100" r="4" fill={`#${handColor}`} />
+            {showSeconds && (
+              <circle cx="100" cy="100" r="2" fill={`#${secHandColor}`} />
+            )}
+          </>
         )}
       </svg>
     </div>

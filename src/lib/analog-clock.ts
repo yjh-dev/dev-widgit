@@ -41,12 +41,16 @@ const RADIUS = 80;
 const CX = 100;
 const CY = 100;
 
+function round4(v: number): number {
+  return Math.round(v * 10000) / 10000;
+}
+
 function numPos(n: number): NumberPosition {
   const angle = ((n * 30 - 90) * Math.PI) / 180;
   return {
     num: n,
-    x: CX + RADIUS * Math.cos(angle),
-    y: CY + RADIUS * Math.sin(angle),
+    x: round4(CX + RADIUS * Math.cos(angle)),
+    y: round4(CY + RADIUS * Math.sin(angle)),
   };
 }
 
@@ -77,10 +81,10 @@ export function getTickMarks(): TickMark[] {
     const isHour = i % 5 === 0;
     const innerR = isHour ? hourInnerR : minInnerR;
     ticks.push({
-      x1: CX + outerR * Math.cos(angle),
-      y1: CY + outerR * Math.sin(angle),
-      x2: CX + innerR * Math.cos(angle),
-      y2: CY + innerR * Math.sin(angle),
+      x1: round4(CX + outerR * Math.cos(angle)),
+      y1: round4(CY + outerR * Math.sin(angle)),
+      x2: round4(CX + innerR * Math.cos(angle)),
+      y2: round4(CY + innerR * Math.sin(angle)),
       isHour,
     });
   }

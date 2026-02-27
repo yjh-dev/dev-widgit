@@ -18,7 +18,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Widgit - 노션 위젯 생성기",
   description:
-    "URL 하나로 동작하는 노션 전용 위젯 생성 서비스. D-Day, 시계, 명언, 진행률 바 등 14종의 위젯을 무료로 만들어보세요.",
+    "URL 하나로 동작하는 노션 전용 위젯 생성 서비스. D-Day, 시계, 명언, 진행률 바 등 18종의 위젯을 무료로 만들어보세요.",
   keywords: [
     "노션 위젯",
     "Notion widget",
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Widgit - 노션 위젯 생성기",
     description:
-      "URL 하나로 동작하는 노션 전용 위젯. 14종의 위젯을 무료로 만들어보세요.",
+      "URL 하나로 동작하는 노션 전용 위젯. 18종의 위젯을 무료로 만들어보세요.",
   },
 };
 

@@ -30,6 +30,7 @@ interface BookmarkPreviewProps {
   borderRadius?: number;
   padding?: number;
   fontSize?: FontSizeKey;
+  linkable?: boolean;
 }
 
 export default function BookmarkPreview({
@@ -44,6 +45,7 @@ export default function BookmarkPreview({
   borderRadius = 16,
   padding = 24,
   fontSize = "md",
+  linkable = true,
 }: BookmarkPreviewProps) {
   const domain = extractDomain(url);
   const faviconUrl = getFaviconUrl(url);
@@ -52,7 +54,7 @@ export default function BookmarkPreview({
 
   const content = (
     <div
-      className="w-full h-full flex items-center gap-4"
+      className="w-full h-full flex items-center justify-center"
       style={{
         backgroundColor: transparentBg ? "transparent" : `#${bg}`,
         borderRadius,
@@ -60,44 +62,46 @@ export default function BookmarkPreview({
         color: `#${color}`,
       }}
     >
-      {showIcon && domain && (
-        <div className="shrink-0">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={faviconUrl}
-            alt=""
-            width={32}
-            height={32}
-            className="rounded"
-            style={{ imageRendering: "auto" }}
-          />
-        </div>
-      )}
-
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-1.5">
-          <p className={`${TITLE_SIZE_MAP[fontSize]} font-semibold truncate`}>
-            {displayTitle}
-          </p>
-          <ExternalLink className="w-3.5 h-3.5 opacity-40 shrink-0" />
-        </div>
-
-        {desc && (
-          <p
-            className={`${DESC_SIZE_MAP[fontSize]} opacity-60 truncate mt-0.5`}
-          >
-            {desc}
-          </p>
+      <div className="flex items-center gap-4">
+        {showIcon && domain && (
+          <div className="shrink-0">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={faviconUrl}
+              alt=""
+              width={32}
+              height={32}
+              className="rounded"
+              style={{ imageRendering: "auto" }}
+            />
+          </div>
         )}
 
-        {showUrl && domain && (
-          <p className="text-xs opacity-40 truncate mt-1">{domain}</p>
-        )}
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-1.5">
+            <p className={`${TITLE_SIZE_MAP[fontSize]} font-semibold truncate`}>
+              {displayTitle}
+            </p>
+            <ExternalLink className="w-3.5 h-3.5 opacity-40 shrink-0" />
+          </div>
+
+          {desc && (
+            <p
+              className={`${DESC_SIZE_MAP[fontSize]} opacity-60 truncate mt-0.5`}
+            >
+              {desc}
+            </p>
+          )}
+
+          {showUrl && domain && (
+            <p className="text-xs opacity-40 truncate mt-1">{domain}</p>
+          )}
+        </div>
       </div>
     </div>
   );
 
-  if (href) {
+  if (linkable && href) {
     return (
       <a
         href={href}
