@@ -70,7 +70,7 @@ export default function BannerPreview({
 
   return (
     <div
-      className={`w-full h-full flex items-center overflow-hidden ${fontStyle.className ?? ""}`}
+      className={`w-full h-full flex items-center justify-center overflow-hidden ${fontStyle.className ?? ""}`}
       style={{
         backgroundColor: transparentBg ? "transparent" : `#${bg}`,
         fontFamily: fontStyle.fontFamily,

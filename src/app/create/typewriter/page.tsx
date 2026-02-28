@@ -25,7 +25,9 @@ import PresetSelector from "@/components/editor/PresetSelector";
 import { useTypewriterStore } from "@/store/useTypewriterStore";
 import { typewriterPresets } from "@/lib/presets";
 import { useWidgetUrl } from "@/lib/use-widget-url";
+import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
+import type { FontSizeKey } from "@/lib/common-widget-options";
 import type { CursorStyle, TypewriterAlign } from "@/lib/typewriter";
 
 export default function CreateTypewriterPage() {
@@ -40,6 +42,31 @@ export default function CreateTypewriterPage() {
     setBorderRadius, setPadding, setFontSize,
     loadPreset, reset,
   } = useTypewriterStore();
+
+  useInitFromUrl((p) => {
+    const bgVal = p.get("bg");
+    loadPreset({
+      ...(p.has("texts") && { texts: p.get("texts")!.split("|").map(decodeURIComponent) }),
+      ...(p.has("speed") && { speed: Number(p.get("speed")) }),
+      ...(p.has("pause") && { pause: Number(p.get("pause")) }),
+      ...(p.has("cursor") && { cursor: p.get("cursor") as CursorStyle }),
+      ...(p.has("loop") && { loop: p.get("loop") !== "false" }),
+      ...(p.has("deleteAnim") && { deleteAnim: p.get("deleteAnim") !== "false" }),
+      ...(p.has("align") && { align: p.get("align") as TypewriterAlign }),
+      ...(p.has("bold") && { bold: p.get("bold") !== "false" }),
+      ...(p.has("font") && { font: p.get("font")! }),
+      ...(p.has("text") && { color: p.get("text")! }),
+      ...(bgVal === "transparent"
+        ? { transparentBg: true }
+        : bgVal
+          ? { bg: bgVal, transparentBg: false }
+          : {}),
+      ...(p.has("cursorColor") && { cursorColor: p.get("cursorColor")! }),
+      ...(p.has("radius") && { borderRadius: Number(p.get("radius")) }),
+      ...(p.has("pad") && { padding: Number(p.get("pad")) }),
+      ...(p.has("fsize") && { fontSize: p.get("fsize") as FontSizeKey }),
+    });
+  });
 
   const [newText, setNewText] = useState("");
 
@@ -98,7 +125,7 @@ export default function CreateTypewriterPage() {
         <CardContent className="pt-6">
           <PresetSelector presets={typewriterPresets} onSelect={loadPreset} />
           <EditorSection
-            defaultOpen={["texts", "animation"]}
+            defaultOpen={["texts"]}
             sections={[
               {
                 id: "texts",
@@ -251,7 +278,7 @@ export default function CreateTypewriterPage() {
             ]}
           />
           <div className="mt-6">
-            <EditorActions widgetUrl={widgetUrl} onCopy={handleCopy} onReset={reset} />
+            <EditorActions widgetUrl={widgetUrl} onCopy={handleCopy} onReset={reset} onApplyTheme={(c) => useTypewriterStore.setState(c)} />
           </div>
         </CardContent>
       </Card>

@@ -1,8 +1,19 @@
 "use client";
 
 import { useState, useEffect, useMemo, useCallback } from "react";
-import { Copy, RotateCcw, ExternalLink, ChevronDown, Download, Save, Trash2, Star, Import } from "lucide-react";
+import { Copy, RotateCcw, ExternalLink, ChevronDown, Download, Save, Trash2, Star, Import, FolderHeart, Code, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
@@ -15,6 +26,9 @@ import {
   deleteCustomPreset,
   type CustomPreset,
 } from "@/lib/custom-presets";
+import { saveWidget } from "@/lib/saved-widgets";
+import type { WidgetType } from "@/lib/templates";
+import ThemeQuickApply from "./ThemeQuickApply";
 
 const LS_KEY = "widgit-short-url";
 
@@ -22,6 +36,7 @@ interface EditorActionsProps {
   widgetUrl: string;
   onCopy: () => void;
   onReset: () => void;
+  onApplyTheme?: (colors: Record<string, string>) => void;
 }
 
 function extractWidgetType(url: string): string {
@@ -37,15 +52,21 @@ export default function EditorActions({
   widgetUrl,
   onCopy,
   onReset,
+  onApplyTheme,
 }: EditorActionsProps) {
   const [guideOpen, setGuideOpen] = useState(false);
   const [shortUrl, setShortUrl] = useState(false);
   const [customPresets, setCustomPresets] = useState<CustomPreset[]>([]);
   const [savingName, setSavingName] = useState("");
   const [showSaveInput, setShowSaveInput] = useState(false);
+  const [showSaveWidget, setShowSaveWidget] = useState(false);
+  const [saveWidgetName, setSaveWidgetName] = useState("");
   const [showImport, setShowImport] = useState(false);
   const [importUrl, setImportUrl] = useState("");
   const { register } = useEditorActions();
+
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
   const widgetType = useMemo(() => extractWidgetType(widgetUrl), [widgetUrl]);
 
@@ -70,6 +91,21 @@ export default function EditorActions({
     setSavingName("");
     setShowSaveInput(false);
     toast.success(`"${name}" 프리셋이 저장되었습니다!`);
+  };
+
+  const handleSaveWidget = () => {
+    const name = saveWidgetName.trim();
+    if (!name) { toast.error("위젯 이름을 입력하세요."); return; }
+    try {
+      const parsed = new URL(widgetUrl);
+      const relativeUrl = parsed.pathname + parsed.search;
+      saveWidget(name, widgetType as WidgetType, relativeUrl);
+      setSaveWidgetName("");
+      setShowSaveWidget(false);
+      toast.success("내 위젯에 저장되었습니다!");
+    } catch {
+      toast.error("위젯 URL을 확인하세요.");
+    }
   };
 
   const handleDeletePreset = (id: string) => {
@@ -164,6 +200,7 @@ export default function EditorActions({
           size="icon"
           onClick={() => window.open(displayUrl, "_blank")}
           title="새 탭에서 열기"
+          aria-label="새 탭에서 열기"
         >
           <ExternalLink className="w-4 h-4" />
         </Button>
@@ -185,15 +222,63 @@ export default function EditorActions({
             }
           }}
           title="이미지로 저장"
+          aria-label="이미지로 저장"
         >
           <Download className="w-4 h-4" />
         </Button>
-        <Button variant="outline" size="icon" onClick={onReset} title="초기화">
-          <RotateCcw className="w-4 h-4" />
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button variant="outline" size="icon" title="초기화" aria-label="초기화">
+              <RotateCcw className="w-4 h-4" />
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>설정을 초기화할까요?</AlertDialogTitle>
+              <AlertDialogDescription>
+                모든 설정이 기본값으로 되돌아갑니다. 이 작업은 되돌릴 수 없습니다.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>취소</AlertDialogCancel>
+              <AlertDialogAction onClick={onReset}>초기화</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      </div>
+
+      <div className="flex gap-2">
+        <Button
+          variant="outline"
+          size="sm"
+          className="flex-1 h-8 text-xs"
+          onClick={() => {
+            const iframe = `<iframe src="${displayUrl}" width="100%" height="300" style="border:none;" loading="lazy"></iframe>`;
+            navigator.clipboard.writeText(iframe).then(() => {
+              toast.success("Embed 코드가 복사되었습니다!");
+            });
+          }}
+        >
+          <Code className="w-3.5 h-3.5 mr-1.5" />
+          Embed 코드
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          className="flex-1 h-8 text-xs"
+          onClick={() => {
+            const editorUrl = displayUrl.replace("/widget/", "/create/");
+            navigator.clipboard.writeText(editorUrl).then(() => {
+              toast.success("에디터 공유 링크가 복사되었습니다!");
+            });
+          }}
+        >
+          <Share2 className="w-3.5 h-3.5 mr-1.5" />
+          공유 링크
         </Button>
       </div>
 
-      <div className="flex gap-3">
+      <div className="flex flex-wrap gap-x-3 gap-y-1">
         <button
           type="button"
           onClick={() => setShowImport(!showImport)}
@@ -244,6 +329,73 @@ export default function EditorActions({
           </div>
         </div>
       )}
+
+      {/* Theme quick apply + Save/Presets — only after mount to avoid hydration mismatch */}
+      {mounted && onApplyTheme && widgetType && (
+        <div className="border-t pt-4">
+          <ThemeQuickApply
+            widgetType={widgetType as WidgetType}
+            onApply={(colors) => {
+              onApplyTheme(colors);
+              toast.success("테마가 적용되었습니다!");
+            }}
+          />
+        </div>
+      )}
+
+      {/* Save to My Widgets */}
+      <div className="border-t pt-4 space-y-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-1.5">
+            <FolderHeart className="w-3.5 h-3.5 text-muted-foreground" />
+            <span className="text-xs font-medium text-muted-foreground">내 위젯</span>
+          </div>
+          {!showSaveWidget && (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-7 text-xs"
+              onClick={() => setShowSaveWidget(true)}
+            >
+              <Save className="w-3.5 h-3.5 mr-1" />
+              내 위젯에 저장
+            </Button>
+          )}
+        </div>
+
+        {showSaveWidget && (
+          <div className="flex gap-2">
+            <input
+              type="text"
+              value={saveWidgetName}
+              onChange={(e) => setSaveWidgetName(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleSaveWidget()}
+              placeholder="위젯 이름 (예: 수능 D-Day)"
+              className="flex-1 rounded-md border bg-background px-3 py-1.5 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+              autoFocus
+            />
+            <Button size="sm" className="h-8" onClick={handleSaveWidget}>저장</Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8"
+              onClick={() => { setShowSaveWidget(false); setSaveWidgetName(""); }}
+            >
+              취소
+            </Button>
+          </div>
+        )}
+
+        {!showSaveWidget && (
+          <p className="text-xs text-muted-foreground">
+            완성된 위젯을 이름을 붙여 저장합니다.{" "}
+            <a href="/my-widgets" className="underline hover:text-foreground transition-colors">
+              내 위젯
+            </a>
+            에서 URL 복사·수정·삭제할 수 있습니다.
+          </p>
+        )}
+      </div>
 
       {/* Custom presets */}
       <div className="border-t pt-4 space-y-3">
@@ -314,7 +466,7 @@ export default function EditorActions({
         ) : (
           !showSaveInput && (
             <p className="text-xs text-muted-foreground">
-              현재 설정을 저장하면 다음에 빠르게 불러올 수 있습니다.
+              이 위젯 타입 전용 설정 템플릿입니다. 저장하면 클릭 한 번으로 설정을 불러올 수 있습니다.
             </p>
           )
         )}

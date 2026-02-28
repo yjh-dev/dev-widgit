@@ -15,7 +15,9 @@ import PresetSelector from "@/components/editor/PresetSelector";
 import { useCounterStore } from "@/store/useCounterStore";
 import { counterPresets } from "@/lib/presets";
 import { useWidgetUrl } from "@/lib/use-widget-url";
+import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
+import type { FontSizeKey } from "@/lib/common-widget-options";
 
 export default function CreateCounterPage() {
   const {
@@ -27,6 +29,25 @@ export default function CreateCounterPage() {
     setBorderRadius, setPadding, setFontSize,
     loadPreset, reset,
   } = useCounterStore();
+
+  useInitFromUrl((p) => {
+    loadPreset({
+      ...(p.has("label") && { label: p.get("label")! }),
+      ...(p.has("initial") && { initial: Number(p.get("initial")) }),
+      ...(p.has("step") && { step: Number(p.get("step")) }),
+      ...(p.has("min") && { min: p.get("min")! }),
+      ...(p.has("max") && { max: p.get("max")! }),
+      ...(p.has("showReset") && { showReset: p.get("showReset") !== "false" }),
+      ...(p.has("color") && { color: p.get("color")! }),
+      ...(p.has("btnColor") && { btnColor: p.get("btnColor")! }),
+      ...(p.has("bg") && p.get("bg") === "transparent"
+        ? { transparentBg: true }
+        : p.has("bg") && { bg: p.get("bg")!, transparentBg: false }),
+      ...(p.has("radius") && { borderRadius: Number(p.get("radius")) }),
+      ...(p.has("pad") && { padding: Number(p.get("pad")) }),
+      ...(p.has("fsize") && { fontSize: p.get("fsize") as FontSizeKey }),
+    });
+  });
 
   const minNum = min !== "" ? Number(min) : undefined;
   const maxNum = max !== "" ? Number(max) : undefined;
@@ -154,7 +175,7 @@ export default function CreateCounterPage() {
             ]}
           />
           <div className="mt-6">
-            <EditorActions widgetUrl={widgetUrl} onCopy={handleCopy} onReset={reset} />
+            <EditorActions widgetUrl={widgetUrl} onCopy={handleCopy} onReset={reset} onApplyTheme={(c) => useCounterStore.setState(c)} />
           </div>
         </CardContent>
       </Card>

@@ -21,9 +21,11 @@ import PresetSelector from "@/components/editor/PresetSelector";
 import { useClockStore } from "@/store/useClockStore";
 import { clockPresets } from "@/lib/presets";
 import { useWidgetUrl } from "@/lib/use-widget-url";
+import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
 import { TIMEZONE_OPTIONS, CLOCK_DATE_FORMAT_OPTIONS, type ClockFormat, type ClockDateFormat } from "@/lib/clock";
 import { CLOCK_FONT_OPTIONS } from "@/lib/fonts";
+import type { FontSizeKey } from "@/lib/common-widget-options";
 
 export default function CreateClockPage() {
   const {
@@ -35,6 +37,28 @@ export default function CreateClockPage() {
     setDateColor, setDateFmt,
     loadPreset, reset,
   } = useClockStore();
+
+  useInitFromUrl((p) => {
+    loadPreset({
+      ...(p.has("timezone") && { timezone: p.get("timezone")! }),
+      ...(p.has("format") && { format: p.get("format") as ClockFormat }),
+      ...(p.has("font") && { font: p.get("font")! }),
+      ...(p.has("color") && { color: p.get("color")! }),
+      ...(p.has("bg") && {
+        ...(p.get("bg") === "transparent"
+          ? { transparentBg: true }
+          : { bg: p.get("bg")! }),
+      }),
+      ...(p.has("radius") && { borderRadius: Number(p.get("radius")) }),
+      ...(p.has("pad") && { padding: Number(p.get("pad")) }),
+      ...(p.has("fsize") && { fontSize: p.get("fsize") as FontSizeKey }),
+      ...(p.has("seconds") && { showSeconds: p.get("seconds") !== "false" }),
+      ...(p.has("date") && { showDate: p.get("date") === "true" }),
+      ...(p.has("blink") && { blink: p.get("blink") !== "false" }),
+      ...(p.has("dateColor") && { dateColor: p.get("dateColor")! }),
+      ...(p.has("dateFmt") && { dateFmt: p.get("dateFmt") as ClockDateFormat }),
+    });
+  });
 
   const { buildWidgetUrl, widgetUrl } = useWidgetUrl(() => {
     const base = `${window.location.origin}/widget/clock`;
@@ -178,7 +202,7 @@ export default function CreateClockPage() {
             ]}
           />
           <div className="mt-6">
-            <EditorActions widgetUrl={widgetUrl} onCopy={handleCopy} onReset={reset} />
+            <EditorActions widgetUrl={widgetUrl} onCopy={handleCopy} onReset={reset} onApplyTheme={(c) => useClockStore.setState(c)} />
           </div>
         </CardContent>
       </Card>

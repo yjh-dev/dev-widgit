@@ -26,6 +26,31 @@ import MoonPhasePreview from "./MoonPhasePreview";
 import DicePreview from "./DicePreview";
 import QRCodePreview from "./QRCodePreview";
 import TypewriterPreview from "./TypewriterPreview";
+import TodoPreview from "./TodoPreview";
+import GithubContributionPreview from "./GithubContributionPreview";
+import ProfileCardPreview from "./ProfileCardPreview";
+import LinkTreePreview from "./LinkTreePreview";
+import BreathingPreview from "./BreathingPreview";
+import WorldClockPreview from "./WorldClockPreview";
+import CountdownPreview from "./CountdownPreview";
+import StatsCardPreview from "./StatsCardPreview";
+import ColorPalettePreview from "./ColorPalettePreview";
+import DividerPreview from "./DividerPreview";
+import TimetablePreview from "./TimetablePreview";
+import FlashcardPreview from "./FlashcardPreview";
+import WaterTrackerPreview from "./WaterTrackerPreview";
+import ImageCardPreview from "./ImageCardPreview";
+import CurrencyPreview from "./CurrencyPreview";
+import AgeCalculatorPreview from "./AgeCalculatorPreview";
+import RadarChartPreview from "./RadarChartPreview";
+import PieChartPreview from "./PieChartPreview";
+import StepperPreview from "./StepperPreview";
+import BatteryPreview from "./BatteryPreview";
+import TestimonialPreview from "./TestimonialPreview";
+import EmojiRainPreview from "./EmojiRainPreview";
+import ChangelogPreview from "./ChangelogPreview";
+import MatrixPreview from "./MatrixPreview";
+import MultiProgressPreview from "./MultiProgressPreview";
 
 interface WidgetRendererProps {
   type: WidgetType;
@@ -86,6 +111,56 @@ export default function WidgetRenderer({ type, props: p }: WidgetRendererProps) 
       return <QRCodePreview {...a} />;
     case "typewriter":
       return <TypewriterPreview {...a} />;
+    case "todo":
+      return <TodoPreview {...a} />;
+    case "github-contribution":
+      return <GithubContributionPreview {...a} />;
+    case "profile-card":
+      return <ProfileCardPreview {...a} />;
+    case "link-tree":
+      return <LinkTreePreview {...a} />;
+    case "breathing":
+      return <BreathingPreview {...a} />;
+    case "world-clock":
+      return <WorldClockPreview {...a} />;
+    case "countdown":
+      return <CountdownPreview {...a} />;
+    case "stats-card":
+      return <StatsCardPreview {...a} />;
+    case "color-palette":
+      return <ColorPalettePreview {...a} />;
+    case "divider":
+      return <DividerPreview {...a} />;
+    case "timetable":
+      return <TimetablePreview {...a} />;
+    case "flashcard":
+      return <FlashcardPreview {...a} />;
+    case "water-tracker":
+      return <WaterTrackerPreview {...a} />;
+    case "image-card":
+      return <ImageCardPreview {...a} />;
+    case "currency":
+      return <CurrencyPreview {...a} />;
+    case "age-calculator":
+      return <AgeCalculatorPreview {...a} />;
+    case "radar-chart":
+      return <RadarChartPreview {...a} />;
+    case "pie-chart":
+      return <PieChartPreview {...a} />;
+    case "stepper":
+      return <StepperPreview {...a} />;
+    case "battery":
+      return <BatteryPreview {...a} />;
+    case "testimonial":
+      return <TestimonialPreview {...a} />;
+    case "emoji-rain":
+      return <EmojiRainPreview {...a} />;
+    case "changelog":
+      return <ChangelogPreview {...a} />;
+    case "matrix":
+      return <MatrixPreview {...a} />;
+    case "multi-progress":
+      return <MultiProgressPreview {...a} />;
     default:
       return null;
   }

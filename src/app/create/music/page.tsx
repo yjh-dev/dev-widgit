@@ -15,7 +15,9 @@ import PresetSelector from "@/components/editor/PresetSelector";
 import { useMusicStore } from "@/store/useMusicStore";
 import { musicPresets } from "@/lib/presets";
 import { useWidgetUrl } from "@/lib/use-widget-url";
+import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
+import type { FontSizeKey } from "@/lib/common-widget-options";
 
 export default function CreateMusicPage() {
   const {
@@ -27,6 +29,25 @@ export default function CreateMusicPage() {
     setBorderRadius, setPadding, setFontSize,
     loadPreset, reset,
   } = useMusicStore();
+
+  useInitFromUrl((p) => {
+    loadPreset({
+      ...(p.has("title") && { title: p.get("title")! }),
+      ...(p.has("artist") && { artist: p.get("artist")! }),
+      ...(p.has("progress") && { progress: Number(p.get("progress")) }),
+      ...(p.has("artColor") && { artColor: p.get("artColor")! }),
+      ...(p.has("showProgress") && { showProgress: p.get("showProgress") !== "false" }),
+      ...(p.has("color") && { color: p.get("color")! }),
+      ...(p.has("bg") && {
+        ...(p.get("bg") === "transparent"
+          ? { transparentBg: true }
+          : { bg: p.get("bg")!, transparentBg: false }),
+      }),
+      ...(p.has("radius") && { borderRadius: Number(p.get("radius")) }),
+      ...(p.has("pad") && { padding: Number(p.get("pad")) }),
+      ...(p.has("fsize") && { fontSize: p.get("fsize") as FontSizeKey }),
+    });
+  });
 
   const { buildWidgetUrl, widgetUrl } = useWidgetUrl(() => {
     const base = `${window.location.origin}/widget/music`;
@@ -129,7 +150,7 @@ export default function CreateMusicPage() {
             ]}
           />
           <div className="mt-6">
-            <EditorActions widgetUrl={widgetUrl} onCopy={handleCopy} onReset={reset} />
+            <EditorActions widgetUrl={widgetUrl} onCopy={handleCopy} onReset={reset} onApplyTheme={(c) => useMusicStore.setState(c)} />
           </div>
         </CardContent>
       </Card>

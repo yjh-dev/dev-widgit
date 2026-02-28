@@ -42,7 +42,7 @@ function TypewriterWidgetContent() {
 
   const borderRadius = parseBorderRadius(searchParams.get("radius"));
   const padding = parsePadding(searchParams.get("pad"));
-  const fontSize = parseFontSize(searchParams.get("fsize"));
+  const fontSize = searchParams.get("fsize") ? parseFontSize(searchParams.get("fsize")) : "lg";
 
   return (
     <div className="w-screen h-screen bg-transparent">

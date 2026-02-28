@@ -15,7 +15,7 @@ export default function WidgetThumbnail({ type }: WidgetThumbnailProps) {
   const props = getHomeThumbnailProps(type);
 
   return (
-    <div className="relative w-full aspect-[4/3] overflow-hidden rounded-t-xl bg-muted">
+    <div className="relative w-full aspect-[4/3] overflow-hidden rounded-t-xl bg-muted" aria-hidden="true">
       {mounted && (
         <div
           className="absolute inset-0 origin-top-left"

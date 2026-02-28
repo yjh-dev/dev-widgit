@@ -23,7 +23,9 @@ import { usePomodoroStore } from "@/store/usePomodoroStore";
 import { pomodoroPresets } from "@/lib/presets";
 import type { PomodoroProgressStyle } from "@/store/usePomodoroStore";
 import { useWidgetUrl } from "@/lib/use-widget-url";
+import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
+import type { FontSizeKey } from "@/lib/common-widget-options";
 
 export default function CreatePomodoroPage() {
   const {
@@ -33,6 +35,28 @@ export default function CreatePomodoroPage() {
     setBorderRadius, setPadding, setFontSize, setLongBreak, setRounds, setShowRounds, setBreakColor, setAutoStart, setPStyle,
     loadPreset, reset,
   } = usePomodoroStore();
+
+  useInitFromUrl((p) => {
+    loadPreset({
+      ...(p.has("work") && { workTime: Number(p.get("work")) }),
+      ...(p.has("break") && { breakTime: Number(p.get("break")) }),
+      ...(p.has("color") && { color: p.get("color")! }),
+      ...(p.has("bg") && {
+        ...(p.get("bg") === "transparent"
+          ? { transparentBg: true }
+          : { bg: p.get("bg")! }),
+      }),
+      ...(p.has("radius") && { borderRadius: Number(p.get("radius")) }),
+      ...(p.has("pad") && { padding: Number(p.get("pad")) }),
+      ...(p.has("fsize") && { fontSize: p.get("fsize") as FontSizeKey }),
+      ...(p.has("longBreak") && { longBreak: Number(p.get("longBreak")) }),
+      ...(p.has("rounds") && { rounds: Number(p.get("rounds")) }),
+      ...(p.has("showRounds") && { showRounds: p.get("showRounds") !== "false" }),
+      ...(p.has("breakColor") && { breakColor: p.get("breakColor")! }),
+      ...(p.has("autoStart") && { autoStart: p.get("autoStart") === "true" }),
+      ...(p.has("pStyle") && { pStyle: p.get("pStyle") as PomodoroProgressStyle }),
+    });
+  });
 
   const { buildWidgetUrl, widgetUrl } = useWidgetUrl(() => {
     const base = `${window.location.origin}/widget/pomodoro`;
@@ -155,7 +179,7 @@ export default function CreatePomodoroPage() {
             ]}
           />
           <div className="mt-6">
-            <EditorActions widgetUrl={widgetUrl} onCopy={handleCopy} onReset={reset} />
+            <EditorActions widgetUrl={widgetUrl} onCopy={handleCopy} onReset={reset} onApplyTheme={(c) => usePomodoroStore.setState(c)} />
           </div>
         </CardContent>
       </Card>

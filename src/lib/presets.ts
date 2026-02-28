@@ -517,3 +517,646 @@ export const readingPresets: Preset[] = [];
 export const habitPresets: Preset[] = [];
 export const timelinePresets: Preset<{ events?: TimelineEvent[] }>[] = [];
 export const stopwatchPresets: Preset[] = [];
+export const todoPresets: Preset[] = [
+  {
+    id: "todo-daily-dark",
+    name: "데일리 다크",
+    data: {
+      title: "오늘 할 일",
+      items: "기획서%20작성|디자인%20리뷰|!회의%20참석|코드%20리뷰",
+      color: "7C3AED",
+      bg: "1A1A2E",
+      textColor: "E0E0E0",
+      showProgress: true,
+      strikethrough: true,
+    },
+  },
+  {
+    id: "todo-study",
+    name: "공부 체크리스트",
+    data: {
+      title: "공부 계획",
+      items: "%EC%88%98%ED%95%99%201%EC%9E%A5|%EC%98%81%EC%96%B4%20%EB%8B%A8%EC%96%B4|!%EA%B5%AD%EC%96%B4%20%EB%AC%B8%EB%B2%95",
+      color: "2563EB",
+      bg: "FFFFFF",
+      showProgress: true,
+    },
+  },
+];
+
+// GitHub Contribution
+export const githubContributionPresets: Preset[] = [
+  {
+    id: "github-dark",
+    name: "GitHub 다크",
+    data: {
+      color: "22C55E",
+      bg: "0D1117",
+      textColor: "C9D1D9",
+      cellRadius: "rounded",
+      cellSize: "sm",
+    },
+  },
+  {
+    id: "github-blue",
+    name: "블루 잔디",
+    data: {
+      color: "3B82F6",
+      bg: "FFFFFF",
+      textColor: "1E1E1E",
+      cellRadius: "circle",
+      cellSize: "sm",
+    },
+  },
+];
+
+// Profile Card
+export const profileCardPresets: Preset[] = [
+  {
+    id: "profile-developer",
+    name: "개발자 카드",
+    data: {
+      name: "홍길동",
+      bio: "Frontend Developer",
+      layout: "vertical",
+      avatarShape: "circle",
+      accentColor: "2563EB",
+      color: "1E1E1E",
+      bg: "FFFFFF",
+      socials: [
+        { type: "github", url: "username", label: "GitHub" },
+        { type: "link", url: "https://blog.example.com", label: "웹사이트" },
+      ],
+    },
+  },
+  {
+    id: "profile-dark",
+    name: "다크 프로필",
+    data: {
+      name: "이름",
+      bio: "한 줄 소개",
+      layout: "horizontal",
+      avatarShape: "rounded",
+      accentColor: "7C3AED",
+      color: "E0E0E0",
+      bg: "1A1A2E",
+    },
+  },
+];
+
+// Link Tree
+export const linkTreePresets: Preset[] = [
+  {
+    id: "linktree-dev",
+    name: "개발자 링크",
+    data: {
+      title: "내 링크",
+      linkStyle: "filled",
+      accentColor: "2563EB",
+      color: "1E1E1E",
+      bg: "FFFFFF",
+      links: [
+        { id: "lk-1", title: "GitHub", url: "https://github.com", icon: "" },
+        { id: "lk-2", title: "블로그", url: "https://blog.example.com", icon: "📝" },
+        { id: "lk-3", title: "포트폴리오", url: "https://portfolio.example.com", icon: "🎨" },
+      ],
+    },
+  },
+  {
+    id: "linktree-dark",
+    name: "다크 링크",
+    data: {
+      title: "Links",
+      linkStyle: "outline",
+      accentColor: "7C3AED",
+      color: "E0E0E0",
+      bg: "1A1A2E",
+      links: [
+        { id: "lk-1", title: "Website", url: "https://example.com", icon: "🌐" },
+        { id: "lk-2", title: "Twitter", url: "https://x.com", icon: "" },
+      ],
+    },
+  },
+];
+
+// Breathing
+export const breathingPresets: Preset[] = [
+  {
+    id: "breathing-478",
+    name: "4-7-8 릴랙스",
+    data: {
+      technique: "478",
+      inhale: 4,
+      hold1: 7,
+      exhale: 8,
+      hold2: 0,
+      rounds: 3,
+      accentColor: "06B6D4",
+      color: "1E1E1E",
+      bg: "FFFFFF",
+    },
+  },
+  {
+    id: "breathing-night",
+    name: "나이트 박스 호흡",
+    data: {
+      technique: "box",
+      inhale: 4,
+      hold1: 4,
+      exhale: 4,
+      hold2: 4,
+      rounds: 5,
+      accentColor: "7C3AED",
+      color: "E0E0E0",
+      bg: "0F172A",
+    },
+  },
+];
+
+// World Clock
+export const worldClockPresets: Preset[] = [
+  {
+    id: "wc-asia",
+    name: "아시아 주요 도시",
+    data: {
+      zones: ["Asia/Seoul", "Asia/Tokyo", "Asia/Shanghai", "Asia/Singapore"],
+      format: "24h",
+      showLabel: true,
+      showSeconds: false,
+    },
+  },
+  {
+    id: "wc-global",
+    name: "글로벌 비즈니스",
+    data: {
+      zones: ["Asia/Seoul", "America/New_York", "Europe/London"],
+      format: "24h",
+      showLabel: true,
+      showSeconds: false,
+      bg: "1A1A2E",
+      color: "E0E0E0",
+    },
+  },
+];
+
+// Countdown
+export const countdownPresets: Preset[] = [
+  {
+    id: "cd-5min",
+    name: "발표 5분",
+    data: {
+      minutes: 5,
+      seconds: 0,
+      accentColor: "E11D48",
+    },
+  },
+  {
+    id: "cd-exam-dark",
+    name: "시험 다크",
+    data: {
+      minutes: 30,
+      seconds: 0,
+      accentColor: "7C3AED",
+      bg: "1A1A2E",
+      color: "E0E0E0",
+    },
+  },
+];
+
+// Flashcard
+export const flashcardPresets: Preset[] = [
+  {
+    id: "flashcard-vocab",
+    name: "영어 단어장",
+    data: {
+      cards: [
+        { front: "Apple", back: "사과" },
+        { front: "Book", back: "책" },
+        { front: "Water", back: "물" },
+        { front: "Friend", back: "친구" },
+        { front: "Dream", back: "꿈" },
+      ],
+      accentColor: "7C3AED",
+      showCount: true,
+    },
+  },
+  {
+    id: "flashcard-dark-quiz",
+    name: "다크 퀴즈",
+    data: {
+      cards: [
+        { front: "대한민국의 수도는?", back: "서울" },
+        { front: "π의 값은?", back: "3.14159..." },
+        { front: "H₂O는?", back: "물" },
+      ],
+      accentColor: "06B6D4",
+      bg: "1A1A2E",
+      color: "E0E0E0",
+      showCount: true,
+    },
+  },
+];
+
+// Water Tracker
+export const waterTrackerPresets: Preset[] = [
+  {
+    id: "water-default",
+    name: "기본 물 트래커",
+    data: {
+      goal: 8,
+      glassSize: 250,
+      color: "3B82F6",
+      showMl: true,
+    },
+  },
+  {
+    id: "water-dark",
+    name: "다크 트래커",
+    data: {
+      goal: 8,
+      glassSize: 250,
+      color: "06B6D4",
+      bg: "1A1A2E",
+      textColor: "E0E0E0",
+      showMl: true,
+    },
+  },
+];
+
+// Image Card
+export const imageCardPresets: Preset[] = [
+  {
+    id: "image-card-default",
+    name: "기본 이미지 카드",
+    data: {
+      fit: "cover",
+      captionPos: "bottom",
+      showCaption: true,
+      color: "1E1E1E",
+      bg: "FFFFFF",
+      borderRadius: 16,
+    },
+  },
+  {
+    id: "image-card-overlay",
+    name: "오버레이 캡션",
+    data: {
+      fit: "cover",
+      captionPos: "overlay",
+      showCaption: true,
+      color: "1E1E1E",
+      bg: "FFFFFF",
+      borderRadius: 16,
+    },
+  },
+];
+
+// Currency
+export const currencyPresets: Preset[] = [
+  {
+    id: "currency-usd",
+    name: "달러 환율",
+    data: {
+      base: "USD",
+      targets: ["KRW", "JPY", "EUR"],
+      showFlag: true,
+      accentColor: "2563EB",
+      color: "1E1E1E",
+      bg: "FFFFFF",
+    },
+  },
+  {
+    id: "currency-dark",
+    name: "다크 환율",
+    data: {
+      base: "USD",
+      targets: ["KRW", "EUR"],
+      showFlag: true,
+      accentColor: "06B6D4",
+      color: "E0E0E0",
+      bg: "1A1A2E",
+    },
+  },
+];
+
+// Age Calculator
+export const ageCalculatorPresets: Preset[] = [
+  {
+    id: "age-full",
+    name: "풀 표시",
+    data: {
+      birthdate: "1995-01-01",
+      showTime: true,
+      showLabel: true,
+      style: "full",
+      color: "2563EB",
+      bg: "FFFFFF",
+    },
+  },
+  {
+    id: "age-compact-dark",
+    name: "컴팩트 다크",
+    data: {
+      birthdate: "2000-06-15",
+      showTime: true,
+      showLabel: false,
+      style: "compact",
+      color: "06B6D4",
+      textColor: "E0E0E0",
+      bg: "1A1A2E",
+    },
+  },
+];
+
+// Radar Chart
+export const radarChartPresets: Preset[] = [
+  {
+    id: "radar-skills",
+    name: "개발자 스킬",
+    data: {
+      items: [
+        { label: "코딩", value: 85 },
+        { label: "디자인", value: 55 },
+        { label: "기획", value: 70 },
+        { label: "소통", value: 80 },
+        { label: "리더십", value: 65 },
+      ],
+      color: "6366F1",
+      gridColor: "E5E7EB",
+      bg: "FFFFFF",
+      fillOpacity: 30,
+    },
+  },
+  {
+    id: "radar-dark",
+    name: "다크 능력치",
+    data: {
+      items: [
+        { label: "공격", value: 90 },
+        { label: "방어", value: 60 },
+        { label: "속도", value: 75 },
+        { label: "마법", value: 80 },
+        { label: "체력", value: 70 },
+      ],
+      color: "EC4899",
+      gridColor: "374151",
+      textColor: "E0E0E0",
+      bg: "1A1A2E",
+      fillOpacity: 25,
+    },
+  },
+];
+
+// Pie Chart
+export const pieChartPresets: Preset[] = [
+  {
+    id: "pie-budget",
+    name: "예산 분배",
+    data: {
+      slices: [
+        { label: "식비", value: 35, color: "6366F1" },
+        { label: "교통", value: 15, color: "EC4899" },
+        { label: "주거", value: 30, color: "F59E0B" },
+        { label: "여가", value: 20, color: "22C55E" },
+      ],
+      style: "donut",
+      showLegend: true,
+      bg: "FFFFFF",
+    },
+  },
+  {
+    id: "pie-dark",
+    name: "다크 파이",
+    data: {
+      slices: [
+        { label: "A", value: 40, color: "7C3AED" },
+        { label: "B", value: 35, color: "06B6D4" },
+        { label: "C", value: 25, color: "F59E0B" },
+      ],
+      style: "pie",
+      showLegend: true,
+      textColor: "E0E0E0",
+      bg: "1A1A2E",
+    },
+  },
+];
+
+// Stepper
+export const stepperPresets: Preset[] = [
+  {
+    id: "stepper-project",
+    name: "프로젝트 단계",
+    data: {
+      steps: [
+        { label: "기획", desc: "아이디어 구상" },
+        { label: "디자인", desc: "UI/UX 설계" },
+        { label: "개발", desc: "코딩 및 구현" },
+        { label: "배포", desc: "서비스 출시" },
+      ],
+      currentStep: 2,
+      layout: "horizontal",
+      color: "2563EB",
+      completedColor: "22C55E",
+      bg: "FFFFFF",
+    },
+  },
+  {
+    id: "stepper-vertical-dark",
+    name: "세로 다크",
+    data: {
+      steps: [
+        { label: "접수", desc: "신청 완료" },
+        { label: "검토", desc: "서류 검토 중" },
+        { label: "승인", desc: "승인 대기" },
+      ],
+      currentStep: 1,
+      layout: "vertical",
+      color: "7C3AED",
+      completedColor: "06B6D4",
+      textColor: "E0E0E0",
+      bg: "1A1A2E",
+    },
+  },
+];
+
+// Battery
+export const batteryPresets: Preset[] = [
+  {
+    id: "battery-auto",
+    name: "자동 색상",
+    data: {
+      level: 75,
+      showPercent: true,
+      autoColor: true,
+      bg: "FFFFFF",
+    },
+  },
+  {
+    id: "battery-custom-dark",
+    name: "커스텀 다크",
+    data: {
+      level: 45,
+      showPercent: true,
+      autoColor: false,
+      color: "7C3AED",
+      animate: true,
+      textColor: "E0E0E0",
+      bg: "1A1A2E",
+    },
+  },
+];
+
+// Testimonial
+export const testimonialPresets: Preset[] = [
+  {
+    id: "testimonial-card",
+    name: "카드 스타일",
+    data: {
+      quote: "이 서비스를 사용한 후 생산성이 크게 향상되었습니다.",
+      author: "김지수",
+      role: "프로덕트 매니저",
+      layout: "card",
+      showQuoteMarks: true,
+      accentColor: "6366F1",
+      bg: "FFFFFF",
+    },
+  },
+  {
+    id: "testimonial-centered-dark",
+    name: "중앙 정렬 다크",
+    data: {
+      quote: "최고의 노션 위젯 서비스입니다!",
+      author: "이민호",
+      role: "개발자",
+      layout: "centered",
+      showQuoteMarks: true,
+      accentColor: "EC4899",
+      textColor: "E0E0E0",
+      bg: "1A1A2E",
+    },
+  },
+];
+
+// Emoji Rain
+export const emojiRainPresets: Preset[] = [
+  {
+    id: "emoji-party",
+    name: "파티",
+    data: {
+      emojis: "🎉🎊🥳🎈🪅",
+      speed: "normal",
+      density: "normal",
+      transparentBg: true,
+    },
+  },
+  {
+    id: "emoji-nature",
+    name: "자연",
+    data: {
+      emojis: "🌸🌺🍃🦋✨",
+      speed: "slow",
+      density: "dense",
+      transparentBg: true,
+    },
+  },
+];
+
+// Changelog
+export const changelogPresets: Preset[] = [
+  {
+    id: "changelog-default",
+    name: "기본 변경로그",
+    data: {
+      entries: [
+        { version: "v2.0", date: "2026-02-15", desc: "다크 모드 지원 추가" },
+        { version: "v1.5", date: "2026-01-20", desc: "성능 최적화 및 버그 수정" },
+        { version: "v1.0", date: "2025-12-01", desc: "첫 번째 정식 출시" },
+      ],
+      accentColor: "6366F1",
+      bg: "FFFFFF",
+    },
+  },
+  {
+    id: "changelog-dark",
+    name: "다크 변경로그",
+    data: {
+      entries: [
+        { version: "v3.0", date: "2026-03-01", desc: "새로운 UI 출시" },
+        { version: "v2.5", date: "2026-02-01", desc: "API 개선" },
+      ],
+      accentColor: "06B6D4",
+      textColor: "E0E0E0",
+      bg: "1A1A2E",
+    },
+  },
+];
+
+// Matrix
+export const matrixPresets: Preset[] = [
+  {
+    id: "matrix-eisenhower",
+    name: "아이젠하워",
+    data: {
+      items: [
+        { text: "프로젝트 마감", quadrant: 0 },
+        { text: "운동 계획", quadrant: 1 },
+        { text: "이메일 답장", quadrant: 2 },
+        { text: "SNS 확인", quadrant: 3 },
+      ],
+      showLabels: true,
+      showAxes: true,
+      bg: "FFFFFF",
+    },
+  },
+  {
+    id: "matrix-dark",
+    name: "다크 매트릭스",
+    data: {
+      items: [
+        { text: "버그 수정", quadrant: 0 },
+        { text: "리팩토링", quadrant: 1 },
+        { text: "회의", quadrant: 2 },
+        { text: "뉴스 확인", quadrant: 3 },
+      ],
+      showLabels: true,
+      showAxes: true,
+      textColor: "E0E0E0",
+      bg: "1A1A2E",
+    },
+  },
+];
+
+// Multi Progress
+export const multiProgressPresets: Preset[] = [
+  {
+    id: "multi-skills",
+    name: "스킬 진행",
+    data: {
+      items: [
+        { label: "프론트엔드", value: 80, max: 100, color: "6366F1" },
+        { label: "백엔드", value: 65, max: 100, color: "EC4899" },
+        { label: "디자인", value: 90, max: 100, color: "22C55E" },
+        { label: "DevOps", value: 45, max: 100, color: "F59E0B" },
+      ],
+      showPercent: true,
+      barHeight: "default",
+      bg: "FFFFFF",
+    },
+  },
+  {
+    id: "multi-dark",
+    name: "다크 프로그레스",
+    data: {
+      items: [
+        { label: "매출", value: 750, max: 1000, color: "7C3AED" },
+        { label: "이익", value: 420, max: 1000, color: "06B6D4" },
+        { label: "고객수", value: 880, max: 1000, color: "F59E0B" },
+      ],
+      showPercent: true,
+      showValue: true,
+      barHeight: "thick",
+      textColor: "E0E0E0",
+      bg: "1A1A2E",
+    },
+  },
+];

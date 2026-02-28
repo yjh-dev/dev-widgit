@@ -22,8 +22,10 @@ import PresetSelector from "@/components/editor/PresetSelector";
 import { useReadingStore } from "@/store/useReadingStore";
 import { readingPresets } from "@/lib/presets";
 import { useWidgetUrl } from "@/lib/use-widget-url";
+import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
 import type { ReadingStyle } from "@/lib/reading";
+import type { FontSizeKey } from "@/lib/common-widget-options";
 
 export default function CreateReadingPage() {
   const {
@@ -35,6 +37,24 @@ export default function CreateReadingPage() {
     setBorderRadius, setPadding, setFontSize,
     loadPreset, reset,
   } = useReadingStore();
+
+  useInitFromUrl((p) => {
+    loadPreset({
+      ...(p.has("title") && { title: p.get("title")! }),
+      ...(p.has("current") && { currentPage: Number(p.get("current")) }),
+      ...(p.has("total") && { totalPages: Number(p.get("total")) }),
+      ...(p.has("style") && { style: p.get("style") as ReadingStyle }),
+      ...(p.has("pages") && { showPages: p.get("pages") !== "false" }),
+      ...(p.has("color") && { color: p.get("color")! }),
+      ...(p.has("textColor") && { textColor: p.get("textColor")! }),
+      ...(p.has("bg") && p.get("bg") === "transparent"
+        ? { transparentBg: true }
+        : p.has("bg") && { bg: p.get("bg")!, transparentBg: false }),
+      ...(p.has("radius") && { borderRadius: Number(p.get("radius")) }),
+      ...(p.has("pad") && { padding: Number(p.get("pad")) }),
+      ...(p.has("fsize") && { fontSize: p.get("fsize") as FontSizeKey }),
+    });
+  });
 
   const { buildWidgetUrl, widgetUrl } = useWidgetUrl(() => {
     const base = `${window.location.origin}/widget/reading`;
@@ -157,7 +177,7 @@ export default function CreateReadingPage() {
             ]}
           />
           <div className="mt-6">
-            <EditorActions widgetUrl={widgetUrl} onCopy={handleCopy} onReset={reset} />
+            <EditorActions widgetUrl={widgetUrl} onCopy={handleCopy} onReset={reset} onApplyTheme={(c) => useReadingStore.setState(c)} />
           </div>
         </CardContent>
       </Card>

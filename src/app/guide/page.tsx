@@ -98,16 +98,16 @@ export default function GuidePage() {
               <p className="font-medium text-foreground text-xs">위젯별 추천 크기</p>
               <ul className="space-y-1 text-xs">
                 <li>
-                  <strong className="text-foreground">시계, D-Day, 명언</strong> — 중간 너비 (노션 컬럼 절반)
+                  <strong className="text-foreground">전체 너비</strong> — 텍스트 배너, 그라데이션, 타임라인
                 </li>
                 <li>
-                  <strong className="text-foreground">캘린더, 인생 달력</strong> — 넓은 너비 (전체 또는 2/3)
+                  <strong className="text-foreground">넓은 너비 (2/3~전체)</strong> — 미니 캘린더, 인생 달력, 습관 트래커
                 </li>
                 <li>
-                  <strong className="text-foreground">배너</strong> — 전체 너비 (페이지 헤더로 활용)
+                  <strong className="text-foreground">중간 너비 (1/2)</strong> — 시계, 플립 시계, 아날로그 시계, D-Day, 명언 카드, 뽀모도로, 음악 플레이어, 메모지
                 </li>
                 <li>
-                  <strong className="text-foreground">진행률 바, 날씨</strong> — 좁은 너비 (컬럼 1/3)
+                  <strong className="text-foreground">좁은 너비 (1/3)</strong> — 시간 진행률, 읽기 진행률, 목표 진행률, 날씨, 카운터, 스톱워치, QR 코드, 달 위상, 주사위, 북마크, 타이핑 효과
                 </li>
               </ul>
             </div>
@@ -145,7 +145,32 @@ export default function GuidePage() {
           </CardContent>
         </Card>
 
-        {/* 4. 투명 배경 활용 */}
+        {/* 4. 짧은 URL */}
+        <Card>
+          <CardHeader>
+            <CardTitle>짧은 URL</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3 text-sm text-muted-foreground">
+            <p>
+              위젯 URL이 길어서 관리가 어렵다면, 에디터의{" "}
+              <strong className="text-foreground">짧은 URL</strong> 토글을 켜보세요.
+            </p>
+            <div className="rounded-lg border bg-muted/50 p-4 space-y-2 text-xs">
+              <p>
+                <strong className="text-foreground">작동 원리:</strong>{" "}
+                URL 파라미터를 LZ 압축하여 <Kbd>?c=&lt;compressed&gt;</Kbd> 형태로 단축합니다.
+                압축 결과가 원본보다 길면 자동으로 원본 URL을 사용합니다.
+              </p>
+              <p>
+                <strong className="text-foreground">호환성:</strong>{" "}
+                기존 긴 URL과 짧은 URL 모두 정상 동작합니다.
+                짧은 URL을 에디터에 불러올 때도 자동으로 해제됩니다.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* 5. 투명 배경 활용 */}
         <Card>
           <CardHeader>
             <CardTitle>투명 배경 활용</CardTitle>
@@ -235,6 +260,22 @@ export default function GuidePage() {
                 </AccordionContent>
               </AccordionItem>
               <AccordionItem value="q5">
+                <AccordionTrigger className="text-sm">
+                  노션 모바일 앱에서도 위젯이 보이나요?
+                </AccordionTrigger>
+                <AccordionContent className="text-sm text-muted-foreground space-y-2">
+                  <p>
+                    네, 노션 모바일 앱에서도 임베드 블록이 정상 표시됩니다.
+                    다만 모바일에서는 위젯 크기 조절이 제한적이므로,
+                    데스크톱에서 크기를 먼저 설정하는 것을 권장합니다.
+                  </p>
+                  <p>
+                    인터랙티브 위젯(뽀모도로, 카운터, 스톱워치 등)은
+                    모바일에서도 터치로 조작할 수 있습니다.
+                  </p>
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="q6">
                 <AccordionTrigger className="text-sm">
                   서버가 다운되면 위젯도 안 보이나요?
                 </AccordionTrigger>

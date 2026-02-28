@@ -22,8 +22,10 @@ import PresetSelector from "@/components/editor/PresetSelector";
 import { useWeatherStore } from "@/store/useWeatherStore";
 import { weatherPresets } from "@/lib/presets";
 import { useWidgetUrl } from "@/lib/use-widget-url";
+import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
 import type { TemperatureUnit, WeatherIconStyle } from "@/lib/weather";
+import type { FontSizeKey } from "@/lib/common-widget-options";
 
 const CITY_PRESETS = [
   { label: "서울", lat: 37.5665, lon: 126.978 },
@@ -50,6 +52,27 @@ export default function CreateWeatherPage() {
     setBorderRadius, setPadding, setFontSize,
     loadPreset, reset,
   } = useWeatherStore();
+
+  useInitFromUrl((p) => {
+    loadPreset({
+      ...(p.has("lat") && { lat: Number(p.get("lat")) }),
+      ...(p.has("lon") && { lon: Number(p.get("lon")) }),
+      ...(p.has("city") && { city: p.get("city")! }),
+      ...(p.has("unit") && { unit: p.get("unit") as TemperatureUnit }),
+      ...(p.has("forecast") && { showForecast: p.get("forecast") === "true" }),
+      ...(p.has("humidity") && { showHumidity: p.get("humidity") === "true" }),
+      ...(p.has("wind") && { showWind: p.get("wind") === "true" }),
+      ...(p.has("icon") && { iconStyle: p.get("icon") as WeatherIconStyle }),
+      ...(p.has("refresh") && { refresh: Number(p.get("refresh")) }),
+      ...(p.has("color") && { color: p.get("color")! }),
+      ...(p.has("bg") && p.get("bg") === "transparent"
+        ? { transparentBg: true }
+        : p.has("bg") && { bg: p.get("bg")!, transparentBg: false }),
+      ...(p.has("radius") && { borderRadius: Number(p.get("radius")) }),
+      ...(p.has("pad") && { padding: Number(p.get("pad")) }),
+      ...(p.has("fsize") && { fontSize: p.get("fsize") as FontSizeKey }),
+    });
+  });
 
   const { buildWidgetUrl, widgetUrl } = useWidgetUrl(() => {
     const base = `${window.location.origin}/widget/weather`;
@@ -211,7 +234,7 @@ export default function CreateWeatherPage() {
             ]}
           />
           <div className="mt-6">
-            <EditorActions widgetUrl={widgetUrl} onCopy={handleCopy} onReset={reset} />
+            <EditorActions widgetUrl={widgetUrl} onCopy={handleCopy} onReset={reset} onApplyTheme={(c) => useWeatherStore.setState(c)} />
           </div>
         </CardContent>
       </Card>

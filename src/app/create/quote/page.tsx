@@ -23,9 +23,11 @@ import { useQuoteStore } from "@/store/useQuoteStore";
 import { quotePresets } from "@/lib/presets";
 import type { TextAlign, LineHeight } from "@/store/useQuoteStore";
 import { useWidgetUrl } from "@/lib/use-widget-url";
+import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
 import { ALIGN_OPTIONS, LINE_HEIGHT_OPTIONS } from "@/lib/quote";
 import { QUOTE_FONT_OPTIONS_EXTENDED } from "@/lib/fonts";
+import type { FontSizeKey } from "@/lib/common-widget-options";
 
 export default function CreateQuotePage() {
   const {
@@ -37,6 +39,29 @@ export default function CreateQuotePage() {
     setAuthorColor, setDivider,
     loadPreset, reset,
   } = useQuoteStore();
+
+  useInitFromUrl((p) => {
+    loadPreset({
+      ...(p.has("text") && { text: p.get("text")! }),
+      ...(p.has("author") && { author: p.get("author")! }),
+      ...(p.has("font") && { font: p.get("font")! }),
+      ...(p.has("textColor") && { textColor: p.get("textColor")! }),
+      ...(p.has("bg") && {
+        ...(p.get("bg") === "transparent"
+          ? { transparentBg: true }
+          : { bg: p.get("bg")! }),
+      }),
+      ...(p.has("radius") && { borderRadius: Number(p.get("radius")) }),
+      ...(p.has("pad") && { padding: Number(p.get("pad")) }),
+      ...(p.has("fsize") && { fontSize: p.get("fsize") as FontSizeKey }),
+      ...(p.has("align") && { align: p.get("align") as TextAlign }),
+      ...(p.has("marks") && { showMarks: p.get("marks") !== "false" }),
+      ...(p.has("italic") && { italic: p.get("italic") === "true" }),
+      ...(p.has("lh") && { lineHeight: p.get("lh") as LineHeight }),
+      ...(p.has("authorColor") && { authorColor: p.get("authorColor")! }),
+      ...(p.has("divider") && { divider: p.get("divider") === "true" }),
+    });
+  });
 
   const { buildWidgetUrl, widgetUrl } = useWidgetUrl(() => {
     const base = `${window.location.origin}/widget/quote`;
@@ -182,7 +207,7 @@ export default function CreateQuotePage() {
             ]}
           />
           <div className="mt-6">
-            <EditorActions widgetUrl={widgetUrl} onCopy={handleCopy} onReset={reset} />
+            <EditorActions widgetUrl={widgetUrl} onCopy={handleCopy} onReset={reset} onApplyTheme={(c) => useQuoteStore.setState(c)} />
           </div>
         </CardContent>
       </Card>

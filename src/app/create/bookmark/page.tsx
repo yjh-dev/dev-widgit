@@ -15,7 +15,9 @@ import PresetSelector from "@/components/editor/PresetSelector";
 import { useBookmarkStore } from "@/store/useBookmarkStore";
 import { bookmarkPresets } from "@/lib/presets";
 import { useWidgetUrl } from "@/lib/use-widget-url";
+import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
+import type { FontSizeKey } from "@/lib/common-widget-options";
 
 export default function CreateBookmarkPage() {
   const {
@@ -27,6 +29,25 @@ export default function CreateBookmarkPage() {
     setBorderRadius, setPadding, setFontSize,
     loadPreset, reset,
   } = useBookmarkStore();
+
+  useInitFromUrl((p) => {
+    loadPreset({
+      ...(p.has("url") && { url: p.get("url")! }),
+      ...(p.has("title") && { title: p.get("title")! }),
+      ...(p.has("desc") && { desc: p.get("desc")! }),
+      ...(p.has("showIcon") && { showIcon: p.get("showIcon") !== "false" }),
+      ...(p.has("showUrl") && { showUrl: p.get("showUrl") !== "false" }),
+      ...(p.has("color") && { color: p.get("color")! }),
+      ...(p.has("bg") && {
+        ...(p.get("bg") === "transparent"
+          ? { transparentBg: true }
+          : { bg: p.get("bg")!, transparentBg: false }),
+      }),
+      ...(p.has("radius") && { borderRadius: Number(p.get("radius")) }),
+      ...(p.has("pad") && { padding: Number(p.get("pad")) }),
+      ...(p.has("fsize") && { fontSize: p.get("fsize") as FontSizeKey }),
+    });
+  });
 
   const { buildWidgetUrl, widgetUrl } = useWidgetUrl(() => {
     const base = `${window.location.origin}/widget/bookmark`;
@@ -127,7 +148,7 @@ export default function CreateBookmarkPage() {
             ]}
           />
           <div className="mt-6">
-            <EditorActions widgetUrl={widgetUrl} onCopy={handleCopy} onReset={reset} />
+            <EditorActions widgetUrl={widgetUrl} onCopy={handleCopy} onReset={reset} onApplyTheme={(c) => useBookmarkStore.setState(c)} />
           </div>
         </CardContent>
       </Card>

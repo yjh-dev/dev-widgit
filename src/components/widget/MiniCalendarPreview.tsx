@@ -80,7 +80,7 @@ export default function MiniCalendarPreview({
 
   return (
     <div
-      className="w-full h-full flex flex-col"
+      className="w-full h-full flex flex-col items-center justify-center"
       style={{
         backgroundColor: transparentBg ? "transparent" : `#${bg}`,
         borderRadius,

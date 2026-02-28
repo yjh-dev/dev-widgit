@@ -23,7 +23,9 @@ import { useLifeCalendarStore } from "@/store/useLifeCalendarStore";
 import { lifeCalendarPresets } from "@/lib/presets";
 import type { CellShape, CellSize } from "@/store/useLifeCalendarStore";
 import { useWidgetUrl } from "@/lib/use-widget-url";
+import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
+import type { FontSizeKey } from "@/lib/common-widget-options";
 
 export default function CreateLifeCalendarPage() {
   const {
@@ -35,6 +37,28 @@ export default function CreateLifeCalendarPage() {
     setShowYears, setNowColor,
     loadPreset, reset,
   } = useLifeCalendarStore();
+
+  useInitFromUrl((p) => {
+    loadPreset({
+      ...(p.has("birthdate") && { birthdate: p.get("birthdate")! }),
+      ...(p.has("lifespan") && { lifespan: Number(p.get("lifespan")) }),
+      ...(p.has("color") && { color: p.get("color")! }),
+      ...(p.has("bg") && {
+        ...(p.get("bg") === "transparent"
+          ? { transparentBg: true }
+          : { bg: p.get("bg")! }),
+      }),
+      ...(p.has("stats") && { showStats: p.get("stats") !== "false" }),
+      ...(p.has("radius") && { borderRadius: Number(p.get("radius")) }),
+      ...(p.has("pad") && { padding: Number(p.get("pad")) }),
+      ...(p.has("fsize") && { fontSize: p.get("fsize") as FontSizeKey }),
+      ...(p.has("shape") && { shape: p.get("shape") as CellShape }),
+      ...(p.has("cellSize") && { cellSize: p.get("cellSize") as CellSize }),
+      ...(p.has("futureColor") && { futureColor: p.get("futureColor")! }),
+      ...(p.has("years") && { showYears: p.get("years") === "true" }),
+      ...(p.has("nowColor") && { nowColor: p.get("nowColor")! }),
+    });
+  });
 
   const { buildWidgetUrl, widgetUrl } = useWidgetUrl(() => {
     const base = `${window.location.origin}/widget/life-calendar`;
@@ -160,7 +184,7 @@ export default function CreateLifeCalendarPage() {
             ]}
           />
           <div className="mt-6">
-            <EditorActions widgetUrl={widgetUrl} onCopy={handleCopy} onReset={reset} />
+            <EditorActions widgetUrl={widgetUrl} onCopy={handleCopy} onReset={reset} onApplyTheme={(c) => useLifeCalendarStore.setState(c)} />
           </div>
         </CardContent>
       </Card>

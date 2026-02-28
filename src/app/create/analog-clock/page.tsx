@@ -21,9 +21,11 @@ import PresetSelector from "@/components/editor/PresetSelector";
 import { useAnalogClockStore } from "@/store/useAnalogClockStore";
 import { analogClockPresets } from "@/lib/presets";
 import { useWidgetUrl } from "@/lib/use-widget-url";
+import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
 import { TIMEZONE_OPTIONS } from "@/lib/clock";
 import type { NumberStyle } from "@/lib/analog-clock";
+import type { FontSizeKey } from "@/lib/common-widget-options";
 
 export default function CreateAnalogClockPage() {
   const {
@@ -35,6 +37,28 @@ export default function CreateAnalogClockPage() {
     setBg, setTransparentBg, setBorderRadius, setPadding, setFontSize,
     loadPreset, reset,
   } = useAnalogClockStore();
+
+  useInitFromUrl((p) => {
+    loadPreset({
+      ...(p.has("timezone") && { timezone: p.get("timezone")! }),
+      ...(p.has("numbers") && { showNumbers: p.get("numbers") !== "false" }),
+      ...(p.has("numStyle") && { numStyle: p.get("numStyle") as NumberStyle }),
+      ...(p.has("seconds") && { showSeconds: p.get("seconds") !== "false" }),
+      ...(p.has("ticks") && { showTicks: p.get("ticks") !== "false" }),
+      ...(p.has("showBorder") && { showBorder: p.get("showBorder") !== "false" }),
+      ...(p.has("hand") && { handColor: p.get("hand")! }),
+      ...(p.has("secHand") && { secHandColor: p.get("secHand")! }),
+      ...(p.has("face") && { faceColor: p.get("face")! }),
+      ...(p.has("tick") && { tickColor: p.get("tick")! }),
+      ...(p.has("border") && { borderColor: p.get("border")! }),
+      ...(p.has("bg") && p.get("bg") === "transparent"
+        ? { transparentBg: true }
+        : p.has("bg") && { bg: p.get("bg")!, transparentBg: false }),
+      ...(p.has("radius") && { borderRadius: Number(p.get("radius")) }),
+      ...(p.has("pad") && { padding: Number(p.get("pad")) }),
+      ...(p.has("fsize") && { fontSize: p.get("fsize") as FontSizeKey }),
+    });
+  });
 
   const { buildWidgetUrl, widgetUrl } = useWidgetUrl(() => {
     const base = `${window.location.origin}/widget/analog-clock`;
@@ -167,7 +191,7 @@ export default function CreateAnalogClockPage() {
             ]}
           />
           <div className="mt-6">
-            <EditorActions widgetUrl={widgetUrl} onCopy={handleCopy} onReset={reset} />
+            <EditorActions widgetUrl={widgetUrl} onCopy={handleCopy} onReset={reset} onApplyTheme={(c) => useAnalogClockStore.setState(c)} />
           </div>
         </CardContent>
       </Card>

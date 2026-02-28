@@ -22,8 +22,10 @@ import PresetSelector from "@/components/editor/PresetSelector";
 import { useHabitStore } from "@/store/useHabitStore";
 import { habitPresets } from "@/lib/presets";
 import { useWidgetUrl } from "@/lib/use-widget-url";
+import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
 import type { HabitView } from "@/lib/habit";
+import type { FontSizeKey } from "@/lib/common-widget-options";
 
 export default function CreateHabitPage() {
   const {
@@ -35,6 +37,22 @@ export default function CreateHabitPage() {
     setBorderRadius, setPadding, setFontSize,
     loadPreset, reset,
   } = useHabitStore();
+
+  useInitFromUrl((p) => {
+    loadPreset({
+      ...(p.has("title") && { title: p.get("title")! }),
+      ...(p.has("view") && { view: p.get("view") as HabitView }),
+      ...(p.has("weekStart") && { weekStart: p.get("weekStart") as "sun" | "mon" }),
+      ...(p.has("color") && { color: p.get("color")! }),
+      ...(p.has("textColor") && { textColor: p.get("textColor")! }),
+      ...(p.has("bg") && p.get("bg") === "transparent"
+        ? { transparentBg: true }
+        : p.has("bg") && { bg: p.get("bg")!, transparentBg: false }),
+      ...(p.has("radius") && { borderRadius: Number(p.get("radius")) }),
+      ...(p.has("pad") && { padding: Number(p.get("pad")) }),
+      ...(p.has("fsize") && { fontSize: p.get("fsize") as FontSizeKey }),
+    });
+  });
 
   const { buildWidgetUrl, widgetUrl } = useWidgetUrl(() => {
     const base = `${window.location.origin}/widget/habit`;
@@ -141,7 +159,7 @@ export default function CreateHabitPage() {
             ]}
           />
           <div className="mt-6">
-            <EditorActions widgetUrl={widgetUrl} onCopy={handleCopy} onReset={reset} />
+            <EditorActions widgetUrl={widgetUrl} onCopy={handleCopy} onReset={reset} onApplyTheme={(c) => useHabitStore.setState(c)} />
           </div>
         </CardContent>
       </Card>

@@ -14,7 +14,9 @@ import PresetSelector from "@/components/editor/PresetSelector";
 import { useStopwatchStore } from "@/store/useStopwatchStore";
 import { stopwatchPresets } from "@/lib/presets";
 import { useWidgetUrl } from "@/lib/use-widget-url";
+import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
+import type { FontSizeKey } from "@/lib/common-widget-options";
 
 export default function CreateStopwatchPage() {
   const {
@@ -26,6 +28,23 @@ export default function CreateStopwatchPage() {
     setBorderRadius, setPadding, setFontSize,
     loadPreset, reset,
   } = useStopwatchStore();
+
+  useInitFromUrl((p) => {
+    loadPreset({
+      ...(p.has("showMs") && { showMs: p.get("showMs") === "true" }),
+      ...(p.has("showLap") && { showLap: p.get("showLap") === "true" }),
+      ...(p.has("color") && { color: p.get("color")! }),
+      ...(p.has("btnColor") && { btnColor: p.get("btnColor")! }),
+      ...(p.has("bg") && {
+        ...(p.get("bg") === "transparent"
+          ? { transparentBg: true }
+          : { bg: p.get("bg")!, transparentBg: false }),
+      }),
+      ...(p.has("radius") && { borderRadius: Number(p.get("radius")) }),
+      ...(p.has("pad") && { padding: Number(p.get("pad")) }),
+      ...(p.has("fsize") && { fontSize: p.get("fsize") as FontSizeKey }),
+    });
+  });
 
   const { buildWidgetUrl, widgetUrl } = useWidgetUrl(() => {
     const base = `${window.location.origin}/widget/stopwatch`;
@@ -105,7 +124,7 @@ export default function CreateStopwatchPage() {
             ]}
           />
           <div className="mt-6">
-            <EditorActions widgetUrl={widgetUrl} onCopy={handleCopy} onReset={reset} />
+            <EditorActions widgetUrl={widgetUrl} onCopy={handleCopy} onReset={reset} onApplyTheme={(c) => useStopwatchStore.setState(c)} />
           </div>
         </CardContent>
       </Card>

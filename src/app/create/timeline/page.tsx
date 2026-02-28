@@ -18,8 +18,10 @@ import PresetSelector from "@/components/editor/PresetSelector";
 import { useTimelineStore } from "@/store/useTimelineStore";
 import { timelinePresets } from "@/lib/presets";
 import { useWidgetUrl } from "@/lib/use-widget-url";
+import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
-import { serializeEvents } from "@/lib/timeline";
+import { serializeEvents, parseEvents } from "@/lib/timeline";
+import type { FontSizeKey } from "@/lib/common-widget-options";
 
 export default function CreateTimelinePage() {
   const {
@@ -31,6 +33,21 @@ export default function CreateTimelinePage() {
     setBorderRadius, setPadding, setFontSize,
     loadPreset, reset,
   } = useTimelineStore();
+
+  useInitFromUrl((p) => {
+    loadPreset({
+      ...(p.has("events") && { events: parseEvents(p.get("events")!) }),
+      ...(p.has("past") && { showPast: p.get("past") === "true" }),
+      ...(p.has("color") && { color: p.get("color")! }),
+      ...(p.has("pastColor") && { pastColor: p.get("pastColor")! }),
+      ...(p.has("bg") && p.get("bg") === "transparent"
+        ? { transparentBg: true }
+        : p.has("bg") && { bg: p.get("bg")!, transparentBg: false }),
+      ...(p.has("radius") && { borderRadius: Number(p.get("radius")) }),
+      ...(p.has("pad") && { padding: Number(p.get("pad")) }),
+      ...(p.has("fsize") && { fontSize: p.get("fsize") as FontSizeKey }),
+    });
+  });
 
   const [newTitle, setNewTitle] = useState("");
   const [newDate, setNewDate] = useState("");
@@ -153,7 +170,7 @@ export default function CreateTimelinePage() {
             ]}
           />
           <div className="mt-6">
-            <EditorActions widgetUrl={widgetUrl} onCopy={handleCopy} onReset={reset} />
+            <EditorActions widgetUrl={widgetUrl} onCopy={handleCopy} onReset={reset} onApplyTheme={(c) => useTimelineStore.setState(c)} />
           </div>
         </CardContent>
       </Card>

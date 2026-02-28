@@ -32,6 +32,16 @@ function handleCopySingle(template: Template, widgetIndex: number, short: boolea
   toast.success("URL이 클립보드에 복사되었습니다!");
 }
 
+function getEditUrl(template: Template, widgetIndex: number): string {
+  const theme = getThemeById(template.themeId);
+  const w = template.widgets[widgetIndex];
+  const widgetUrl = buildThemedWidgetUrl(w.type, theme, w.widgetConfig);
+  // /widget/dday?title=... → /create/dday?title=...&from=templates
+  const createUrl = widgetUrl.replace("/widget/", "/create/");
+  const separator = createUrl.includes("?") ? "&" : "?";
+  return `${createUrl}${separator}from=templates`;
+}
+
 function ThemeSwatchBadge({ themeId }: { themeId: string }) {
   const theme = getThemeById(themeId);
   return (
@@ -226,7 +236,7 @@ export default function TemplatesPage() {
                         className="text-xs"
                         asChild
                       >
-                        <Link href={`/create/${widget.type}?from=templates`}>
+                        <Link href={getEditUrl(template, i)}>
                           <ExternalLink className="w-3.5 h-3.5 mr-1.5" />
                           수정
                         </Link>

@@ -16,9 +16,10 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://widgit.vercel.app"),
   title: "Widgit — 노션 위젯 생성기",
   description:
-    "URL 하나로 동작하는 노션 전용 위젯 생성 서비스. D-Day, 시계, 명언, 진행률 바 등 24종의 위젯을 무료로 만들어보세요.",
+    "URL 하나로 동작하는 노션 전용 위젯 생성 서비스. D-Day, 시계, 명언, 진행률 바 등 50종의 위젯을 무료로 만들어보세요.",
   keywords: [
     "노션 위젯",
     "Notion widget",
@@ -47,7 +48,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Widgit — 노션 위젯 생성기",
     description:
-      "URL 하나로 동작하는 노션 전용 위젯. 24종의 위젯을 무료로 만들어보세요.",
+      "URL 하나로 동작하는 노션 전용 위젯. 50종의 위젯을 무료로 만들어보세요.",
   },
 };
 
@@ -63,7 +64,7 @@ export default function RootLayout({
         <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <link rel="apple-touch-icon" href="/icons/icon.svg" />
+        <link rel="apple-touch-icon" href="/icons/icon-192.png" />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${allFontVariables} antialiased`}

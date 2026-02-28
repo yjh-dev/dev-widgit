@@ -25,8 +25,10 @@ import PresetSelector from "@/components/editor/PresetSelector";
 import { useBannerStore } from "@/store/useBannerStore";
 import { bannerPresets } from "@/lib/presets";
 import { useWidgetUrl } from "@/lib/use-widget-url";
+import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
 import type { BannerAnimation, BannerAlign } from "@/lib/banner";
+import type { FontSizeKey } from "@/lib/common-widget-options";
 
 export default function CreateBannerPage() {
   const {
@@ -38,6 +40,26 @@ export default function CreateBannerPage() {
     setBorderRadius, setPadding, setFontSize,
     loadPreset, reset,
   } = useBannerStore();
+
+  useInitFromUrl((p) => {
+    loadPreset({
+      ...(p.has("texts") && { texts: p.get("texts")!.split("|").map(decodeURIComponent) }),
+      ...(p.has("anim") && { animation: p.get("anim") as BannerAnimation }),
+      ...(p.has("speed") && { speed: Number(p.get("speed")) }),
+      ...(p.has("align") && { align: p.get("align") as BannerAlign }),
+      ...(p.has("bold") && { bold: p.get("bold") !== "false" }),
+      ...(p.has("font") && { font: p.get("font")! }),
+      ...(p.has("color") && { color: p.get("color")! }),
+      ...(p.has("bg") && {
+        ...(p.get("bg") === "transparent"
+          ? { transparentBg: true }
+          : { bg: p.get("bg")!, transparentBg: false }),
+      }),
+      ...(p.has("radius") && { borderRadius: Number(p.get("radius")) }),
+      ...(p.has("pad") && { padding: Number(p.get("pad")) }),
+      ...(p.has("fsize") && { fontSize: p.get("fsize") as FontSizeKey }),
+    });
+  });
 
   const [newText, setNewText] = useState("");
 
@@ -218,7 +240,7 @@ export default function CreateBannerPage() {
             ]}
           />
           <div className="mt-6">
-            <EditorActions widgetUrl={widgetUrl} onCopy={handleCopy} onReset={reset} />
+            <EditorActions widgetUrl={widgetUrl} onCopy={handleCopy} onReset={reset} onApplyTheme={(c) => useBannerStore.setState(c)} />
           </div>
         </CardContent>
       </Card>

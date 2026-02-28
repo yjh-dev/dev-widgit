@@ -22,8 +22,10 @@ import PresetSelector from "@/components/editor/PresetSelector";
 import { useGoalStore } from "@/store/useGoalStore";
 import { goalPresets } from "@/lib/presets";
 import { useWidgetUrl } from "@/lib/use-widget-url";
+import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
 import type { GoalStyle } from "@/lib/goal";
+import type { FontSizeKey } from "@/lib/common-widget-options";
 
 export default function CreateGoalPage() {
   const {
@@ -35,6 +37,27 @@ export default function CreateGoalPage() {
     setBorderRadius, setPadding, setFontSize,
     loadPreset, reset,
   } = useGoalStore();
+
+  useInitFromUrl((p) => {
+    loadPreset({
+      ...(p.has("title") && { title: p.get("title")! }),
+      ...(p.has("current") && { current: Number(p.get("current")) }),
+      ...(p.has("target") && { target: Number(p.get("target")) }),
+      ...(p.has("unit") && { unit: p.get("unit")! }),
+      ...(p.has("style") && { style: p.get("style") as GoalStyle }),
+      ...(p.has("showValue") && { showValue: p.get("showValue") !== "false" }),
+      ...(p.has("color") && { color: p.get("color")! }),
+      ...(p.has("textColor") && { textColor: p.get("textColor")! }),
+      ...(p.has("bg") && {
+        ...(p.get("bg") === "transparent"
+          ? { transparentBg: true }
+          : { bg: p.get("bg")!, transparentBg: false }),
+      }),
+      ...(p.has("radius") && { borderRadius: Number(p.get("radius")) }),
+      ...(p.has("pad") && { padding: Number(p.get("pad")) }),
+      ...(p.has("fsize") && { fontSize: p.get("fsize") as FontSizeKey }),
+    });
+  });
 
   const { buildWidgetUrl, widgetUrl } = useWidgetUrl(() => {
     const base = `${window.location.origin}/widget/goal`;
@@ -162,7 +185,7 @@ export default function CreateGoalPage() {
             ]}
           />
           <div className="mt-6">
-            <EditorActions widgetUrl={widgetUrl} onCopy={handleCopy} onReset={reset} />
+            <EditorActions widgetUrl={widgetUrl} onCopy={handleCopy} onReset={reset} onApplyTheme={(c) => useGoalStore.setState(c)} />
           </div>
         </CardContent>
       </Card>

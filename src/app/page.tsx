@@ -3,54 +3,30 @@
 import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import {
-  BookOpen,
-  CalendarDays,
-  CheckSquare,
-  Clock,
-  CloudSun,
-  Gauge,
-  Grid3X3,
-  Hash,
-  Calendar,
-  Hourglass,
-  Link as LinkIcon,
-  ListTodo,
-  Music,
-  Quote,
-  Target,
-  Timer,
-  TrendingUp,
-  Type,
   MousePointerClick,
   Palette,
   Copy,
   Code,
   LayoutGrid,
   BookOpenCheck,
-  Blend,
-  StickyNote,
-  FlipVertical,
-  Moon,
-  Dice5,
-  QrCode,
-  TextCursorInput,
   Search,
   X,
   History,
+  FolderHeart,
+  Sparkles,
+  Image as ImageIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { LucideIcon } from "lucide-react";
 import ThemeToggle from "@/components/ui/theme-toggle";
 import WidgetThumbnail from "@/components/home/WidgetThumbnail";
 import { getRecentWidgets } from "@/lib/recent-widgets";
+import { getWidgetIcon, getWidgetName } from "@/lib/widget-names";
+import type { WidgetType } from "@/lib/templates";
 
-type WidgetType =
-  | "dday" | "life-calendar" | "time-progress" | "clock" | "quote"
-  | "pomodoro" | "mini-calendar" | "analog-clock" | "counter" | "weather"
-  | "reading" | "habit" | "timeline" | "banner"
-  | "bookmark" | "goal" | "stopwatch" | "music"
-  | "gradient" | "sticky-note" | "flip-clock" | "moon-phase" | "dice" | "qr-code"
-  | "typewriter";
+function w(type: WidgetType, desc: string) {
+  return { href: `/create/${type}`, type, icon: getWidgetIcon(type), name: getWidgetName(type), desc };
+}
 
 interface Widget {
   href: string;
@@ -69,46 +45,76 @@ const categories: WidgetCategory[] = [
   {
     title: "시간 & 날짜",
     widgets: [
-      { href: "/create/dday", type: "dday", icon: CalendarDays, name: "D-Day 위젯", desc: "목표일까지 남은 일수를 표시합니다" },
-      { href: "/create/clock", type: "clock", icon: Clock, name: "미니멀 시계", desc: "미니멀한 타이포그래피 시계를 표시합니다" },
-      { href: "/create/analog-clock", type: "analog-clock", icon: Gauge, name: "아날로그 시계", desc: "클래식한 아날로그 시계를 표시합니다" },
-      { href: "/create/mini-calendar", type: "mini-calendar", icon: Calendar, name: "미니 캘린더", desc: "깔끔한 월간 캘린더를 표시합니다" },
-      { href: "/create/timeline", type: "timeline", icon: ListTodo, name: "타임라인", desc: "여러 일정을 타임라인으로 나열합니다" },
-      { href: "/create/flip-clock", type: "flip-clock", icon: FlipVertical, name: "플립 시계", desc: "레트로 스플릿 플랩 스타일 시계입니다" },
+      w("dday", "목표일까지 남은 일수를 표시합니다"),
+      w("clock", "미니멀한 타이포그래피 시계를 표시합니다"),
+      w("analog-clock", "클래식한 아날로그 시계를 표시합니다"),
+      w("mini-calendar", "깔끔한 월간 캘린더를 표시합니다"),
+      w("timeline", "여러 일정을 타임라인으로 나열합니다"),
+      w("flip-clock", "레트로 스플릿 플랩 스타일 시계입니다"),
+      w("world-clock", "여러 타임존을 한눈에 비교합니다"),
+      w("timetable", "주간 시간표를 표시합니다"),
+      w("age-calculator", "생년월일 기반 정확한 나이를 표시합니다"),
     ],
   },
   {
     title: "진행률 & 목표",
     widgets: [
-      { href: "/create/time-progress", type: "time-progress", icon: TrendingUp, name: "시간 진행률 바", desc: "오늘·이번 달·올해의 진행률을 표시합니다" },
-      { href: "/create/life-calendar", type: "life-calendar", icon: Grid3X3, name: "인생 달력 위젯", desc: "기대수명을 주 단위로 시각화합니다" },
-      { href: "/create/reading", type: "reading", icon: BookOpen, name: "읽기 진행률", desc: "책 읽기 목표 진행률을 표시합니다" },
-      { href: "/create/goal", type: "goal", icon: Target, name: "목표 진행률", desc: "자유 단위의 목표 진행률을 표시합니다" },
+      w("time-progress", "오늘·이번 달·올해의 진행률을 표시합니다"),
+      w("life-calendar", "기대수명을 주 단위로 시각화합니다"),
+      w("reading", "책 읽기 목표 진행률을 표시합니다"),
+      w("goal", "자유 단위의 목표 진행률을 표시합니다"),
+      w("water-tracker", "일일 물 섭취량을 트래킹합니다"),
+      w("stepper", "프로젝트 단계별 진행 상태를 표시합니다"),
+      w("battery", "배터리 모양의 진행률을 표시합니다"),
+      w("multi-progress", "여러 항목의 진행률을 비교합니다"),
     ],
   },
   {
     title: "생산성 & 도구",
     widgets: [
-      { href: "/create/pomodoro", type: "pomodoro", icon: Timer, name: "뽀모도로 타이머", desc: "집중·휴식을 번갈아 관리하는 타이머입니다" },
-      { href: "/create/stopwatch", type: "stopwatch", icon: Hourglass, name: "스톱워치", desc: "경과 시간을 측정하는 스톱워치입니다" },
-      { href: "/create/counter", type: "counter", icon: Hash, name: "카운터", desc: "숫자를 세고 기록하는 카운터입니다" },
-      { href: "/create/habit", type: "habit", icon: CheckSquare, name: "습관 트래커", desc: "주간·월간 습관 체크를 관리합니다" },
-      { href: "/create/qr-code", type: "qr-code", icon: QrCode, name: "QR 코드", desc: "URL이나 텍스트를 QR 코드로 생성합니다" },
-      { href: "/create/dice", type: "dice", icon: Dice5, name: "주사위", desc: "주사위·동전·랜덤 뽑기 도구입니다" },
+      w("pomodoro", "집중·휴식을 번갈아 관리하는 타이머입니다"),
+      w("stopwatch", "경과 시간을 측정하는 스톱워치입니다"),
+      w("counter", "숫자를 세고 기록하는 카운터입니다"),
+      w("habit", "주간·월간 습관 체크를 관리합니다"),
+      w("todo", "할 일 체크리스트를 관리합니다"),
+      w("breathing", "명상·호흡 가이드 타이머입니다"),
+      w("countdown", "분·초 단위 카운트다운 타이머입니다"),
+      w("flashcard", "앞·뒤 카드로 암기를 도와줍니다"),
+      w("matrix", "아이젠하워 2×2 우선순위 매트릭스입니다"),
+    ],
+  },
+  {
+    title: "소셜 & 링크",
+    widgets: [
+      w("profile-card", "이름, 소개, SNS 링크가 포함된 명함 카드입니다"),
+      w("link-tree", "여러 링크를 세로로 나열한 버튼 목록입니다"),
+      w("bookmark", "링크 카드를 만들어 표시합니다"),
+      w("github-contribution", "GitHub 기여 잔디 히트맵을 표시합니다"),
+      w("testimonial", "리뷰·추천사 카드를 만듭니다"),
     ],
   },
   {
     title: "콘텐츠 & 장식",
     widgets: [
-      { href: "/create/quote", type: "quote", icon: Quote, name: "명언 카드", desc: "감성 명언 텍스트 카드를 만듭니다" },
-      { href: "/create/banner", type: "banner", icon: Type, name: "텍스트 배너", desc: "애니메이션 텍스트 배너를 만듭니다" },
-      { href: "/create/bookmark", type: "bookmark", icon: LinkIcon, name: "북마크", desc: "링크 카드를 만들어 표시합니다" },
-      { href: "/create/music", type: "music", icon: Music, name: "음악 플레이어", desc: "장식용 음악 플레이어 카드입니다" },
-      { href: "/create/weather", type: "weather", icon: CloudSun, name: "날씨", desc: "현재 날씨와 예보를 표시합니다" },
-      { href: "/create/moon-phase", type: "moon-phase", icon: Moon, name: "달 위상", desc: "현재 달 모양과 조도를 표시합니다" },
-      { href: "/create/sticky-note", type: "sticky-note", icon: StickyNote, name: "메모지", desc: "포스트잇 스타일 메모 카드입니다" },
-      { href: "/create/gradient", type: "gradient", icon: Blend, name: "그라데이션", desc: "CSS 그라데이션 배너/구분선입니다" },
-      { href: "/create/typewriter", type: "typewriter", icon: TextCursorInput, name: "타이핑 효과", desc: "텍스트가 타이핑되는 애니메이션 위젯입니다" },
+      w("quote", "감성 명언 텍스트 카드를 만듭니다"),
+      w("banner", "애니메이션 텍스트 배너를 만듭니다"),
+      w("music", "장식용 음악 플레이어 카드입니다"),
+      w("weather", "현재 날씨와 예보를 표시합니다"),
+      w("moon-phase", "현재 달 모양과 조도를 표시합니다"),
+      w("sticky-note", "포스트잇 스타일 메모 카드입니다"),
+      w("gradient", "CSS 그라데이션 배너/구분선입니다"),
+      w("typewriter", "텍스트가 타이핑되는 애니메이션 위젯입니다"),
+      w("qr-code", "URL이나 텍스트를 QR 코드로 생성합니다"),
+      w("dice", "주사위·동전·랜덤 뽑기 도구입니다"),
+      w("stats-card", "KPI·통계 숫자를 표시합니다"),
+      w("color-palette", "컬러 스워치 팔레트를 표시합니다"),
+      w("divider", "장식 구분선을 만듭니다"),
+      w("image-card", "외부 이미지를 캡션과 함께 표시합니다"),
+      w("currency", "실시간 환율 정보를 표시합니다"),
+      w("radar-chart", "스킬·능력치를 거미줄 차트로 시각화합니다"),
+      w("pie-chart", "도넛/파이 차트로 비율을 시각화합니다"),
+      w("emoji-rain", "이모지가 떨어지는 장식 애니메이션입니다"),
+      w("changelog", "버전별 변경 이력을 표시합니다"),
     ],
   },
 ];
@@ -199,7 +205,7 @@ export default function Home() {
       </section>
 
       {/* Navigation links */}
-      <section className="max-w-3xl mx-auto px-6 pb-14 flex justify-center gap-3">
+      <section className="max-w-3xl mx-auto px-6 pb-14 flex flex-wrap justify-center gap-3">
         <Button variant="outline" asChild>
           <Link href="/templates">
             <LayoutGrid className="w-4 h-4 mr-2" />
@@ -210,6 +216,24 @@ export default function Home() {
           <Link href="/guide">
             <BookOpenCheck className="w-4 h-4 mr-2" />
             임베드 가이드
+          </Link>
+        </Button>
+        <Button variant="outline" asChild>
+          <Link href="/my-widgets">
+            <FolderHeart className="w-4 h-4 mr-2" />
+            내 위젯
+          </Link>
+        </Button>
+        <Button variant="outline" asChild>
+          <Link href="/create/icon">
+            <Sparkles className="w-4 h-4 mr-2" />
+            아이콘 만들기
+          </Link>
+        </Button>
+        <Button variant="outline" asChild>
+          <Link href="/create/cover">
+            <ImageIcon className="w-4 h-4 mr-2" />
+            커버 이미지 만들기
           </Link>
         </Button>
       </section>
@@ -336,6 +360,9 @@ export default function Home() {
               </Link>
               <Link href="/templates" className="hover:text-foreground transition-colors">
                 추천 조합
+              </Link>
+              <Link href="/my-widgets" className="hover:text-foreground transition-colors">
+                내 위젯
               </Link>
             </div>
           </div>

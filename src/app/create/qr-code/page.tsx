@@ -23,7 +23,9 @@ import PresetSelector from "@/components/editor/PresetSelector";
 import { useQRCodeStore } from "@/store/useQRCodeStore";
 import { qrCodePresets } from "@/lib/presets";
 import { useWidgetUrl } from "@/lib/use-widget-url";
+import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
+import type { FontSizeKey } from "@/lib/common-widget-options";
 import type { QRErrorCorrection, QRModuleStyle, QRSize } from "@/lib/qr-code";
 
 export default function CreateQRCodePage() {
@@ -34,6 +36,21 @@ export default function CreateQRCodePage() {
     setBorderRadius, setPadding, setFontSize,
     loadPreset, reset,
   } = useQRCodeStore();
+
+  useInitFromUrl((p) => {
+    loadPreset({
+      ...(p.has("data") && { data: p.get("data")! }),
+      ...(p.has("label") && { label: p.get("label")! }),
+      ...(p.has("fgColor") && { fgColor: p.get("fgColor")! }),
+      ...(p.has("bgColor") && { bgColor: p.get("bgColor")! }),
+      ...(p.has("size") && { size: p.get("size") as QRSize }),
+      ...(p.has("ec") && { ec: p.get("ec") as QRErrorCorrection }),
+      ...(p.has("module") && { module: p.get("module") as QRModuleStyle }),
+      ...(p.has("radius") && { borderRadius: Number(p.get("radius")) }),
+      ...(p.has("pad") && { padding: Number(p.get("pad")) }),
+      ...(p.has("fsize") && { fontSize: p.get("fsize") as FontSizeKey }),
+    });
+  });
 
   const { buildWidgetUrl, widgetUrl } = useWidgetUrl(() => {
     const base = `${window.location.origin}/widget/qr-code`;
@@ -65,7 +82,7 @@ export default function CreateQRCodePage() {
         <CardContent className="pt-6">
           <PresetSelector presets={qrCodePresets} onSelect={loadPreset} />
           <EditorSection
-            defaultOpen={["data", "display"]}
+            defaultOpen={["data"]}
             sections={[
               {
                 id: "data",
@@ -190,7 +207,7 @@ export default function CreateQRCodePage() {
             ]}
           />
           <div className="mt-6">
-            <EditorActions widgetUrl={widgetUrl} onCopy={handleCopy} onReset={reset} />
+            <EditorActions widgetUrl={widgetUrl} onCopy={handleCopy} onReset={reset} onApplyTheme={(c) => useQRCodeStore.setState(c)} />
           </div>
         </CardContent>
       </Card>

@@ -21,8 +21,10 @@ import PresetSelector from "@/components/editor/PresetSelector";
 import { useMiniCalendarStore } from "@/store/useMiniCalendarStore";
 import { miniCalendarPresets } from "@/lib/presets";
 import { useWidgetUrl } from "@/lib/use-widget-url";
+import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
 import type { WeekStartDay, HeaderFormat, DayNameLang } from "@/lib/mini-calendar";
+import type { FontSizeKey } from "@/lib/common-widget-options";
 
 export default function CreateMiniCalendarPage() {
   const {
@@ -34,6 +36,27 @@ export default function CreateMiniCalendarPage() {
     setBorderRadius, setPadding, setFontSize,
     loadPreset, reset,
   } = useMiniCalendarStore();
+
+  useInitFromUrl((p) => {
+    loadPreset({
+      ...(p.has("weekStart") && { weekStart: p.get("weekStart") as WeekStartDay }),
+      ...(p.has("header") && { header: p.get("header") as HeaderFormat }),
+      ...(p.has("dayNames") && { showDayNames: p.get("dayNames") !== "false" }),
+      ...(p.has("lang") && { lang: p.get("lang") as DayNameLang }),
+      ...(p.has("otherDays") && { showOtherDays: p.get("otherDays") !== "false" }),
+      ...(p.has("nav") && { showNav: p.get("nav") !== "false" }),
+      ...(p.has("highlight") && { highlight: p.get("highlight")! }),
+      ...(p.has("color") && { color: p.get("color")! }),
+      ...(p.has("bg") && {
+        ...(p.get("bg") === "transparent"
+          ? { transparentBg: true }
+          : { bg: p.get("bg")! }),
+      }),
+      ...(p.has("radius") && { borderRadius: Number(p.get("radius")) }),
+      ...(p.has("pad") && { padding: Number(p.get("pad")) }),
+      ...(p.has("fsize") && { fontSize: p.get("fsize") as FontSizeKey }),
+    });
+  });
 
   const { buildWidgetUrl, widgetUrl } = useWidgetUrl(() => {
     const base = `${window.location.origin}/widget/mini-calendar`;
@@ -160,7 +183,7 @@ export default function CreateMiniCalendarPage() {
             ]}
           />
           <div className="mt-6">
-            <EditorActions widgetUrl={widgetUrl} onCopy={handleCopy} onReset={reset} />
+            <EditorActions widgetUrl={widgetUrl} onCopy={handleCopy} onReset={reset} onApplyTheme={(c) => useMiniCalendarStore.setState(c)} />
           </div>
         </CardContent>
       </Card>

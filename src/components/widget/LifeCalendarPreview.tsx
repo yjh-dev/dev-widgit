@@ -83,7 +83,7 @@ export default function LifeCalendarPreview({
 
   return (
     <div
-      className="w-full h-full overflow-hidden"
+      className="w-full h-full overflow-hidden flex flex-col items-center justify-center"
       style={{
         backgroundColor: transparentBg ? "transparent" : `#${bg}`,
         borderRadius,

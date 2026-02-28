@@ -4,7 +4,33 @@ export type WidgetType =
   | "reading" | "habit" | "timeline" | "banner"
   | "bookmark" | "goal" | "stopwatch" | "music"
   | "gradient" | "sticky-note" | "flip-clock" | "moon-phase" | "dice" | "qr-code"
-  | "typewriter";
+  | "typewriter"
+  | "todo"
+  | "github-contribution"
+  | "profile-card"
+  | "link-tree"
+  | "breathing"
+  | "world-clock"
+  | "countdown"
+  | "stats-card"
+  | "color-palette"
+  | "divider"
+  | "timetable"
+  | "flashcard"
+  | "water-tracker"
+  | "image-card"
+  | "currency"
+  | "age-calculator"
+  | "radar-chart"
+  | "pie-chart"
+  | "stepper"
+  | "battery"
+  | "testimonial"
+  | "emoji-rain"
+  | "changelog"
+  | "matrix"
+  | "multi-progress"
+  | "badge";
 
 // --- Color Theme System ---
 
@@ -92,6 +118,56 @@ export function applyThemeToWidget(
       return { ...base, fgColor: theme.text, bgColor: theme.bg, ...config };
     case "typewriter":
       return { ...base, color: theme.text, bg: theme.bg, ...config };
+    case "todo":
+      return { ...base, color: theme.accent, bg: theme.bg, textColor: theme.text, ...config };
+    case "github-contribution":
+      return { ...base, color: theme.accent, bg: theme.bg, textColor: theme.text, ...config };
+    case "profile-card":
+      return { ...base, accentColor: theme.accent, color: theme.text, bg: theme.bg, ...config };
+    case "link-tree":
+      return { ...base, accentColor: theme.accent, color: theme.text, bg: theme.bg, ...config };
+    case "breathing":
+      return { ...base, accentColor: theme.accent, color: theme.text, bg: theme.bg, ...config };
+    case "world-clock":
+      return { ...base, color: theme.text, bg: theme.bg, ...config };
+    case "countdown":
+      return { ...base, accentColor: theme.accent, color: theme.text, bg: theme.bg, ...config };
+    case "stats-card":
+      return { ...base, accentColor: theme.accent, color: theme.text, bg: theme.bg, ...config };
+    case "color-palette":
+      return { ...base, color: theme.text, bg: theme.bg, ...config };
+    case "divider":
+      return { ...base, color: theme.secondary, bg: theme.bg, transparentBg: true, ...config };
+    case "timetable":
+      return { ...base, color: theme.text, bg: theme.bg, ...config };
+    case "flashcard":
+      return { ...base, accentColor: theme.accent, color: theme.text, bg: theme.bg, ...config };
+    case "water-tracker":
+      return { ...base, color: theme.accent, textColor: theme.text, bg: theme.bg, ...config };
+    case "image-card":
+      return { ...base, color: theme.text, bg: theme.bg, ...config };
+    case "currency":
+      return { ...base, accentColor: theme.accent, color: theme.text, bg: theme.bg, ...config };
+    case "age-calculator":
+      return { ...base, color: theme.accent, textColor: theme.text, bg: theme.bg, ...config };
+    case "radar-chart":
+      return { ...base, color: theme.accent, gridColor: theme.secondary, textColor: theme.text, bg: theme.bg, ...config };
+    case "pie-chart":
+      return { ...base, textColor: theme.text, bg: theme.bg, ...config };
+    case "stepper":
+      return { ...base, color: theme.accent, completedColor: theme.secondary, textColor: theme.text, bg: theme.bg, ...config };
+    case "battery":
+      return { ...base, color: theme.accent, textColor: theme.text, bg: theme.bg, ...config };
+    case "testimonial":
+      return { ...base, accentColor: theme.accent, textColor: theme.text, bg: theme.bg, ...config };
+    case "emoji-rain":
+      return { ...base, bg: theme.bg, transparentBg: true, ...config };
+    case "changelog":
+      return { ...base, accentColor: theme.accent, textColor: theme.text, bg: theme.bg, ...config };
+    case "matrix":
+      return { ...base, textColor: theme.text, bg: theme.bg, ...config };
+    case "multi-progress":
+      return { ...base, textColor: theme.text, bg: theme.bg, ...config };
     default:
       return { ...base, bg: theme.bg, color: theme.text, ...config };
   }
@@ -303,6 +379,125 @@ export function buildThemedWidgetUrl(
       if (config.font && config.font !== "sans") addIfPresent("font", config.font);
       break;
     }
+    case "todo":
+      if (config.title) addIfPresent("title", config.title);
+      if (config.items) addIfPresent("items", config.items);
+      addIfPresent("color", config.color ?? theme.accent);
+      addIfPresent("textColor", config.textColor ?? theme.text);
+      addIfPresent("bg", config.bg ?? theme.bg);
+      break;
+    case "github-contribution":
+      if (config.username) addIfPresent("username", config.username);
+      addIfPresent("color", config.color ?? theme.accent);
+      addIfPresent("textColor", config.textColor ?? theme.text);
+      addIfPresent("bg", config.bg ?? theme.bg);
+      break;
+    case "profile-card":
+      if (config.name) addIfPresent("name", config.name);
+      if (config.bio) addIfPresent("bio", config.bio);
+      if (config.avatar) addIfPresent("avatar", config.avatar);
+      addIfPresent("accent", config.accentColor ?? theme.accent);
+      addIfPresent("color", config.color ?? theme.text);
+      addIfPresent("bg", config.bg ?? theme.bg);
+      break;
+    case "link-tree":
+      if (config.title) addIfPresent("title", config.title);
+      addIfPresent("accent", config.accentColor ?? theme.accent);
+      addIfPresent("color", config.color ?? theme.text);
+      addIfPresent("bg", config.bg ?? theme.bg);
+      if (config.style) addIfPresent("style", config.style);
+      break;
+    case "breathing":
+      if (config.tech && config.tech !== "478") addIfPresent("tech", config.tech);
+      addIfPresent("accent", config.accentColor ?? theme.accent);
+      addIfPresent("color", config.color ?? theme.text);
+      addIfPresent("bg", config.bg ?? theme.bg);
+      break;
+    case "world-clock":
+      addIfPresent("color", config.color ?? theme.text);
+      addIfPresent("bg", config.bg ?? theme.bg);
+      break;
+    case "countdown":
+      addIfPresent("accent", config.accentColor ?? theme.accent);
+      addIfPresent("color", config.color ?? theme.text);
+      addIfPresent("bg", config.bg ?? theme.bg);
+      break;
+    case "stats-card":
+      addIfPresent("accent", config.accentColor ?? theme.accent);
+      addIfPresent("color", config.color ?? theme.text);
+      addIfPresent("bg", config.bg ?? theme.bg);
+      break;
+    case "color-palette":
+      addIfPresent("color", config.color ?? theme.text);
+      addIfPresent("bg", config.bg ?? theme.bg);
+      break;
+    case "divider":
+      addIfPresent("color", config.color ?? theme.secondary);
+      break;
+    case "timetable":
+      addIfPresent("color", config.color ?? theme.text);
+      addIfPresent("bg", config.bg ?? theme.bg);
+      break;
+    case "flashcard":
+      addIfPresent("accent", config.accentColor ?? theme.accent);
+      addIfPresent("color", config.color ?? theme.text);
+      addIfPresent("bg", config.bg ?? theme.bg);
+      break;
+    case "water-tracker":
+      addIfPresent("color", config.color ?? theme.accent);
+      addIfPresent("textColor", config.textColor ?? theme.text);
+      addIfPresent("bg", config.bg ?? theme.bg);
+      break;
+    case "image-card":
+      addIfPresent("color", config.color ?? theme.text);
+      addIfPresent("bg", config.bg ?? theme.bg);
+      break;
+    case "currency":
+      addIfPresent("accent", config.accentColor ?? theme.accent);
+      addIfPresent("color", config.color ?? theme.text);
+      addIfPresent("bg", config.bg ?? theme.bg);
+      break;
+    case "age-calculator":
+      addIfPresent("birthdate", config.birthdate ?? "1995-01-01");
+      addIfPresent("color", config.color ?? theme.accent);
+      addIfPresent("bg", config.bg ?? theme.bg);
+      break;
+    case "radar-chart":
+      addIfPresent("color", config.color ?? theme.accent);
+      addIfPresent("bg", config.bg ?? theme.bg);
+      break;
+    case "pie-chart":
+      addIfPresent("bg", config.bg ?? theme.bg);
+      break;
+    case "stepper":
+      addIfPresent("color", config.color ?? theme.accent);
+      addIfPresent("completedColor", config.completedColor ?? theme.secondary);
+      addIfPresent("bg", config.bg ?? theme.bg);
+      break;
+    case "battery":
+      addIfPresent("level", config.level ?? 75);
+      addIfPresent("color", config.color ?? theme.accent);
+      addIfPresent("bg", config.bg ?? theme.bg);
+      break;
+    case "testimonial":
+      addIfPresent("quote", config.quote);
+      addIfPresent("author", config.author);
+      addIfPresent("accent", config.accentColor ?? theme.accent);
+      addIfPresent("bg", config.bg ?? theme.bg);
+      break;
+    case "emoji-rain":
+      addIfPresent("emojis", config.emojis);
+      break;
+    case "changelog":
+      addIfPresent("accent", config.accentColor ?? theme.accent);
+      addIfPresent("bg", config.bg ?? theme.bg);
+      break;
+    case "matrix":
+      addIfPresent("bg", config.bg ?? theme.bg);
+      break;
+    case "multi-progress":
+      addIfPresent("bg", config.bg ?? theme.bg);
+      break;
   }
 
   const qs = params.toString();
@@ -383,6 +578,30 @@ export const widgetDefaults: WidgetDefault[] = [
   { type: "dice", name: "주사위", defaultUrl: "/widget/dice?color=2563EB" },
   { type: "qr-code", name: "QR 코드", defaultUrl: "/widget/qr-code?data=https://example.com" },
   { type: "typewriter", name: "타이핑 효과", defaultUrl: "/widget/typewriter?texts=%ED%83%80%EC%9D%B4%ED%95%91+%ED%9A%A8%EA%B3%BC+%EC%9C%84%EC%A0%AF" },
+  { type: "github-contribution", name: "GitHub 잔디", defaultUrl: "/widget/github-contribution?color=22C55E" },
+  { type: "profile-card", name: "프로필 카드", defaultUrl: "/widget/profile-card?name=홍길동&bio=Hello" },
+  { type: "link-tree", name: "링크 트리", defaultUrl: "/widget/link-tree?title=내+링크" },
+  { type: "breathing", name: "호흡 타이머", defaultUrl: "/widget/breathing" },
+  { type: "world-clock", name: "세계 시계", defaultUrl: "/widget/world-clock" },
+  { type: "countdown", name: "카운트다운 타이머", defaultUrl: "/widget/countdown?min=5" },
+  { type: "stats-card", name: "통계 카드", defaultUrl: "/widget/stats-card" },
+  { type: "color-palette", name: "컬러 팔레트", defaultUrl: "/widget/color-palette" },
+  { type: "divider", name: "구분선", defaultUrl: "/widget/divider" },
+  { type: "timetable", name: "시간표", defaultUrl: "/widget/timetable" },
+  { type: "flashcard", name: "플래시카드", defaultUrl: "/widget/flashcard" },
+  { type: "water-tracker", name: "물 마시기 트래커", defaultUrl: "/widget/water-tracker" },
+  { type: "image-card", name: "이미지 카드", defaultUrl: "/widget/image-card" },
+  { type: "currency", name: "환율", defaultUrl: "/widget/currency" },
+  { type: "age-calculator", name: "나이 계산기", defaultUrl: "/widget/age-calculator?birthdate=1995-01-01" },
+  { type: "radar-chart", name: "레이더 차트", defaultUrl: "/widget/radar-chart" },
+  { type: "pie-chart", name: "도넛 차트", defaultUrl: "/widget/pie-chart" },
+  { type: "stepper", name: "단계 진행", defaultUrl: "/widget/stepper" },
+  { type: "battery", name: "배터리", defaultUrl: "/widget/battery?level=75" },
+  { type: "testimonial", name: "후기 카드", defaultUrl: "/widget/testimonial" },
+  { type: "emoji-rain", name: "이모지 비", defaultUrl: "/widget/emoji-rain" },
+  { type: "changelog", name: "변경 로그", defaultUrl: "/widget/changelog" },
+  { type: "matrix", name: "매트릭스", defaultUrl: "/widget/matrix" },
+  { type: "multi-progress", name: "멀티 프로그레스", defaultUrl: "/widget/multi-progress" },
 ];
 
 // --- Home thumbnail default props ---
@@ -440,6 +659,56 @@ export function getHomeThumbnailProps(type: WidgetType): Record<string, unknown>
       return { ...common, data: "https://widgit.dev", fgColor: "1E1E1E", bgColor: "FFFFFF", size: "sm", padding: 16 };
     case "typewriter":
       return { ...common, texts: ["타이핑 효과 위젯"], speed: 80, pause: 2000, cursor: "bar", bold: true, color: "1E1E1E", bg: "FFFFFF", padding: 24, fontSize: "md" };
+    case "todo":
+      return { ...common, title: "오늘 할 일", initialItems: [{ id: "t1", text: "기획서 작성", done: true }, { id: "t2", text: "디자인 리뷰", done: false }, { id: "t3", text: "코드 리뷰", done: false }], interactive: false, color: "2563EB", bg: "FFFFFF", showProgress: true, strikethrough: true, padding: 16 };
+    case "github-contribution":
+      return { ...common, username: "", year: "last", showTotal: true, showUsername: false, lang: "ko", cellSize: "sm", cellRadius: "rounded", color: "22C55E", bg: "FFFFFF", textColor: "1E1E1E", padding: 12 };
+    case "profile-card":
+      return { ...common, name: "홍길동", bio: "Frontend Developer", layout: "vertical", avatarShape: "circle", accentColor: "2563EB", color: "1E1E1E", bg: "FFFFFF", padding: 16 };
+    case "link-tree":
+      return { ...common, title: "내 링크", links: [{ id: "s1", title: "GitHub", url: "https://github.com", icon: "" }, { id: "s2", title: "블로그", url: "https://blog.example.com", icon: "" }], linkStyle: "filled", accentColor: "2563EB", color: "1E1E1E", bg: "FFFFFF", padding: 16, linkable: false };
+    case "breathing":
+      return { ...common, inhale: 4, hold1: 7, exhale: 8, hold2: 0, rounds: 3, accentColor: "06B6D4", color: "1E1E1E", bg: "FFFFFF", padding: 16 };
+    case "world-clock":
+      return { ...common, zones: ["Asia/Seoul", "America/New_York"], format: "24h", showLabel: true, showSeconds: false, color: "1E1E1E", bg: "FFFFFF", padding: 16 };
+    case "countdown":
+      return { ...common, minutes: 5, seconds: 0, accentColor: "E11D48", color: "1E1E1E", bg: "FFFFFF", padding: 16 };
+    case "stats-card":
+      return { ...common, stats: [{ label: "방문자", value: "1,234", trend: "up", trendValue: "+12%" }], layout: "row", accentColor: "2563EB", color: "1E1E1E", bg: "FFFFFF", padding: 16 };
+    case "color-palette":
+      return { ...common, colors: ["2563EB", "7C3AED", "EC4899", "F59E0B"], layout: "horizontal", showHex: true, color: "1E1E1E", bg: "FFFFFF", padding: 16 };
+    case "divider":
+      return { ...common, style: "wave", weight: "medium", color: "D4D4D8", transparentBg: true, padding: 8 };
+    case "timetable":
+      return { ...common, entries: [], startHour: 9, endHour: 17, lang: "ko", color: "1E1E1E", bg: "FFFFFF", padding: 12 };
+    case "flashcard":
+      return { ...common, accentColor: "7C3AED", color: "1E1E1E", bg: "FFFFFF", padding: 16 };
+    case "water-tracker":
+      return { ...common, goal: 8, glassSize: 250, color: "3B82F6", textColor: "1E1E1E", bg: "FFFFFF", padding: 16 };
+    case "image-card":
+      return { ...common, fit: "cover", captionPos: "bottom", color: "1E1E1E", bg: "FFFFFF", padding: 16 };
+    case "currency":
+      return { ...common, base: "USD", targets: ["KRW", "JPY"], accentColor: "2563EB", color: "1E1E1E", bg: "FFFFFF", padding: 16 };
+    case "age-calculator":
+      return { ...common, birthdate: "1995-01-01", showTime: true, style: "full", color: "2563EB", bg: "FFFFFF", padding: 24 };
+    case "radar-chart":
+      return { ...common, items: [{ label: "코딩", value: 80 }, { label: "디자인", value: 60 }, { label: "기획", value: 70 }, { label: "소통", value: 85 }, { label: "리더십", value: 65 }], color: "6366F1", gridColor: "E5E7EB", bg: "FFFFFF", padding: 16 };
+    case "pie-chart":
+      return { ...common, slices: [{ label: "A", value: 40, color: "6366F1" }, { label: "B", value: 30, color: "EC4899" }, { label: "C", value: 20, color: "F59E0B" }, { label: "D", value: 10, color: "22C55E" }], style: "donut", bg: "FFFFFF", padding: 16 };
+    case "stepper":
+      return { ...common, steps: [{ label: "기획" }, { label: "디자인" }, { label: "개발" }, { label: "배포" }], currentStep: 1, color: "2563EB", completedColor: "22C55E", bg: "FFFFFF", padding: 16 };
+    case "battery":
+      return { ...common, level: 75, showPercent: true, autoColor: true, bg: "FFFFFF", padding: 24 };
+    case "testimonial":
+      return { ...common, quote: "이 서비스 정말 좋습니다!", author: "김지수", role: "PM", layout: "card", accentColor: "6366F1", bg: "FFFFFF", padding: 16 };
+    case "emoji-rain":
+      return { ...common, emojis: "🎉🎊✨💖🌟", speed: "normal", density: "normal", transparentBg: true, padding: 0 };
+    case "changelog":
+      return { ...common, entries: [{ version: "v2.0", date: "2026-02-15", desc: "다크 모드 추가" }, { version: "v1.0", date: "2025-12-01", desc: "첫 출시" }], accentColor: "6366F1", bg: "FFFFFF", padding: 16 };
+    case "matrix":
+      return { ...common, items: [{ text: "프로젝트 마감", quadrant: 0 }, { text: "운동 계획", quadrant: 1 }, { text: "이메일", quadrant: 2 }, { text: "SNS", quadrant: 3 }], bg: "FFFFFF", padding: 12 };
+    case "multi-progress":
+      return { ...common, items: [{ label: "프론트엔드", value: 80, max: 100, color: "6366F1" }, { label: "백엔드", value: 65, max: 100, color: "EC4899" }, { label: "디자인", value: 90, max: 100, color: "22C55E" }], bg: "FFFFFF", padding: 16 };
     default:
       return common;
   }

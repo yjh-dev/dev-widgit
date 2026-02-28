@@ -10,7 +10,8 @@ function MusicWidgetContent() {
 
   const title = searchParams.get("title") || "";
   const artist = searchParams.get("artist") || "";
-  const progress = Math.max(0, Math.min(100, Number(searchParams.get("progress")) || 35));
+  const rawProgress = searchParams.get("progress");
+  const progress = rawProgress !== null ? Math.max(0, Math.min(100, Number(rawProgress))) : 35;
   const artColor = parseHexColor(searchParams.get("artColor"), "6366F1");
   const showProgress = searchParams.get("showProgress") !== "false";
 

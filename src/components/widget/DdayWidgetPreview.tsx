@@ -114,7 +114,7 @@ export default function DdayWidgetPreview({
 
   return (
     <div
-      className={`flex flex-col items-center justify-center w-[320px] ${showProgress ? "min-h-[240px]" : "min-h-[200px]"} transition-colors ${fontClassName}`}
+      className={`flex flex-col items-center justify-center w-full h-full ${showProgress ? "min-h-[240px]" : "min-h-[200px]"} transition-colors ${fontClassName}`}
       style={{
         backgroundColor: isTransparent ? "transparent" : `#${bgColor}`,
         color: `#${textColor}`,

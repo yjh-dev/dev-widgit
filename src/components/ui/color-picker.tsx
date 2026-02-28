@@ -60,6 +60,7 @@ export default function ColorPicker({
           className="relative w-8 h-8 rounded border shrink-0 disabled:opacity-50 disabled:cursor-not-allowed"
           style={{ backgroundColor: `#${value || placeholder}` }}
           onClick={() => nativeRef.current?.click()}
+          aria-label="색상 선택기 열기"
         >
           <input
             ref={nativeRef}
@@ -84,6 +85,7 @@ export default function ColorPicker({
                 value === c && "ring-2 ring-ring ring-offset-1",
               )}
               style={{ backgroundColor: `#${c}` }}
+              aria-label={`색상 #${c}`}
             />
           ))}
         </div>

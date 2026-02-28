@@ -24,8 +24,10 @@ import PresetSelector from "@/components/editor/PresetSelector";
 import { useDdayWidgetStore } from "@/store/useWidgetStore";
 import { ddayPresets } from "@/lib/presets";
 import { useWidgetUrl } from "@/lib/use-widget-url";
+import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
 import { FONT_OPTIONS, type FontKey } from "@/lib/fonts";
+import type { FontSizeKey } from "@/lib/common-widget-options";
 
 type DdayDateFormat = "full" | "short" | "dot" | "none";
 
@@ -39,6 +41,29 @@ export default function CreateDdayPage() {
     setShowTime, setBlink, setDoneMsg, setBarColor, setDateFmt,
     loadPreset, reset,
   } = useDdayWidgetStore();
+
+  useInitFromUrl((p) => {
+    loadPreset({
+      ...(p.has("title") && { title: p.get("title")! }),
+      ...(p.has("date") && { targetDate: p.get("date")! }),
+      ...(p.has("bg") && { bgColor: p.get("bg")! }),
+      ...(p.has("text") && { textColor: p.get("text")! }),
+      ...(p.has("calcType") && { calcType: p.get("calcType") as "down" | "up" }),
+      ...(p.has("annual") && { isAnnual: p.get("annual") === "true" }),
+      ...(p.has("layout") && { layout: p.get("layout") as "default" | "progress" }),
+      ...(p.has("start") && { startDate: p.get("start")! }),
+      ...(p.has("transparent") && { isTransparent: p.get("transparent") === "true" }),
+      ...(p.has("font") && { font: p.get("font") as FontKey }),
+      ...(p.has("radius") && { borderRadius: Number(p.get("radius")) }),
+      ...(p.has("pad") && { padding: Number(p.get("pad")) }),
+      ...(p.has("fsize") && { fontSize: p.get("fsize") as FontSizeKey }),
+      ...(p.has("showTime") && { showTime: p.get("showTime") === "true" }),
+      ...(p.has("blink") && { blink: p.get("blink") !== "false" }),
+      ...(p.has("doneMsg") && { doneMsg: p.get("doneMsg")! }),
+      ...(p.has("barColor") && { barColor: p.get("barColor")! }),
+      ...(p.has("dateFmt") && { dateFmt: p.get("dateFmt") as DdayDateFormat }),
+    });
+  });
 
   const { buildWidgetUrl, widgetUrl } = useWidgetUrl(() => {
     const base = `${window.location.origin}/widget/dday`;
@@ -220,7 +245,7 @@ export default function CreateDdayPage() {
             ]}
           />
           <div className="mt-6">
-            <EditorActions widgetUrl={widgetUrl} onCopy={handleCopy} onReset={reset} />
+            <EditorActions widgetUrl={widgetUrl} onCopy={handleCopy} onReset={reset} onApplyTheme={(c) => useDdayWidgetStore.setState(c)} />
           </div>
         </CardContent>
       </Card>

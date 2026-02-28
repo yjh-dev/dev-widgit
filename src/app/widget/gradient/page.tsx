@@ -15,7 +15,8 @@ function GradientWidgetContent() {
   const colors = rawColors.split("|").filter((c) => /^[0-9a-fA-F]{6}$/.test(c)).slice(0, 4);
   if (colors.length < 2) { colors.length = 0; colors.push("6366F1", "EC4899"); }
 
-  const dir = Math.max(0, Math.min(360, Number(searchParams.get("dir")) || 135));
+  const rawDir = searchParams.get("dir");
+  const dir = rawDir !== null ? Math.max(0, Math.min(360, Number(rawDir))) : 135;
 
   const rawType = searchParams.get("type");
   const type: GradientType = VALID_TYPES.includes(rawType as GradientType)

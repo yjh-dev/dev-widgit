@@ -22,8 +22,10 @@ import { useTimeProgressStore } from "@/store/useTimeProgressStore";
 import { timeProgressPresets } from "@/lib/presets";
 import type { BarStyle, BarHeight, RingSize } from "@/store/useTimeProgressStore";
 import { useWidgetUrl } from "@/lib/use-widget-url";
+import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
 import type { ProgressType, WeekStart } from "@/lib/time-progress";
+import type { FontSizeKey } from "@/lib/common-widget-options";
 
 export default function CreateTimeProgressPage() {
   const {
@@ -33,6 +35,29 @@ export default function CreateTimeProgressPage() {
     setStyle, setShowLabel, setShowPercent, setBarHeight, setTextColor, setWeekStart, setRingSize, setShowRemain,
     loadPreset, reset,
   } = useTimeProgressStore();
+
+  useInitFromUrl((p) => {
+    loadPreset({
+      ...(p.has("type") && { type: p.get("type") as ProgressType }),
+      ...(p.has("color") && { color: p.get("color")! }),
+      ...(p.has("bg") && {
+        ...(p.get("bg") === "transparent"
+          ? { transparentBg: true }
+          : { bg: p.get("bg")! }),
+      }),
+      ...(p.has("radius") && { borderRadius: Number(p.get("radius")) }),
+      ...(p.has("pad") && { padding: Number(p.get("pad")) }),
+      ...(p.has("fsize") && { fontSize: p.get("fsize") as FontSizeKey }),
+      ...(p.has("style") && { style: p.get("style") as BarStyle }),
+      ...(p.has("label") && { showLabel: p.get("label") !== "false" }),
+      ...(p.has("percent") && { showPercent: p.get("percent") !== "false" }),
+      ...(p.has("barH") && { barHeight: p.get("barH") as BarHeight }),
+      ...(p.has("textColor") && { textColor: p.get("textColor")! }),
+      ...(p.has("weekStart") && { weekStart: p.get("weekStart") as WeekStart }),
+      ...(p.has("ringSize") && { ringSize: p.get("ringSize") as RingSize }),
+      ...(p.has("remain") && { showRemain: p.get("remain") === "true" }),
+    });
+  });
 
   const { buildWidgetUrl, widgetUrl } = useWidgetUrl(() => {
     const base = `${window.location.origin}/widget/time-progress`;
@@ -192,7 +217,7 @@ export default function CreateTimeProgressPage() {
             ]}
           />
           <div className="mt-6">
-            <EditorActions widgetUrl={widgetUrl} onCopy={handleCopy} onReset={reset} />
+            <EditorActions widgetUrl={widgetUrl} onCopy={handleCopy} onReset={reset} onApplyTheme={(c) => useTimeProgressStore.setState(c)} />
           </div>
         </CardContent>
       </Card>

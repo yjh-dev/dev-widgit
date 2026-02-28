@@ -21,7 +21,8 @@ function StickyNoteWidgetContent() {
     ? (rawPin as StickyPinType)
     : "pin";
 
-  const rotation = Math.max(-5, Math.min(5, Number(searchParams.get("rotation")) || 2));
+  const rawRotation = searchParams.get("rotation");
+  const rotation = rawRotation !== null ? Math.max(-5, Math.min(5, Number(rawRotation))) : 2;
   const font = searchParams.get("font") || "gaegu";
 
   const rawLh = searchParams.get("lh");
@@ -31,7 +32,8 @@ function StickyNoteWidgetContent() {
 
   const shadow = searchParams.get("shadow") !== "false";
 
-  const borderRadius = parseBorderRadius(searchParams.get("radius"));
+  const rawRadius = searchParams.get("radius");
+  const borderRadius = rawRadius !== null ? Math.max(0, Math.min(9999, Number(rawRadius) || 0)) : 4;
   const padding = parsePadding(searchParams.get("pad"));
   const fontSize = parseFontSize(searchParams.get("fsize"));
 
