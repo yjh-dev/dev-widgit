@@ -1,38 +1,8 @@
 import { create } from "zustand";
+import { widgetStoreCreator, type CommonStyleState } from "@/lib/widget-store-factory";
 import type { TimetableEntry } from "@/lib/timetable";
-import type { FontSizeKey } from "@/lib/common-widget-options";
 
-interface TimetableState {
-  entries: TimetableEntry[];
-  startHour: number;
-  endHour: number;
-  lang: "ko" | "en";
-  showGrid: boolean;
-  color: string;
-  bg: string;
-  transparentBg: boolean;
-  borderRadius: number;
-  padding: number;
-  fontSize: FontSizeKey;
-
-  setEntries: (v: TimetableEntry[]) => void;
-  addEntry: (e: TimetableEntry) => void;
-  removeEntry: (index: number) => void;
-  setStartHour: (v: number) => void;
-  setEndHour: (v: number) => void;
-  setLang: (v: "ko" | "en") => void;
-  setShowGrid: (v: boolean) => void;
-  setColor: (v: string) => void;
-  setBg: (v: string) => void;
-  setTransparentBg: (v: boolean) => void;
-  setBorderRadius: (v: number) => void;
-  setPadding: (v: number) => void;
-  setFontSize: (v: FontSizeKey) => void;
-  loadPreset: (preset: Partial<typeof initialState>) => void;
-  reset: () => void;
-}
-
-const initialState = {
+const widgetDefaults = {
   entries: [
     { day: 0, hour: 9, duration: 1, title: "국어", color: "2563EB" },
     { day: 0, hour: 11, duration: 1, title: "수학", color: "E11D48" },
@@ -46,31 +16,41 @@ const initialState = {
   lang: "ko" as "ko" | "en",
   showGrid: true,
   color: "1E1E1E",
-  bg: "FFFFFF",
-  transparentBg: false,
-  borderRadius: 16,
-  padding: 24,
-  fontSize: "md" as FontSizeKey,
 };
 
-export const useTimetableStore = create<TimetableState>((set) => ({
-  ...initialState,
+interface TimetableState extends CommonStyleState {
+  entries: TimetableEntry[];
+  startHour: number;
+  endHour: number;
+  lang: "ko" | "en";
+  showGrid: boolean;
+  color: string;
 
-  setEntries: (entries) => set({ entries }),
-  addEntry: (e) =>
-    set((s) => ({ entries: [...s.entries, e] })),
-  removeEntry: (index) =>
-    set((s) => ({ entries: s.entries.filter((_, i) => i !== index) })),
-  setStartHour: (startHour) => set({ startHour }),
-  setEndHour: (endHour) => set({ endHour }),
-  setLang: (lang) => set({ lang }),
-  setShowGrid: (showGrid) => set({ showGrid }),
-  setColor: (color) => set({ color }),
-  setBg: (bg) => set({ bg }),
-  setTransparentBg: (transparentBg) => set({ transparentBg }),
-  setBorderRadius: (borderRadius) => set({ borderRadius }),
-  setPadding: (padding) => set({ padding }),
-  setFontSize: (fontSize) => set({ fontSize }),
-  loadPreset: (preset) => set({ ...initialState, ...preset }),
-  reset: () => set(initialState),
-}));
+  setEntries: (v: TimetableEntry[]) => void;
+  addEntry: (e: TimetableEntry) => void;
+  removeEntry: (index: number) => void;
+  setStartHour: (v: number) => void;
+  setEndHour: (v: number) => void;
+  setLang: (v: "ko" | "en") => void;
+  setShowGrid: (v: boolean) => void;
+  setColor: (v: string) => void;
+  loadPreset: (preset: Record<string, unknown>) => void;
+  reset: () => void;
+}
+
+export const useTimetableStore = create<TimetableState>(
+  widgetStoreCreator(widgetDefaults, (set) => ({
+    setEntries: (v: TimetableEntry[]) => set({ entries: v }),
+    addEntry: (e: TimetableEntry) =>
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (set as any)((s: TimetableState) => ({ entries: [...s.entries, e] })),
+    removeEntry: (index: number) =>
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (set as any)((s: TimetableState) => ({ entries: s.entries.filter((_: TimetableEntry, i: number) => i !== index) })),
+    setStartHour: (v: number) => set({ startHour: v }),
+    setEndHour: (v: number) => set({ endHour: v }),
+    setLang: (v: "ko" | "en") => set({ lang: v }),
+    setShowGrid: (v: boolean) => set({ showGrid: v }),
+    setColor: (v: string) => set({ color: v }),
+  })),
+);

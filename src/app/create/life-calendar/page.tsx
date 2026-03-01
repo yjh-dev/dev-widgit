@@ -25,7 +25,8 @@ import type { CellShape, CellSize } from "@/store/useLifeCalendarStore";
 import { useWidgetUrl } from "@/lib/use-widget-url";
 import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
-import type { FontSizeKey } from "@/lib/common-widget-options";
+import { parseCommonParams } from "@/lib/common-params";
+import { addBgParam, addCommonStyleParams, buildUrl } from "@/lib/url-builder-utils";
 
 export default function CreateLifeCalendarPage() {
   const {
@@ -43,15 +44,8 @@ export default function CreateLifeCalendarPage() {
       ...(p.has("birthdate") && { birthdate: p.get("birthdate")! }),
       ...(p.has("lifespan") && { lifespan: Number(p.get("lifespan")) }),
       ...(p.has("color") && { color: p.get("color")! }),
-      ...(p.has("bg") && {
-        ...(p.get("bg") === "transparent"
-          ? { transparentBg: true }
-          : { bg: p.get("bg")! }),
-      }),
+      ...parseCommonParams(p),
       ...(p.has("stats") && { showStats: p.get("stats") !== "false" }),
-      ...(p.has("radius") && { borderRadius: Number(p.get("radius")) }),
-      ...(p.has("pad") && { padding: Number(p.get("pad")) }),
-      ...(p.has("fsize") && { fontSize: p.get("fsize") as FontSizeKey }),
       ...(p.has("shape") && { shape: p.get("shape") as CellShape }),
       ...(p.has("cellSize") && { cellSize: p.get("cellSize") as CellSize }),
       ...(p.has("futureColor") && { futureColor: p.get("futureColor")! }),
@@ -66,22 +60,15 @@ export default function CreateLifeCalendarPage() {
     if (birthdate) params.set("birthdate", birthdate);
     if (lifespan !== 80) params.set("lifespan", String(lifespan));
     if (color !== "2563EB") params.set("color", color);
-    if (transparentBg) {
-      params.set("bg", "transparent");
-    } else if (bg !== "FFFFFF") {
-      params.set("bg", bg);
-    }
+    addBgParam(params, transparentBg, bg);
     if (!showStats) params.set("stats", "false");
-    if (borderRadius !== 16) params.set("radius", String(borderRadius));
-    if (padding !== 24) params.set("pad", String(padding));
-    if (fontSize !== "md") params.set("fsize", fontSize);
+    addCommonStyleParams(params, borderRadius, padding, fontSize);
     if (shape !== "square") params.set("shape", shape);
     if (cellSize !== "sm") params.set("cellSize", cellSize);
     if (futureColor) params.set("futureColor", futureColor);
     if (showYears) params.set("years", "true");
     if (nowColor) params.set("nowColor", nowColor);
-    const qs = params.toString();
-    return qs ? `${base}?${qs}` : base;
+    return buildUrl(base, params);
   }, [birthdate, lifespan, color, bg, transparentBg, showStats, borderRadius, padding, fontSize, shape, cellSize, futureColor, showYears, nowColor]);
 
   const handleCopy = async () => {

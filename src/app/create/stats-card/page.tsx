@@ -26,7 +26,7 @@ import { serializeStats, deserializeStats } from "@/lib/stats-card";
 import { useWidgetUrl } from "@/lib/use-widget-url";
 import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
-import type { FontSizeKey } from "@/lib/common-widget-options";
+import { parseCommonParams } from "@/lib/common-params";
 import type { TrendDirection } from "@/lib/stats-card";
 import type { Preset } from "@/lib/presets";
 
@@ -69,20 +69,12 @@ export default function CreateStatsCardPage() {
   } = useStatsCardStore();
 
   useInitFromUrl((p) => {
-    const bgVal = p.get("bg");
     loadPreset({
       ...(p.has("stats") && { stats: deserializeStats(p.get("stats")!) }),
       ...(p.has("layout") && { layout: p.get("layout") as "row" | "grid" }),
       ...(p.has("accent") && { accentColor: p.get("accent")! }),
       ...(p.has("color") && { color: p.get("color")! }),
-      ...(bgVal === "transparent"
-        ? { transparentBg: true }
-        : bgVal
-          ? { bg: bgVal, transparentBg: false }
-          : {}),
-      ...(p.has("radius") && { borderRadius: Number(p.get("radius")) }),
-      ...(p.has("pad") && { padding: Number(p.get("pad")) }),
-      ...(p.has("fsize") && { fontSize: p.get("fsize") as FontSizeKey }),
+      ...parseCommonParams(p),
     });
   });
 

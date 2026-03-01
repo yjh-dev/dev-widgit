@@ -191,7 +191,7 @@ function CardEditorInner() {
   );
 
   const handlePreset = useCallback((preset: Preset) => {
-    setState((prev) => ({ ...INITIAL_STATE, ...preset.state }));
+    setState(() => ({ ...INITIAL_STATE, ...preset.state }));
   }, []);
 
   const handleReset = useCallback(() => {
@@ -547,6 +547,7 @@ function CardEditorInner() {
               style={{ aspectRatio }}
             >
               {cardUrl && (
+                /* eslint-disable-next-line @next/next/no-img-element */
                 <img
                   key={cardUrl}
                   src={cardUrl}

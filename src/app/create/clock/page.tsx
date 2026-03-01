@@ -23,9 +23,10 @@ import { clockPresets } from "@/lib/presets";
 import { useWidgetUrl } from "@/lib/use-widget-url";
 import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
+import { parseCommonParams } from "@/lib/common-params";
+import { addBgParam, addCommonStyleParams, buildUrl } from "@/lib/url-builder-utils";
 import { TIMEZONE_OPTIONS, CLOCK_DATE_FORMAT_OPTIONS, type ClockFormat, type ClockDateFormat } from "@/lib/clock";
 import { CLOCK_FONT_OPTIONS } from "@/lib/fonts";
-import type { FontSizeKey } from "@/lib/common-widget-options";
 
 export default function CreateClockPage() {
   const {
@@ -40,18 +41,11 @@ export default function CreateClockPage() {
 
   useInitFromUrl((p) => {
     loadPreset({
+      ...parseCommonParams(p),
       ...(p.has("timezone") && { timezone: p.get("timezone")! }),
       ...(p.has("format") && { format: p.get("format") as ClockFormat }),
       ...(p.has("font") && { font: p.get("font")! }),
       ...(p.has("color") && { color: p.get("color")! }),
-      ...(p.has("bg") && {
-        ...(p.get("bg") === "transparent"
-          ? { transparentBg: true }
-          : { bg: p.get("bg")! }),
-      }),
-      ...(p.has("radius") && { borderRadius: Number(p.get("radius")) }),
-      ...(p.has("pad") && { padding: Number(p.get("pad")) }),
-      ...(p.has("fsize") && { fontSize: p.get("fsize") as FontSizeKey }),
       ...(p.has("seconds") && { showSeconds: p.get("seconds") !== "false" }),
       ...(p.has("date") && { showDate: p.get("date") === "true" }),
       ...(p.has("blink") && { blink: p.get("blink") !== "false" }),
@@ -67,21 +61,14 @@ export default function CreateClockPage() {
     if (format !== "24h") params.set("format", format);
     if (font !== "mono") params.set("font", font);
     if (color !== "1E1E1E") params.set("color", color);
-    if (transparentBg) {
-      params.set("bg", "transparent");
-    } else if (bg !== "FFFFFF") {
-      params.set("bg", bg);
-    }
-    if (borderRadius !== 16) params.set("radius", String(borderRadius));
-    if (padding !== 24) params.set("pad", String(padding));
-    if (fontSize !== "md") params.set("fsize", fontSize);
+    addBgParam(params, transparentBg, bg);
+    addCommonStyleParams(params, borderRadius, padding, fontSize);
     if (!showSeconds) params.set("seconds", "false");
     if (showDate) params.set("date", "true");
     if (!blink) params.set("blink", "false");
     if (dateColor) params.set("dateColor", dateColor);
     if (dateFmt !== "kr") params.set("dateFmt", dateFmt);
-    const qs = params.toString();
-    return qs ? `${base}?${qs}` : base;
+    return buildUrl(base, params);
   }, [timezone, format, font, color, bg, transparentBg, borderRadius, padding, fontSize, showSeconds, showDate, blink, dateColor, dateFmt]);
 
   const handleCopy = async () => {

@@ -73,19 +73,16 @@ export default function TestimonialPreview({
   const displayQuote = quote || "후기를 입력하세요";
   const displayAuthor = author || "작성자";
 
-  const AvatarEl = () => {
-    if (!showAvatar) return null;
-    if (avatarUrl) {
-      return (
-        <img
-          src={avatarUrl}
-          alt={displayAuthor}
-          className="rounded-full object-cover shrink-0"
-          style={{ width: avatarSize, height: avatarSize }}
-        />
-      );
-    }
-    return (
+  const avatarEl = showAvatar ? (
+    avatarUrl ? (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={avatarUrl}
+        alt={displayAuthor}
+        className="rounded-full object-cover shrink-0"
+        style={{ width: avatarSize, height: avatarSize }}
+      />
+    ) : (
       <div
         className="rounded-full flex items-center justify-center shrink-0"
         style={{
@@ -98,8 +95,8 @@ export default function TestimonialPreview({
           style={{ color: `#${accentColor}`, width: avatarSize * 0.5, height: avatarSize * 0.5 }}
         />
       </div>
-    );
-  };
+    )
+  ) : null;
 
   if (layout === "minimal") {
     return (
@@ -151,7 +148,7 @@ export default function TestimonialPreview({
         }}
       >
         <div className="flex flex-col items-center text-center max-w-[320px]">
-          <AvatarEl />
+          {avatarEl}
           {showQuoteMarks && (
             <span
               className={`${MARK_SIZE_MAP[fontSize]} leading-none mt-2`}
@@ -214,7 +211,7 @@ export default function TestimonialPreview({
           {displayQuote}
         </p>
         <div className="flex items-center gap-2 mt-3">
-          <AvatarEl />
+          {avatarEl}
           <div>
             <p
               className={`${AUTHOR_SIZE_MAP[fontSize]} font-semibold`}

@@ -1,7 +1,7 @@
 "use client";
 
-import { Suspense } from "react";
 import { useWidgetParams } from "@/lib/use-widget-params";
+import WidgetPage from "@/components/widget/WidgetPage";
 
 function GroupContent() {
   const params = useWidgetParams();
@@ -48,8 +48,8 @@ function GroupContent() {
 
 export default function GroupWidgetPage() {
   return (
-    <Suspense>
+    <WidgetPage>
       <GroupContent />
-    </Suspense>
+    </WidgetPage>
   );
 }

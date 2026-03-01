@@ -1,55 +1,14 @@
 import { create } from "zustand";
 import type { ProgressType, WeekStart } from "@/lib/time-progress";
-import type { FontSizeKey } from "@/lib/common-widget-options";
+import { widgetStoreCreator, type CommonStyleState } from "@/lib/widget-store-factory";
 
 export type BarStyle = "bar" | "ring";
 export type BarHeight = "thin" | "default" | "thick";
 export type RingSize = "sm" | "md" | "lg";
 
-interface TimeProgressState {
-  type: ProgressType;
-  color: string;
-  bg: string;
-  transparentBg: boolean;
-  borderRadius: number;
-  padding: number;
-  fontSize: FontSizeKey;
-  style: BarStyle;
-  showLabel: boolean;
-  showPercent: boolean;
-  barHeight: BarHeight;
-  textColor: string;
-  weekStart: WeekStart;
-  ringSize: RingSize;
-  showRemain: boolean;
-
-  setType: (type: ProgressType) => void;
-  setColor: (color: string) => void;
-  setBg: (bg: string) => void;
-  setTransparentBg: (transparentBg: boolean) => void;
-  setBorderRadius: (borderRadius: number) => void;
-  setPadding: (padding: number) => void;
-  setFontSize: (fontSize: FontSizeKey) => void;
-  setStyle: (style: BarStyle) => void;
-  setShowLabel: (showLabel: boolean) => void;
-  setShowPercent: (showPercent: boolean) => void;
-  setBarHeight: (barHeight: BarHeight) => void;
-  setTextColor: (textColor: string) => void;
-  setWeekStart: (weekStart: WeekStart) => void;
-  setRingSize: (ringSize: RingSize) => void;
-  setShowRemain: (showRemain: boolean) => void;
-  loadPreset: (preset: Partial<typeof initialState>) => void;
-  reset: () => void;
-}
-
-const initialState = {
+const widgetDefaults = {
   type: "day" as ProgressType,
   color: "2563EB",
-  bg: "FFFFFF",
-  transparentBg: false,
-  borderRadius: 16,
-  padding: 24,
-  fontSize: "md" as FontSizeKey,
   style: "bar" as BarStyle,
   showLabel: true,
   showPercent: true,
@@ -60,24 +19,42 @@ const initialState = {
   showRemain: false,
 };
 
-export const useTimeProgressStore = create<TimeProgressState>((set) => ({
-  ...initialState,
+interface TimeProgressState extends CommonStyleState {
+  type: ProgressType;
+  color: string;
+  style: BarStyle;
+  showLabel: boolean;
+  showPercent: boolean;
+  barHeight: BarHeight;
+  textColor: string;
+  weekStart: WeekStart;
+  ringSize: RingSize;
+  showRemain: boolean;
+  setType: (v: ProgressType) => void;
+  setColor: (v: string) => void;
+  setStyle: (v: BarStyle) => void;
+  setShowLabel: (v: boolean) => void;
+  setShowPercent: (v: boolean) => void;
+  setBarHeight: (v: BarHeight) => void;
+  setTextColor: (v: string) => void;
+  setWeekStart: (v: WeekStart) => void;
+  setRingSize: (v: RingSize) => void;
+  setShowRemain: (v: boolean) => void;
+  loadPreset: (preset: Record<string, unknown>) => void;
+  reset: () => void;
+}
 
-  setType: (type) => set({ type }),
-  setColor: (color) => set({ color }),
-  setBg: (bg) => set({ bg }),
-  setTransparentBg: (transparentBg) => set({ transparentBg }),
-  setBorderRadius: (borderRadius) => set({ borderRadius }),
-  setPadding: (padding) => set({ padding }),
-  setFontSize: (fontSize) => set({ fontSize }),
-  setStyle: (style) => set({ style }),
-  setShowLabel: (showLabel) => set({ showLabel }),
-  setShowPercent: (showPercent) => set({ showPercent }),
-  setBarHeight: (barHeight) => set({ barHeight }),
-  setTextColor: (textColor) => set({ textColor }),
-  setWeekStart: (weekStart) => set({ weekStart }),
-  setRingSize: (ringSize) => set({ ringSize }),
-  setShowRemain: (showRemain) => set({ showRemain }),
-  loadPreset: (preset) => set({ ...initialState, ...preset }),
-  reset: () => set(initialState),
-}));
+export const useTimeProgressStore = create<TimeProgressState>(
+  widgetStoreCreator(widgetDefaults, (set) => ({
+    setType: (v: ProgressType) => set({ type: v }),
+    setColor: (v: string) => set({ color: v }),
+    setStyle: (v: BarStyle) => set({ style: v }),
+    setShowLabel: (v: boolean) => set({ showLabel: v }),
+    setShowPercent: (v: boolean) => set({ showPercent: v }),
+    setBarHeight: (v: BarHeight) => set({ barHeight: v }),
+    setTextColor: (v: string) => set({ textColor: v }),
+    setWeekStart: (v: WeekStart) => set({ weekStart: v }),
+    setRingSize: (v: RingSize) => set({ ringSize: v }),
+    setShowRemain: (v: boolean) => set({ showRemain: v }),
+  })),
+);

@@ -1,8 +1,8 @@
 "use client";
 
 import { useWidgetParams } from "@/lib/use-widget-params";
-import { Suspense } from "react";
 import GradientPreview from "@/components/widget/GradientPreview";
+import WidgetPage, { WidgetScreen } from "@/components/widget/WidgetPage";
 import { parseBorderRadius, parsePadding, parseFontSize, parseHexColor } from "@/lib/common-widget-options";
 import type { GradientType } from "@/lib/gradient";
 
@@ -33,7 +33,7 @@ function GradientWidgetContent() {
   const fontSize = parseFontSize(searchParams.get("fsize"));
 
   return (
-    <div className="w-screen h-screen bg-transparent">
+    <WidgetScreen>
       <GradientPreview
         colors={colors}
         dir={dir}
@@ -46,20 +46,14 @@ function GradientWidgetContent() {
         padding={padding}
         fontSize={fontSize}
       />
-    </div>
+    </WidgetScreen>
   );
 }
 
 export default function WidgetGradientPage() {
   return (
-    <Suspense
-      fallback={
-        <div className="w-screen h-screen flex items-center justify-center">
-          <p className="text-muted-foreground text-sm">로딩 중...</p>
-        </div>
-      }
-    >
+    <WidgetPage>
       <GradientWidgetContent />
-    </Suspense>
+    </WidgetPage>
   );
 }

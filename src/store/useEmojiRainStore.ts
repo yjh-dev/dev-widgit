@@ -1,54 +1,39 @@
 import { create } from "zustand";
+import { widgetStoreCreator, type CommonStyleState } from "@/lib/widget-store-factory";
 import type { SpeedKey, DensityKey } from "@/lib/emoji-rain";
 
-interface EmojiRainState {
+const widgetDefaults = {
+  emojis: "🎉🎊✨💖🌟",
+  speed: "normal" as SpeedKey,
+  density: "normal" as DensityKey,
+  minSize: 16,
+  maxSize: 32,
+  // Non-default common style overrides
+  transparentBg: true,
+};
+
+interface EmojiRainState extends CommonStyleState {
   emojis: string;
   speed: SpeedKey;
   density: DensityKey;
   minSize: number;
   maxSize: number;
-  bg: string;
-  transparentBg: boolean;
-  borderRadius: number;
-  padding: number;
 
   setEmojis: (v: string) => void;
   setSpeed: (v: SpeedKey) => void;
   setDensity: (v: DensityKey) => void;
   setMinSize: (v: number) => void;
   setMaxSize: (v: number) => void;
-  setBg: (v: string) => void;
-  setTransparentBg: (v: boolean) => void;
-  setBorderRadius: (v: number) => void;
-  setPadding: (v: number) => void;
-  loadPreset: (preset: Partial<typeof initialState>) => void;
+  loadPreset: (preset: Record<string, unknown>) => void;
   reset: () => void;
 }
 
-const initialState = {
-  emojis: "🎉🎊✨💖🌟",
-  speed: "normal" as SpeedKey,
-  density: "normal" as DensityKey,
-  minSize: 16,
-  maxSize: 32,
-  bg: "FFFFFF",
-  transparentBg: true,
-  borderRadius: 16,
-  padding: 24,
-};
-
-export const useEmojiRainStore = create<EmojiRainState>((set) => ({
-  ...initialState,
-
-  setEmojis: (emojis) => set({ emojis }),
-  setSpeed: (speed) => set({ speed }),
-  setDensity: (density) => set({ density }),
-  setMinSize: (minSize) => set({ minSize }),
-  setMaxSize: (maxSize) => set({ maxSize }),
-  setBg: (bg) => set({ bg }),
-  setTransparentBg: (transparentBg) => set({ transparentBg }),
-  setBorderRadius: (borderRadius) => set({ borderRadius }),
-  setPadding: (padding) => set({ padding }),
-  loadPreset: (preset) => set({ ...initialState, ...preset }),
-  reset: () => set(initialState),
-}));
+export const useEmojiRainStore = create<EmojiRainState>(
+  widgetStoreCreator(widgetDefaults, (set) => ({
+    setEmojis: (v: string) => set({ emojis: v }),
+    setSpeed: (v: SpeedKey) => set({ speed: v }),
+    setDensity: (v: DensityKey) => set({ density: v }),
+    setMinSize: (v: number) => set({ minSize: v }),
+    setMaxSize: (v: number) => set({ maxSize: v }),
+  })),
+);

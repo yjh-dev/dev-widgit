@@ -21,7 +21,8 @@ import { useWidgetUrl } from "@/lib/use-widget-url";
 import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
 import { serializeEvents, parseEvents } from "@/lib/timeline";
-import type { FontSizeKey } from "@/lib/common-widget-options";
+import { parseCommonParams } from "@/lib/common-params";
+import { addBgParam, addCommonStyleParams, buildUrl } from "@/lib/url-builder-utils";
 
 export default function CreateTimelinePage() {
   const {
@@ -40,12 +41,7 @@ export default function CreateTimelinePage() {
       ...(p.has("past") && { showPast: p.get("past") === "true" }),
       ...(p.has("color") && { color: p.get("color")! }),
       ...(p.has("pastColor") && { pastColor: p.get("pastColor")! }),
-      ...(p.has("bg") && p.get("bg") === "transparent"
-        ? { transparentBg: true }
-        : p.has("bg") && { bg: p.get("bg")!, transparentBg: false }),
-      ...(p.has("radius") && { borderRadius: Number(p.get("radius")) }),
-      ...(p.has("pad") && { padding: Number(p.get("pad")) }),
-      ...(p.has("fsize") && { fontSize: p.get("fsize") as FontSizeKey }),
+      ...parseCommonParams(p),
     });
   });
 
@@ -66,16 +62,9 @@ export default function CreateTimelinePage() {
     if (showPast) params.set("past", "true");
     if (color !== "2563EB") params.set("color", color);
     if (pastColor !== "999999") params.set("pastColor", pastColor);
-    if (transparentBg) {
-      params.set("bg", "transparent");
-    } else if (bg !== "FFFFFF") {
-      params.set("bg", bg);
-    }
-    if (borderRadius !== 16) params.set("radius", String(borderRadius));
-    if (padding !== 24) params.set("pad", String(padding));
-    if (fontSize !== "md") params.set("fsize", fontSize);
-    const qs = params.toString();
-    return qs ? `${base}?${qs}` : base;
+    addBgParam(params, transparentBg, bg);
+    addCommonStyleParams(params, borderRadius, padding, fontSize);
+    return buildUrl(base, params);
   }, [events, showPast, color, pastColor, bg, transparentBg, borderRadius, padding, fontSize]);
 
   const handleCopy = async () => {

@@ -21,6 +21,7 @@ import CommonStyleOptions from "@/components/editor/CommonStyleOptions";
 import { useFortuneCookieStore } from "@/store/useFortuneCookieStore";
 import { useWidgetUrl } from "@/lib/use-widget-url";
 import { copyToClipboard } from "@/lib/clipboard";
+import { addBgParam, addCommonStyleParams, buildUrl } from "@/lib/url-builder-utils";
 import type { CookieStyle } from "@/lib/fortune-cookie";
 
 export default function CreateFortuneCookiePage() {
@@ -42,16 +43,9 @@ export default function CreateFortuneCookiePage() {
     if (style !== "classic") params.set("style", style);
     if (cookieColor !== "D97706") params.set("cookieColor", cookieColor);
     if (textColor) params.set("textColor", textColor);
-    if (transparentBg) {
-      params.set("bg", "transparent");
-    } else if (bg !== "FFFFFF") {
-      params.set("bg", bg);
-    }
-    if (borderRadius !== 16) params.set("radius", String(borderRadius));
-    if (padding !== 24) params.set("pad", String(padding));
-    if (fontSize !== "md") params.set("fsize", fontSize);
-    const qs = params.toString();
-    return qs ? `${base}?${qs}` : base;
+    addBgParam(params, transparentBg, bg);
+    addCommonStyleParams(params, borderRadius, padding, fontSize);
+    return buildUrl(base, params);
   }, [customMessage, lang, style, cookieColor, textColor, bg, transparentBg, borderRadius, padding, fontSize]);
 
   const handleCopy = async () => {

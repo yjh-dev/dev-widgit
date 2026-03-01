@@ -25,7 +25,8 @@ import type { PomodoroProgressStyle } from "@/store/usePomodoroStore";
 import { useWidgetUrl } from "@/lib/use-widget-url";
 import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
-import type { FontSizeKey } from "@/lib/common-widget-options";
+import { parseCommonParams } from "@/lib/common-params";
+import { addBgParam, addCommonStyleParams, buildUrl } from "@/lib/url-builder-utils";
 
 export default function CreatePomodoroPage() {
   const {
@@ -41,14 +42,7 @@ export default function CreatePomodoroPage() {
       ...(p.has("work") && { workTime: Number(p.get("work")) }),
       ...(p.has("break") && { breakTime: Number(p.get("break")) }),
       ...(p.has("color") && { color: p.get("color")! }),
-      ...(p.has("bg") && {
-        ...(p.get("bg") === "transparent"
-          ? { transparentBg: true }
-          : { bg: p.get("bg")! }),
-      }),
-      ...(p.has("radius") && { borderRadius: Number(p.get("radius")) }),
-      ...(p.has("pad") && { padding: Number(p.get("pad")) }),
-      ...(p.has("fsize") && { fontSize: p.get("fsize") as FontSizeKey }),
+      ...parseCommonParams(p),
       ...(p.has("longBreak") && { longBreak: Number(p.get("longBreak")) }),
       ...(p.has("rounds") && { rounds: Number(p.get("rounds")) }),
       ...(p.has("showRounds") && { showRounds: p.get("showRounds") !== "false" }),
@@ -64,22 +58,15 @@ export default function CreatePomodoroPage() {
     if (workTime !== 25) params.set("work", String(workTime));
     if (breakTime !== 5) params.set("break", String(breakTime));
     if (color !== "E11D48") params.set("color", color);
-    if (transparentBg) {
-      params.set("bg", "transparent");
-    } else if (bg !== "FFFFFF") {
-      params.set("bg", bg);
-    }
-    if (borderRadius !== 16) params.set("radius", String(borderRadius));
-    if (padding !== 24) params.set("pad", String(padding));
-    if (fontSize !== "md") params.set("fsize", fontSize);
+    addBgParam(params, transparentBg, bg);
+    addCommonStyleParams(params, borderRadius, padding, fontSize);
     if (longBreak !== 15) params.set("longBreak", String(longBreak));
     if (rounds !== 4) params.set("rounds", String(rounds));
     if (!showRounds) params.set("showRounds", "false");
     if (breakColor !== "22C55E") params.set("breakColor", breakColor);
     if (autoStart) params.set("autoStart", "true");
     if (pStyle !== "bar") params.set("pStyle", pStyle);
-    const qs = params.toString();
-    return qs ? `${base}?${qs}` : base;
+    return buildUrl(base, params);
   }, [workTime, breakTime, color, bg, transparentBg, borderRadius, padding, fontSize, longBreak, rounds, showRounds, breakColor, autoStart, pStyle]);
 
   const handleCopy = async () => {

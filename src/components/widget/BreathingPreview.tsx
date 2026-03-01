@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, startTransition } from "react";
 import { Play, Pause, RotateCcw } from "lucide-react";
 import type { FontSizeKey } from "@/lib/common-widget-options";
 import type { BreathingPhase } from "@/lib/breathing";
@@ -67,7 +67,6 @@ export default function BreathingPreview({
   fontSize = "md",
 }: BreathingPreviewProps) {
   const phases = buildPhases(inhale, hold1, exhale, hold2);
-  const totalCycleSec = phases.reduce((s, p) => s + p.duration, 0);
 
   const [running, setRunning] = useState(false);
   const [phaseIdx, setPhaseIdx] = useState(0);
@@ -139,11 +138,13 @@ export default function BreathingPreview({
 
   // Reset when props change
   useEffect(() => {
-    setRunning(false);
-    setPhaseIdx(0);
-    setPhaseElapsed(0);
-    setCurrentRound(1);
-    setDone(false);
+    startTransition(() => {
+      setRunning(false);
+      setPhaseIdx(0);
+      setPhaseElapsed(0);
+      setCurrentRound(1);
+      setDone(false);
+    });
   }, [inhale, hold1, exhale, hold2, rounds]);
 
   const handleStart = () => {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useCallback, useEffect } from "react";
+import { useState, useRef, useCallback, useEffect, startTransition } from "react";
 import { Play, Pause, RotateCcw } from "lucide-react";
 import { formatCountdown } from "@/lib/countdown";
 import type { FontSizeKey } from "@/lib/common-widget-options";
@@ -61,13 +61,16 @@ export default function CountdownPreview({
   const endTimeRef = useRef(0);
   const flashRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const [flashOn, setFlashOn] = useState(false);
+  const tickRef = useRef<() => void>(() => {});
 
   // Sync remaining when minutes/seconds props change and not running
   useEffect(() => {
     if (!running) {
       const newTotal = minutes * 60 + seconds;
-      setRemaining(newTotal);
-      setDone(false);
+      startTransition(() => {
+        setRemaining(newTotal);
+        setDone(false);
+      });
     }
   }, [minutes, seconds, running]);
 
@@ -90,8 +93,12 @@ export default function CountdownPreview({
       }
       return;
     }
-    rafRef.current = requestAnimationFrame(tick);
+    rafRef.current = requestAnimationFrame(() => tickRef.current());
   }, [autoRestart, minutes, seconds]);
+
+  useEffect(() => {
+    tickRef.current = tick;
+  }, [tick]);
 
   const start = useCallback(() => {
     const currentRemaining = done ? minutes * 60 + seconds : remaining;
@@ -101,8 +108,8 @@ export default function CountdownPreview({
     }
     endTimeRef.current = Date.now() + currentRemaining * 1000;
     setRunning(true);
-    rafRef.current = requestAnimationFrame(tick);
-  }, [remaining, done, minutes, seconds, tick]);
+    rafRef.current = requestAnimationFrame(() => tickRef.current());
+  }, [remaining, done, minutes, seconds]);
 
   const pause = useCallback(() => {
     if (rafRef.current) {
@@ -140,7 +147,7 @@ export default function CountdownPreview({
       }, 500);
     } else {
       if (flashRef.current) clearInterval(flashRef.current);
-      setFlashOn(false);
+      startTransition(() => setFlashOn(false));
     }
     return () => {
       if (flashRef.current) clearInterval(flashRef.current);

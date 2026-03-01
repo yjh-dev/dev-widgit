@@ -21,7 +21,8 @@ import { useWidgetUrl } from "@/lib/use-widget-url";
 import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
 import { parseTodoItems, serializeTodoItems, generateId } from "@/lib/todo";
-import type { FontSizeKey } from "@/lib/common-widget-options";
+import { parseCommonParams } from "@/lib/common-params";
+import { addBgParam, addCommonStyleParams, buildUrl } from "@/lib/url-builder-utils";
 
 export default function CreateTodoPage() {
   const {
@@ -44,14 +45,9 @@ export default function CreateTodoPage() {
       ...(p.has("items") && { items: p.get("items")! }),
       ...(p.has("color") && { color: p.get("color")! }),
       ...(p.has("textColor") && { textColor: p.get("textColor")! }),
-      ...(p.has("bg") && p.get("bg") === "transparent"
-        ? { transparentBg: true }
-        : p.has("bg") && { bg: p.get("bg")!, transparentBg: false }),
+      ...parseCommonParams(p),
       ...(p.has("progress") && { showProgress: p.get("progress") !== "false" }),
       ...(p.has("strike") && { strikethrough: p.get("strike") !== "false" }),
-      ...(p.has("radius") && { borderRadius: Number(p.get("radius")) }),
-      ...(p.has("pad") && { padding: Number(p.get("pad")) }),
-      ...(p.has("fsize") && { fontSize: p.get("fsize") as FontSizeKey }),
     });
   });
 
@@ -64,18 +60,11 @@ export default function CreateTodoPage() {
     if (items) params.set("items", items);
     if (color !== "2563EB") params.set("color", color);
     if (textColor) params.set("textColor", textColor);
-    if (transparentBg) {
-      params.set("bg", "transparent");
-    } else if (bg !== "FFFFFF") {
-      params.set("bg", bg);
-    }
+    addBgParam(params, transparentBg, bg);
     if (!showProgress) params.set("progress", "false");
     if (!strikethrough) params.set("strike", "false");
-    if (borderRadius !== 16) params.set("radius", String(borderRadius));
-    if (padding !== 24) params.set("pad", String(padding));
-    if (fontSize !== "md") params.set("fsize", fontSize);
-    const qs = params.toString();
-    return qs ? `${base}?${qs}` : base;
+    addCommonStyleParams(params, borderRadius, padding, fontSize);
+    return buildUrl(base, params);
   }, [title, items, color, textColor, bg, transparentBg, showProgress, strikethrough, borderRadius, padding, fontSize]);
 
   const handleCopy = async () => {

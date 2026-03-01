@@ -1,6 +1,6 @@
 "use client";
 
-import { type ReactNode, Children, Suspense, useEffect, useState, useRef, useCallback } from "react";
+import { type ReactNode, Children, Suspense, useEffect, useState, useRef, useCallback, startTransition } from "react";
 import Link from "next/link";
 import { useSearchParams, usePathname } from "next/navigation";
 import { ArrowLeft, LayoutGrid, RectangleHorizontal, Square, RectangleVertical, Maximize } from "lucide-react";
@@ -75,8 +75,10 @@ function PreviewContainer({ aspect, children }: { aspect?: string; children: Rea
     const ih = inner.scrollHeight;
 
     if (iw <= 0 || ih <= 0 || ow <= 0 || oh <= 0) {
-      setLayout({ scale: 1, offsetX: 0, offsetY: 0 });
-      setReady(true);
+      startTransition(() => {
+        setLayout({ scale: 1, offsetX: 0, offsetY: 0 });
+        setReady(true);
+      });
       return;
     }
 
@@ -84,12 +86,14 @@ function PreviewContainer({ aspect, children }: { aspect?: string; children: Rea
     const offsetX = (ow - iw * s) / 2;
     const offsetY = (oh - ih * s) / 2;
     inner.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(${s})`;
-    setLayout({ scale: s, offsetX, offsetY });
-    setReady(true);
+    startTransition(() => {
+      setLayout({ scale: s, offsetX, offsetY });
+      setReady(true);
+    });
   }, []);
 
   useEffect(() => {
-    if (!aspect) { setReady(true); return; }
+    if (!aspect) { startTransition(() => setReady(true)); return; }
     // 첫 렌더 후 측정
     const frame = requestAnimationFrame(measure);
     const ro = new ResizeObserver(() => measure());
@@ -132,10 +136,12 @@ export default function EditorLayout({ title, children }: EditorLayoutProps) {
 
   // localStorage에서 프리뷰 사이즈 복원
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem(LS_PREVIEW_SIZE) as PreviewSize | null;
-      if (saved && previewSizes.some((s) => s.key === saved)) setPreviewSize(saved);
-    } catch { /* 무시 */ }
+    startTransition(() => {
+      try {
+        const saved = localStorage.getItem(LS_PREVIEW_SIZE) as PreviewSize | null;
+        if (saved && previewSizes.some((s) => s.key === saved)) setPreviewSize(saved);
+      } catch { /* 무시 */ }
+    });
   }, []);
 
   const handlePreviewSizeChange = (size: PreviewSize) => {

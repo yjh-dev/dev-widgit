@@ -1,6 +1,5 @@
 "use client";
 
-import { Suspense } from "react";
 import { useWidgetParams } from "@/lib/use-widget-params";
 import {
   parseBorderRadius,
@@ -9,6 +8,8 @@ import {
   parseHexColor,
 } from "@/lib/common-widget-options";
 import GithubContributionPreview from "@/components/widget/GithubContributionPreview";
+import WidgetPage, { WidgetScreen } from "@/components/widget/WidgetPage";
+import { parseBgParam } from "@/lib/common-params";
 
 const VALID_CELL_SIZES = ["sm", "md", "lg"] as const;
 const VALID_CELL_RADIUS = ["square", "rounded", "circle"] as const;
@@ -39,16 +40,14 @@ function GithubContributionContent() {
 
   const color = parseHexColor(sp.get("color"), "22C55E");
   const textColor = parseHexColor(sp.get("textColor"), "");
-  const rawBg = sp.get("bg") || "FFFFFF";
-  const transparentBg = rawBg === "transparent";
-  const bg = transparentBg ? "FFFFFF" : parseHexColor(rawBg, "FFFFFF");
+  const { bg, transparentBg } = parseBgParam(sp.get("bg"));
 
   const borderRadius = parseBorderRadius(sp.get("radius"));
   const padding = parsePadding(sp.get("pad"));
   const fontSize = parseFontSize(sp.get("fsize"));
 
   return (
-    <div className="w-screen h-screen bg-transparent">
+    <WidgetScreen>
       <GithubContributionPreview
         username={username}
         year={year}
@@ -65,20 +64,14 @@ function GithubContributionContent() {
         padding={padding}
         fontSize={fontSize}
       />
-    </div>
+    </WidgetScreen>
   );
 }
 
 export default function WidgetGithubContributionPage() {
   return (
-    <Suspense
-      fallback={
-        <div className="w-screen h-screen flex items-center justify-center">
-          <p className="text-muted-foreground text-sm">로딩 중...</p>
-        </div>
-      }
-    >
+    <WidgetPage>
       <GithubContributionContent />
-    </Suspense>
+    </WidgetPage>
   );
 }

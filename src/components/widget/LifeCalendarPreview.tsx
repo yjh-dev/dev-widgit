@@ -46,7 +46,7 @@ export default function LifeCalendarPreview({
   showYears = false,
   nowColor = "",
 }: LifeCalendarPreviewProps) {
-  const { totalWeeks, livedWeeks, livedYears, livedRemainWeeks, percentage } =
+  const { livedWeeks, livedYears, livedRemainWeeks, percentage } =
     useMemo(
       () => calculateLifeCalendar(birthdate, lifespan),
       [birthdate, lifespan],

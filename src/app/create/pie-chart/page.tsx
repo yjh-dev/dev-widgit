@@ -39,7 +39,7 @@ export default function CreatePieChartPage() {
     slices, style, showLabels, showPercent, showLegend, innerRadius,
     textColor, bg, transparentBg,
     borderRadius, padding, fontSize,
-    setSlices, updateSlice, addSlice, removeSlice,
+    updateSlice, addSlice, removeSlice,
     setStyle, setShowLabels, setShowPercent, setShowLegend, setInnerRadius,
     setTextColor, setBg, setTransparentBg,
     setBorderRadius, setPadding, setFontSize,

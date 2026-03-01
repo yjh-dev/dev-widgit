@@ -1,8 +1,8 @@
 "use client";
 
 import { useWidgetParams } from "@/lib/use-widget-params";
-import { Suspense } from "react";
 import EmojiRainPreview from "@/components/widget/EmojiRainPreview";
+import WidgetPage, { WidgetScreen } from "@/components/widget/WidgetPage";
 import { parseBorderRadius, parsePadding, parseHexColor } from "@/lib/common-widget-options";
 import { parseSpeed, parseDensity } from "@/lib/emoji-rain";
 
@@ -23,7 +23,7 @@ function EmojiRainWidgetContent() {
   const padding = parsePadding(searchParams.get("pad"));
 
   return (
-    <div className="w-screen h-screen bg-transparent">
+    <WidgetScreen>
       <EmojiRainPreview
         emojis={emojis}
         speed={speed}
@@ -35,20 +35,14 @@ function EmojiRainWidgetContent() {
         borderRadius={borderRadius}
         padding={padding}
       />
-    </div>
+    </WidgetScreen>
   );
 }
 
 export default function WidgetEmojiRainPage() {
   return (
-    <Suspense
-      fallback={
-        <div className="w-screen h-screen flex items-center justify-center">
-          <p className="text-muted-foreground text-sm">로딩 중...</p>
-        </div>
-      }
-    >
+    <WidgetPage>
       <EmojiRainWidgetContent />
-    </Suspense>
+    </WidgetPage>
   );
 }

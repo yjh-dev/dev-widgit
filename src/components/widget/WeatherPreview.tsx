@@ -5,7 +5,6 @@ import {
   fetchWeather,
   fetchForecast,
   weatherCodeToEmoji,
-  weatherCodeToCondition,
   type WeatherData,
   type ForecastDay,
   type TemperatureUnit,

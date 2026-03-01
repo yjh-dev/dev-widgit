@@ -1,62 +1,39 @@
 import { create } from "zustand";
-import type { FontSizeKey } from "@/lib/common-widget-options";
+import { widgetStoreCreator, type CommonStyleState } from "@/lib/widget-store-factory";
 
-interface BookmarkState {
-  url: string;
-  title: string;
-  desc: string;
-  showIcon: boolean;
-  showUrl: boolean;
-  color: string;
-  bg: string;
-  transparentBg: boolean;
-  borderRadius: number;
-  padding: number;
-  fontSize: FontSizeKey;
-
-  setUrl: (v: string) => void;
-  setTitle: (v: string) => void;
-  setDesc: (v: string) => void;
-  setShowIcon: (v: boolean) => void;
-  setShowUrl: (v: boolean) => void;
-  setColor: (v: string) => void;
-  setBg: (v: string) => void;
-  setTransparentBg: (v: boolean) => void;
-  setBorderRadius: (v: number) => void;
-  setPadding: (v: number) => void;
-  setFontSize: (v: FontSizeKey) => void;
-  loadPreset: (preset: Partial<typeof initialState>) => void;
-  reset: () => void;
-}
-
-const initialState = {
+const widgetDefaults = {
   url: "",
   title: "",
   desc: "",
   showIcon: true,
   showUrl: true,
   color: "1E1E1E",
-  bg: "FFFFFF",
-  transparentBg: false,
-  borderRadius: 16,
-  padding: 24,
-  fontSize: "md" as FontSizeKey,
 };
 
-export const useBookmarkStore = create<BookmarkState>((set) => ({
-  ...initialState,
+interface BookmarkState extends CommonStyleState {
+  url: string;
+  title: string;
+  desc: string;
+  showIcon: boolean;
+  showUrl: boolean;
+  color: string;
+  setUrl: (v: string) => void;
+  setTitle: (v: string) => void;
+  setDesc: (v: string) => void;
+  setShowIcon: (v: boolean) => void;
+  setShowUrl: (v: boolean) => void;
+  setColor: (v: string) => void;
+  loadPreset: (preset: Record<string, unknown>) => void;
+  reset: () => void;
+}
 
-  setUrl: (url) => set({ url }),
-  setTitle: (title) => set({ title }),
-  setDesc: (desc) => set({ desc }),
-  setShowIcon: (showIcon) => set({ showIcon }),
-  setShowUrl: (showUrl) => set({ showUrl }),
-  setColor: (color) => set({ color }),
-  setBg: (bg) => set({ bg }),
-  setTransparentBg: (transparentBg) => set({ transparentBg }),
-  setBorderRadius: (borderRadius) => set({ borderRadius }),
-  setPadding: (padding) => set({ padding }),
-  setFontSize: (fontSize) => set({ fontSize }),
-  loadPreset: (preset) => set({ ...initialState, ...preset }),
-  reset: () => set(initialState),
-}));
+export const useBookmarkStore = create<BookmarkState>(
+  widgetStoreCreator(widgetDefaults, (set) => ({
+    setUrl: (v: string) => set({ url: v }),
+    setTitle: (v: string) => set({ title: v }),
+    setDesc: (v: string) => set({ desc: v }),
+    setShowIcon: (v: boolean) => set({ showIcon: v }),
+    setShowUrl: (v: boolean) => set({ showUrl: v }),
+    setColor: (v: string) => set({ color: v }),
+  })),
+);

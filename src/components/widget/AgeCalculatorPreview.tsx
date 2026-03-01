@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, startTransition } from "react";
 import { calcAge, toLocalDate, type AgeStyle, type AgeResult } from "@/lib/age-calculator";
 import type { FontSizeKey } from "@/lib/common-widget-options";
 
@@ -56,10 +56,10 @@ export default function AgeCalculatorPreview({
 
   useEffect(() => {
     if (!parsed) {
-      setAge(null);
+      startTransition(() => { setAge(null); });
       return;
     }
-    setAge(calcAge(parsed));
+    startTransition(() => { setAge(calcAge(parsed)); });
     const interval = setInterval(() => {
       setAge(calcAge(parsed));
     }, 1000);

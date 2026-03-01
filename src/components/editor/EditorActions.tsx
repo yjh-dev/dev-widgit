@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect, useMemo, useCallback } from "react";
-import { Copy, RotateCcw, ExternalLink, ChevronDown, Download, Save, Trash2, Star, Import, FolderHeart, Code, Share2 } from "lucide-react";
+import { useState, useEffect, useMemo, useCallback, startTransition } from "react";
+import { Copy, RotateCcw, ExternalLink, ChevronDown, Download, Import, Code, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   AlertDialog,
@@ -20,15 +20,11 @@ import { toast } from "sonner";
 import { useEditorActions } from "./EditorActionsContext";
 import { compressWidgetUrl, decompressToParams } from "@/lib/url-compression";
 import { toPng } from "html-to-image";
-import {
-  getCustomPresets,
-  saveCustomPreset,
-  deleteCustomPreset,
-  type CustomPreset,
-} from "@/lib/custom-presets";
-import { saveWidget } from "@/lib/saved-widgets";
+import { getCustomPresets, type CustomPreset } from "@/lib/custom-presets";
 import type { WidgetType } from "@/lib/templates";
 import ThemeQuickApply from "./ThemeQuickApply";
+import EditorActionPresets from "./EditorActionPresets";
+import EditorActionSaveWidget from "./EditorActionSaveWidget";
 
 const LS_KEY = "widgit-short-url";
 
@@ -41,7 +37,7 @@ interface EditorActionsProps {
 
 function extractWidgetType(url: string): string {
   try {
-    const path = new URL(url).pathname; // /widget/dday
+    const path = new URL(url).pathname;
     return path.split("/").pop() || "";
   } catch {
     return "";
@@ -57,66 +53,27 @@ export default function EditorActions({
   const [guideOpen, setGuideOpen] = useState(false);
   const [shortUrl, setShortUrl] = useState(false);
   const [customPresets, setCustomPresets] = useState<CustomPreset[]>([]);
-  const [savingName, setSavingName] = useState("");
-  const [showSaveInput, setShowSaveInput] = useState(false);
-  const [showSaveWidget, setShowSaveWidget] = useState(false);
-  const [saveWidgetName, setSaveWidgetName] = useState("");
   const [showImport, setShowImport] = useState(false);
   const [importUrl, setImportUrl] = useState("");
   const { register } = useEditorActions();
 
   const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+  useEffect(() => { startTransition(() => setMounted(true)); }, []);
 
   const widgetType = useMemo(() => extractWidgetType(widgetUrl), [widgetUrl]);
 
-  // localStorage에서 토글 상태 복원
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem(LS_KEY);
-      if (saved === "true") setShortUrl(true);
-    } catch { /* SSR / 접근 불가 무시 */ }
+    startTransition(() => {
+      try {
+        const saved = localStorage.getItem(LS_KEY);
+        if (saved === "true") setShortUrl(true);
+      } catch { /* SSR / 접근 불가 무시 */ }
+    });
   }, []);
 
-  // 커스텀 프리셋 로드
   useEffect(() => {
-    if (widgetType) setCustomPresets(getCustomPresets(widgetType));
+    if (widgetType) startTransition(() => setCustomPresets(getCustomPresets(widgetType)));
   }, [widgetType]);
-
-  const handleSavePreset = () => {
-    const name = savingName.trim();
-    if (!name) { toast.error("프리셋 이름을 입력하세요."); return; }
-    saveCustomPreset(widgetType, name, widgetUrl);
-    setCustomPresets(getCustomPresets(widgetType));
-    setSavingName("");
-    setShowSaveInput(false);
-    toast.success(`"${name}" 프리셋이 저장되었습니다!`);
-  };
-
-  const handleSaveWidget = () => {
-    const name = saveWidgetName.trim();
-    if (!name) { toast.error("위젯 이름을 입력하세요."); return; }
-    try {
-      const parsed = new URL(widgetUrl);
-      const relativeUrl = parsed.pathname + parsed.search;
-      saveWidget(name, widgetType as WidgetType, relativeUrl);
-      setSaveWidgetName("");
-      setShowSaveWidget(false);
-      toast.success("내 위젯에 저장되었습니다!");
-    } catch {
-      toast.error("위젯 URL을 확인하세요.");
-    }
-  };
-
-  const handleDeletePreset = (id: string) => {
-    deleteCustomPreset(widgetType, id);
-    setCustomPresets(getCustomPresets(widgetType));
-    toast.success("프리셋이 삭제되었습니다.");
-  };
-
-  const handleLoadPreset = (preset: CustomPreset) => {
-    window.location.href = preset.url.replace("/widget/", "/create/");
-  };
 
   const handleImport = () => {
     const raw = importUrl.trim();
@@ -124,14 +81,10 @@ export default function EditorActions({
     try {
       const parsed = new URL(raw);
       const path = parsed.pathname;
-
-      // /widget/xxx → /create/xxx
       if (!path.startsWith("/widget/")) {
         toast.error("위젯 URL 형식이 아닙니다. (/widget/... 형태)");
         return;
       }
-
-      // 압축 URL 처리: ?c=... → 개별 파라미터로 전개
       const compressed = parsed.searchParams.get("c");
       let qs = parsed.search;
       if (compressed) {
@@ -140,7 +93,6 @@ export default function EditorActions({
           qs = `?${decompressed.toString()}`;
         }
       }
-
       const createPath = path.replace("/widget/", "/create/");
       window.location.href = `${createPath}${qs}`;
     } catch {
@@ -330,7 +282,6 @@ export default function EditorActions({
         </div>
       )}
 
-      {/* Theme quick apply + Save/Presets — only after mount to avoid hydration mismatch */}
       {mounted && onApplyTheme && widgetType && (
         <div className="border-t pt-4">
           <ThemeQuickApply
@@ -343,134 +294,14 @@ export default function EditorActions({
         </div>
       )}
 
-      {/* Save to My Widgets */}
-      <div className="border-t pt-4 space-y-3">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-1.5">
-            <FolderHeart className="w-3.5 h-3.5 text-muted-foreground" />
-            <span className="text-xs font-medium text-muted-foreground">내 위젯</span>
-          </div>
-          {!showSaveWidget && (
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-7 text-xs"
-              onClick={() => setShowSaveWidget(true)}
-            >
-              <Save className="w-3.5 h-3.5 mr-1" />
-              내 위젯에 저장
-            </Button>
-          )}
-        </div>
+      <EditorActionSaveWidget widgetType={widgetType} widgetUrl={widgetUrl} />
 
-        {showSaveWidget && (
-          <div className="flex gap-2">
-            <input
-              type="text"
-              value={saveWidgetName}
-              onChange={(e) => setSaveWidgetName(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleSaveWidget()}
-              placeholder="위젯 이름 (예: 수능 D-Day)"
-              className="flex-1 rounded-md border bg-background px-3 py-1.5 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-              autoFocus
-            />
-            <Button size="sm" className="h-8" onClick={handleSaveWidget}>저장</Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-8"
-              onClick={() => { setShowSaveWidget(false); setSaveWidgetName(""); }}
-            >
-              취소
-            </Button>
-          </div>
-        )}
-
-        {!showSaveWidget && (
-          <p className="text-xs text-muted-foreground">
-            완성된 위젯을 이름을 붙여 저장합니다.{" "}
-            <a href="/my-widgets" className="underline hover:text-foreground transition-colors">
-              내 위젯
-            </a>
-            에서 URL 복사·수정·삭제할 수 있습니다.
-          </p>
-        )}
-      </div>
-
-      {/* Custom presets */}
-      <div className="border-t pt-4 space-y-3">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-1.5">
-            <Star className="w-3.5 h-3.5 text-muted-foreground" />
-            <span className="text-xs font-medium text-muted-foreground">내 프리셋</span>
-          </div>
-          {!showSaveInput && (
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-7 text-xs"
-              onClick={() => setShowSaveInput(true)}
-            >
-              <Save className="w-3.5 h-3.5 mr-1" />
-              현재 설정 저장
-            </Button>
-          )}
-        </div>
-
-        {showSaveInput && (
-          <div className="flex gap-2">
-            <input
-              type="text"
-              value={savingName}
-              onChange={(e) => setSavingName(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleSavePreset()}
-              placeholder="프리셋 이름"
-              className="flex-1 rounded-md border bg-background px-3 py-1.5 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-              autoFocus
-            />
-            <Button size="sm" className="h-8" onClick={handleSavePreset}>저장</Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-8"
-              onClick={() => { setShowSaveInput(false); setSavingName(""); }}
-            >
-              취소
-            </Button>
-          </div>
-        )}
-
-        {customPresets.length > 0 ? (
-          <div className="flex flex-wrap gap-2">
-            {customPresets.map((p) => (
-              <div key={p.id} className="group flex items-center gap-0.5">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="h-7 text-xs"
-                  onClick={() => handleLoadPreset(p)}
-                >
-                  {p.name}
-                </Button>
-                <button
-                  type="button"
-                  onClick={() => handleDeletePreset(p.id)}
-                  className="opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-destructive p-0.5"
-                  title="삭제"
-                >
-                  <Trash2 className="w-3 h-3" />
-                </button>
-              </div>
-            ))}
-          </div>
-        ) : (
-          !showSaveInput && (
-            <p className="text-xs text-muted-foreground">
-              이 위젯 타입 전용 설정 템플릿입니다. 저장하면 클릭 한 번으로 설정을 불러올 수 있습니다.
-            </p>
-          )
-        )}
-      </div>
+      <EditorActionPresets
+        widgetType={widgetType}
+        widgetUrl={widgetUrl}
+        presets={customPresets}
+        onPresetsChange={setCustomPresets}
+      />
     </div>
   );
 }

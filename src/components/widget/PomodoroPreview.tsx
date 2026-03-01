@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, startTransition } from "react";
 import { Play, Pause, RotateCcw } from "lucide-react";
 import { formatTime, type PomodoroMode } from "@/lib/pomodoro";
 import type { FontSizeKey } from "@/lib/common-widget-options";
@@ -52,14 +52,16 @@ export default function PomodoroPreview({
   const [isRunning, setIsRunning] = useState(autoStart);
   const [currentRound, setCurrentRound] = useState(1);
   const currentRoundRef = useRef(currentRound);
-  currentRoundRef.current = currentRound;
+  useEffect(() => { currentRoundRef.current = currentRound; }, [currentRound]);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
-    setMode("work");
-    setTimeLeft(workTime * 60);
-    setIsRunning(autoStart);
-    setCurrentRound(1);
+    startTransition(() => {
+      setMode("work");
+      setTimeLeft(workTime * 60);
+      setIsRunning(autoStart);
+      setCurrentRound(1);
+    });
   }, [workTime, breakTime, longBreak, rounds, autoStart]);
 
   useEffect(() => {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, startTransition } from "react";
 import { saveTodos, loadTodos, generateId, type TodoItem } from "@/lib/todo";
 import type { FontSizeKey } from "@/lib/common-widget-options";
 
@@ -48,7 +48,7 @@ export default function TodoPreview({
   // 에디터 프리뷰: initialItems가 바뀌면 동기화
   useEffect(() => {
     if (!interactive) {
-      setItems(initialItems);
+      startTransition(() => setItems(initialItems));
     }
   }, [interactive, initialItems]);
 
@@ -56,7 +56,7 @@ export default function TodoPreview({
   useEffect(() => {
     if (interactive && widgetId) {
       const saved = loadTodos(widgetId);
-      if (saved.length > 0) setItems(saved);
+      if (saved.length > 0) startTransition(() => setItems(saved));
     }
   }, [interactive, widgetId]);
 

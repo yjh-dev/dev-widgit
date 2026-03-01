@@ -27,6 +27,7 @@ import { useWidgetUrl } from "@/lib/use-widget-url";
 import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
 import { FONT_OPTIONS, type FontKey } from "@/lib/fonts";
+import { addCommonStyleParams, buildUrl } from "@/lib/url-builder-utils";
 import type { FontSizeKey } from "@/lib/common-widget-options";
 
 type DdayDateFormat = "full" | "short" | "dot" | "none";
@@ -78,15 +79,13 @@ export default function CreateDdayPage() {
     if (startDate) params.set("start", startDate);
     if (isTransparent) params.set("transparent", "true");
     if (font !== "noto-sans-kr") params.set("font", font);
-    if (borderRadius !== 16) params.set("radius", String(borderRadius));
-    if (padding !== 24) params.set("pad", String(padding));
-    if (fontSize !== "md") params.set("fsize", fontSize);
+    addCommonStyleParams(params, borderRadius, padding, fontSize);
     if (showTime) params.set("showTime", "true");
     if (!blink) params.set("blink", "false");
     if (doneMsg) params.set("doneMsg", doneMsg);
     if (barColor) params.set("barColor", barColor);
     if (dateFmt !== "full") params.set("dateFmt", dateFmt);
-    return `${base}?${params.toString()}`;
+    return buildUrl(base, params);
   }, [title, targetDate, bgColor, textColor, calcType, isAnnual, layout, startDate, isTransparent, font, borderRadius, padding, fontSize, showTime, blink, doneMsg, barColor, dateFmt]);
 
   const handleCopy = async () => {

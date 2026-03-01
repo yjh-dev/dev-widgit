@@ -47,3 +47,22 @@ export function parseHexColor(raw: string | null, fallback: string): string {
   if (raw === "transparent") return raw;
   return /^[0-9a-fA-F]{6}$/.test(raw) ? raw : fallback;
 }
+
+/**
+ * 프리뷰 컴포넌트에서 공통으로 사용하는 글자 크기 Tailwind 클래스 맵.
+ * 위젯별로 커스텀 맵이 필요하면 이 맵을 참조하지 않아도 된다.
+ */
+export const FONT_SIZE_CLASS: Record<FontSizeKey, string> = {
+  sm: "text-sm",
+  md: "text-base",
+  lg: "text-lg",
+  xl: "text-xl",
+};
+
+/** 제목용 큰 글자 크기 맵 */
+export const TITLE_FONT_SIZE_CLASS: Record<FontSizeKey, string> = {
+  sm: "text-lg",
+  md: "text-2xl",
+  lg: "text-3xl",
+  xl: "text-4xl",
+};

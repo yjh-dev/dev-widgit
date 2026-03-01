@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, startTransition } from "react";
 import {
   getClockTime,
   getClockDate,
@@ -66,8 +66,10 @@ export default function ClockPreview({
   );
 
   useEffect(() => {
-    setTime(getClockTime(timezone, format));
-    if (showDate) setDateStr(getClockDate(timezone, dateFmt));
+    startTransition(() => {
+      setTime(getClockTime(timezone, format));
+      if (showDate) setDateStr(getClockDate(timezone, dateFmt));
+    });
     const interval = setInterval(() => {
       setTime(getClockTime(timezone, format));
       if (showDate) setDateStr(getClockDate(timezone, dateFmt));

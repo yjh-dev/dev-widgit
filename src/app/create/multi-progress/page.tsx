@@ -41,7 +41,7 @@ export default function CreateMultiProgressPage() {
     items, showPercent, showValue, barHeight, layout, animated,
     textColor, bg, transparentBg,
     borderRadius, padding, fontSize,
-    addItem, removeItem, updateItem,
+    addItem, removeItem,
     setShowPercent, setShowValue, setBarHeight, setLayout, setAnimated,
     setTextColor, setBg, setTransparentBg,
     setBorderRadius, setPadding, setFontSize,

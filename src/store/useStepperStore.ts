@@ -1,43 +1,8 @@
 import { create } from "zustand";
+import { widgetStoreCreator, type CommonStyleState } from "@/lib/widget-store-factory";
 import type { Step, StepperLayout } from "@/lib/stepper";
-import type { FontSizeKey } from "@/lib/common-widget-options";
 
-interface StepperState {
-  steps: Step[];
-  currentStep: number;
-  layout: StepperLayout;
-  showDesc: boolean;
-  showNumbers: boolean;
-  color: string;
-  completedColor: string;
-  textColor: string;
-  bg: string;
-  transparentBg: boolean;
-  borderRadius: number;
-  padding: number;
-  fontSize: FontSizeKey;
-
-  setSteps: (v: Step[]) => void;
-  updateStep: (index: number, step: Step) => void;
-  addStep: (step: Step) => void;
-  removeStep: (index: number) => void;
-  setCurrentStep: (v: number) => void;
-  setLayout: (v: StepperLayout) => void;
-  setShowDesc: (v: boolean) => void;
-  setShowNumbers: (v: boolean) => void;
-  setColor: (v: string) => void;
-  setCompletedColor: (v: string) => void;
-  setTextColor: (v: string) => void;
-  setBg: (v: string) => void;
-  setTransparentBg: (v: boolean) => void;
-  setBorderRadius: (v: number) => void;
-  setPadding: (v: number) => void;
-  setFontSize: (v: FontSizeKey) => void;
-  loadPreset: (preset: Partial<typeof initialState>) => void;
-  reset: () => void;
-}
-
-const initialState = {
+const widgetDefaults = {
   steps: [
     { label: "기획", desc: "아이디어 구상" },
     { label: "디자인", desc: "UI/UX 설계" },
@@ -51,36 +16,53 @@ const initialState = {
   color: "2563EB",
   completedColor: "22C55E",
   textColor: "",
-  bg: "FFFFFF",
-  transparentBg: false,
-  borderRadius: 16,
-  padding: 24,
-  fontSize: "md" as FontSizeKey,
 };
 
-export const useStepperStore = create<StepperState>((set) => ({
-  ...initialState,
+interface StepperState extends CommonStyleState {
+  steps: Step[];
+  currentStep: number;
+  layout: StepperLayout;
+  showDesc: boolean;
+  showNumbers: boolean;
+  color: string;
+  completedColor: string;
+  textColor: string;
 
-  setSteps: (steps) => set({ steps }),
-  updateStep: (index, step) =>
-    set((s) => ({
-      steps: s.steps.map((st, i) => (i === index ? step : st)),
-    })),
-  addStep: (step) => set((s) => ({ steps: [...s.steps, step] })),
-  removeStep: (index) =>
-    set((s) => ({ steps: s.steps.filter((_, i) => i !== index) })),
-  setCurrentStep: (currentStep) => set({ currentStep }),
-  setLayout: (layout) => set({ layout }),
-  setShowDesc: (showDesc) => set({ showDesc }),
-  setShowNumbers: (showNumbers) => set({ showNumbers }),
-  setColor: (color) => set({ color }),
-  setCompletedColor: (completedColor) => set({ completedColor }),
-  setTextColor: (textColor) => set({ textColor }),
-  setBg: (bg) => set({ bg }),
-  setTransparentBg: (transparentBg) => set({ transparentBg }),
-  setBorderRadius: (borderRadius) => set({ borderRadius }),
-  setPadding: (padding) => set({ padding }),
-  setFontSize: (fontSize) => set({ fontSize }),
-  loadPreset: (preset) => set({ ...initialState, ...preset }),
-  reset: () => set(initialState),
-}));
+  setSteps: (v: Step[]) => void;
+  updateStep: (index: number, step: Step) => void;
+  addStep: (step: Step) => void;
+  removeStep: (index: number) => void;
+  setCurrentStep: (v: number) => void;
+  setLayout: (v: StepperLayout) => void;
+  setShowDesc: (v: boolean) => void;
+  setShowNumbers: (v: boolean) => void;
+  setColor: (v: string) => void;
+  setCompletedColor: (v: string) => void;
+  setTextColor: (v: string) => void;
+  loadPreset: (preset: Record<string, unknown>) => void;
+  reset: () => void;
+}
+
+export const useStepperStore = create<StepperState>(
+  widgetStoreCreator(widgetDefaults, (set) => ({
+    setSteps: (v: Step[]) => set({ steps: v }),
+    updateStep: (index: number, step: Step) =>
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (set as any)((s: StepperState) => ({
+        steps: s.steps.map((st: Step, i: number) => (i === index ? step : st)),
+      })),
+    addStep: (step: Step) =>
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (set as any)((s: StepperState) => ({ steps: [...s.steps, step] })),
+    removeStep: (index: number) =>
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (set as any)((s: StepperState) => ({ steps: s.steps.filter((_: Step, i: number) => i !== index) })),
+    setCurrentStep: (v: number) => set({ currentStep: v }),
+    setLayout: (v: StepperLayout) => set({ layout: v }),
+    setShowDesc: (v: boolean) => set({ showDesc: v }),
+    setShowNumbers: (v: boolean) => set({ showNumbers: v }),
+    setColor: (v: string) => set({ color: v }),
+    setCompletedColor: (v: string) => set({ completedColor: v }),
+    setTextColor: (v: string) => set({ textColor: v }),
+  })),
+);

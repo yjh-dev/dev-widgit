@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, startTransition } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { type FlashCard, SAMPLE_CARDS } from "@/lib/flashcard";
 import type { FontSizeKey } from "@/lib/common-widget-options";
@@ -43,14 +43,18 @@ export default function FlashcardPreview({
 
   // Reset index when cards change
   useEffect(() => {
-    setCurrentIndex(0);
-    setFlipped(false);
+    startTransition(() => {
+      setCurrentIndex(0);
+      setFlipped(false);
+    });
   }, [cards]);
 
   // Keep index in bounds
   useEffect(() => {
     if (currentIndex >= displayCards.length) {
-      setCurrentIndex(Math.max(0, displayCards.length - 1));
+      startTransition(() => {
+        setCurrentIndex(Math.max(0, displayCards.length - 1));
+      });
     }
   }, [currentIndex, displayCards.length]);
 

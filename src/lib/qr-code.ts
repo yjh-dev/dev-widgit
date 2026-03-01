@@ -326,7 +326,7 @@ function getAlignmentPositions(version: number): number[] {
 
 function getFormatBits(ec: QRErrorCorrection, mask: number): number {
   const ecBits: Record<QRErrorCorrection, number> = { L: 1, M: 0, Q: 3, H: 2 };
-  let data = (ecBits[ec] << 3) | mask;
+  const data = (ecBits[ec] << 3) | mask;
   let bits = data << 10;
   // BCH(15,5) encoding
   const gen = 0x537;

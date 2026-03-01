@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, startTransition } from "react";
 import { getMoonPhase, getNextFullMoon, daysUntil, MOON_SIZE_MAP, type MoonStyle, type MoonSize } from "@/lib/moon-phase";
 import type { FontSizeKey } from "@/lib/common-widget-options";
 
@@ -49,7 +49,6 @@ function MoonSVG({
 
   // The terminator is an ellipse edge; its x-radius depends on the phase
   const terminatorRx = Math.abs(cosAngle) * r;
-  const isWaxing = phase < 0.5;
 
   // Build the lit area path
   let litPath: string;
@@ -105,14 +104,16 @@ export default function MoonPhasePreview({
   const [nextFull, setNextFull] = useState<string>("");
 
   useEffect(() => {
-    setMounted(true);
-    const d = getMoonPhase();
-    setData(d);
-    if (showNext) {
-      const nf = getNextFullMoon();
-      const days = daysUntil(nf);
-      setNextFull(`다음 보름달까지 ${days}일`);
-    }
+    startTransition(() => {
+      setMounted(true);
+      const d = getMoonPhase();
+      setData(d);
+      if (showNext) {
+        const nf = getNextFullMoon();
+        const days = daysUntil(nf);
+        setNextFull(`다음 보름달까지 ${days}일`);
+      }
+    });
   }, [showNext]);
 
   if (!mounted) return <div className="w-full h-full" />;

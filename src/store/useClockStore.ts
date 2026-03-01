@@ -1,51 +1,13 @@
 import { create } from "zustand";
 import type { ClockFormat, ClockDateFormat } from "@/lib/clock";
 import type { FontSizeKey } from "@/lib/common-widget-options";
+import { widgetStoreCreator, type CommonStyleState } from "@/lib/widget-store-factory";
 
-interface ClockState {
-  timezone: string;
-  format: ClockFormat;
-  font: string;
-  color: string;
-  bg: string;
-  transparentBg: boolean;
-  borderRadius: number;
-  padding: number;
-  fontSize: FontSizeKey;
-  showSeconds: boolean;
-  showDate: boolean;
-  blink: boolean;
-  dateColor: string;
-  dateFmt: ClockDateFormat;
-
-  setTimezone: (timezone: string) => void;
-  setFormat: (format: ClockFormat) => void;
-  setFont: (font: string) => void;
-  setColor: (color: string) => void;
-  setBg: (bg: string) => void;
-  setTransparentBg: (transparentBg: boolean) => void;
-  setBorderRadius: (borderRadius: number) => void;
-  setPadding: (padding: number) => void;
-  setFontSize: (fontSize: FontSizeKey) => void;
-  setShowSeconds: (showSeconds: boolean) => void;
-  setShowDate: (showDate: boolean) => void;
-  setBlink: (blink: boolean) => void;
-  setDateColor: (dateColor: string) => void;
-  setDateFmt: (dateFmt: ClockDateFormat) => void;
-  loadPreset: (preset: Partial<typeof initialState>) => void;
-  reset: () => void;
-}
-
-const initialState = {
+const widgetDefaults = {
   timezone: "Asia/Seoul",
   format: "24h" as ClockFormat,
   font: "mono",
   color: "1E1E1E",
-  bg: "FFFFFF",
-  transparentBg: false,
-  borderRadius: 16,
-  padding: 24,
-  fontSize: "md" as FontSizeKey,
   showSeconds: true,
   showDate: false,
   blink: true,
@@ -53,23 +15,39 @@ const initialState = {
   dateFmt: "kr" as ClockDateFormat,
 };
 
-export const useClockStore = create<ClockState>((set) => ({
-  ...initialState,
+interface ClockState extends CommonStyleState {
+  timezone: string;
+  format: ClockFormat;
+  font: string;
+  color: string;
+  showSeconds: boolean;
+  showDate: boolean;
+  blink: boolean;
+  dateColor: string;
+  dateFmt: ClockDateFormat;
+  setTimezone: (v: string) => void;
+  setFormat: (v: ClockFormat) => void;
+  setFont: (v: string) => void;
+  setColor: (v: string) => void;
+  setShowSeconds: (v: boolean) => void;
+  setShowDate: (v: boolean) => void;
+  setBlink: (v: boolean) => void;
+  setDateColor: (v: string) => void;
+  setDateFmt: (v: ClockDateFormat) => void;
+  loadPreset: (preset: Partial<typeof widgetDefaults & { bg: string; transparentBg: boolean; borderRadius: number; padding: number; fontSize: FontSizeKey }>) => void;
+  reset: () => void;
+}
 
-  setTimezone: (timezone) => set({ timezone }),
-  setFormat: (format) => set({ format }),
-  setFont: (font) => set({ font }),
-  setColor: (color) => set({ color }),
-  setBg: (bg) => set({ bg }),
-  setTransparentBg: (transparentBg) => set({ transparentBg }),
-  setBorderRadius: (borderRadius) => set({ borderRadius }),
-  setPadding: (padding) => set({ padding }),
-  setFontSize: (fontSize) => set({ fontSize }),
-  setShowSeconds: (showSeconds) => set({ showSeconds }),
-  setShowDate: (showDate) => set({ showDate }),
-  setBlink: (blink) => set({ blink }),
-  setDateColor: (dateColor) => set({ dateColor }),
-  setDateFmt: (dateFmt) => set({ dateFmt }),
-  loadPreset: (preset) => set({ ...initialState, ...preset }),
-  reset: () => set(initialState),
-}));
+export const useClockStore = create<ClockState>(
+  widgetStoreCreator(widgetDefaults, (set) => ({
+    setTimezone: (v: string) => set({ timezone: v }),
+    setFormat: (v: ClockFormat) => set({ format: v }),
+    setFont: (v: string) => set({ font: v }),
+    setColor: (v: string) => set({ color: v }),
+    setShowSeconds: (v: boolean) => set({ showSeconds: v }),
+    setShowDate: (v: boolean) => set({ showDate: v }),
+    setBlink: (v: boolean) => set({ blink: v }),
+    setDateColor: (v: string) => set({ dateColor: v }),
+    setDateFmt: (v: ClockDateFormat) => set({ dateFmt: v }),
+  })),
+);

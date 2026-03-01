@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useRef } from "react";
 import { resolveFontStyle } from "@/lib/fonts";
 import type { CursorStyle, TypewriterAlign } from "@/lib/typewriter";
 import type { FontSizeKey } from "@/lib/common-widget-options";
@@ -59,48 +59,8 @@ export default function TypewriterPreview({
   const displayTexts = texts.filter(Boolean);
   if (displayTexts.length === 0) displayTexts.push("타이핑 효과 위젯");
 
-  const tick = useCallback(() => {
-    const currentText = displayTexts[textIndexRef.current % displayTexts.length];
-
-    if (!isDeletingRef.current) {
-      // Typing
-      if (charIndexRef.current < currentText.length) {
-        charIndexRef.current++;
-        setDisplayText(currentText.slice(0, charIndexRef.current));
-        timerRef.current = setTimeout(tick, speed);
-      } else {
-        // Finished typing this text
-        if (displayTexts.length === 1 && !loop) return;
-
-        timerRef.current = setTimeout(() => {
-          if (deleteAnim) {
-            isDeletingRef.current = true;
-            tick();
-          } else {
-            // Jump to next text without deleting
-            textIndexRef.current++;
-            if (!loop && textIndexRef.current >= displayTexts.length) return;
-            charIndexRef.current = 0;
-            setDisplayText("");
-            timerRef.current = setTimeout(tick, speed);
-          }
-        }, pause);
-      }
-    } else {
-      // Deleting
-      if (charIndexRef.current > 0) {
-        charIndexRef.current--;
-        setDisplayText(currentText.slice(0, charIndexRef.current));
-        timerRef.current = setTimeout(tick, speed / 2);
-      } else {
-        // Finished deleting
-        isDeletingRef.current = false;
-        textIndexRef.current++;
-        if (!loop && textIndexRef.current >= displayTexts.length) return;
-        timerRef.current = setTimeout(tick, speed);
-      }
-    }
-  }, [displayTexts, speed, pause, loop, deleteAnim]);
+  const propsRef = useRef({ displayTexts, speed, pause, loop, deleteAnim });
+  useEffect(() => { propsRef.current = { displayTexts, speed, pause, loop, deleteAnim }; });
 
   // Reset & restart animation when props change
   useEffect(() => {
@@ -109,12 +69,51 @@ export default function TypewriterPreview({
     isDeletingRef.current = false;
     setDisplayText("");
 
+    const tick = () => {
+      const { displayTexts: dt, speed: spd, pause: pse, loop: lp, deleteAnim: da } = propsRef.current;
+      const currentText = dt[textIndexRef.current % dt.length];
+
+      if (!isDeletingRef.current) {
+        if (charIndexRef.current < currentText.length) {
+          charIndexRef.current++;
+          setDisplayText(currentText.slice(0, charIndexRef.current));
+          timerRef.current = setTimeout(tick, spd);
+        } else {
+          if (dt.length === 1 && !lp) return;
+          timerRef.current = setTimeout(() => {
+            if (da) {
+              isDeletingRef.current = true;
+              tick();
+            } else {
+              textIndexRef.current++;
+              if (!lp && textIndexRef.current >= dt.length) return;
+              charIndexRef.current = 0;
+              setDisplayText("");
+              timerRef.current = setTimeout(tick, spd);
+            }
+          }, pse);
+        }
+      } else {
+        if (charIndexRef.current > 0) {
+          charIndexRef.current--;
+          setDisplayText(currentText.slice(0, charIndexRef.current));
+          timerRef.current = setTimeout(tick, spd / 2);
+        } else {
+          isDeletingRef.current = false;
+          textIndexRef.current++;
+          if (!lp && textIndexRef.current >= dt.length) return;
+          timerRef.current = setTimeout(tick, spd);
+        }
+      }
+    };
+
     timerRef.current = setTimeout(tick, speed);
 
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current);
     };
-  }, [tick, speed]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [texts.join("|"), speed, pause, loop, deleteAnim]);
 
   // Cursor blink
   useEffect(() => {

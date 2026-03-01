@@ -1,62 +1,39 @@
 import { create } from "zustand";
-import type { FontSizeKey } from "@/lib/common-widget-options";
+import { widgetStoreCreator, type CommonStyleState } from "@/lib/widget-store-factory";
 
-interface TodoState {
-  title: string;
-  items: string; // pipe-separated: "할일1|할일2|!완료된할일"
-  color: string;
-  textColor: string;
-  bg: string;
-  transparentBg: boolean;
-  showProgress: boolean;
-  strikethrough: boolean;
-  borderRadius: number;
-  padding: number;
-  fontSize: FontSizeKey;
-
-  setTitle: (v: string) => void;
-  setItems: (v: string) => void;
-  setColor: (v: string) => void;
-  setTextColor: (v: string) => void;
-  setBg: (v: string) => void;
-  setTransparentBg: (v: boolean) => void;
-  setShowProgress: (v: boolean) => void;
-  setStrikethrough: (v: boolean) => void;
-  setBorderRadius: (v: number) => void;
-  setPadding: (v: number) => void;
-  setFontSize: (v: FontSizeKey) => void;
-  loadPreset: (preset: Partial<typeof initialState>) => void;
-  reset: () => void;
-}
-
-const initialState = {
+const widgetDefaults = {
   title: "",
   items: "",
   color: "2563EB",
   textColor: "",
-  bg: "FFFFFF",
-  transparentBg: false,
   showProgress: true,
   strikethrough: true,
-  borderRadius: 16,
-  padding: 24,
-  fontSize: "md" as FontSizeKey,
 };
 
-export const useTodoStore = create<TodoState>((set) => ({
-  ...initialState,
+interface TodoState extends CommonStyleState {
+  title: string;
+  items: string;
+  color: string;
+  textColor: string;
+  showProgress: boolean;
+  strikethrough: boolean;
+  setTitle: (v: string) => void;
+  setItems: (v: string) => void;
+  setColor: (v: string) => void;
+  setTextColor: (v: string) => void;
+  setShowProgress: (v: boolean) => void;
+  setStrikethrough: (v: boolean) => void;
+  loadPreset: (preset: Record<string, unknown>) => void;
+  reset: () => void;
+}
 
-  setTitle: (title) => set({ title }),
-  setItems: (items) => set({ items }),
-  setColor: (color) => set({ color }),
-  setTextColor: (textColor) => set({ textColor }),
-  setBg: (bg) => set({ bg }),
-  setTransparentBg: (transparentBg) => set({ transparentBg }),
-  setShowProgress: (showProgress) => set({ showProgress }),
-  setStrikethrough: (strikethrough) => set({ strikethrough }),
-  setBorderRadius: (borderRadius) => set({ borderRadius }),
-  setPadding: (padding) => set({ padding }),
-  setFontSize: (fontSize) => set({ fontSize }),
-  loadPreset: (preset) => set({ ...initialState, ...preset }),
-  reset: () => set(initialState),
-}));
+export const useTodoStore = create<TodoState>(
+  widgetStoreCreator(widgetDefaults, (set) => ({
+    setTitle: (v: string) => set({ title: v }),
+    setItems: (v: string) => set({ items: v }),
+    setColor: (v: string) => set({ color: v }),
+    setTextColor: (v: string) => set({ textColor: v }),
+    setShowProgress: (v: boolean) => set({ showProgress: v }),
+    setStrikethrough: (v: boolean) => set({ strikethrough: v }),
+  })),
+);

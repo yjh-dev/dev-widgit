@@ -1,8 +1,8 @@
 "use client";
 
 import { useWidgetParams } from "@/lib/use-widget-params";
-import { Suspense } from "react";
 import MoonPhasePreview from "@/components/widget/MoonPhasePreview";
+import WidgetPage, { WidgetScreen } from "@/components/widget/WidgetPage";
 import { parseBorderRadius, parsePadding, parseFontSize, parseHexColor } from "@/lib/common-widget-options";
 import type { MoonStyle, MoonSize } from "@/lib/moon-phase";
 
@@ -39,7 +39,7 @@ function MoonPhaseWidgetContent() {
   const fontSize = parseFontSize(searchParams.get("fsize"));
 
   return (
-    <div className="w-screen h-screen bg-transparent">
+    <WidgetScreen>
       <MoonPhasePreview
         style={style}
         showName={showName}
@@ -55,20 +55,14 @@ function MoonPhaseWidgetContent() {
         padding={padding}
         fontSize={fontSize}
       />
-    </div>
+    </WidgetScreen>
   );
 }
 
 export default function WidgetMoonPhasePage() {
   return (
-    <Suspense
-      fallback={
-        <div className="w-screen h-screen flex items-center justify-center">
-          <p className="text-muted-foreground text-sm">로딩 중...</p>
-        </div>
-      }
-    >
+    <WidgetPage>
       <MoonPhaseWidgetContent />
-    </Suspense>
+    </WidgetPage>
   );
 }

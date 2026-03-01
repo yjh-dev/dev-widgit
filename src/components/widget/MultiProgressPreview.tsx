@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, startTransition } from "react";
 import type { ProgressItem, BarHeight, ProgressLayout } from "@/lib/multi-progress";
 import { BAR_HEIGHT_MAP } from "@/lib/multi-progress";
 import type { FontSizeKey } from "@/lib/common-widget-options";
@@ -47,10 +47,10 @@ export default function MultiProgressPreview({
 
   useEffect(() => {
     if (animated) {
-      const t = setTimeout(() => setMounted(true), 50);
+      const t = setTimeout(() => startTransition(() => { setMounted(true); }), 50);
       return () => clearTimeout(t);
     } else {
-      setMounted(true);
+      startTransition(() => { setMounted(true); });
     }
   }, [animated]);
 
@@ -60,7 +60,6 @@ export default function MultiProgressPreview({
   };
 
   if (layout === "grouped") {
-    const maxVal = Math.max(...items.map((it) => it.max), 1);
     return (
       <div
         className="w-full h-full flex flex-col items-center justify-center"

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, startTransition } from "react";
 import { rollDice, flipCoin, pickRandom, D6_DOTS, type DiceMode, type DiceSides } from "@/lib/dice";
 import type { FontSizeKey } from "@/lib/common-widget-options";
 
@@ -97,10 +97,12 @@ export default function DicePreview({
 
   // count 변경 시 diceValues 배열 길이 동기화
   useEffect(() => {
-    setDiceValues((prev) => {
-      if (prev.length === count) return prev;
-      if (prev.length < count) return [...prev, ...Array.from({ length: count - prev.length }, () => 1)];
-      return prev.slice(0, count);
+    startTransition(() => {
+      setDiceValues((prev) => {
+        if (prev.length === count) return prev;
+        if (prev.length < count) return [...prev, ...Array.from({ length: count - prev.length }, () => 1)];
+        return prev.slice(0, count);
+      });
     });
   }, [count]);
 

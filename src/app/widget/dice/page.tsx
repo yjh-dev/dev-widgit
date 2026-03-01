@@ -1,8 +1,9 @@
 "use client";
 
 import { useWidgetParams } from "@/lib/use-widget-params";
-import { Suspense } from "react";
 import DicePreview from "@/components/widget/DicePreview";
+import WidgetPage, { WidgetScreen } from "@/components/widget/WidgetPage";
+import { parseBgParam } from "@/lib/common-params";
 import { parseBorderRadius, parsePadding, parseFontSize, parseHexColor } from "@/lib/common-widget-options";
 import type { DiceMode, DiceSides } from "@/lib/dice";
 
@@ -27,9 +28,7 @@ function DiceWidgetContent() {
   const color = parseHexColor(searchParams.get("color"), "2563EB");
   const textColor = parseHexColor(searchParams.get("textColor"), "FFFFFF");
 
-  const rawBg = searchParams.get("bg") || "FFFFFF";
-  const transparentBg = rawBg === "transparent";
-  const bg = transparentBg ? "FFFFFF" : parseHexColor(rawBg, "FFFFFF");
+  const { bg, transparentBg } = parseBgParam(searchParams.get("bg"));
 
   const rawItems = searchParams.get("items") || "";
   const items = rawItems ? rawItems.split("|").map(decodeURIComponent).filter(Boolean) : [];
@@ -42,7 +41,7 @@ function DiceWidgetContent() {
   const fontSize = parseFontSize(searchParams.get("fsize"));
 
   return (
-    <div className="w-screen h-screen bg-transparent">
+    <WidgetScreen>
       <DicePreview
         mode={mode}
         count={count}
@@ -58,20 +57,14 @@ function DiceWidgetContent() {
         padding={padding}
         fontSize={fontSize}
       />
-    </div>
+    </WidgetScreen>
   );
 }
 
 export default function WidgetDicePage() {
   return (
-    <Suspense
-      fallback={
-        <div className="w-screen h-screen flex items-center justify-center">
-          <p className="text-muted-foreground text-sm">로딩 중...</p>
-        </div>
-      }
-    >
+    <WidgetPage>
       <DiceWidgetContent />
-    </Suspense>
+    </WidgetPage>
   );
 }

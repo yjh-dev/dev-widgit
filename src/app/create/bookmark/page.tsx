@@ -17,7 +17,8 @@ import { bookmarkPresets } from "@/lib/presets";
 import { useWidgetUrl } from "@/lib/use-widget-url";
 import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
-import type { FontSizeKey } from "@/lib/common-widget-options";
+import { parseCommonParams } from "@/lib/common-params";
+import { addBgParam, addCommonStyleParams, buildUrl } from "@/lib/url-builder-utils";
 
 export default function CreateBookmarkPage() {
   const {
@@ -38,14 +39,7 @@ export default function CreateBookmarkPage() {
       ...(p.has("showIcon") && { showIcon: p.get("showIcon") !== "false" }),
       ...(p.has("showUrl") && { showUrl: p.get("showUrl") !== "false" }),
       ...(p.has("color") && { color: p.get("color")! }),
-      ...(p.has("bg") && {
-        ...(p.get("bg") === "transparent"
-          ? { transparentBg: true }
-          : { bg: p.get("bg")!, transparentBg: false }),
-      }),
-      ...(p.has("radius") && { borderRadius: Number(p.get("radius")) }),
-      ...(p.has("pad") && { padding: Number(p.get("pad")) }),
-      ...(p.has("fsize") && { fontSize: p.get("fsize") as FontSizeKey }),
+      ...parseCommonParams(p),
     });
   });
 
@@ -58,16 +52,9 @@ export default function CreateBookmarkPage() {
     if (!showIcon) params.set("showIcon", "false");
     if (!showUrl) params.set("showUrl", "false");
     if (color !== "1E1E1E") params.set("color", color);
-    if (transparentBg) {
-      params.set("bg", "transparent");
-    } else if (bg !== "FFFFFF") {
-      params.set("bg", bg);
-    }
-    if (borderRadius !== 16) params.set("radius", String(borderRadius));
-    if (padding !== 24) params.set("pad", String(padding));
-    if (fontSize !== "md") params.set("fsize", fontSize);
-    const qs = params.toString();
-    return qs ? `${base}?${qs}` : base;
+    addBgParam(params, transparentBg, bg);
+    addCommonStyleParams(params, borderRadius, padding, fontSize);
+    return buildUrl(base, params);
   }, [url, title, desc, showIcon, showUrl, color, bg, transparentBg, borderRadius, padding, fontSize]);
 
   const handleCopy = async () => {

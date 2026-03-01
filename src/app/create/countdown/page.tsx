@@ -17,7 +17,8 @@ import { countdownPresets } from "@/lib/presets";
 import { useWidgetUrl } from "@/lib/use-widget-url";
 import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
-import type { FontSizeKey } from "@/lib/common-widget-options";
+import { parseCommonParams } from "@/lib/common-params";
+import { addBgParam, addCommonStyleParams, buildUrl } from "@/lib/url-builder-utils";
 
 export default function CreateCountdownPage() {
   const {
@@ -31,7 +32,6 @@ export default function CreateCountdownPage() {
   } = useCountdownStore();
 
   useInitFromUrl((p) => {
-    const bgVal = p.get("bg");
     loadPreset({
       ...(p.has("min") && { minutes: Math.max(0, Math.min(999, Number(p.get("min")) || 5)) }),
       ...(p.has("sec") && { seconds: Math.max(0, Math.min(59, Number(p.get("sec")) || 0)) }),
@@ -39,14 +39,7 @@ export default function CreateCountdownPage() {
       ...(p.has("autoRestart") && { autoRestart: p.get("autoRestart") === "true" }),
       ...(p.has("accent") && { accentColor: p.get("accent")! }),
       ...(p.has("color") && { color: p.get("color")! }),
-      ...(bgVal === "transparent"
-        ? { transparentBg: true }
-        : bgVal
-          ? { bg: bgVal, transparentBg: false }
-          : {}),
-      ...(p.has("radius") && { borderRadius: Number(p.get("radius")) }),
-      ...(p.has("pad") && { padding: Number(p.get("pad")) }),
-      ...(p.has("fsize") && { fontSize: p.get("fsize") as FontSizeKey }),
+      ...parseCommonParams(p),
     });
   });
 
@@ -59,16 +52,9 @@ export default function CreateCountdownPage() {
     if (autoRestart) params.set("autoRestart", "true");
     if (accentColor !== "E11D48") params.set("accent", accentColor);
     if (color !== "1E1E1E") params.set("color", color);
-    if (transparentBg) {
-      params.set("bg", "transparent");
-    } else if (bg !== "FFFFFF") {
-      params.set("bg", bg);
-    }
-    if (borderRadius !== 16) params.set("radius", String(borderRadius));
-    if (padding !== 24) params.set("pad", String(padding));
-    if (fontSize !== "md") params.set("fsize", fontSize);
-    const qs = params.toString();
-    return qs ? `${base}?${qs}` : base;
+    addBgParam(params, transparentBg, bg);
+    addCommonStyleParams(params, borderRadius, padding, fontSize);
+    return buildUrl(base, params);
   }, [minutes, seconds, showMs, autoRestart, accentColor, color, bg, transparentBg, borderRadius, padding, fontSize]);
 
   const handleCopy = async () => {

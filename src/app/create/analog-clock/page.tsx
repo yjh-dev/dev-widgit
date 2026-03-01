@@ -25,7 +25,8 @@ import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
 import { TIMEZONE_OPTIONS } from "@/lib/clock";
 import type { NumberStyle } from "@/lib/analog-clock";
-import type { FontSizeKey } from "@/lib/common-widget-options";
+import { parseCommonParams } from "@/lib/common-params";
+import { addBgParam, addCommonStyleParams, buildUrl } from "@/lib/url-builder-utils";
 
 export default function CreateAnalogClockPage() {
   const {
@@ -51,12 +52,7 @@ export default function CreateAnalogClockPage() {
       ...(p.has("face") && { faceColor: p.get("face")! }),
       ...(p.has("tick") && { tickColor: p.get("tick")! }),
       ...(p.has("border") && { borderColor: p.get("border")! }),
-      ...(p.has("bg") && p.get("bg") === "transparent"
-        ? { transparentBg: true }
-        : p.has("bg") && { bg: p.get("bg")!, transparentBg: false }),
-      ...(p.has("radius") && { borderRadius: Number(p.get("radius")) }),
-      ...(p.has("pad") && { padding: Number(p.get("pad")) }),
-      ...(p.has("fsize") && { fontSize: p.get("fsize") as FontSizeKey }),
+      ...parseCommonParams(p),
     });
   });
 
@@ -74,16 +70,9 @@ export default function CreateAnalogClockPage() {
     if (faceColor !== "FFFFFF") params.set("face", faceColor);
     if (tickColor !== "999999") params.set("tick", tickColor);
     if (borderColor !== "1E1E1E") params.set("border", borderColor);
-    if (transparentBg) {
-      params.set("bg", "transparent");
-    } else if (bg !== "FFFFFF") {
-      params.set("bg", bg);
-    }
-    if (borderRadius !== 16) params.set("radius", String(borderRadius));
-    if (padding !== 24) params.set("pad", String(padding));
-    if (fontSize !== "md") params.set("fsize", fontSize);
-    const qs = params.toString();
-    return qs ? `${base}?${qs}` : base;
+    addBgParam(params, transparentBg, bg);
+    addCommonStyleParams(params, borderRadius, padding, fontSize);
+    return buildUrl(base, params);
   }, [timezone, showNumbers, numStyle, showSeconds, showTicks, showBorder, handColor, secHandColor, faceColor, tickColor, borderColor, bg, transparentBg, borderRadius, padding, fontSize]);
 
   const handleCopy = async () => {

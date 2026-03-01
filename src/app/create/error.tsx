@@ -5,7 +5,6 @@ import { ArrowLeft, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function CreateErrorPage({
-  error,
   reset,
 }: {
   error: Error & { digest?: string };

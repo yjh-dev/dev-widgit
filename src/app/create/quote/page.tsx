@@ -27,7 +27,8 @@ import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
 import { ALIGN_OPTIONS, LINE_HEIGHT_OPTIONS } from "@/lib/quote";
 import { QUOTE_FONT_OPTIONS_EXTENDED } from "@/lib/fonts";
-import type { FontSizeKey } from "@/lib/common-widget-options";
+import { parseCommonParams } from "@/lib/common-params";
+import { addBgParam, addCommonStyleParams, buildUrl } from "@/lib/url-builder-utils";
 
 export default function CreateQuotePage() {
   const {
@@ -46,14 +47,7 @@ export default function CreateQuotePage() {
       ...(p.has("author") && { author: p.get("author")! }),
       ...(p.has("font") && { font: p.get("font")! }),
       ...(p.has("textColor") && { textColor: p.get("textColor")! }),
-      ...(p.has("bg") && {
-        ...(p.get("bg") === "transparent"
-          ? { transparentBg: true }
-          : { bg: p.get("bg")! }),
-      }),
-      ...(p.has("radius") && { borderRadius: Number(p.get("radius")) }),
-      ...(p.has("pad") && { padding: Number(p.get("pad")) }),
-      ...(p.has("fsize") && { fontSize: p.get("fsize") as FontSizeKey }),
+      ...parseCommonParams(p),
       ...(p.has("align") && { align: p.get("align") as TextAlign }),
       ...(p.has("marks") && { showMarks: p.get("marks") !== "false" }),
       ...(p.has("italic") && { italic: p.get("italic") === "true" }),
@@ -70,22 +64,15 @@ export default function CreateQuotePage() {
     if (author) params.set("author", author);
     if (font !== "serif") params.set("font", font);
     if (textColor !== "1E1E1E") params.set("textColor", textColor);
-    if (transparentBg) {
-      params.set("bg", "transparent");
-    } else if (bg !== "FFFFFF") {
-      params.set("bg", bg);
-    }
-    if (borderRadius !== 16) params.set("radius", String(borderRadius));
-    if (padding !== 24) params.set("pad", String(padding));
-    if (fontSize !== "md") params.set("fsize", fontSize);
+    addBgParam(params, transparentBg, bg);
+    addCommonStyleParams(params, borderRadius, padding, fontSize);
     if (align !== "center") params.set("align", align);
     if (!showMarks) params.set("marks", "false");
     if (italic) params.set("italic", "true");
     if (lineHeight !== "relaxed") params.set("lh", lineHeight);
     if (authorColor) params.set("authorColor", authorColor);
     if (divider) params.set("divider", "true");
-    const qs = params.toString();
-    return qs ? `${base}?${qs}` : base;
+    return buildUrl(base, params);
   }, [text, author, font, textColor, bg, transparentBg, borderRadius, padding, fontSize, align, showMarks, italic, lineHeight, authorColor, divider]);
 
   const handleCopy = async () => {

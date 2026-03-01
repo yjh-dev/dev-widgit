@@ -1,51 +1,12 @@
 import { create } from "zustand";
-import type { FontSizeKey } from "@/lib/common-widget-options";
+import { widgetStoreCreator, type CommonStyleState } from "@/lib/widget-store-factory";
 
 export type PomodoroProgressStyle = "bar" | "ring";
 
-interface PomodoroState {
-  workTime: number;
-  breakTime: number;
-  color: string;
-  bg: string;
-  transparentBg: boolean;
-  borderRadius: number;
-  padding: number;
-  fontSize: FontSizeKey;
-  longBreak: number;
-  rounds: number;
-  showRounds: boolean;
-  breakColor: string;
-  autoStart: boolean;
-  pStyle: PomodoroProgressStyle;
-
-  setWorkTime: (workTime: number) => void;
-  setBreakTime: (breakTime: number) => void;
-  setColor: (color: string) => void;
-  setBg: (bg: string) => void;
-  setTransparentBg: (transparentBg: boolean) => void;
-  setBorderRadius: (borderRadius: number) => void;
-  setPadding: (padding: number) => void;
-  setFontSize: (fontSize: FontSizeKey) => void;
-  setLongBreak: (longBreak: number) => void;
-  setRounds: (rounds: number) => void;
-  setShowRounds: (showRounds: boolean) => void;
-  setBreakColor: (breakColor: string) => void;
-  setAutoStart: (autoStart: boolean) => void;
-  setPStyle: (pStyle: PomodoroProgressStyle) => void;
-  loadPreset: (preset: Partial<typeof initialState>) => void;
-  reset: () => void;
-}
-
-const initialState = {
+const widgetDefaults = {
   workTime: 25,
   breakTime: 5,
   color: "E11D48",
-  bg: "FFFFFF",
-  transparentBg: false,
-  borderRadius: 16,
-  padding: 24,
-  fontSize: "md" as FontSizeKey,
   longBreak: 15,
   rounds: 4,
   showRounds: true,
@@ -54,23 +15,39 @@ const initialState = {
   pStyle: "bar" as PomodoroProgressStyle,
 };
 
-export const usePomodoroStore = create<PomodoroState>((set) => ({
-  ...initialState,
+interface PomodoroState extends CommonStyleState {
+  workTime: number;
+  breakTime: number;
+  color: string;
+  longBreak: number;
+  rounds: number;
+  showRounds: boolean;
+  breakColor: string;
+  autoStart: boolean;
+  pStyle: PomodoroProgressStyle;
+  setWorkTime: (v: number) => void;
+  setBreakTime: (v: number) => void;
+  setColor: (v: string) => void;
+  setLongBreak: (v: number) => void;
+  setRounds: (v: number) => void;
+  setShowRounds: (v: boolean) => void;
+  setBreakColor: (v: string) => void;
+  setAutoStart: (v: boolean) => void;
+  setPStyle: (v: PomodoroProgressStyle) => void;
+  loadPreset: (preset: Record<string, unknown>) => void;
+  reset: () => void;
+}
 
-  setWorkTime: (workTime) => set({ workTime }),
-  setBreakTime: (breakTime) => set({ breakTime }),
-  setColor: (color) => set({ color }),
-  setBg: (bg) => set({ bg }),
-  setTransparentBg: (transparentBg) => set({ transparentBg }),
-  setBorderRadius: (borderRadius) => set({ borderRadius }),
-  setPadding: (padding) => set({ padding }),
-  setFontSize: (fontSize) => set({ fontSize }),
-  setLongBreak: (longBreak) => set({ longBreak }),
-  setRounds: (rounds) => set({ rounds }),
-  setShowRounds: (showRounds) => set({ showRounds }),
-  setBreakColor: (breakColor) => set({ breakColor }),
-  setAutoStart: (autoStart) => set({ autoStart }),
-  setPStyle: (pStyle) => set({ pStyle }),
-  loadPreset: (preset) => set({ ...initialState, ...preset }),
-  reset: () => set(initialState),
-}));
+export const usePomodoroStore = create<PomodoroState>(
+  widgetStoreCreator(widgetDefaults, (set) => ({
+    setWorkTime: (v: number) => set({ workTime: v }),
+    setBreakTime: (v: number) => set({ breakTime: v }),
+    setColor: (v: string) => set({ color: v }),
+    setLongBreak: (v: number) => set({ longBreak: v }),
+    setRounds: (v: number) => set({ rounds: v }),
+    setShowRounds: (v: boolean) => set({ showRounds: v }),
+    setBreakColor: (v: string) => set({ breakColor: v }),
+    setAutoStart: (v: boolean) => set({ autoStart: v }),
+    setPStyle: (v: PomodoroProgressStyle) => set({ pStyle: v }),
+  })),
+);

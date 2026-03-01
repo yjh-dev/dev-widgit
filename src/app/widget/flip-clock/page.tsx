@@ -1,8 +1,9 @@
 "use client";
 
 import { useWidgetParams } from "@/lib/use-widget-params";
-import { Suspense } from "react";
 import FlipClockPreview from "@/components/widget/FlipClockPreview";
+import WidgetPage, { WidgetScreen } from "@/components/widget/WidgetPage";
+import { parseBgParam } from "@/lib/common-params";
 import { parseBorderRadius, parsePadding, parseFontSize, parseHexColor } from "@/lib/common-widget-options";
 import type { FlipClockFormat, FlipClockDateFormat } from "@/lib/flip-clock";
 
@@ -24,9 +25,7 @@ function FlipClockWidgetContent() {
   const textColor = parseHexColor(searchParams.get("textColor"), "FFFFFF");
   const gapColor = parseHexColor(searchParams.get("gapColor"), "333333");
 
-  const rawBg = searchParams.get("bg") || "FFFFFF";
-  const transparentBg = rawBg === "transparent";
-  const bg = transparentBg ? "FFFFFF" : parseHexColor(rawBg, "FFFFFF");
+  const { bg, transparentBg } = parseBgParam(searchParams.get("bg"));
 
   const showDate = searchParams.get("showDate") === "true";
 
@@ -40,7 +39,7 @@ function FlipClockWidgetContent() {
   const fontSize = parseFontSize(searchParams.get("fsize"));
 
   return (
-    <div className="w-screen h-screen bg-transparent">
+    <WidgetScreen>
       <FlipClockPreview
         timezone={timezone}
         format={format}
@@ -56,20 +55,14 @@ function FlipClockWidgetContent() {
         padding={padding}
         fontSize={fontSize}
       />
-    </div>
+    </WidgetScreen>
   );
 }
 
 export default function WidgetFlipClockPage() {
   return (
-    <Suspense
-      fallback={
-        <div className="w-screen h-screen flex items-center justify-center">
-          <p className="text-muted-foreground text-sm">로딩 중...</p>
-        </div>
-      }
-    >
+    <WidgetPage>
       <FlipClockWidgetContent />
-    </Suspense>
+    </WidgetPage>
   );
 }

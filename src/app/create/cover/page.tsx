@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useCallback, useEffect } from "react";
+import { useState, useMemo, useCallback, useEffect, startTransition } from "react";
 import Link from "next/link";
 import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
@@ -11,7 +11,6 @@ import {
   RotateCcw,
   X,
   ChevronDown,
-  Image as ImageIcon,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -81,7 +80,7 @@ function InitFromUrl({
   useEffect(() => {
     if (!done && searchParams.toString()) {
       onInit(searchParams);
-      setDone(true);
+      startTransition(() => { setDone(true); });
     }
   }, [searchParams, onInit, done]);
   return null;

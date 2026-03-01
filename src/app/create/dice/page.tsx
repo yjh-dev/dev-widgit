@@ -28,7 +28,8 @@ import { dicePresets } from "@/lib/presets";
 import { useWidgetUrl } from "@/lib/use-widget-url";
 import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
-import type { FontSizeKey } from "@/lib/common-widget-options";
+import { parseCommonParams } from "@/lib/common-params";
+import { addBgParam, addCommonStyleParams, buildUrl } from "@/lib/url-builder-utils";
 import type { DiceMode, DiceSides } from "@/lib/dice";
 
 export default function CreateDicePage() {
@@ -43,24 +44,16 @@ export default function CreateDicePage() {
   } = useDiceStore();
 
   useInitFromUrl((p) => {
-    const bgVal = p.get("bg");
     loadPreset({
+      ...parseCommonParams(p),
       ...(p.has("mode") && { mode: p.get("mode") as DiceMode }),
       ...(p.has("count") && { count: Number(p.get("count")) }),
       ...(p.has("sides") && { sides: Number(p.get("sides")) as DiceSides }),
       ...(p.has("color") && { color: p.get("color")! }),
       ...(p.has("textColor") && { textColor: p.get("textColor")! }),
-      ...(bgVal === "transparent"
-        ? { transparentBg: true }
-        : bgVal
-          ? { bg: bgVal, transparentBg: false }
-          : {}),
       ...(p.has("items") && { items: p.get("items")!.split("|").map(decodeURIComponent) }),
       ...(p.has("showTotal") && { showTotal: p.get("showTotal") !== "false" }),
       ...(p.has("history") && { history: p.get("history") === "true" }),
-      ...(p.has("radius") && { borderRadius: Number(p.get("radius")) }),
-      ...(p.has("pad") && { padding: Number(p.get("pad")) }),
-      ...(p.has("fsize") && { fontSize: p.get("fsize") as FontSizeKey }),
     });
   });
 
@@ -90,17 +83,10 @@ export default function CreateDicePage() {
     }
     if (color !== "2563EB") params.set("color", color);
     if (textColor !== "FFFFFF") params.set("textColor", textColor);
-    if (transparentBg) {
-      params.set("bg", "transparent");
-    } else if (bg !== "FFFFFF") {
-      params.set("bg", bg);
-    }
+    addBgParam(params, transparentBg, bg);
     if (history) params.set("history", "true");
-    if (borderRadius !== 16) params.set("radius", String(borderRadius));
-    if (padding !== 24) params.set("pad", String(padding));
-    if (fontSize !== "md") params.set("fsize", fontSize);
-    const qs = params.toString();
-    return qs ? `${base}?${qs}` : base;
+    addCommonStyleParams(params, borderRadius, padding, fontSize);
+    return buildUrl(base, params);
   }, [mode, count, sides, color, textColor, bg, transparentBg, items, showTotal, history, borderRadius, padding, fontSize]);
 
   const handleCopy = async () => {

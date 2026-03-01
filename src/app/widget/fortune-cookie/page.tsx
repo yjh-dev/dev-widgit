@@ -1,8 +1,8 @@
 "use client";
 
-import { Suspense } from "react";
 import { useWidgetParams } from "@/lib/use-widget-params";
 import FortuneCookiePreview from "@/components/widget/FortuneCookiePreview";
+import WidgetPage, { WidgetScreen } from "@/components/widget/WidgetPage";
 import { parseBorderRadius, parsePadding, parseFontSize } from "@/lib/common-widget-options";
 
 function Content() {
@@ -18,6 +18,7 @@ function Content() {
   const bg = transparentBg ? "FFFFFF" : bgParam || "FFFFFF";
 
   return (
+    <WidgetScreen>
     <FortuneCookiePreview
       customMessage={customMessage}
       lang={lang}
@@ -30,13 +31,14 @@ function Content() {
       padding={parsePadding(params.get("pad"))}
       fontSize={parseFontSize(params.get("fsize"))}
     />
+    </WidgetScreen>
   );
 }
 
 export default function FortuneCookieWidgetPage() {
   return (
-    <Suspense>
+    <WidgetPage>
       <Content />
-    </Suspense>
+    </WidgetPage>
   );
 }

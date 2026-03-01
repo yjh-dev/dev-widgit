@@ -1,8 +1,8 @@
 "use client";
 
 import { useWidgetParams } from "@/lib/use-widget-params";
-import { Suspense } from "react";
 import DividerPreview from "@/components/widget/DividerPreview";
+import WidgetPage, { WidgetScreen } from "@/components/widget/WidgetPage";
 import { parseBorderRadius, parsePadding, parseFontSize, parseHexColor } from "@/lib/common-widget-options";
 import type { DividerStyle, DividerWeight } from "@/lib/divider";
 
@@ -35,7 +35,7 @@ function DividerWidgetContent() {
   const fontSize = parseFontSize(searchParams.get("fsize"));
 
   return (
-    <div className="w-screen h-screen bg-transparent">
+    <WidgetScreen>
       <DividerPreview
         style={style}
         weight={weight}
@@ -48,20 +48,14 @@ function DividerWidgetContent() {
         padding={padding}
         fontSize={fontSize}
       />
-    </div>
+    </WidgetScreen>
   );
 }
 
 export default function WidgetDividerPage() {
   return (
-    <Suspense
-      fallback={
-        <div className="w-screen h-screen flex items-center justify-center">
-          <p className="text-muted-foreground text-sm">로딩 중...</p>
-        </div>
-      }
-    >
+    <WidgetPage>
       <DividerWidgetContent />
-    </Suspense>
+    </WidgetPage>
   );
 }

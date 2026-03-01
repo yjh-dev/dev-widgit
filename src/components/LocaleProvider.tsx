@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from "react";
+import { createContext, useContext, useState, useEffect, useCallback, startTransition, type ReactNode } from "react";
 import { type Locale, type TranslationKey, getLocale, setLocale as persistLocale, t as translate } from "@/lib/i18n";
 
 interface LocaleContextValue {
@@ -19,7 +19,9 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
   const [locale, setLocaleState] = useState<Locale>("ko");
 
   useEffect(() => {
-    setLocaleState(getLocale());
+    startTransition(() => {
+      setLocaleState(getLocale());
+    });
   }, []);
 
   const handleSetLocale = useCallback((l: Locale) => {

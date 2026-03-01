@@ -1,8 +1,9 @@
 "use client";
 
 import { useWidgetParams } from "@/lib/use-widget-params";
-import { Suspense } from "react";
 import ClockPreview from "@/components/widget/ClockPreview";
+import WidgetPage, { WidgetScreen } from "@/components/widget/WidgetPage";
+import { parseBgParam } from "@/lib/common-params";
 import type { ClockFormat, ClockDateFormat } from "@/lib/clock";
 import { ALL_FONT_KEYS } from "@/lib/fonts";
 import { parseBorderRadius, parsePadding, parseFontSize, parseHexColor } from "@/lib/common-widget-options";
@@ -24,9 +25,7 @@ function ClockWidgetContent() {
   const font = ALL_FONT_KEYS.includes(rawFont) ? rawFont : "mono";
 
   const color = parseHexColor(searchParams.get("color"), "1E1E1E");
-  const rawBg = searchParams.get("bg") || "FFFFFF";
-  const transparentBg = rawBg === "transparent";
-  const bg = transparentBg ? "FFFFFF" : parseHexColor(rawBg, "FFFFFF");
+  const { bg, transparentBg } = parseBgParam(searchParams.get("bg"));
 
   const borderRadius = parseBorderRadius(searchParams.get("radius"));
   const padding = parsePadding(searchParams.get("pad"));
@@ -44,37 +43,22 @@ function ClockWidgetContent() {
     : "kr";
 
   return (
-    <div className="w-screen h-screen bg-transparent">
+    <WidgetScreen>
       <ClockPreview
-        timezone={timezone}
-        format={format}
-        font={font}
-        color={color}
-        bg={bg}
-        transparentBg={transparentBg}
-        borderRadius={borderRadius}
-        padding={padding}
-        fontSize={fontSize}
-        showSeconds={showSeconds}
-        showDate={showDate}
-        blink={blink}
-        dateColor={dateColor}
-        dateFmt={dateFmt}
+        timezone={timezone} format={format} font={font} color={color}
+        bg={bg} transparentBg={transparentBg}
+        borderRadius={borderRadius} padding={padding} fontSize={fontSize}
+        showSeconds={showSeconds} showDate={showDate} blink={blink}
+        dateColor={dateColor} dateFmt={dateFmt}
       />
-    </div>
+    </WidgetScreen>
   );
 }
 
 export default function WidgetClockPage() {
   return (
-    <Suspense
-      fallback={
-        <div className="w-screen h-screen flex items-center justify-center">
-          <p className="text-muted-foreground text-sm">로딩 중...</p>
-        </div>
-      }
-    >
+    <WidgetPage>
       <ClockWidgetContent />
-    </Suspense>
+    </WidgetPage>
   );
 }

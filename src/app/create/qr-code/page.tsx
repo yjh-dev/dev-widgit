@@ -25,7 +25,8 @@ import { qrCodePresets } from "@/lib/presets";
 import { useWidgetUrl } from "@/lib/use-widget-url";
 import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
-import type { FontSizeKey } from "@/lib/common-widget-options";
+import { parseCommonParams } from "@/lib/common-params";
+import { addCommonStyleParams, buildUrl } from "@/lib/url-builder-utils";
 import type { QRErrorCorrection, QRModuleStyle, QRSize } from "@/lib/qr-code";
 
 export default function CreateQRCodePage() {
@@ -46,9 +47,7 @@ export default function CreateQRCodePage() {
       ...(p.has("size") && { size: p.get("size") as QRSize }),
       ...(p.has("ec") && { ec: p.get("ec") as QRErrorCorrection }),
       ...(p.has("module") && { module: p.get("module") as QRModuleStyle }),
-      ...(p.has("radius") && { borderRadius: Number(p.get("radius")) }),
-      ...(p.has("pad") && { padding: Number(p.get("pad")) }),
-      ...(p.has("fsize") && { fontSize: p.get("fsize") as FontSizeKey }),
+      ...parseCommonParams(p),
     });
   });
 
@@ -62,11 +61,8 @@ export default function CreateQRCodePage() {
     if (size !== "md") params.set("size", size);
     if (ec !== "M") params.set("ec", ec);
     if (moduleStyle !== "square") params.set("module", moduleStyle);
-    if (borderRadius !== 16) params.set("radius", String(borderRadius));
-    if (padding !== 24) params.set("pad", String(padding));
-    if (fontSize !== "md") params.set("fsize", fontSize);
-    const qs = params.toString();
-    return qs ? `${base}?${qs}` : base;
+    addCommonStyleParams(params, borderRadius, padding, fontSize);
+    return buildUrl(base, params);
   }, [data, label, fgColor, bgColor, size, ec, moduleStyle, borderRadius, padding, fontSize]);
 
   const handleCopy = async () => {

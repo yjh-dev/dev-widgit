@@ -26,7 +26,8 @@ import { stickyNotePresets } from "@/lib/presets";
 import { useWidgetUrl } from "@/lib/use-widget-url";
 import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
-import type { FontSizeKey } from "@/lib/common-widget-options";
+import { parseCommonParams } from "@/lib/common-params";
+import { addCommonStyleParams, buildUrl } from "@/lib/url-builder-utils";
 import type { StickyPinType, StickyLineHeight } from "@/lib/sticky-note";
 
 export default function CreateStickyNotePage() {
@@ -48,9 +49,7 @@ export default function CreateStickyNotePage() {
       ...(p.has("font") && { font: p.get("font")! }),
       ...(p.has("lh") && { lh: p.get("lh") as StickyLineHeight }),
       ...(p.has("shadow") && { shadow: p.get("shadow") !== "false" }),
-      ...(p.has("radius") && { borderRadius: Number(p.get("radius")) }),
-      ...(p.has("pad") && { padding: Number(p.get("pad")) }),
-      ...(p.has("fsize") && { fontSize: p.get("fsize") as FontSizeKey }),
+      ...parseCommonParams(p),
     });
   });
 
@@ -65,11 +64,8 @@ export default function CreateStickyNotePage() {
     if (font !== "gaegu") params.set("font", font);
     if (lh !== "normal") params.set("lh", lh);
     if (!shadow) params.set("shadow", "false");
-    if (borderRadius !== 4) params.set("radius", String(borderRadius));
-    if (padding !== 24) params.set("pad", String(padding));
-    if (fontSize !== "md") params.set("fsize", fontSize);
-    const qs = params.toString();
-    return qs ? `${base}?${qs}` : base;
+    addCommonStyleParams(params, borderRadius, padding, fontSize);
+    return buildUrl(base, params);
   }, [text, noteColor, textColor, pin, rotation, font, lh, shadow, borderRadius, padding, fontSize]);
 
   const handleCopy = async () => {

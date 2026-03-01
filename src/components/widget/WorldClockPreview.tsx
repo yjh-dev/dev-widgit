@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, startTransition } from "react";
 import {
   getWorldClockTime,
   getTimezoneLabel,
@@ -61,12 +61,13 @@ export default function WorldClockPreview({
   >([]);
 
   useEffect(() => {
-    setMounted(true);
-    const update = () => {
+    startTransition(() => {
+      setMounted(true);
       setTimes(zones.map((tz) => getWorldClockTime(tz, format)));
-    };
-    update();
-    const id = setInterval(update, 1000);
+    });
+    const id = setInterval(() => {
+      setTimes(zones.map((tz) => getWorldClockTime(tz, format)));
+    }, 1000);
     return () => clearInterval(id);
   }, [zones, format]);
 

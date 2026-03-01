@@ -1,38 +1,8 @@
 import { create } from "zustand";
 import type { ReadingStyle } from "@/lib/reading";
-import type { FontSizeKey } from "@/lib/common-widget-options";
+import { widgetStoreCreator, type CommonStyleState } from "@/lib/widget-store-factory";
 
-interface ReadingState {
-  title: string;
-  currentPage: number;
-  totalPages: number;
-  style: ReadingStyle;
-  showPages: boolean;
-  color: string;
-  textColor: string;
-  bg: string;
-  transparentBg: boolean;
-  borderRadius: number;
-  padding: number;
-  fontSize: FontSizeKey;
-
-  setTitle: (v: string) => void;
-  setCurrentPage: (v: number) => void;
-  setTotalPages: (v: number) => void;
-  setStyle: (v: ReadingStyle) => void;
-  setShowPages: (v: boolean) => void;
-  setColor: (v: string) => void;
-  setTextColor: (v: string) => void;
-  setBg: (v: string) => void;
-  setTransparentBg: (v: boolean) => void;
-  setBorderRadius: (v: number) => void;
-  setPadding: (v: number) => void;
-  setFontSize: (v: FontSizeKey) => void;
-  loadPreset: (preset: Partial<typeof initialState>) => void;
-  reset: () => void;
-}
-
-const initialState = {
+const widgetDefaults = {
   title: "",
   currentPage: 0,
   totalPages: 300,
@@ -40,28 +10,35 @@ const initialState = {
   showPages: true,
   color: "2563EB",
   textColor: "",
-  bg: "FFFFFF",
-  transparentBg: false,
-  borderRadius: 16,
-  padding: 24,
-  fontSize: "md" as FontSizeKey,
 };
 
-export const useReadingStore = create<ReadingState>((set) => ({
-  ...initialState,
+interface ReadingState extends CommonStyleState {
+  title: string;
+  currentPage: number;
+  totalPages: number;
+  style: ReadingStyle;
+  showPages: boolean;
+  color: string;
+  textColor: string;
+  setTitle: (v: string) => void;
+  setCurrentPage: (v: number) => void;
+  setTotalPages: (v: number) => void;
+  setStyle: (v: ReadingStyle) => void;
+  setShowPages: (v: boolean) => void;
+  setColor: (v: string) => void;
+  setTextColor: (v: string) => void;
+  loadPreset: (preset: Record<string, unknown>) => void;
+  reset: () => void;
+}
 
-  setTitle: (title) => set({ title }),
-  setCurrentPage: (currentPage) => set({ currentPage }),
-  setTotalPages: (totalPages) => set({ totalPages }),
-  setStyle: (style) => set({ style }),
-  setShowPages: (showPages) => set({ showPages }),
-  setColor: (color) => set({ color }),
-  setTextColor: (textColor) => set({ textColor }),
-  setBg: (bg) => set({ bg }),
-  setTransparentBg: (transparentBg) => set({ transparentBg }),
-  setBorderRadius: (borderRadius) => set({ borderRadius }),
-  setPadding: (padding) => set({ padding }),
-  setFontSize: (fontSize) => set({ fontSize }),
-  loadPreset: (preset) => set({ ...initialState, ...preset }),
-  reset: () => set(initialState),
-}));
+export const useReadingStore = create<ReadingState>(
+  widgetStoreCreator(widgetDefaults, (set) => ({
+    setTitle: (v: string) => set({ title: v }),
+    setCurrentPage: (v: number) => set({ currentPage: v }),
+    setTotalPages: (v: number) => set({ totalPages: v }),
+    setStyle: (v: ReadingStyle) => set({ style: v }),
+    setShowPages: (v: boolean) => set({ showPages: v }),
+    setColor: (v: string) => set({ color: v }),
+    setTextColor: (v: string) => set({ textColor: v }),
+  })),
+);

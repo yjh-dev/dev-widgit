@@ -24,7 +24,8 @@ import { flipClockPresets } from "@/lib/presets";
 import { useWidgetUrl } from "@/lib/use-widget-url";
 import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
-import type { FontSizeKey } from "@/lib/common-widget-options";
+import { parseCommonParams } from "@/lib/common-params";
+import { addBgParam, addCommonStyleParams, buildUrl } from "@/lib/url-builder-utils";
 import type { FlipClockFormat, FlipClockDateFormat } from "@/lib/flip-clock";
 
 export default function CreateFlipClockPage() {
@@ -39,24 +40,16 @@ export default function CreateFlipClockPage() {
   } = useFlipClockStore();
 
   useInitFromUrl((p) => {
-    const bgVal = p.get("bg");
     loadPreset({
+      ...parseCommonParams(p),
       ...(p.has("timezone") && { timezone: p.get("timezone")! }),
       ...(p.has("format") && { format: p.get("format") as FlipClockFormat }),
       ...(p.has("showSeconds") && { showSeconds: p.get("showSeconds") === "true" }),
       ...(p.has("flipColor") && { flipColor: p.get("flipColor")! }),
       ...(p.has("textColor") && { textColor: p.get("textColor")! }),
       ...(p.has("gapColor") && { gapColor: p.get("gapColor")! }),
-      ...(bgVal === "transparent"
-        ? { transparentBg: true }
-        : bgVal
-          ? { bg: bgVal, transparentBg: false }
-          : {}),
       ...(p.has("showDate") && { showDate: p.get("showDate") === "true" }),
       ...(p.has("dateFmt") && { dateFmt: p.get("dateFmt") as FlipClockDateFormat }),
-      ...(p.has("radius") && { borderRadius: Number(p.get("radius")) }),
-      ...(p.has("pad") && { padding: Number(p.get("pad")) }),
-      ...(p.has("fsize") && { fontSize: p.get("fsize") as FontSizeKey }),
     });
   });
 
@@ -69,18 +62,11 @@ export default function CreateFlipClockPage() {
     if (flipColor !== "1E1E1E") params.set("flipColor", flipColor);
     if (textColor !== "FFFFFF") params.set("textColor", textColor);
     if (gapColor !== "333333") params.set("gapColor", gapColor);
-    if (transparentBg) {
-      params.set("bg", "transparent");
-    } else if (bg !== "FFFFFF") {
-      params.set("bg", bg);
-    }
+    addBgParam(params, transparentBg, bg);
     if (showDate) params.set("showDate", "true");
     if (showDate && dateFmt !== "kr") params.set("dateFmt", dateFmt);
-    if (borderRadius !== 16) params.set("radius", String(borderRadius));
-    if (padding !== 24) params.set("pad", String(padding));
-    if (fontSize !== "md") params.set("fsize", fontSize);
-    const qs = params.toString();
-    return qs ? `${base}?${qs}` : base;
+    addCommonStyleParams(params, borderRadius, padding, fontSize);
+    return buildUrl(base, params);
   }, [timezone, format, showSeconds, flipColor, textColor, gapColor, bg, transparentBg, showDate, dateFmt, borderRadius, padding, fontSize]);
 
   const handleCopy = async () => {

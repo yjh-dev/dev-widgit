@@ -1,9 +1,9 @@
 "use client";
 
 import { useWidgetParams } from "@/lib/use-widget-params";
-import { Suspense } from "react";
 import StickyNotePreview from "@/components/widget/StickyNotePreview";
-import { parseBorderRadius, parsePadding, parseFontSize, parseHexColor } from "@/lib/common-widget-options";
+import WidgetPage, { WidgetScreen } from "@/components/widget/WidgetPage";
+import { parsePadding, parseFontSize, parseHexColor } from "@/lib/common-widget-options";
 import type { StickyPinType, StickyLineHeight } from "@/lib/sticky-note";
 
 const VALID_PINS: StickyPinType[] = ["none", "pin", "tape"];
@@ -38,7 +38,7 @@ function StickyNoteWidgetContent() {
   const fontSize = parseFontSize(searchParams.get("fsize"));
 
   return (
-    <div className="w-screen h-screen bg-transparent">
+    <WidgetScreen>
       <StickyNotePreview
         text={text}
         noteColor={noteColor}
@@ -52,20 +52,14 @@ function StickyNoteWidgetContent() {
         padding={padding}
         fontSize={fontSize}
       />
-    </div>
+    </WidgetScreen>
   );
 }
 
 export default function WidgetStickyNotePage() {
   return (
-    <Suspense
-      fallback={
-        <div className="w-screen h-screen flex items-center justify-center">
-          <p className="text-muted-foreground text-sm">로딩 중...</p>
-        </div>
-      }
-    >
+    <WidgetPage>
       <StickyNoteWidgetContent />
-    </Suspense>
+    </WidgetPage>
   );
 }

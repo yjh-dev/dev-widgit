@@ -25,7 +25,8 @@ import { TECHNIQUES } from "@/lib/breathing";
 import { useWidgetUrl } from "@/lib/use-widget-url";
 import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
-import type { FontSizeKey } from "@/lib/common-widget-options";
+import { parseCommonParams } from "@/lib/common-params";
+import { addBgParam, addCommonStyleParams, buildUrl } from "@/lib/url-builder-utils";
 import type { BreathingTechnique } from "@/lib/breathing";
 
 export default function CreateBreathingPage() {
@@ -51,7 +52,6 @@ export default function CreateBreathingPage() {
   };
 
   useInitFromUrl((p) => {
-    const bgVal = p.get("bg");
     const tech = (p.get("tech") || "478") as BreathingTechnique;
     const techInfo = TECHNIQUES[tech] || TECHNIQUES["478"];
     loadPreset({
@@ -64,14 +64,7 @@ export default function CreateBreathingPage() {
       ...(p.has("guide") && { showGuide: p.get("guide") !== "false" }),
       ...(p.has("accent") && { accentColor: p.get("accent")! }),
       ...(p.has("color") && { color: p.get("color")! }),
-      ...(bgVal === "transparent"
-        ? { transparentBg: true }
-        : bgVal
-          ? { bg: bgVal, transparentBg: false }
-          : {}),
-      ...(p.has("radius") && { borderRadius: Number(p.get("radius")) }),
-      ...(p.has("pad") && { padding: Number(p.get("pad")) }),
-      ...(p.has("fsize") && { fontSize: p.get("fsize") as FontSizeKey }),
+      ...parseCommonParams(p),
     });
   });
 
@@ -93,16 +86,9 @@ export default function CreateBreathingPage() {
     if (!showGuide) params.set("guide", "false");
     if (accentColor !== "06B6D4") params.set("accent", accentColor);
     if (color !== "1E1E1E") params.set("color", color);
-    if (transparentBg) {
-      params.set("bg", "transparent");
-    } else if (bg !== "FFFFFF") {
-      params.set("bg", bg);
-    }
-    if (borderRadius !== 16) params.set("radius", String(borderRadius));
-    if (padding !== 24) params.set("pad", String(padding));
-    if (fontSize !== "md") params.set("fsize", fontSize);
-    const qs = params.toString();
-    return qs ? `${base}?${qs}` : base;
+    addBgParam(params, transparentBg, bg);
+    addCommonStyleParams(params, borderRadius, padding, fontSize);
+    return buildUrl(base, params);
   }, [technique, inhale, hold1, exhale, hold2, rounds, showGuide, accentColor, color, bg, transparentBg, borderRadius, padding, fontSize]);
 
   const handleCopy = async () => {

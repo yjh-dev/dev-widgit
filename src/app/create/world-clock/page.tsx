@@ -31,7 +31,8 @@ import { worldClockPresets } from "@/lib/presets";
 import { useWidgetUrl } from "@/lib/use-widget-url";
 import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
-import type { FontSizeKey } from "@/lib/common-widget-options";
+import { parseCommonParams } from "@/lib/common-params";
+import { addBgParam, addCommonStyleParams, buildUrl } from "@/lib/url-builder-utils";
 
 export default function CreateWorldClockPage() {
   const {
@@ -45,21 +46,13 @@ export default function CreateWorldClockPage() {
   } = useWorldClockStore();
 
   useInitFromUrl((p) => {
-    const bgVal = p.get("bg");
     loadPreset({
       ...(p.has("zones") && { zones: deserializeZones(p.get("zones")!) }),
       ...(p.has("format") && { format: p.get("format") as WorldClockFormat }),
       ...(p.has("showLabel") && { showLabel: p.get("showLabel") !== "false" }),
       ...(p.has("showSec") && { showSeconds: p.get("showSec") === "true" }),
       ...(p.has("color") && { color: p.get("color")! }),
-      ...(bgVal === "transparent"
-        ? { transparentBg: true }
-        : bgVal
-          ? { bg: bgVal, transparentBg: false }
-          : {}),
-      ...(p.has("radius") && { borderRadius: Number(p.get("radius")) }),
-      ...(p.has("pad") && { padding: Number(p.get("pad")) }),
-      ...(p.has("fsize") && { fontSize: p.get("fsize") as FontSizeKey }),
+      ...parseCommonParams(p),
     });
   });
 
@@ -74,16 +67,9 @@ export default function CreateWorldClockPage() {
     if (!showLabel) params.set("showLabel", "false");
     if (showSeconds) params.set("showSec", "true");
     if (color !== "1E1E1E") params.set("color", color);
-    if (transparentBg) {
-      params.set("bg", "transparent");
-    } else if (bg !== "FFFFFF") {
-      params.set("bg", bg);
-    }
-    if (borderRadius !== 16) params.set("radius", String(borderRadius));
-    if (padding !== 24) params.set("pad", String(padding));
-    if (fontSize !== "md") params.set("fsize", fontSize);
-    const qs = params.toString();
-    return qs ? `${base}?${qs}` : base;
+    addBgParam(params, transparentBg, bg);
+    addCommonStyleParams(params, borderRadius, padding, fontSize);
+    return buildUrl(base, params);
   }, [zones, format, showLabel, showSeconds, color, bg, transparentBg, borderRadius, padding, fontSize]);
 
   const handleCopy = async () => {

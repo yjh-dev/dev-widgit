@@ -37,7 +37,7 @@ export default function EmojiRainPreview({
   const containerRef = useRef<HTMLDivElement>(null);
   const particlesRef = useRef<Particle[]>([]);
   const rafRef = useRef<number>(0);
-  const [, forceRender] = useState(0);
+  const [renderParticles, setRenderParticles] = useState<Particle[]>([]);
 
   const emojiList = parseEmojis(emojis);
   const count = DENSITY_COUNT[density];
@@ -93,7 +93,7 @@ export default function EmojiRainPreview({
         }
       }
 
-      forceRender((c) => c + 1);
+      setRenderParticles([...particles]);
       rafRef.current = requestAnimationFrame(animate);
     };
 
@@ -111,7 +111,7 @@ export default function EmojiRainPreview({
         padding,
       }}
     >
-      {particlesRef.current.map((p) => (
+      {renderParticles.map((p) => (
         <span
           key={p.id}
           className="absolute select-none pointer-events-none"

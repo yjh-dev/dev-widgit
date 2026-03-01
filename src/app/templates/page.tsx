@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, startTransition } from "react";
 import Link from "next/link";
 import { ArrowLeft, Copy, ExternalLink, ChevronDown, ChevronUp, BookOpen, Link2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -149,10 +149,12 @@ export default function TemplatesPage() {
   const [shortUrl, setShortUrl] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
-    try {
-      if (localStorage.getItem(LS_KEY) === "true") setShortUrl(true);
-    } catch { /* 무시 */ }
+    startTransition(() => {
+      setMounted(true);
+      try {
+        if (localStorage.getItem(LS_KEY) === "true") setShortUrl(true);
+      } catch { /* 무시 */ }
+    });
   }, []);
 
   const toggleShortUrl = () => {

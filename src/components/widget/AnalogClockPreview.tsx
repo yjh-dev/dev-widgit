@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, startTransition } from "react";
 import {
   getHandAngles,
   getQuarterNumbers,
@@ -59,8 +59,10 @@ export default function AnalogClockPreview({
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
-    setAngles(getHandAngles(timezone));
+    startTransition(() => {
+      setMounted(true);
+      setAngles(getHandAngles(timezone));
+    });
     const interval = setInterval(() => {
       setAngles(getHandAngles(timezone));
     }, 1000);

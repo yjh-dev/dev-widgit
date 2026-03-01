@@ -1,59 +1,40 @@
 import { create } from "zustand";
+import { widgetStoreCreator, type CommonStyleState } from "@/lib/widget-store-factory";
 import type { DividerStyle, DividerWeight } from "@/lib/divider";
-import type { FontSizeKey } from "@/lib/common-widget-options";
 
-interface DividerState {
+const widgetDefaults = {
+  style: "solid" as DividerStyle,
+  weight: "medium" as DividerWeight,
+  color: "D4D4D8",
+  color2: "A1A1AA",
+  text: "",
+  // Non-default common style overrides
+  transparentBg: true,
+  padding: 8,
+};
+
+interface DividerState extends CommonStyleState {
   style: DividerStyle;
   weight: DividerWeight;
   color: string;
   color2: string;
   text: string;
-  bg: string;
-  transparentBg: boolean;
-  borderRadius: number;
-  padding: number;
-  fontSize: FontSizeKey;
 
   setStyle: (v: DividerStyle) => void;
   setWeight: (v: DividerWeight) => void;
   setColor: (v: string) => void;
   setColor2: (v: string) => void;
   setText: (v: string) => void;
-  setBg: (v: string) => void;
-  setTransparentBg: (v: boolean) => void;
-  setBorderRadius: (v: number) => void;
-  setPadding: (v: number) => void;
-  setFontSize: (v: FontSizeKey) => void;
-  loadPreset: (preset: Partial<typeof initialState>) => void;
+  loadPreset: (preset: Record<string, unknown>) => void;
   reset: () => void;
 }
 
-const initialState = {
-  style: "solid" as DividerStyle,
-  weight: "medium" as DividerWeight,
-  color: "D4D4D8",
-  color2: "A1A1AA",
-  text: "",
-  bg: "FFFFFF",
-  transparentBg: true,
-  borderRadius: 16,
-  padding: 8,
-  fontSize: "md" as FontSizeKey,
-};
-
-export const useDividerStore = create<DividerState>((set) => ({
-  ...initialState,
-
-  setStyle: (style) => set({ style }),
-  setWeight: (weight) => set({ weight }),
-  setColor: (color) => set({ color }),
-  setColor2: (color2) => set({ color2 }),
-  setText: (text) => set({ text }),
-  setBg: (bg) => set({ bg }),
-  setTransparentBg: (transparentBg) => set({ transparentBg }),
-  setBorderRadius: (borderRadius) => set({ borderRadius }),
-  setPadding: (padding) => set({ padding }),
-  setFontSize: (fontSize) => set({ fontSize }),
-  loadPreset: (preset) => set({ ...initialState, ...preset }),
-  reset: () => set(initialState),
-}));
+export const useDividerStore = create<DividerState>(
+  widgetStoreCreator(widgetDefaults, (set) => ({
+    setStyle: (v: DividerStyle) => set({ style: v }),
+    setWeight: (v: DividerWeight) => set({ weight: v }),
+    setColor: (v: string) => set({ color: v }),
+    setColor2: (v: string) => set({ color2: v }),
+    setText: (v: string) => set({ text: v }),
+  })),
+);

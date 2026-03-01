@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, startTransition } from "react";
 import type { FontSizeKey } from "@/lib/common-widget-options";
 import {
   fetchContributions,
@@ -78,15 +78,19 @@ export default function GithubContributionPreview({
     if (!username.trim()) {
       const yr = year === "last" ? new Date().getFullYear() : parseInt(year, 10) || new Date().getFullYear();
       const placeholder = generatePlaceholderData(yr);
-      setContributions(placeholder);
-      setTotal(placeholder.reduce((s, d) => s + d.count, 0));
-      setError("");
+      startTransition(() => {
+        setContributions(placeholder);
+        setTotal(placeholder.reduce((s, d) => s + d.count, 0));
+        setError("");
+      });
       return;
     }
 
     let cancelled = false;
-    setLoading(true);
-    setError("");
+    startTransition(() => {
+      setLoading(true);
+      setError("");
+    });
 
     const yr = year === "last" ? undefined : parseInt(year, 10) || undefined;
     fetchContributions(username.trim(), yr)

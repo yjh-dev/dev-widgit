@@ -2,7 +2,6 @@ import {
   getDaysInMonth,
   getDaysInYear,
   getDayOfYear,
-  isLeapYear,
 } from "date-fns";
 
 export type ProgressType = "day" | "week" | "month" | "year";

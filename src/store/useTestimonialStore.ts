@@ -1,8 +1,21 @@
 import { create } from "zustand";
+import { widgetStoreCreator, type CommonStyleState } from "@/lib/widget-store-factory";
 import type { TestimonialLayout } from "@/lib/testimonial";
-import type { FontSizeKey } from "@/lib/common-widget-options";
 
-interface TestimonialState {
+const widgetDefaults = {
+  quote: "이 서비스를 사용한 후 생산성이 크게 향상되었습니다. 강력히 추천합니다!",
+  author: "김지수",
+  role: "프로덕트 매니저",
+  avatarUrl: "",
+  showAvatar: true,
+  showRole: true,
+  showQuoteMarks: true,
+  layout: "card" as TestimonialLayout,
+  accentColor: "6366F1",
+  textColor: "",
+};
+
+interface TestimonialState extends CommonStyleState {
   quote: string;
   author: string;
   role: string;
@@ -13,11 +26,6 @@ interface TestimonialState {
   layout: TestimonialLayout;
   accentColor: string;
   textColor: string;
-  bg: string;
-  transparentBg: boolean;
-  borderRadius: number;
-  padding: number;
-  fontSize: FontSizeKey;
 
   setQuote: (v: string) => void;
   setAuthor: (v: string) => void;
@@ -29,51 +37,21 @@ interface TestimonialState {
   setLayout: (v: TestimonialLayout) => void;
   setAccentColor: (v: string) => void;
   setTextColor: (v: string) => void;
-  setBg: (v: string) => void;
-  setTransparentBg: (v: boolean) => void;
-  setBorderRadius: (v: number) => void;
-  setPadding: (v: number) => void;
-  setFontSize: (v: FontSizeKey) => void;
-  loadPreset: (preset: Partial<typeof initialState>) => void;
+  loadPreset: (preset: Record<string, unknown>) => void;
   reset: () => void;
 }
 
-const initialState = {
-  quote: "이 서비스를 사용한 후 생산성이 크게 향상되었습니다. 강력히 추천합니다!",
-  author: "김지수",
-  role: "프로덕트 매니저",
-  avatarUrl: "",
-  showAvatar: true,
-  showRole: true,
-  showQuoteMarks: true,
-  layout: "card" as TestimonialLayout,
-  accentColor: "6366F1",
-  textColor: "",
-  bg: "FFFFFF",
-  transparentBg: false,
-  borderRadius: 16,
-  padding: 24,
-  fontSize: "md" as FontSizeKey,
-};
-
-export const useTestimonialStore = create<TestimonialState>((set) => ({
-  ...initialState,
-
-  setQuote: (quote) => set({ quote }),
-  setAuthor: (author) => set({ author }),
-  setRole: (role) => set({ role }),
-  setAvatarUrl: (avatarUrl) => set({ avatarUrl }),
-  setShowAvatar: (showAvatar) => set({ showAvatar }),
-  setShowRole: (showRole) => set({ showRole }),
-  setShowQuoteMarks: (showQuoteMarks) => set({ showQuoteMarks }),
-  setLayout: (layout) => set({ layout }),
-  setAccentColor: (accentColor) => set({ accentColor }),
-  setTextColor: (textColor) => set({ textColor }),
-  setBg: (bg) => set({ bg }),
-  setTransparentBg: (transparentBg) => set({ transparentBg }),
-  setBorderRadius: (borderRadius) => set({ borderRadius }),
-  setPadding: (padding) => set({ padding }),
-  setFontSize: (fontSize) => set({ fontSize }),
-  loadPreset: (preset) => set({ ...initialState, ...preset }),
-  reset: () => set(initialState),
-}));
+export const useTestimonialStore = create<TestimonialState>(
+  widgetStoreCreator(widgetDefaults, (set) => ({
+    setQuote: (v: string) => set({ quote: v }),
+    setAuthor: (v: string) => set({ author: v }),
+    setRole: (v: string) => set({ role: v }),
+    setAvatarUrl: (v: string) => set({ avatarUrl: v }),
+    setShowAvatar: (v: boolean) => set({ showAvatar: v }),
+    setShowRole: (v: boolean) => set({ showRole: v }),
+    setShowQuoteMarks: (v: boolean) => set({ showQuoteMarks: v }),
+    setLayout: (v: TestimonialLayout) => set({ layout: v }),
+    setAccentColor: (v: string) => set({ accentColor: v }),
+    setTextColor: (v: string) => set({ textColor: v }),
+  })),
+);

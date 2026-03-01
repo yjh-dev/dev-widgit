@@ -1,8 +1,18 @@
 import { create } from "zustand";
+import { widgetStoreCreator, type CommonStyleState } from "@/lib/widget-store-factory";
 import type { ImageFit, CaptionPosition } from "@/lib/image-card";
-import type { FontSizeKey } from "@/lib/common-widget-options";
 
-interface ImageCardState {
+const widgetDefaults = {
+  imageUrl: "",
+  caption: "",
+  linkUrl: "",
+  fit: "cover" as ImageFit,
+  captionPos: "bottom" as CaptionPosition,
+  showCaption: true,
+  color: "1E1E1E",
+};
+
+interface ImageCardState extends CommonStyleState {
   imageUrl: string;
   caption: string;
   linkUrl: string;
@@ -10,11 +20,6 @@ interface ImageCardState {
   captionPos: CaptionPosition;
   showCaption: boolean;
   color: string;
-  bg: string;
-  transparentBg: boolean;
-  borderRadius: number;
-  padding: number;
-  fontSize: FontSizeKey;
 
   setImageUrl: (v: string) => void;
   setCaption: (v: string) => void;
@@ -23,45 +28,18 @@ interface ImageCardState {
   setCaptionPos: (v: CaptionPosition) => void;
   setShowCaption: (v: boolean) => void;
   setColor: (v: string) => void;
-  setBg: (v: string) => void;
-  setTransparentBg: (v: boolean) => void;
-  setBorderRadius: (v: number) => void;
-  setPadding: (v: number) => void;
-  setFontSize: (v: FontSizeKey) => void;
-  loadPreset: (preset: Partial<typeof initialState>) => void;
+  loadPreset: (preset: Record<string, unknown>) => void;
   reset: () => void;
 }
 
-const initialState = {
-  imageUrl: "",
-  caption: "",
-  linkUrl: "",
-  fit: "cover" as ImageFit,
-  captionPos: "bottom" as CaptionPosition,
-  showCaption: true,
-  color: "1E1E1E",
-  bg: "FFFFFF",
-  transparentBg: false,
-  borderRadius: 16,
-  padding: 24,
-  fontSize: "md" as FontSizeKey,
-};
-
-export const useImageCardStore = create<ImageCardState>((set) => ({
-  ...initialState,
-
-  setImageUrl: (imageUrl) => set({ imageUrl }),
-  setCaption: (caption) => set({ caption }),
-  setLinkUrl: (linkUrl) => set({ linkUrl }),
-  setFit: (fit) => set({ fit }),
-  setCaptionPos: (captionPos) => set({ captionPos }),
-  setShowCaption: (showCaption) => set({ showCaption }),
-  setColor: (color) => set({ color }),
-  setBg: (bg) => set({ bg }),
-  setTransparentBg: (transparentBg) => set({ transparentBg }),
-  setBorderRadius: (borderRadius) => set({ borderRadius }),
-  setPadding: (padding) => set({ padding }),
-  setFontSize: (fontSize) => set({ fontSize }),
-  loadPreset: (preset) => set({ ...initialState, ...preset }),
-  reset: () => set(initialState),
-}));
+export const useImageCardStore = create<ImageCardState>(
+  widgetStoreCreator(widgetDefaults, (set) => ({
+    setImageUrl: (v: string) => set({ imageUrl: v }),
+    setCaption: (v: string) => set({ caption: v }),
+    setLinkUrl: (v: string) => set({ linkUrl: v }),
+    setFit: (v: ImageFit) => set({ fit: v }),
+    setCaptionPos: (v: CaptionPosition) => set({ captionPos: v }),
+    setShowCaption: (v: boolean) => set({ showCaption: v }),
+    setColor: (v: string) => set({ color: v }),
+  })),
+);

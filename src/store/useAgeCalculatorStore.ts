@@ -1,19 +1,23 @@
 import { create } from "zustand";
+import { widgetStoreCreator, type CommonStyleState } from "@/lib/widget-store-factory";
 import type { AgeStyle } from "@/lib/age-calculator";
-import type { FontSizeKey } from "@/lib/common-widget-options";
 
-interface AgeCalculatorState {
+const widgetDefaults = {
+  birthdate: "1995-01-01",
+  showTime: true,
+  showLabel: true,
+  style: "full" as AgeStyle,
+  color: "2563EB",
+  textColor: "",
+};
+
+interface AgeCalculatorState extends CommonStyleState {
   birthdate: string;
   showTime: boolean;
   showLabel: boolean;
   style: AgeStyle;
   color: string;
   textColor: string;
-  bg: string;
-  transparentBg: boolean;
-  borderRadius: number;
-  padding: number;
-  fontSize: FontSizeKey;
 
   setBirthdate: (v: string) => void;
   setShowTime: (v: boolean) => void;
@@ -21,43 +25,17 @@ interface AgeCalculatorState {
   setStyle: (v: AgeStyle) => void;
   setColor: (v: string) => void;
   setTextColor: (v: string) => void;
-  setBg: (v: string) => void;
-  setTransparentBg: (v: boolean) => void;
-  setBorderRadius: (v: number) => void;
-  setPadding: (v: number) => void;
-  setFontSize: (v: FontSizeKey) => void;
-  loadPreset: (preset: Partial<typeof initialState>) => void;
+  loadPreset: (preset: Record<string, unknown>) => void;
   reset: () => void;
 }
 
-const initialState = {
-  birthdate: "1995-01-01",
-  showTime: true,
-  showLabel: true,
-  style: "full" as AgeStyle,
-  color: "2563EB",
-  textColor: "",
-  bg: "FFFFFF",
-  transparentBg: false,
-  borderRadius: 16,
-  padding: 24,
-  fontSize: "md" as FontSizeKey,
-};
-
-export const useAgeCalculatorStore = create<AgeCalculatorState>((set) => ({
-  ...initialState,
-
-  setBirthdate: (birthdate) => set({ birthdate }),
-  setShowTime: (showTime) => set({ showTime }),
-  setShowLabel: (showLabel) => set({ showLabel }),
-  setStyle: (style) => set({ style }),
-  setColor: (color) => set({ color }),
-  setTextColor: (textColor) => set({ textColor }),
-  setBg: (bg) => set({ bg }),
-  setTransparentBg: (transparentBg) => set({ transparentBg }),
-  setBorderRadius: (borderRadius) => set({ borderRadius }),
-  setPadding: (padding) => set({ padding }),
-  setFontSize: (fontSize) => set({ fontSize }),
-  loadPreset: (preset) => set({ ...initialState, ...preset }),
-  reset: () => set(initialState),
-}));
+export const useAgeCalculatorStore = create<AgeCalculatorState>(
+  widgetStoreCreator(widgetDefaults, (set) => ({
+    setBirthdate: (v: string) => set({ birthdate: v }),
+    setShowTime: (v: boolean) => set({ showTime: v }),
+    setShowLabel: (v: boolean) => set({ showLabel: v }),
+    setStyle: (v: AgeStyle) => set({ style: v }),
+    setColor: (v: string) => set({ color: v }),
+    setTextColor: (v: string) => set({ textColor: v }),
+  })),
+);

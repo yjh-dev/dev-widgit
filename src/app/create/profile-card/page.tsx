@@ -26,8 +26,9 @@ import { profileCardPresets } from "@/lib/presets";
 import { useWidgetUrl } from "@/lib/use-widget-url";
 import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
+import { parseCommonParams } from "@/lib/common-params";
+import { addBgParam, addCommonStyleParams, buildUrl } from "@/lib/url-builder-utils";
 import { serializeSocials, deserializeSocials, SOCIAL_TYPES, SOCIAL_ICONS } from "@/lib/profile-card";
-import type { FontSizeKey } from "@/lib/common-widget-options";
 import type { ProfileLayout, AvatarShape, SocialLink } from "@/lib/profile-card";
 
 export default function CreateProfileCardPage() {
@@ -42,7 +43,6 @@ export default function CreateProfileCardPage() {
   } = useProfileCardStore();
 
   useInitFromUrl((p) => {
-    const bgVal = p.get("bg");
     loadPreset({
       ...(p.has("name") && { name: p.get("name")! }),
       ...(p.has("bio") && { bio: p.get("bio")! }),
@@ -53,14 +53,7 @@ export default function CreateProfileCardPage() {
       ...(p.has("socials") && { socials: deserializeSocials(p.get("socials")!) }),
       ...(p.has("accent") && { accentColor: p.get("accent")! }),
       ...(p.has("color") && { color: p.get("color")! }),
-      ...(bgVal === "transparent"
-        ? { transparentBg: true }
-        : bgVal
-          ? { bg: bgVal, transparentBg: false }
-          : {}),
-      ...(p.has("radius") && { borderRadius: Number(p.get("radius")) }),
-      ...(p.has("pad") && { padding: Number(p.get("pad")) }),
-      ...(p.has("fsize") && { fontSize: p.get("fsize") as FontSizeKey }),
+      ...parseCommonParams(p),
     });
   });
 
@@ -77,16 +70,9 @@ export default function CreateProfileCardPage() {
     if (serialized) params.set("socials", serialized);
     if (accentColor !== "2563EB") params.set("accent", accentColor);
     if (color !== "1E1E1E") params.set("color", color);
-    if (transparentBg) {
-      params.set("bg", "transparent");
-    } else if (bg !== "FFFFFF") {
-      params.set("bg", bg);
-    }
-    if (borderRadius !== 16) params.set("radius", String(borderRadius));
-    if (padding !== 24) params.set("pad", String(padding));
-    if (fontSize !== "md") params.set("fsize", fontSize);
-    const qs = params.toString();
-    return qs ? `${base}?${qs}` : base;
+    addBgParam(params, transparentBg, bg);
+    addCommonStyleParams(params, borderRadius, padding, fontSize);
+    return buildUrl(base, params);
   }, [name, bio, avatarUrl, layout, avatarShape, showBio, socials, accentColor, color, bg, transparentBg, borderRadius, padding, fontSize]);
 
   const handleCopy = async () => {

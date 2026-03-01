@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, startTransition } from "react";
 import Link from "next/link";
 import {
   ArrowLeft,
@@ -58,8 +58,10 @@ export default function MyWidgetsPage() {
   const [typeFilter, setTypeFilter] = useState<string | null>(null);
 
   useEffect(() => {
-    setWidgets(getSavedWidgets());
-    setMounted(true);
+    startTransition(() => {
+      setWidgets(getSavedWidgets());
+      setMounted(true);
+    });
   }, []);
 
   const refresh = () => setWidgets(getSavedWidgets());

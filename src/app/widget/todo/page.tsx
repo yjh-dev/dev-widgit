@@ -1,8 +1,9 @@
 "use client";
 
-import { Suspense } from "react";
 import { useWidgetParams } from "@/lib/use-widget-params";
 import TodoPreview from "@/components/widget/TodoPreview";
+import WidgetPage, { WidgetScreen } from "@/components/widget/WidgetPage";
+import { parseBgParam } from "@/lib/common-params";
 import { parseTodoItems } from "@/lib/todo";
 import { parseBorderRadius, parsePadding, parseFontSize, parseHexColor } from "@/lib/common-widget-options";
 
@@ -15,9 +16,7 @@ function TodoWidgetContent() {
 
   const color = parseHexColor(searchParams.get("color"), "2563EB");
   const textColor = parseHexColor(searchParams.get("textColor"), "");
-  const rawBg = searchParams.get("bg") || "FFFFFF";
-  const transparentBg = rawBg === "transparent";
-  const bg = transparentBg ? "FFFFFF" : parseHexColor(rawBg, "FFFFFF");
+  const { bg, transparentBg } = parseBgParam(searchParams.get("bg"));
 
   const showProgress = searchParams.get("progress") !== "false";
   const strikethrough = searchParams.get("strike") !== "false";
@@ -30,7 +29,7 @@ function TodoWidgetContent() {
   const widgetId = rawItems ? btoa(rawItems).slice(0, 12) : "default";
 
   return (
-    <div className="w-screen h-screen bg-transparent">
+    <WidgetScreen>
       <TodoPreview
         title={title}
         initialItems={initialItems}
@@ -46,20 +45,14 @@ function TodoWidgetContent() {
         fontSize={fontSize}
         widgetId={widgetId}
       />
-    </div>
+    </WidgetScreen>
   );
 }
 
 export default function WidgetTodoPage() {
   return (
-    <Suspense
-      fallback={
-        <div className="w-screen h-screen flex items-center justify-center">
-          <p className="text-muted-foreground text-sm">로딩 중...</p>
-        </div>
-      }
-    >
+    <WidgetPage>
       <TodoWidgetContent />
-    </Suspense>
+    </WidgetPage>
   );
 }

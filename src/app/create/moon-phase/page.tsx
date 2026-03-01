@@ -23,7 +23,8 @@ import { moonPhasePresets } from "@/lib/presets";
 import { useWidgetUrl } from "@/lib/use-widget-url";
 import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
-import type { FontSizeKey } from "@/lib/common-widget-options";
+import { parseCommonParams } from "@/lib/common-params";
+import { addBgParam, addCommonStyleParams, buildUrl } from "@/lib/url-builder-utils";
 import type { MoonStyle, MoonSize } from "@/lib/moon-phase";
 
 export default function CreateMoonPhasePage() {
@@ -38,8 +39,8 @@ export default function CreateMoonPhasePage() {
   } = useMoonPhaseStore();
 
   useInitFromUrl((p) => {
-    const bgVal = p.get("bg");
     loadPreset({
+      ...parseCommonParams(p),
       ...(p.has("style") && { style: p.get("style") as MoonStyle }),
       ...(p.has("showName") && { showName: p.get("showName") !== "false" }),
       ...(p.has("showPercent") && { showPercent: p.get("showPercent") !== "false" }),
@@ -47,15 +48,7 @@ export default function CreateMoonPhasePage() {
       ...(p.has("moonColor") && { moonColor: p.get("moonColor")! }),
       ...(p.has("shadowColor") && { shadowColor: p.get("shadowColor")! }),
       ...(p.has("textColor") && { textColor: p.get("textColor")! }),
-      ...(bgVal === "transparent"
-        ? { transparentBg: true }
-        : bgVal
-          ? { bg: bgVal, transparentBg: false }
-          : {}),
       ...(p.has("moonSize") && { moonSize: p.get("moonSize") as MoonSize }),
-      ...(p.has("radius") && { borderRadius: Number(p.get("radius")) }),
-      ...(p.has("pad") && { padding: Number(p.get("pad")) }),
-      ...(p.has("fsize") && { fontSize: p.get("fsize") as FontSizeKey }),
     });
   });
 
@@ -69,17 +62,10 @@ export default function CreateMoonPhasePage() {
     if (moonColor !== "F5F5DC") params.set("moonColor", moonColor);
     if (shadowColor !== "1A1A2E") params.set("shadowColor", shadowColor);
     if (textColor !== "E0E0E0") params.set("textColor", textColor);
-    if (transparentBg) {
-      params.set("bg", "transparent");
-    } else if (bg !== "0F172A") {
-      params.set("bg", bg);
-    }
+    addBgParam(params, transparentBg, bg, "0F172A");
     if (moonSize !== "md") params.set("moonSize", moonSize);
-    if (borderRadius !== 16) params.set("radius", String(borderRadius));
-    if (padding !== 24) params.set("pad", String(padding));
-    if (fontSize !== "md") params.set("fsize", fontSize);
-    const qs = params.toString();
-    return qs ? `${base}?${qs}` : base;
+    addCommonStyleParams(params, borderRadius, padding, fontSize);
+    return buildUrl(base, params);
   }, [style, showName, showPercent, showNext, moonColor, shadowColor, bg, transparentBg, textColor, moonSize, borderRadius, padding, fontSize]);
 
   const handleCopy = async () => {

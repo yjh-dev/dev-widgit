@@ -1,41 +1,8 @@
 import { create } from "zustand";
+import { widgetStoreCreator, type CommonStyleState } from "@/lib/widget-store-factory";
 import type { ProgressItem, BarHeight, ProgressLayout } from "@/lib/multi-progress";
-import type { FontSizeKey } from "@/lib/common-widget-options";
 
-interface MultiProgressState {
-  items: ProgressItem[];
-  showPercent: boolean;
-  showValue: boolean;
-  barHeight: BarHeight;
-  layout: ProgressLayout;
-  animated: boolean;
-  textColor: string;
-  bg: string;
-  transparentBg: boolean;
-  borderRadius: number;
-  padding: number;
-  fontSize: FontSizeKey;
-
-  setItems: (v: ProgressItem[]) => void;
-  addItem: (item: ProgressItem) => void;
-  removeItem: (index: number) => void;
-  updateItem: (index: number, item: ProgressItem) => void;
-  setShowPercent: (v: boolean) => void;
-  setShowValue: (v: boolean) => void;
-  setBarHeight: (v: BarHeight) => void;
-  setLayout: (v: ProgressLayout) => void;
-  setAnimated: (v: boolean) => void;
-  setTextColor: (v: string) => void;
-  setBg: (v: string) => void;
-  setTransparentBg: (v: boolean) => void;
-  setBorderRadius: (v: number) => void;
-  setPadding: (v: number) => void;
-  setFontSize: (v: FontSizeKey) => void;
-  loadPreset: (preset: Partial<typeof initialState>) => void;
-  reset: () => void;
-}
-
-const initialState = {
+const widgetDefaults = {
   items: [
     { label: "프론트엔드", value: 80, max: 100, color: "6366F1" },
     { label: "백엔드", value: 65, max: 100, color: "EC4899" },
@@ -48,36 +15,50 @@ const initialState = {
   layout: "stacked" as ProgressLayout,
   animated: false,
   textColor: "",
-  bg: "FFFFFF",
-  transparentBg: false,
-  borderRadius: 16,
-  padding: 24,
-  fontSize: "md" as FontSizeKey,
 };
 
-export const useMultiProgressStore = create<MultiProgressState>((set) => ({
-  ...initialState,
+interface MultiProgressState extends CommonStyleState {
+  items: ProgressItem[];
+  showPercent: boolean;
+  showValue: boolean;
+  barHeight: BarHeight;
+  layout: ProgressLayout;
+  animated: boolean;
+  textColor: string;
 
-  setItems: (items) => set({ items }),
-  addItem: (item) =>
-    set((s) => ({ items: [...s.items, item] })),
-  removeItem: (index) =>
-    set((s) => ({ items: s.items.filter((_, i) => i !== index) })),
-  updateItem: (index, item) =>
-    set((s) => ({
-      items: s.items.map((prev, i) => (i === index ? item : prev)),
-    })),
-  setShowPercent: (showPercent) => set({ showPercent }),
-  setShowValue: (showValue) => set({ showValue }),
-  setBarHeight: (barHeight) => set({ barHeight }),
-  setLayout: (layout) => set({ layout }),
-  setAnimated: (animated) => set({ animated }),
-  setTextColor: (textColor) => set({ textColor }),
-  setBg: (bg) => set({ bg }),
-  setTransparentBg: (transparentBg) => set({ transparentBg }),
-  setBorderRadius: (borderRadius) => set({ borderRadius }),
-  setPadding: (padding) => set({ padding }),
-  setFontSize: (fontSize) => set({ fontSize }),
-  loadPreset: (preset) => set({ ...initialState, ...preset }),
-  reset: () => set(initialState),
-}));
+  setItems: (v: ProgressItem[]) => void;
+  addItem: (item: ProgressItem) => void;
+  removeItem: (index: number) => void;
+  updateItem: (index: number, item: ProgressItem) => void;
+  setShowPercent: (v: boolean) => void;
+  setShowValue: (v: boolean) => void;
+  setBarHeight: (v: BarHeight) => void;
+  setLayout: (v: ProgressLayout) => void;
+  setAnimated: (v: boolean) => void;
+  setTextColor: (v: string) => void;
+  loadPreset: (preset: Record<string, unknown>) => void;
+  reset: () => void;
+}
+
+export const useMultiProgressStore = create<MultiProgressState>(
+  widgetStoreCreator(widgetDefaults, (set) => ({
+    setItems: (v: ProgressItem[]) => set({ items: v }),
+    addItem: (item: ProgressItem) =>
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (set as any)((s: MultiProgressState) => ({ items: [...s.items, item] })),
+    removeItem: (index: number) =>
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (set as any)((s: MultiProgressState) => ({ items: s.items.filter((_: ProgressItem, i: number) => i !== index) })),
+    updateItem: (index: number, item: ProgressItem) =>
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (set as any)((s: MultiProgressState) => ({
+        items: s.items.map((prev: ProgressItem, i: number) => (i === index ? item : prev)),
+      })),
+    setShowPercent: (v: boolean) => set({ showPercent: v }),
+    setShowValue: (v: boolean) => set({ showValue: v }),
+    setBarHeight: (v: BarHeight) => set({ barHeight: v }),
+    setLayout: (v: ProgressLayout) => set({ layout: v }),
+    setAnimated: (v: boolean) => set({ animated: v }),
+    setTextColor: (v: string) => set({ textColor: v }),
+  })),
+);

@@ -1,36 +1,8 @@
 import { create } from "zustand";
+import { widgetStoreCreator, type CommonStyleState } from "@/lib/widget-store-factory";
 import type { ChangelogEntry } from "@/lib/changelog";
-import type { FontSizeKey } from "@/lib/common-widget-options";
 
-interface ChangelogState {
-  entries: ChangelogEntry[];
-  showDate: boolean;
-  showVersion: boolean;
-  accentColor: string;
-  textColor: string;
-  bg: string;
-  transparentBg: boolean;
-  borderRadius: number;
-  padding: number;
-  fontSize: FontSizeKey;
-
-  setEntries: (v: ChangelogEntry[]) => void;
-  addEntry: (e: ChangelogEntry) => void;
-  removeEntry: (index: number) => void;
-  setShowDate: (v: boolean) => void;
-  setShowVersion: (v: boolean) => void;
-  setAccentColor: (v: string) => void;
-  setTextColor: (v: string) => void;
-  setBg: (v: string) => void;
-  setTransparentBg: (v: boolean) => void;
-  setBorderRadius: (v: number) => void;
-  setPadding: (v: number) => void;
-  setFontSize: (v: FontSizeKey) => void;
-  loadPreset: (preset: Partial<typeof initialState>) => void;
-  reset: () => void;
-}
-
-const initialState = {
+const widgetDefaults = {
   entries: [
     { version: "v2.0", date: "2026-02-15", desc: "다크 모드 지원 추가" },
     { version: "v1.5", date: "2026-01-20", desc: "성능 최적화 및 버그 수정" },
@@ -40,29 +12,38 @@ const initialState = {
   showVersion: true,
   accentColor: "6366F1",
   textColor: "",
-  bg: "FFFFFF",
-  transparentBg: false,
-  borderRadius: 16,
-  padding: 24,
-  fontSize: "md" as FontSizeKey,
 };
 
-export const useChangelogStore = create<ChangelogState>((set) => ({
-  ...initialState,
+interface ChangelogState extends CommonStyleState {
+  entries: ChangelogEntry[];
+  showDate: boolean;
+  showVersion: boolean;
+  accentColor: string;
+  textColor: string;
 
-  setEntries: (entries) => set({ entries }),
-  addEntry: (e) => set((s) => ({ entries: [...s.entries, e] })),
-  removeEntry: (index) =>
-    set((s) => ({ entries: s.entries.filter((_, i) => i !== index) })),
-  setShowDate: (showDate) => set({ showDate }),
-  setShowVersion: (showVersion) => set({ showVersion }),
-  setAccentColor: (accentColor) => set({ accentColor }),
-  setTextColor: (textColor) => set({ textColor }),
-  setBg: (bg) => set({ bg }),
-  setTransparentBg: (transparentBg) => set({ transparentBg }),
-  setBorderRadius: (borderRadius) => set({ borderRadius }),
-  setPadding: (padding) => set({ padding }),
-  setFontSize: (fontSize) => set({ fontSize }),
-  loadPreset: (preset) => set({ ...initialState, ...preset }),
-  reset: () => set(initialState),
-}));
+  setEntries: (v: ChangelogEntry[]) => void;
+  addEntry: (e: ChangelogEntry) => void;
+  removeEntry: (index: number) => void;
+  setShowDate: (v: boolean) => void;
+  setShowVersion: (v: boolean) => void;
+  setAccentColor: (v: string) => void;
+  setTextColor: (v: string) => void;
+  loadPreset: (preset: Record<string, unknown>) => void;
+  reset: () => void;
+}
+
+export const useChangelogStore = create<ChangelogState>(
+  widgetStoreCreator(widgetDefaults, (set) => ({
+    setEntries: (v: ChangelogEntry[]) => set({ entries: v }),
+    addEntry: (e: ChangelogEntry) =>
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (set as any)((s: ChangelogState) => ({ entries: [...s.entries, e] })),
+    removeEntry: (index: number) =>
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (set as any)((s: ChangelogState) => ({ entries: s.entries.filter((_: ChangelogEntry, i: number) => i !== index) })),
+    setShowDate: (v: boolean) => set({ showDate: v }),
+    setShowVersion: (v: boolean) => set({ showVersion: v }),
+    setAccentColor: (v: string) => set({ accentColor: v }),
+    setTextColor: (v: string) => set({ textColor: v }),
+  })),
+);

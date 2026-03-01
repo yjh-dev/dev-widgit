@@ -1,8 +1,9 @@
 "use client";
 
 import { useWidgetParams } from "@/lib/use-widget-params";
-import { Suspense } from "react";
 import RadarChartPreview from "@/components/widget/RadarChartPreview";
+import WidgetPage, { WidgetScreen } from "@/components/widget/WidgetPage";
+import { parseBgParam } from "@/lib/common-params";
 import { parseBorderRadius, parsePadding, parseFontSize, parseHexColor } from "@/lib/common-widget-options";
 import { deserializeItems } from "@/lib/radar-chart";
 
@@ -29,16 +30,14 @@ function RadarChartWidgetContent() {
   const color = parseHexColor(searchParams.get("color"), "6366F1");
   const gridColor = parseHexColor(searchParams.get("gridColor"), "E5E7EB");
   const textColor = parseHexColor(searchParams.get("textColor"), "");
-  const rawBg = searchParams.get("bg") || "FFFFFF";
-  const transparentBg = rawBg === "transparent";
-  const bg = transparentBg ? "FFFFFF" : parseHexColor(rawBg, "FFFFFF");
+  const { bg, transparentBg } = parseBgParam(searchParams.get("bg"));
 
   const borderRadius = parseBorderRadius(searchParams.get("radius"));
   const padding = parsePadding(searchParams.get("pad"));
   const fontSize = parseFontSize(searchParams.get("fsize"));
 
   return (
-    <div className="w-screen h-screen bg-transparent">
+    <WidgetScreen>
       <RadarChartPreview
         items={items}
         showValues={showValues}
@@ -54,20 +53,14 @@ function RadarChartWidgetContent() {
         padding={padding}
         fontSize={fontSize}
       />
-    </div>
+    </WidgetScreen>
   );
 }
 
 export default function WidgetRadarChartPage() {
   return (
-    <Suspense
-      fallback={
-        <div className="w-screen h-screen flex items-center justify-center">
-          <p className="text-muted-foreground text-sm">로딩 중...</p>
-        </div>
-      }
-    >
+    <WidgetPage>
       <RadarChartWidgetContent />
-    </Suspense>
+    </WidgetPage>
   );
 }

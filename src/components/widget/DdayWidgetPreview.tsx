@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, startTransition } from "react";
 import { format, isValid } from "date-fns";
 import { ko } from "date-fns/locale";
 import { calculateDday, calculateDdayWithTime, calculateProgress, toLocalDate } from "@/lib/dday";
@@ -84,10 +84,10 @@ export default function DdayWidgetPreview({
 
   useEffect(() => {
     if (!showTime) {
-      setTimeResult(null);
+      startTransition(() => setTimeResult(null));
       return;
     }
-    setTimeResult(calculateDdayWithTime(targetDate, isAnnual));
+    startTransition(() => setTimeResult(calculateDdayWithTime(targetDate, isAnnual)));
     const interval = setInterval(() => {
       setTimeResult(calculateDdayWithTime(targetDate, isAnnual));
     }, 1000);

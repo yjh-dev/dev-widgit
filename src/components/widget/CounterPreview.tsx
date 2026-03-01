@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, startTransition } from "react";
 import { Minus, Plus, RotateCcw } from "lucide-react";
 import {
   buildStorageKey,
@@ -80,7 +80,7 @@ export default function CounterPreview({
 
   useEffect(() => {
     if (!persist) {
-      setCount(initial);
+      startTransition(() => setCount(initial));
     }
   }, [initial, persist]);
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, startTransition } from "react";
 import { getClockTime, getClockDate } from "@/lib/clock";
 import type { FlipClockFormat, FlipClockDateFormat } from "@/lib/flip-clock";
 import type { ClockDateFormat } from "@/lib/clock";
@@ -50,10 +50,12 @@ function FlipCard({ value, flipColor, textColor, gapColor, size }: FlipCardProps
 
   useEffect(() => {
     if (value !== current) {
-      setPrevious(current);
-      setCurrent(value);
-      setAnimating(true);
-      const timer = setTimeout(() => setAnimating(false), 600);
+      startTransition(() => {
+        setPrevious(current);
+        setCurrent(value);
+        setAnimating(true);
+      });
+      const timer = setTimeout(() => startTransition(() => setAnimating(false)), 600);
       return () => clearTimeout(timer);
     }
   }, [value, current]);
@@ -211,7 +213,7 @@ export default function FlipClockPreview({
 
   useEffect(() => {
     injectKeyframes();
-    setMounted(true);
+    startTransition(() => { setMounted(true); });
     const update = () => {
       setTime(getClockTime(timezone, format));
       if (showDate) setDateStr(getClockDate(timezone, dateFmt as ClockDateFormat));

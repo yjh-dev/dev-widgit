@@ -1,7 +1,17 @@
 import { create } from "zustand";
-import type { FontSizeKey } from "@/lib/common-widget-options";
+import { widgetStoreCreator, type CommonStyleState } from "@/lib/widget-store-factory";
 
-interface BatteryState {
+const widgetDefaults = {
+  level: 75,
+  label: "",
+  showPercent: true,
+  animate: false,
+  autoColor: true,
+  color: "22C55E",
+  textColor: "",
+};
+
+interface BatteryState extends CommonStyleState {
   level: number;
   label: string;
   showPercent: boolean;
@@ -9,11 +19,6 @@ interface BatteryState {
   autoColor: boolean;
   color: string;
   textColor: string;
-  bg: string;
-  transparentBg: boolean;
-  borderRadius: number;
-  padding: number;
-  fontSize: FontSizeKey;
 
   setLevel: (v: number) => void;
   setLabel: (v: string) => void;
@@ -22,45 +27,18 @@ interface BatteryState {
   setAutoColor: (v: boolean) => void;
   setColor: (v: string) => void;
   setTextColor: (v: string) => void;
-  setBg: (v: string) => void;
-  setTransparentBg: (v: boolean) => void;
-  setBorderRadius: (v: number) => void;
-  setPadding: (v: number) => void;
-  setFontSize: (v: FontSizeKey) => void;
-  loadPreset: (preset: Partial<typeof initialState>) => void;
+  loadPreset: (preset: Record<string, unknown>) => void;
   reset: () => void;
 }
 
-const initialState = {
-  level: 75,
-  label: "",
-  showPercent: true,
-  animate: false,
-  autoColor: true,
-  color: "22C55E",
-  textColor: "",
-  bg: "FFFFFF",
-  transparentBg: false,
-  borderRadius: 16,
-  padding: 24,
-  fontSize: "md" as FontSizeKey,
-};
-
-export const useBatteryStore = create<BatteryState>((set) => ({
-  ...initialState,
-
-  setLevel: (level) => set({ level }),
-  setLabel: (label) => set({ label }),
-  setShowPercent: (showPercent) => set({ showPercent }),
-  setAnimate: (animate) => set({ animate }),
-  setAutoColor: (autoColor) => set({ autoColor }),
-  setColor: (color) => set({ color }),
-  setTextColor: (textColor) => set({ textColor }),
-  setBg: (bg) => set({ bg }),
-  setTransparentBg: (transparentBg) => set({ transparentBg }),
-  setBorderRadius: (borderRadius) => set({ borderRadius }),
-  setPadding: (padding) => set({ padding }),
-  setFontSize: (fontSize) => set({ fontSize }),
-  loadPreset: (preset) => set({ ...initialState, ...preset }),
-  reset: () => set(initialState),
-}));
+export const useBatteryStore = create<BatteryState>(
+  widgetStoreCreator(widgetDefaults, (set) => ({
+    setLevel: (v: number) => set({ level: v }),
+    setLabel: (v: string) => set({ label: v }),
+    setShowPercent: (v: boolean) => set({ showPercent: v }),
+    setAnimate: (v: boolean) => set({ animate: v }),
+    setAutoColor: (v: boolean) => set({ autoColor: v }),
+    setColor: (v: string) => set({ color: v }),
+    setTextColor: (v: string) => set({ textColor: v }),
+  })),
+);

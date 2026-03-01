@@ -38,7 +38,7 @@ export default function CreateStepperPage() {
     steps, currentStep, layout, showDesc, showNumbers,
     color, completedColor, textColor, bg, transparentBg,
     borderRadius, padding, fontSize,
-    setSteps, updateStep, addStep, removeStep,
+    updateStep, addStep, removeStep,
     setCurrentStep, setLayout, setShowDesc, setShowNumbers,
     setColor, setCompletedColor, setTextColor, setBg, setTransparentBg,
     setBorderRadius, setPadding, setFontSize,

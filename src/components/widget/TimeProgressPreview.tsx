@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, startTransition } from "react";
 import {
   calculateTimeProgress,
   type ProgressType,
@@ -69,7 +69,7 @@ export default function TimeProgressPreview({
   const [progress, setProgress] = useState(() => calculateTimeProgress(type, weekStart));
 
   useEffect(() => {
-    setProgress(calculateTimeProgress(type, weekStart));
+    startTransition(() => setProgress(calculateTimeProgress(type, weekStart)));
     const interval = setInterval(() => {
       setProgress(calculateTimeProgress(type, weekStart));
     }, 1000);

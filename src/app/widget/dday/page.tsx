@@ -1,8 +1,8 @@
 "use client";
 
 import { useWidgetParams } from "@/lib/use-widget-params";
-import { Suspense } from "react";
 import DdayWidgetPreview from "@/components/widget/DdayWidgetPreview";
+import WidgetPage, { WidgetScreen } from "@/components/widget/WidgetPage";
 import type { DdayDateFormat } from "@/components/widget/DdayWidgetPreview";
 import type { FontKey } from "@/lib/fonts";
 import { parseBorderRadius, parsePadding, parseFontSize, parseHexColor } from "@/lib/common-widget-options";
@@ -63,7 +63,7 @@ function DdayWidgetContent() {
     : "full";
 
   return (
-    <div className="w-screen h-screen flex items-center justify-center bg-transparent">
+    <WidgetScreen>
       <DdayWidgetPreview
         title={title}
         targetDate={targetDate}
@@ -84,20 +84,14 @@ function DdayWidgetContent() {
         barColor={barColor}
         dateFmt={dateFmt}
       />
-    </div>
+    </WidgetScreen>
   );
 }
 
 export default function WidgetDdayPage() {
   return (
-    <Suspense
-      fallback={
-        <div className="w-screen h-screen flex items-center justify-center">
-          <p className="text-muted-foreground text-sm">로딩 중...</p>
-        </div>
-      }
-    >
+    <WidgetPage>
       <DdayWidgetContent />
-    </Suspense>
+    </WidgetPage>
   );
 }

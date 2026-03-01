@@ -25,7 +25,8 @@ import { useWidgetUrl } from "@/lib/use-widget-url";
 import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
 import type { ProgressType, WeekStart } from "@/lib/time-progress";
-import type { FontSizeKey } from "@/lib/common-widget-options";
+import { parseCommonParams } from "@/lib/common-params";
+import { addBgParam, addCommonStyleParams, buildUrl } from "@/lib/url-builder-utils";
 
 export default function CreateTimeProgressPage() {
   const {
@@ -40,14 +41,7 @@ export default function CreateTimeProgressPage() {
     loadPreset({
       ...(p.has("type") && { type: p.get("type") as ProgressType }),
       ...(p.has("color") && { color: p.get("color")! }),
-      ...(p.has("bg") && {
-        ...(p.get("bg") === "transparent"
-          ? { transparentBg: true }
-          : { bg: p.get("bg")! }),
-      }),
-      ...(p.has("radius") && { borderRadius: Number(p.get("radius")) }),
-      ...(p.has("pad") && { padding: Number(p.get("pad")) }),
-      ...(p.has("fsize") && { fontSize: p.get("fsize") as FontSizeKey }),
+      ...parseCommonParams(p),
       ...(p.has("style") && { style: p.get("style") as BarStyle }),
       ...(p.has("label") && { showLabel: p.get("label") !== "false" }),
       ...(p.has("percent") && { showPercent: p.get("percent") !== "false" }),
@@ -64,14 +58,8 @@ export default function CreateTimeProgressPage() {
     const params = new URLSearchParams();
     if (type !== "day") params.set("type", type);
     if (color !== "2563EB") params.set("color", color);
-    if (transparentBg) {
-      params.set("bg", "transparent");
-    } else if (bg !== "FFFFFF") {
-      params.set("bg", bg);
-    }
-    if (borderRadius !== 16) params.set("radius", String(borderRadius));
-    if (padding !== 24) params.set("pad", String(padding));
-    if (fontSize !== "md") params.set("fsize", fontSize);
+    addBgParam(params, transparentBg, bg);
+    addCommonStyleParams(params, borderRadius, padding, fontSize);
     if (style !== "bar") params.set("style", style);
     if (!showLabel) params.set("label", "false");
     if (!showPercent) params.set("percent", "false");
@@ -82,8 +70,7 @@ export default function CreateTimeProgressPage() {
     if (weekStart !== "sun") params.set("weekStart", weekStart);
     if (ringSize !== "md") params.set("ringSize", ringSize);
     if (showRemain) params.set("remain", "true");
-    const qs = params.toString();
-    return qs ? `${base}?${qs}` : base;
+    return buildUrl(base, params);
   }, [type, color, bg, transparentBg, borderRadius, padding, fontSize, style, showLabel, showPercent, barHeight, textColor, weekStart, ringSize, showRemain]);
 
   const handleCopy = async () => {
