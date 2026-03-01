@@ -26,7 +26,10 @@ import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
 import type { ProgressType, WeekStart } from "@/lib/time-progress";
 import { parseCommonParams } from "@/lib/common-params";
-import { addBgParam, addCommonStyleParams, buildUrl } from "@/lib/url-builder-utils";
+import { addBgParam, addCommonStyleParams, addEffectParams, buildUrl } from "@/lib/url-builder-utils";
+import EffectOptions from "@/components/editor/EffectOptions";
+import EditorEffectsPreview from "@/components/editor/EditorEffectsPreview";
+import EffectPresetSelector from "@/components/editor/EffectPresetSelector";
 
 export default function CreateTimeProgressPage() {
   const {
@@ -34,6 +37,8 @@ export default function CreateTimeProgressPage() {
     style, showLabel, showPercent, barHeight, textColor, weekStart, ringSize, showRemain,
     setType, setColor, setBg, setTransparentBg, setBorderRadius, setPadding, setFontSize,
     setStyle, setShowLabel, setShowPercent, setBarHeight, setTextColor, setWeekStart, setRingSize, setShowRemain,
+    fx, fxInt, gbg, gbgDir, neonColor, bshadow,
+    setFx, setFxInt, setGbg, setGbgDir, setNeonColor, setBshadow,
     loadPreset, reset,
   } = useTimeProgressStore();
 
@@ -60,6 +65,7 @@ export default function CreateTimeProgressPage() {
     if (color !== "2563EB") params.set("color", color);
     addBgParam(params, transparentBg, bg);
     addCommonStyleParams(params, borderRadius, padding, fontSize);
+    addEffectParams(params, fx, fxInt, gbg, gbgDir, neonColor, bshadow);
     if (style !== "bar") params.set("style", style);
     if (!showLabel) params.set("label", "false");
     if (!showPercent) params.set("percent", "false");
@@ -71,7 +77,7 @@ export default function CreateTimeProgressPage() {
     if (ringSize !== "md") params.set("ringSize", ringSize);
     if (showRemain) params.set("remain", "true");
     return buildUrl(base, params);
-  }, [type, color, bg, transparentBg, borderRadius, padding, fontSize, style, showLabel, showPercent, barHeight, textColor, weekStart, ringSize, showRemain]);
+  }, [type, color, bg, transparentBg, borderRadius, padding, fontSize, style, showLabel, showPercent, barHeight, textColor, weekStart, ringSize, showRemain, fx, fxInt, gbg, gbgDir, neonColor, bshadow]);
 
   const handleCopy = async () => {
     await copyToClipboard(buildWidgetUrl());
@@ -192,6 +198,22 @@ export default function CreateTimeProgressPage() {
                 ),
               },
               {
+                id: "effects",
+                title: "효과",
+                children: (
+                  <>
+                    <EffectPresetSelector onSelect={loadPreset} />
+                    <EffectOptions
+                      fx={fx} fxInt={fxInt} gbg={gbg} gbgDir={gbgDir}
+                      neonColor={neonColor} bshadow={bshadow}
+                      onFxChange={setFx} onFxIntChange={setFxInt}
+                      onGbgChange={setGbg} onGbgDirChange={setGbgDir}
+                      onNeonColorChange={setNeonColor} onBshadowChange={setBshadow}
+                    />
+                  </>
+                ),
+              },
+              {
                 id: "style",
                 title: "스타일",
                 children: (
@@ -213,12 +235,17 @@ export default function CreateTimeProgressPage() {
         <div className="space-y-3 w-full max-w-[320px]">
           <p className="text-xs text-muted-foreground text-center">미리보기</p>
           <div className="border rounded-lg overflow-hidden aspect-[16/9]">
-            <TimeProgressPreview
+            <EditorEffectsPreview
+              fx={fx} fxInt={fxInt} gbg={gbg} gbgDir={gbgDir}
+              neonColor={neonColor} bshadow={bshadow} borderRadius={borderRadius}
+            >
+              <TimeProgressPreview
               type={type} color={color} bg={bg} transparentBg={transparentBg}
               borderRadius={borderRadius} padding={padding} fontSize={fontSize}
               style={style} showLabel={showLabel} showPercent={showPercent} barHeight={barHeight}
               textColor={textColor} weekStart={weekStart} ringSize={ringSize} showRemain={showRemain}
             />
+            </EditorEffectsPreview>
           </div>
         </div>
       </div>

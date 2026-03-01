@@ -5,6 +5,10 @@ import { Toaster } from "@/components/ui/sonner";
 import ThemeProvider from "@/components/ThemeProvider";
 import { LocaleProvider } from "@/components/LocaleProvider";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
+import AdSenseScript from "@/components/AdSenseScript";
+import ServiceWorkerRegistration from "@/components/ServiceWorkerRegistration";
+import PwaInstallPrompt from "@/components/PwaInstallPrompt";
+import DevTools from "@/components/DevTools";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -78,6 +82,10 @@ export default function RootLayout({
           <Toaster position="bottom-center" duration={2000} offset={72} />
         </ThemeProvider>
         <GoogleAnalytics />
+        <AdSenseScript />
+        <ServiceWorkerRegistration />
+        <PwaInstallPrompt />
+        <DevTools />
       </body>
     </html>
   );

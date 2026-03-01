@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import Link from "next/link";
-import { ArrowLeft, Copy, Plus, X, ExternalLink, GripVertical } from "lucide-react";
+import { ArrowLeft, Copy, Plus, X, ExternalLink, GripVertical, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -16,6 +16,11 @@ import {
 import { toast } from "sonner";
 import ThemeToggle from "@/components/ui/theme-toggle";
 import { copyToClipboard } from "@/lib/clipboard";
+import { addEffectParams } from "@/lib/url-builder-utils";
+import EffectOptions from "@/components/editor/EffectOptions";
+import EffectPresetSelector from "@/components/editor/EffectPresetSelector";
+import type { EffectType, EffectIntensity, BoxShadowPreset } from "@/lib/widget-effects";
+import { EFFECT_DEFAULTS } from "@/lib/widget-effects";
 
 type Layout = "vertical" | "horizontal" | "grid";
 
@@ -24,6 +29,13 @@ export default function CreateGroupPage() {
   const [layout, setLayout] = useState<Layout>("vertical");
   const [cols, setCols] = useState(2);
   const [gap, setGap] = useState(8);
+  const [fx, setFx] = useState<EffectType>(EFFECT_DEFAULTS.fx);
+  const [fxInt, setFxInt] = useState<EffectIntensity>(EFFECT_DEFAULTS.fxInt);
+  const [gbg, setGbg] = useState(EFFECT_DEFAULTS.gbg);
+  const [gbgDir, setGbgDir] = useState(EFFECT_DEFAULTS.gbgDir);
+  const [neonColor, setNeonColor] = useState(EFFECT_DEFAULTS.neonColor);
+  const [bshadow, setBshadow] = useState<BoxShadowPreset>(EFFECT_DEFAULTS.bshadow);
+  const [effectsOpen, setEffectsOpen] = useState(false);
 
   const addSlot = () => {
     if (urls.length >= 8) { toast.error("최대 8개까지 추가할 수 있습니다."); return; }
@@ -59,8 +71,9 @@ export default function CreateGroupPage() {
     if (layout !== "vertical") params.set("layout", layout);
     if (layout === "grid" && cols !== 2) params.set("cols", String(cols));
     if (gap !== 8) params.set("gap", String(gap));
+    addEffectParams(params, fx, fxInt, gbg, gbgDir, neonColor, bshadow);
     return `${base}?${params.toString()}`;
-  }, [validUrls, layout, cols, gap]);
+  }, [validUrls, layout, cols, gap, fx, fxInt, gbg, gbgDir, neonColor, bshadow]);
 
   const handleCopy = async () => {
     if (!widgetUrl) { toast.error("위젯 URL을 하나 이상 추가하세요."); return; }
@@ -163,6 +176,41 @@ export default function CreateGroupPage() {
                   <SelectItem value="24">24px</SelectItem>
                 </SelectContent>
               </Select>
+            </div>
+
+            {/* Effects */}
+            <div className="space-y-3">
+              <button
+                type="button"
+                onClick={() => setEffectsOpen(!effectsOpen)}
+                className="flex items-center gap-1 text-sm font-medium"
+              >
+                <ChevronDown
+                  className={`w-4 h-4 transition-transform ${effectsOpen ? "rotate-180" : ""}`}
+                />
+                효과
+              </button>
+              {effectsOpen && (
+                <div className="space-y-4 pl-1">
+                  <EffectPresetSelector
+                    onSelect={(preset) => {
+                      if (preset.fx !== undefined) setFx(preset.fx as EffectType);
+                      if (preset.fxInt !== undefined) setFxInt(preset.fxInt as EffectIntensity);
+                      if (preset.gbg !== undefined) setGbg(preset.gbg as string);
+                      if (preset.gbgDir !== undefined) setGbgDir(preset.gbgDir as number);
+                      if (preset.neonColor !== undefined) setNeonColor(preset.neonColor as string);
+                      if (preset.bshadow !== undefined) setBshadow(preset.bshadow as BoxShadowPreset);
+                    }}
+                  />
+                  <EffectOptions
+                    fx={fx} fxInt={fxInt} gbg={gbg} gbgDir={gbgDir}
+                    neonColor={neonColor} bshadow={bshadow}
+                    onFxChange={setFx} onFxIntChange={setFxInt}
+                    onGbgChange={setGbg} onGbgDirChange={setGbgDir}
+                    onNeonColorChange={setNeonColor} onBshadowChange={setBshadow}
+                  />
+                </div>
+              )}
             </div>
 
             {/* URL output */}

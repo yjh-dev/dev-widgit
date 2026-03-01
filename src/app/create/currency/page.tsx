@@ -26,6 +26,10 @@ import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
 import { CURRENCIES, serializeTargets } from "@/lib/currency";
 import type { FontSizeKey } from "@/lib/common-widget-options";
+import { addEffectParams } from "@/lib/url-builder-utils";
+import EffectOptions from "@/components/editor/EffectOptions";
+import EditorEffectsPreview from "@/components/editor/EditorEffectsPreview";
+import EffectPresetSelector from "@/components/editor/EffectPresetSelector";
 
 export default function CreateCurrencyPage() {
   const {
@@ -33,6 +37,8 @@ export default function CreateCurrencyPage() {
     color, bg, transparentBg, borderRadius, padding, fontSize,
     setBase, setTargets, setShowFlag, setRefreshMin, setAccentColor,
     setColor, setBg, setTransparentBg, setBorderRadius, setPadding, setFontSize,
+    fx, fxInt, gbg, gbgDir, neonColor, bshadow,
+    setFx, setFxInt, setGbg, setGbgDir, setNeonColor, setBshadow,
     loadPreset, reset,
   } = useCurrencyStore();
 
@@ -72,9 +78,10 @@ export default function CreateCurrencyPage() {
     if (borderRadius !== 16) params.set("radius", String(borderRadius));
     if (padding !== 24) params.set("pad", String(padding));
     if (fontSize !== "md") params.set("fsize", fontSize);
+    addEffectParams(params, fx, fxInt, gbg, gbgDir, neonColor, bshadow);
     const qs = params.toString();
     return qs ? `${basePath}?${qs}` : basePath;
-  }, [base, targets, showFlag, refreshMin, accentColor, color, bg, transparentBg, borderRadius, padding, fontSize]);
+  }, [base, targets, showFlag, refreshMin, accentColor, color, bg, transparentBg, borderRadius, padding, fontSize, fx, fxInt, gbg, gbgDir, neonColor, bshadow]);
 
   const handleCopy = async () => {
     await copyToClipboard(buildWidgetUrl());
@@ -183,6 +190,22 @@ export default function CreateCurrencyPage() {
                 ),
               },
               {
+                id: "effects",
+                title: "효과",
+                children: (
+                  <>
+                    <EffectPresetSelector onSelect={loadPreset} />
+                    <EffectOptions
+                      fx={fx} fxInt={fxInt} gbg={gbg} gbgDir={gbgDir}
+                      neonColor={neonColor} bshadow={bshadow}
+                      onFxChange={setFx} onFxIntChange={setFxInt}
+                      onGbgChange={setGbg} onGbgDirChange={setGbgDir}
+                      onNeonColorChange={setNeonColor} onBshadowChange={setBshadow}
+                    />
+                  </>
+                ),
+              },
+              {
                 id: "style",
                 title: "스타일",
                 children: (
@@ -204,7 +227,11 @@ export default function CreateCurrencyPage() {
         <div className="space-y-3 w-full max-w-[400px]">
           <p className="text-xs text-muted-foreground text-center">미리보기</p>
           <div className="border rounded-lg overflow-hidden aspect-[4/3]">
-            <CurrencyPreview
+            <EditorEffectsPreview
+              fx={fx} fxInt={fxInt} gbg={gbg} gbgDir={gbgDir}
+              neonColor={neonColor} bshadow={bshadow} borderRadius={borderRadius}
+            >
+              <CurrencyPreview
               base={base}
               targets={targets}
               showFlag={showFlag}
@@ -217,6 +244,7 @@ export default function CreateCurrencyPage() {
               padding={padding}
               fontSize={fontSize}
             />
+            </EditorEffectsPreview>
           </div>
         </div>
       </div>

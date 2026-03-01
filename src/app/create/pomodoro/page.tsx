@@ -26,7 +26,10 @@ import { useWidgetUrl } from "@/lib/use-widget-url";
 import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
 import { parseCommonParams } from "@/lib/common-params";
-import { addBgParam, addCommonStyleParams, buildUrl } from "@/lib/url-builder-utils";
+import { addBgParam, addCommonStyleParams, addEffectParams, buildUrl } from "@/lib/url-builder-utils";
+import EffectOptions from "@/components/editor/EffectOptions";
+import EditorEffectsPreview from "@/components/editor/EditorEffectsPreview";
+import EffectPresetSelector from "@/components/editor/EffectPresetSelector";
 
 export default function CreatePomodoroPage() {
   const {
@@ -34,6 +37,8 @@ export default function CreatePomodoroPage() {
     borderRadius, padding, fontSize, longBreak, rounds, showRounds, breakColor, autoStart, pStyle,
     setWorkTime, setBreakTime, setColor, setBg, setTransparentBg,
     setBorderRadius, setPadding, setFontSize, setLongBreak, setRounds, setShowRounds, setBreakColor, setAutoStart, setPStyle,
+    fx, fxInt, gbg, gbgDir, neonColor, bshadow,
+    setFx, setFxInt, setGbg, setGbgDir, setNeonColor, setBshadow,
     loadPreset, reset,
   } = usePomodoroStore();
 
@@ -60,6 +65,7 @@ export default function CreatePomodoroPage() {
     if (color !== "E11D48") params.set("color", color);
     addBgParam(params, transparentBg, bg);
     addCommonStyleParams(params, borderRadius, padding, fontSize);
+    addEffectParams(params, fx, fxInt, gbg, gbgDir, neonColor, bshadow);
     if (longBreak !== 15) params.set("longBreak", String(longBreak));
     if (rounds !== 4) params.set("rounds", String(rounds));
     if (!showRounds) params.set("showRounds", "false");
@@ -67,7 +73,7 @@ export default function CreatePomodoroPage() {
     if (autoStart) params.set("autoStart", "true");
     if (pStyle !== "bar") params.set("pStyle", pStyle);
     return buildUrl(base, params);
-  }, [workTime, breakTime, color, bg, transparentBg, borderRadius, padding, fontSize, longBreak, rounds, showRounds, breakColor, autoStart, pStyle]);
+  }, [workTime, breakTime, color, bg, transparentBg, borderRadius, padding, fontSize, longBreak, rounds, showRounds, breakColor, autoStart, pStyle, fx, fxInt, gbg, gbgDir, neonColor, bshadow]);
 
   const handleCopy = async () => {
     await copyToClipboard(buildWidgetUrl());
@@ -154,6 +160,22 @@ export default function CreatePomodoroPage() {
                 ),
               },
               {
+                id: "effects",
+                title: "효과",
+                children: (
+                  <>
+                    <EffectPresetSelector onSelect={loadPreset} />
+                    <EffectOptions
+                      fx={fx} fxInt={fxInt} gbg={gbg} gbgDir={gbgDir}
+                      neonColor={neonColor} bshadow={bshadow}
+                      onFxChange={setFx} onFxIntChange={setFxInt}
+                      onGbgChange={setGbg} onGbgDirChange={setGbgDir}
+                      onNeonColorChange={setNeonColor} onBshadowChange={setBshadow}
+                    />
+                  </>
+                ),
+              },
+              {
                 id: "style",
                 title: "스타일",
                 children: (
@@ -175,12 +197,17 @@ export default function CreatePomodoroPage() {
         <div className="space-y-3 w-full max-w-[320px]">
           <p className="text-xs text-muted-foreground text-center">미리보기</p>
           <div className="border rounded-lg overflow-hidden aspect-[4/3]">
-            <PomodoroPreview
+            <EditorEffectsPreview
+              fx={fx} fxInt={fxInt} gbg={gbg} gbgDir={gbgDir}
+              neonColor={neonColor} bshadow={bshadow} borderRadius={borderRadius}
+            >
+              <PomodoroPreview
               workTime={workTime} breakTime={breakTime} color={color} bg={bg}
               transparentBg={transparentBg} borderRadius={borderRadius} padding={padding}
               fontSize={fontSize} longBreak={longBreak} rounds={rounds} showRounds={showRounds}
               breakColor={breakColor} autoStart={autoStart} pStyle={pStyle}
             />
+            </EditorEffectsPreview>
           </div>
         </div>
       </div>

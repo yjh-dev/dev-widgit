@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useEffect, startTransition } from "react";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import {
   MousePointerClick,
@@ -28,7 +29,10 @@ import { Button } from "@/components/ui/button";
 import ThemeToggle from "@/components/ui/theme-toggle";
 import LocaleToggle from "@/components/ui/locale-toggle";
 import WidgetThumbnail from "@/components/home/WidgetThumbnail";
-import HeroWidgetShowcase from "@/components/home/HeroWidgetShowcase";
+const HeroWidgetShowcase = dynamic(
+  () => import("@/components/home/HeroWidgetShowcase"),
+  { ssr: false },
+);
 import AdBanner from "@/components/AdBanner";
 import { getRecentWidgets } from "@/lib/recent-widgets";
 import { getCategories, getAllWidgets } from "@/lib/widget-categories";

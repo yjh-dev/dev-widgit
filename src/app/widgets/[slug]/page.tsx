@@ -33,7 +33,7 @@ export async function generateMetadata({
       url: `https://widgit.vercel.app/widgets/${slug}`,
     },
     twitter: {
-      card: "summary",
+      card: "summary_large_image",
       title,
       description: meta.desc,
     },

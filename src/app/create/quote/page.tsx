@@ -28,7 +28,10 @@ import { copyToClipboard } from "@/lib/clipboard";
 import { ALIGN_OPTIONS, LINE_HEIGHT_OPTIONS } from "@/lib/quote";
 import { QUOTE_FONT_OPTIONS_EXTENDED } from "@/lib/fonts";
 import { parseCommonParams } from "@/lib/common-params";
-import { addBgParam, addCommonStyleParams, buildUrl } from "@/lib/url-builder-utils";
+import { addBgParam, addCommonStyleParams, addEffectParams, buildUrl } from "@/lib/url-builder-utils";
+import EffectOptions from "@/components/editor/EffectOptions";
+import EditorEffectsPreview from "@/components/editor/EditorEffectsPreview";
+import EffectPresetSelector from "@/components/editor/EffectPresetSelector";
 
 export default function CreateQuotePage() {
   const {
@@ -38,6 +41,8 @@ export default function CreateQuotePage() {
     setText, setAuthor, setFont, setTextColor, setBg, setTransparentBg,
     setBorderRadius, setPadding, setFontSize, setAlign, setShowMarks, setItalic, setLineHeight,
     setAuthorColor, setDivider,
+    fx, fxInt, gbg, gbgDir, neonColor, bshadow,
+    setFx, setFxInt, setGbg, setGbgDir, setNeonColor, setBshadow,
     loadPreset, reset,
   } = useQuoteStore();
 
@@ -66,6 +71,7 @@ export default function CreateQuotePage() {
     if (textColor !== "1E1E1E") params.set("textColor", textColor);
     addBgParam(params, transparentBg, bg);
     addCommonStyleParams(params, borderRadius, padding, fontSize);
+    addEffectParams(params, fx, fxInt, gbg, gbgDir, neonColor, bshadow);
     if (align !== "center") params.set("align", align);
     if (!showMarks) params.set("marks", "false");
     if (italic) params.set("italic", "true");
@@ -73,7 +79,7 @@ export default function CreateQuotePage() {
     if (authorColor) params.set("authorColor", authorColor);
     if (divider) params.set("divider", "true");
     return buildUrl(base, params);
-  }, [text, author, font, textColor, bg, transparentBg, borderRadius, padding, fontSize, align, showMarks, italic, lineHeight, authorColor, divider]);
+  }, [text, author, font, textColor, bg, transparentBg, borderRadius, padding, fontSize, align, showMarks, italic, lineHeight, authorColor, divider, fx, fxInt, gbg, gbgDir, neonColor, bshadow]);
 
   const handleCopy = async () => {
     await copyToClipboard(buildWidgetUrl());
@@ -182,6 +188,22 @@ export default function CreateQuotePage() {
                 ),
               },
               {
+                id: "effects",
+                title: "효과",
+                children: (
+                  <>
+                    <EffectPresetSelector onSelect={loadPreset} />
+                    <EffectOptions
+                      fx={fx} fxInt={fxInt} gbg={gbg} gbgDir={gbgDir}
+                      neonColor={neonColor} bshadow={bshadow}
+                      onFxChange={setFx} onFxIntChange={setFxInt}
+                      onGbgChange={setGbg} onGbgDirChange={setGbgDir}
+                      onNeonColorChange={setNeonColor} onBshadowChange={setBshadow}
+                    />
+                  </>
+                ),
+              },
+              {
                 id: "style",
                 title: "스타일",
                 children: (
@@ -203,12 +225,17 @@ export default function CreateQuotePage() {
         <div className="space-y-3 w-full max-w-[400px]">
           <p className="text-xs text-muted-foreground text-center">미리보기</p>
           <div className="border rounded-lg overflow-hidden aspect-[4/3]">
-            <QuotePreview
+            <EditorEffectsPreview
+              fx={fx} fxInt={fxInt} gbg={gbg} gbgDir={gbgDir}
+              neonColor={neonColor} bshadow={bshadow} borderRadius={borderRadius}
+            >
+              <QuotePreview
               text={text} author={author} font={font} textColor={textColor} bg={bg}
               transparentBg={transparentBg} borderRadius={borderRadius} padding={padding}
               fontSize={fontSize} align={align} showMarks={showMarks} italic={italic} lineHeight={lineHeight}
               authorColor={authorColor} divider={divider}
             />
+            </EditorEffectsPreview>
           </div>
         </div>
       </div>

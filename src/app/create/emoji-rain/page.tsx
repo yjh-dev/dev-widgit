@@ -32,6 +32,10 @@ import {
   BORDER_RADIUS_OPTIONS,
   PADDING_OPTIONS,
 } from "@/lib/common-widget-options";
+import { addEffectParams } from "@/lib/url-builder-utils";
+import EffectOptions from "@/components/editor/EffectOptions";
+import EffectPresetSelector from "@/components/editor/EffectPresetSelector";
+import EditorEffectsPreview from "@/components/editor/EditorEffectsPreview";
 
 export default function CreateEmojiRainPage() {
   const {
@@ -39,6 +43,8 @@ export default function CreateEmojiRainPage() {
     bg, transparentBg, borderRadius, padding,
     setEmojis, setSpeed, setDensity, setMinSize, setMaxSize,
     setBg, setTransparentBg, setBorderRadius, setPadding,
+    fx, fxInt, gbg, gbgDir, neonColor, bshadow,
+    setFx, setFxInt, setGbg, setGbgDir, setNeonColor, setBshadow,
     loadPreset, reset,
   } = useEmojiRainStore();
 
@@ -57,9 +63,10 @@ export default function CreateEmojiRainPage() {
     }
     if (borderRadius !== 16) params.set("radius", String(borderRadius));
     if (padding !== 24) params.set("pad", String(padding));
+    addEffectParams(params, fx, fxInt, gbg, gbgDir, neonColor, bshadow);
     const qs = params.toString();
     return qs ? `${base}?${qs}` : base;
-  }, [emojis, speed, density, minSize, maxSize, bg, transparentBg, borderRadius, padding]);
+  }, [emojis, speed, density, minSize, maxSize, bg, transparentBg, borderRadius, padding, fx, fxInt, gbg, gbgDir, neonColor, bshadow]);
 
   const handleCopy = async () => {
     await copyToClipboard(buildWidgetUrl());
@@ -170,6 +177,22 @@ export default function CreateEmojiRainPage() {
                 ),
               },
               {
+                id: "effects",
+                title: "효과",
+                children: (
+                  <>
+                    <EffectPresetSelector onSelect={loadPreset} />
+                    <EffectOptions
+                      fx={fx} fxInt={fxInt} gbg={gbg} gbgDir={gbgDir}
+                      neonColor={neonColor} bshadow={bshadow}
+                      onFxChange={setFx} onFxIntChange={setFxInt}
+                      onGbgChange={setGbg} onGbgDirChange={setGbgDir}
+                      onNeonColorChange={setNeonColor} onBshadowChange={setBshadow}
+                    />
+                  </>
+                ),
+              },
+              {
                 id: "style",
                 title: "스타일",
                 children: (
@@ -223,17 +246,22 @@ export default function CreateEmojiRainPage() {
 
       {/* Preview — EditorLayout의 두 번째 child로 전달 */}
       <div className="min-h-[300px] h-[400px]">
-        <EmojiRainPreview
-          emojis={emojis}
-          speed={speed}
-          density={density}
-          minSize={minSize}
-          maxSize={maxSize}
-          bg={bg}
-          transparentBg={transparentBg}
-          borderRadius={borderRadius}
-          padding={padding}
-        />
+        <EditorEffectsPreview
+          fx={fx} fxInt={fxInt} gbg={gbg} gbgDir={gbgDir}
+          neonColor={neonColor} bshadow={bshadow} borderRadius={borderRadius}
+        >
+          <EmojiRainPreview
+            emojis={emojis}
+            speed={speed}
+            density={density}
+            minSize={minSize}
+            maxSize={maxSize}
+            bg={bg}
+            transparentBg={transparentBg}
+            borderRadius={borderRadius}
+            padding={padding}
+          />
+        </EditorEffectsPreview>
       </div>
     </EditorLayout>
   );

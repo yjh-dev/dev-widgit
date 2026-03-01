@@ -26,7 +26,10 @@ import { useWidgetUrl } from "@/lib/use-widget-url";
 import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
 import { parseCommonParams } from "@/lib/common-params";
-import { addBgParam, addCommonStyleParams, buildUrl } from "@/lib/url-builder-utils";
+import { addBgParam, addCommonStyleParams, addEffectParams, buildUrl } from "@/lib/url-builder-utils";
+import EffectOptions from "@/components/editor/EffectOptions";
+import EditorEffectsPreview from "@/components/editor/EditorEffectsPreview";
+import EffectPresetSelector from "@/components/editor/EffectPresetSelector";
 
 export default function CreateLifeCalendarPage() {
   const {
@@ -36,6 +39,8 @@ export default function CreateLifeCalendarPage() {
     setBirthdate, setLifespan, setColor, setBg, setTransparentBg, setShowStats,
     setBorderRadius, setPadding, setFontSize, setShape, setCellSize, setFutureColor,
     setShowYears, setNowColor,
+    fx, fxInt, gbg, gbgDir, neonColor, bshadow,
+    setFx, setFxInt, setGbg, setGbgDir, setNeonColor, setBshadow,
     loadPreset, reset,
   } = useLifeCalendarStore();
 
@@ -63,13 +68,14 @@ export default function CreateLifeCalendarPage() {
     addBgParam(params, transparentBg, bg);
     if (!showStats) params.set("stats", "false");
     addCommonStyleParams(params, borderRadius, padding, fontSize);
+    addEffectParams(params, fx, fxInt, gbg, gbgDir, neonColor, bshadow);
     if (shape !== "square") params.set("shape", shape);
     if (cellSize !== "sm") params.set("cellSize", cellSize);
     if (futureColor) params.set("futureColor", futureColor);
     if (showYears) params.set("years", "true");
     if (nowColor) params.set("nowColor", nowColor);
     return buildUrl(base, params);
-  }, [birthdate, lifespan, color, bg, transparentBg, showStats, borderRadius, padding, fontSize, shape, cellSize, futureColor, showYears, nowColor]);
+  }, [birthdate, lifespan, color, bg, transparentBg, showStats, borderRadius, padding, fontSize, shape, cellSize, futureColor, showYears, nowColor, fx, fxInt, gbg, gbgDir, neonColor, bshadow]);
 
   const handleCopy = async () => {
     await copyToClipboard(buildWidgetUrl());
@@ -159,6 +165,22 @@ export default function CreateLifeCalendarPage() {
                 ),
               },
               {
+                id: "effects",
+                title: "효과",
+                children: (
+                  <>
+                    <EffectPresetSelector onSelect={loadPreset} />
+                    <EffectOptions
+                      fx={fx} fxInt={fxInt} gbg={gbg} gbgDir={gbgDir}
+                      neonColor={neonColor} bshadow={bshadow}
+                      onFxChange={setFx} onFxIntChange={setFxInt}
+                      onGbgChange={setGbg} onGbgDirChange={setGbgDir}
+                      onNeonColorChange={setNeonColor} onBshadowChange={setBshadow}
+                    />
+                  </>
+                ),
+              },
+              {
                 id: "style",
                 title: "스타일",
                 children: (
@@ -180,12 +202,17 @@ export default function CreateLifeCalendarPage() {
         <div className="space-y-3 w-full max-w-[400px]">
           <p className="text-xs text-muted-foreground text-center">미리보기</p>
           <div className="border rounded-lg overflow-hidden aspect-[52/80]">
-            <LifeCalendarPreview
+            <EditorEffectsPreview
+              fx={fx} fxInt={fxInt} gbg={gbg} gbgDir={gbgDir}
+              neonColor={neonColor} bshadow={bshadow} borderRadius={borderRadius}
+            >
+              <LifeCalendarPreview
               birthdate={birthdate} lifespan={lifespan} color={color} bg={bg}
               transparentBg={transparentBg} showStats={showStats} borderRadius={borderRadius}
               padding={padding} fontSize={fontSize} shape={shape} cellSize={cellSize} futureColor={futureColor}
               showYears={showYears} nowColor={nowColor}
             />
+            </EditorEffectsPreview>
           </div>
         </div>
       </div>

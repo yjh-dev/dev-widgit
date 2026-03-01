@@ -2,6 +2,10 @@
 
 import { Suspense, type ReactNode } from "react";
 import WidgetWatermark from "@/components/widget/WidgetWatermark";
+import WidgetEffectsWrapper from "@/components/widget/WidgetEffectsWrapper";
+import { useWidgetParams } from "@/lib/use-widget-params";
+import { parseEffectParams, hasActiveEffects } from "@/lib/widget-effects";
+import { parseBorderRadius } from "@/lib/common-widget-options";
 
 function Fallback() {
   return (
@@ -25,11 +29,18 @@ export default function WidgetPage({ children }: { children: ReactNode }) {
   );
 }
 
-/** 위젯 콘텐츠를 풀스크린으로 감싸는 컨테이너. */
+/** 위젯 콘텐츠를 풀스크린으로 감싸는 컨테이너. 효과 파라미터를 자동 파싱하여 적용한다. */
 export function WidgetScreen({ children }: { children: ReactNode }) {
+  const searchParams = useWidgetParams();
+  const effectConfig = parseEffectParams(searchParams);
+  const borderRadius = parseBorderRadius(searchParams.get("radius"));
+  const active = hasActiveEffects(effectConfig);
+
   return (
-    <div className="w-screen h-screen bg-transparent">
-      {children}
+    <div className="w-screen h-screen" style={{ background: active ? "transparent" : undefined }}>
+      <WidgetEffectsWrapper config={effectConfig} borderRadius={borderRadius}>
+        {children}
+      </WidgetEffectsWrapper>
     </div>
   );
 }

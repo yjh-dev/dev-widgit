@@ -1,0 +1,130 @@
+/**
+ * 효과 프리셋 — 미리 정의된 시각 효과 조합.
+ * EffectPresetSelector에서 사용한다.
+ */
+
+import type { EffectType, EffectIntensity, BoxShadowPreset } from "@/lib/widget-effects";
+
+export interface EffectPreset {
+  id: string;
+  name: string;
+  /** 프리셋 스워치에 표시할 대표 색상 (CSS gradient 또는 단색) */
+  swatch: string;
+  fx: EffectType;
+  fxInt: EffectIntensity;
+  gbg: string;
+  gbgDir: number;
+  neonColor: string;
+  bshadow: BoxShadowPreset;
+  /** 프리셋 적용 시 bg/transparentBg를 같이 조정할 값 (optional) */
+  bgOverride?: { bg?: string; transparentBg?: boolean };
+}
+
+export const EFFECT_PRESETS: EffectPreset[] = [
+  {
+    id: "frost-glass",
+    name: "서리 유리",
+    swatch: "linear-gradient(135deg, rgba(255,255,255,0.4), rgba(200,220,255,0.3))",
+    fx: "glass",
+    fxInt: 2,
+    gbg: "E0E7FF|DBEAFE",
+    gbgDir: 135,
+    neonColor: "",
+    bshadow: "sm",
+    bgOverride: { transparentBg: true },
+  },
+  {
+    id: "neon-purple",
+    name: "네온 퍼플",
+    swatch: "linear-gradient(135deg, #7C3AED, #A855F7)",
+    fx: "neon",
+    fxInt: 2,
+    gbg: "",
+    gbgDir: 135,
+    neonColor: "A855F7",
+    bshadow: "none",
+    bgOverride: { bg: "1A1025", transparentBg: false },
+  },
+  {
+    id: "neon-cyan",
+    name: "네온 시안",
+    swatch: "linear-gradient(135deg, #06B6D4, #22D3EE)",
+    fx: "neon",
+    fxInt: 2,
+    gbg: "",
+    gbgDir: 135,
+    neonColor: "22D3EE",
+    bshadow: "none",
+    bgOverride: { bg: "0A1929", transparentBg: false },
+  },
+  {
+    id: "soft-glow",
+    name: "소프트 글로우",
+    swatch: "linear-gradient(135deg, #FDE68A, #FCA5A5)",
+    fx: "glow",
+    fxInt: 2,
+    gbg: "",
+    gbgDir: 135,
+    neonColor: "F59E0B",
+    bshadow: "md",
+  },
+  {
+    id: "sunset-gradient",
+    name: "선셋",
+    swatch: "linear-gradient(135deg, #F97316, #EC4899)",
+    fx: "none",
+    fxInt: 2,
+    gbg: "F97316|EC4899",
+    gbgDir: 135,
+    neonColor: "",
+    bshadow: "none",
+    bgOverride: { transparentBg: true },
+  },
+  {
+    id: "ocean-gradient",
+    name: "오션",
+    swatch: "linear-gradient(135deg, #0EA5E9, #6366F1)",
+    fx: "none",
+    fxInt: 2,
+    gbg: "0EA5E9|6366F1",
+    gbgDir: 135,
+    neonColor: "",
+    bshadow: "none",
+    bgOverride: { transparentBg: true },
+  },
+  {
+    id: "deep-shadow",
+    name: "딥 섀도우",
+    swatch: "linear-gradient(135deg, #374151, #1F2937)",
+    fx: "none",
+    fxInt: 2,
+    gbg: "",
+    gbgDir: 135,
+    neonColor: "",
+    bshadow: "lg",
+  },
+  {
+    id: "glassmorphism",
+    name: "글래스모피즘",
+    swatch: "linear-gradient(135deg, rgba(255,255,255,0.25), rgba(255,255,255,0.1))",
+    fx: "glass",
+    fxInt: 3,
+    gbg: "6366F1|EC4899|F59E0B",
+    gbgDir: 135,
+    neonColor: "",
+    bshadow: "none",
+    bgOverride: { transparentBg: true },
+  },
+  {
+    id: "retro-glow",
+    name: "레트로 글로우",
+    swatch: "linear-gradient(135deg, #E11D48, #7C3AED)",
+    fx: "glow",
+    fxInt: 3,
+    gbg: "E11D48|7C3AED",
+    gbgDir: 135,
+    neonColor: "E11D48",
+    bshadow: "none",
+    bgOverride: { transparentBg: true },
+  },
+];

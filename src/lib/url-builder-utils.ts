@@ -29,6 +29,26 @@ export function addCommonStyleParams(
   if (fontSize !== "md") params.set("fsize", fontSize);
 }
 
+import type { EffectType, EffectIntensity, BoxShadowPreset } from "@/lib/widget-effects";
+
+/** 효과 파라미터를 URL에 추가한다. 기본값이면 생략. */
+export function addEffectParams(
+  params: URLSearchParams,
+  fx: EffectType,
+  fxInt: EffectIntensity,
+  gbg: string,
+  gbgDir: number,
+  neonColor: string,
+  bshadow: BoxShadowPreset,
+) {
+  if (fx !== "none") params.set("fx", fx);
+  if (fx !== "none" && fxInt !== 2) params.set("fxInt", String(fxInt));
+  if (gbg) params.set("gbg", gbg);
+  if (gbg && gbgDir !== 135) params.set("gbgDir", String(gbgDir));
+  if (neonColor) params.set("neonColor", neonColor);
+  if (bshadow !== "none") params.set("bshadow", bshadow);
+}
+
 /** base + params를 합쳐 최종 URL을 반환한다. */
 export function buildUrl(base: string, params: URLSearchParams): string {
   const qs = params.toString();

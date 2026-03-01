@@ -26,7 +26,10 @@ import { copyToClipboard } from "@/lib/clipboard";
 import { TIMEZONE_OPTIONS } from "@/lib/clock";
 import type { NumberStyle } from "@/lib/analog-clock";
 import { parseCommonParams } from "@/lib/common-params";
-import { addBgParam, addCommonStyleParams, buildUrl } from "@/lib/url-builder-utils";
+import { addBgParam, addCommonStyleParams, addEffectParams, buildUrl } from "@/lib/url-builder-utils";
+import EffectOptions from "@/components/editor/EffectOptions";
+import EditorEffectsPreview from "@/components/editor/EditorEffectsPreview";
+import EffectPresetSelector from "@/components/editor/EffectPresetSelector";
 
 export default function CreateAnalogClockPage() {
   const {
@@ -36,6 +39,8 @@ export default function CreateAnalogClockPage() {
     setTimezone, setShowNumbers, setNumStyle, setShowSeconds, setShowTicks, setShowBorder,
     setHandColor, setSecHandColor, setFaceColor, setTickColor, setBorderColor,
     setBg, setTransparentBg, setBorderRadius, setPadding, setFontSize,
+    fx, fxInt, gbg, gbgDir, neonColor, bshadow,
+    setFx, setFxInt, setGbg, setGbgDir, setNeonColor, setBshadow,
     loadPreset, reset,
   } = useAnalogClockStore();
 
@@ -72,8 +77,9 @@ export default function CreateAnalogClockPage() {
     if (borderColor !== "1E1E1E") params.set("border", borderColor);
     addBgParam(params, transparentBg, bg);
     addCommonStyleParams(params, borderRadius, padding, fontSize);
+    addEffectParams(params, fx, fxInt, gbg, gbgDir, neonColor, bshadow);
     return buildUrl(base, params);
-  }, [timezone, showNumbers, numStyle, showSeconds, showTicks, showBorder, handColor, secHandColor, faceColor, tickColor, borderColor, bg, transparentBg, borderRadius, padding, fontSize]);
+  }, [timezone, showNumbers, numStyle, showSeconds, showTicks, showBorder, handColor, secHandColor, faceColor, tickColor, borderColor, bg, transparentBg, borderRadius, padding, fontSize, fx, fxInt, gbg, gbgDir, neonColor, bshadow]);
 
   const handleCopy = async () => {
     await copyToClipboard(buildWidgetUrl());
@@ -168,6 +174,22 @@ export default function CreateAnalogClockPage() {
                 ),
               },
               {
+                id: "effects",
+                title: "효과",
+                children: (
+                  <>
+                    <EffectPresetSelector onSelect={loadPreset} />
+                    <EffectOptions
+                      fx={fx} fxInt={fxInt} gbg={gbg} gbgDir={gbgDir}
+                      neonColor={neonColor} bshadow={bshadow}
+                      onFxChange={setFx} onFxIntChange={setFxInt}
+                      onGbgChange={setGbg} onGbgDirChange={setGbgDir}
+                      onNeonColorChange={setNeonColor} onBshadowChange={setBshadow}
+                    />
+                  </>
+                ),
+              },
+              {
                 id: "style",
                 title: "스타일",
                 children: (
@@ -189,7 +211,11 @@ export default function CreateAnalogClockPage() {
         <div className="space-y-3 w-full max-w-[400px]">
           <p className="text-xs text-muted-foreground text-center">미리보기</p>
           <div className="border rounded-lg overflow-hidden aspect-square">
-            <AnalogClockPreview
+            <EditorEffectsPreview
+              fx={fx} fxInt={fxInt} gbg={gbg} gbgDir={gbgDir}
+              neonColor={neonColor} bshadow={bshadow} borderRadius={borderRadius}
+            >
+              <AnalogClockPreview
               timezone={timezone} showNumbers={showNumbers} numStyle={numStyle}
               showSeconds={showSeconds} showTicks={showTicks} showBorder={showBorder}
               handColor={handColor} secHandColor={secHandColor} faceColor={faceColor}
@@ -197,6 +223,7 @@ export default function CreateAnalogClockPage() {
               transparentBg={transparentBg} borderRadius={borderRadius} padding={padding}
               fontSize={fontSize}
             />
+            </EditorEffectsPreview>
           </div>
         </div>
       </div>

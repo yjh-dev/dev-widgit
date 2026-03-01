@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import type { FontKey } from "@/lib/fonts";
 import type { FontSizeKey } from "@/lib/common-widget-options";
+import type { EffectType, EffectIntensity, BoxShadowPreset } from "@/lib/widget-effects";
 
 type CalcType = "down" | "up";
 type LayoutType = "default" | "progress";
@@ -27,6 +28,12 @@ interface DdayWidgetState {
   doneMsg: string;
   barColor: string;
   dateFmt: DdayDateFormat;
+  fx: EffectType;
+  fxInt: EffectIntensity;
+  gbg: string;
+  gbgDir: number;
+  neonColor: string;
+  bshadow: BoxShadowPreset;
 
   setTitle: (title: string) => void;
   setTargetDate: (date: string) => void;
@@ -47,6 +54,12 @@ interface DdayWidgetState {
   setDoneMsg: (doneMsg: string) => void;
   setBarColor: (barColor: string) => void;
   setDateFmt: (dateFmt: DdayDateFormat) => void;
+  setFx: (fx: EffectType) => void;
+  setFxInt: (fxInt: EffectIntensity) => void;
+  setGbg: (gbg: string) => void;
+  setGbgDir: (gbgDir: number) => void;
+  setNeonColor: (neonColor: string) => void;
+  setBshadow: (bshadow: BoxShadowPreset) => void;
   loadPreset: (preset: Partial<typeof initialState>) => void;
   reset: () => void;
 }
@@ -71,6 +84,12 @@ const initialState = {
   doneMsg: "",
   barColor: "",
   dateFmt: "full" as DdayDateFormat,
+  fx: "none" as EffectType,
+  fxInt: 2 as EffectIntensity,
+  gbg: "",
+  gbgDir: 135,
+  neonColor: "",
+  bshadow: "none" as BoxShadowPreset,
 };
 
 export const useDdayWidgetStore = create<DdayWidgetState>((set) => ({
@@ -100,6 +119,12 @@ export const useDdayWidgetStore = create<DdayWidgetState>((set) => ({
   setDoneMsg: (doneMsg) => set({ doneMsg }),
   setBarColor: (barColor) => set({ barColor }),
   setDateFmt: (dateFmt) => set({ dateFmt }),
+  setFx: (fx) => set({ fx }),
+  setFxInt: (fxInt) => set({ fxInt }),
+  setGbg: (gbg) => set({ gbg }),
+  setGbgDir: (gbgDir) => set({ gbgDir }),
+  setNeonColor: (neonColor) => set({ neonColor }),
+  setBshadow: (bshadow) => set({ bshadow }),
   loadPreset: (preset) => set({ ...initialState, ...preset }),
   reset: () => set(initialState),
 }));

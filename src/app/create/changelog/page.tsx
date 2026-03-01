@@ -20,6 +20,10 @@ import { changelogPresets } from "@/lib/presets";
 import { useWidgetUrl } from "@/lib/use-widget-url";
 import { copyToClipboard } from "@/lib/clipboard";
 import { serializeEntries } from "@/lib/changelog";
+import { addEffectParams } from "@/lib/url-builder-utils";
+import EffectOptions from "@/components/editor/EffectOptions";
+import EditorEffectsPreview from "@/components/editor/EditorEffectsPreview";
+import EffectPresetSelector from "@/components/editor/EffectPresetSelector";
 
 export default function CreateChangelogPage() {
   const {
@@ -30,6 +34,8 @@ export default function CreateChangelogPage() {
     setShowDate, setShowVersion,
     setAccentColor, setTextColor, setBg, setTransparentBg,
     setBorderRadius, setPadding, setFontSize,
+    fx, fxInt, gbg, gbgDir, neonColor, bshadow,
+    setFx, setFxInt, setGbg, setGbgDir, setNeonColor, setBshadow,
     loadPreset, reset,
   } = useChangelogStore();
 
@@ -61,9 +67,10 @@ export default function CreateChangelogPage() {
     if (borderRadius !== 16) params.set("radius", String(borderRadius));
     if (padding !== 24) params.set("pad", String(padding));
     if (fontSize !== "md") params.set("fsize", fontSize);
+    addEffectParams(params, fx, fxInt, gbg, gbgDir, neonColor, bshadow);
     const qs = params.toString();
     return qs ? `${base}?${qs}` : base;
-  }, [entries, showDate, showVersion, accentColor, textColor, bg, transparentBg, borderRadius, padding, fontSize]);
+  }, [entries, showDate, showVersion, accentColor, textColor, bg, transparentBg, borderRadius, padding, fontSize, fx, fxInt, gbg, gbgDir, neonColor, bshadow]);
 
   const handleCopy = async () => {
     await copyToClipboard(buildWidgetUrl());
@@ -180,6 +187,22 @@ export default function CreateChangelogPage() {
                 ),
               },
               {
+                id: "effects",
+                title: "효과",
+                children: (
+                  <>
+                    <EffectPresetSelector onSelect={loadPreset} />
+                    <EffectOptions
+                      fx={fx} fxInt={fxInt} gbg={gbg} gbgDir={gbgDir}
+                      neonColor={neonColor} bshadow={bshadow}
+                      onFxChange={setFx} onFxIntChange={setFxInt}
+                      onGbgChange={setGbg} onGbgDirChange={setGbgDir}
+                      onNeonColorChange={setNeonColor} onBshadowChange={setBshadow}
+                    />
+                  </>
+                ),
+              },
+              {
                 id: "style",
                 title: "스타일",
                 children: (
@@ -201,7 +224,11 @@ export default function CreateChangelogPage() {
         <div className="space-y-3 w-full max-w-[400px]">
           <p className="text-xs text-muted-foreground text-center">미리보기</p>
           <div className="border rounded-lg overflow-hidden min-h-[200px]">
-            <ChangelogPreview
+            <EditorEffectsPreview
+              fx={fx} fxInt={fxInt} gbg={gbg} gbgDir={gbgDir}
+              neonColor={neonColor} bshadow={bshadow} borderRadius={borderRadius}
+            >
+              <ChangelogPreview
               entries={entries}
               showDate={showDate}
               showVersion={showVersion}
@@ -213,6 +240,7 @@ export default function CreateChangelogPage() {
               padding={padding}
               fontSize={fontSize}
             />
+            </EditorEffectsPreview>
           </div>
         </div>
       </div>

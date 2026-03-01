@@ -4,6 +4,7 @@
  */
 
 import type { FontSizeKey } from "@/lib/common-widget-options";
+import type { EffectType, EffectIntensity, BoxShadowPreset } from "@/lib/widget-effects";
 
 export function parseCommonParams(p: URLSearchParams): Record<string, unknown> {
   const result: Record<string, unknown> = {};
@@ -18,6 +19,14 @@ export function parseCommonParams(p: URLSearchParams): Record<string, unknown> {
   if (p.has("radius")) result.borderRadius = Number(p.get("radius"));
   if (p.has("pad")) result.padding = Number(p.get("pad"));
   if (p.has("fsize")) result.fontSize = p.get("fsize") as FontSizeKey;
+
+  // Effect params
+  if (p.has("fx")) result.fx = p.get("fx") as EffectType;
+  if (p.has("fxInt")) result.fxInt = Number(p.get("fxInt")) as EffectIntensity;
+  if (p.has("gbg")) result.gbg = p.get("gbg")!;
+  if (p.has("gbgDir")) result.gbgDir = Number(p.get("gbgDir"));
+  if (p.has("neonColor")) result.neonColor = p.get("neonColor")!;
+  if (p.has("bshadow")) result.bshadow = p.get("bshadow") as BoxShadowPreset;
 
   return result;
 }

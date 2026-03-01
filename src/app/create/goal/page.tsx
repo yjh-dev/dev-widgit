@@ -26,7 +26,10 @@ import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
 import type { GoalStyle } from "@/lib/goal";
 import { parseCommonParams } from "@/lib/common-params";
-import { addBgParam, addCommonStyleParams, buildUrl } from "@/lib/url-builder-utils";
+import { addBgParam, addCommonStyleParams, addEffectParams, buildUrl } from "@/lib/url-builder-utils";
+import EffectOptions from "@/components/editor/EffectOptions";
+import EditorEffectsPreview from "@/components/editor/EditorEffectsPreview";
+import EffectPresetSelector from "@/components/editor/EffectPresetSelector";
 import { GENERAL_FONT_OPTIONS } from "@/lib/fonts";
 
 export default function CreateGoalPage() {
@@ -37,6 +40,8 @@ export default function CreateGoalPage() {
     setTitle, setCurrent, setTarget, setUnit, setStyle, setShowValue,
     setColor, setTextColor, setFont, setBg, setTransparentBg,
     setBorderRadius, setPadding, setFontSize,
+    fx, fxInt, gbg, gbgDir, neonColor, bshadow,
+    setFx, setFxInt, setGbg, setGbgDir, setNeonColor, setBshadow,
     loadPreset, reset,
   } = useGoalStore();
 
@@ -69,8 +74,9 @@ export default function CreateGoalPage() {
     if (font !== "sans") params.set("font", font);
     addBgParam(params, transparentBg, bg);
     addCommonStyleParams(params, borderRadius, padding, fontSize);
+    addEffectParams(params, fx, fxInt, gbg, gbgDir, neonColor, bshadow);
     return buildUrl(base, params);
-  }, [title, current, target, unit, style, showValue, color, textColor, font, bg, transparentBg, borderRadius, padding, fontSize]);
+  }, [title, current, target, unit, style, showValue, color, textColor, font, bg, transparentBg, borderRadius, padding, fontSize, fx, fxInt, gbg, gbgDir, neonColor, bshadow]);
 
   const handleCopy = async () => {
     await copyToClipboard(buildWidgetUrl());
@@ -174,6 +180,22 @@ export default function CreateGoalPage() {
                 ),
               },
               {
+                id: "effects",
+                title: "효과",
+                children: (
+                  <>
+                    <EffectPresetSelector onSelect={loadPreset} />
+                    <EffectOptions
+                      fx={fx} fxInt={fxInt} gbg={gbg} gbgDir={gbgDir}
+                      neonColor={neonColor} bshadow={bshadow}
+                      onFxChange={setFx} onFxIntChange={setFxInt}
+                      onGbgChange={setGbg} onGbgDirChange={setGbgDir}
+                      onNeonColorChange={setNeonColor} onBshadowChange={setBshadow}
+                    />
+                  </>
+                ),
+              },
+              {
                 id: "style",
                 title: "스타일",
                 children: (
@@ -195,12 +217,17 @@ export default function CreateGoalPage() {
         <div className="space-y-3 w-full max-w-[400px]">
           <p className="text-xs text-muted-foreground text-center">미리보기</p>
           <div className="border rounded-lg overflow-hidden aspect-[16/9]">
-            <GoalPreview
+            <EditorEffectsPreview
+              fx={fx} fxInt={fxInt} gbg={gbg} gbgDir={gbgDir}
+              neonColor={neonColor} bshadow={bshadow} borderRadius={borderRadius}
+            >
+              <GoalPreview
               title={title} current={current} target={target} unit={unit}
               style={style} showValue={showValue} color={color} textColor={textColor}
               font={font} bg={bg} transparentBg={transparentBg} borderRadius={borderRadius}
               padding={padding} fontSize={fontSize}
             />
+            </EditorEffectsPreview>
           </div>
         </div>
       </div>

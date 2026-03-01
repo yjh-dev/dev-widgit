@@ -26,6 +26,10 @@ import { radarChartPresets } from "@/lib/presets";
 import { useWidgetUrl } from "@/lib/use-widget-url";
 import { copyToClipboard } from "@/lib/clipboard";
 import { serializeItems, type RadarItem } from "@/lib/radar-chart";
+import { addEffectParams } from "@/lib/url-builder-utils";
+import EffectOptions from "@/components/editor/EffectOptions";
+import EditorEffectsPreview from "@/components/editor/EditorEffectsPreview";
+import EffectPresetSelector from "@/components/editor/EffectPresetSelector";
 
 export default function CreateRadarChartPage() {
   const {
@@ -35,6 +39,8 @@ export default function CreateRadarChartPage() {
     setItems, setShowValues, setShowGrid, setGridLevels, setFillOpacity,
     setColor, setGridColor, setTextColor, setBg, setTransparentBg,
     setBorderRadius, setPadding, setFontSize,
+    fx, fxInt, gbg, gbgDir, neonColor, bshadow,
+    setFx, setFxInt, setGbg, setGbgDir, setNeonColor, setBshadow,
     loadPreset, reset,
   } = useRadarChartStore();
 
@@ -57,9 +63,10 @@ export default function CreateRadarChartPage() {
     if (borderRadius !== 16) params.set("radius", String(borderRadius));
     if (padding !== 24) params.set("pad", String(padding));
     if (fontSize !== "md") params.set("fsize", fontSize);
+    addEffectParams(params, fx, fxInt, gbg, gbgDir, neonColor, bshadow);
     const qs = params.toString();
     return qs ? `${base}?${qs}` : base;
-  }, [items, showValues, showGrid, gridLevels, fillOpacity, color, gridColor, textColor, bg, transparentBg, borderRadius, padding, fontSize]);
+  }, [items, showValues, showGrid, gridLevels, fillOpacity, color, gridColor, textColor, bg, transparentBg, borderRadius, padding, fontSize, fx, fxInt, gbg, gbgDir, neonColor, bshadow]);
 
   const handleCopy = async () => {
     await copyToClipboard(buildWidgetUrl());
@@ -208,6 +215,22 @@ export default function CreateRadarChartPage() {
                 ),
               },
               {
+                id: "effects",
+                title: "효과",
+                children: (
+                  <>
+                    <EffectPresetSelector onSelect={loadPreset} />
+                    <EffectOptions
+                      fx={fx} fxInt={fxInt} gbg={gbg} gbgDir={gbgDir}
+                      neonColor={neonColor} bshadow={bshadow}
+                      onFxChange={setFx} onFxIntChange={setFxInt}
+                      onGbgChange={setGbg} onGbgDirChange={setGbgDir}
+                      onNeonColorChange={setNeonColor} onBshadowChange={setBshadow}
+                    />
+                  </>
+                ),
+              },
+              {
                 id: "style",
                 title: "스타일",
                 children: (
@@ -229,13 +252,18 @@ export default function CreateRadarChartPage() {
         <div className="space-y-3 w-full max-w-[400px]">
           <p className="text-xs text-muted-foreground text-center">미리보기</p>
           <div className="border rounded-lg overflow-hidden aspect-square">
-            <RadarChartPreview
+            <EditorEffectsPreview
+              fx={fx} fxInt={fxInt} gbg={gbg} gbgDir={gbgDir}
+              neonColor={neonColor} bshadow={bshadow} borderRadius={borderRadius}
+            >
+              <RadarChartPreview
               items={items} showValues={showValues} showGrid={showGrid}
               gridLevels={gridLevels} fillOpacity={fillOpacity}
               color={color} gridColor={gridColor} textColor={textColor}
               bg={bg} transparentBg={transparentBg} borderRadius={borderRadius}
               padding={padding} fontSize={fontSize}
             />
+            </EditorEffectsPreview>
           </div>
         </div>
       </div>

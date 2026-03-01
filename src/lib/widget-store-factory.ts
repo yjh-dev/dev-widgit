@@ -1,4 +1,5 @@
 import type { FontSizeKey } from "@/lib/common-widget-options";
+import type { EffectType, EffectIntensity, BoxShadowPreset } from "@/lib/widget-effects";
 
 /* ─── Common Style State ─── */
 
@@ -8,11 +9,23 @@ export interface CommonStyleState {
   borderRadius: number;
   padding: number;
   fontSize: FontSizeKey;
+  fx: EffectType;
+  fxInt: EffectIntensity;
+  gbg: string;
+  gbgDir: number;
+  neonColor: string;
+  bshadow: BoxShadowPreset;
   setBg: (bg: string) => void;
   setTransparentBg: (transparentBg: boolean) => void;
   setBorderRadius: (borderRadius: number) => void;
   setPadding: (padding: number) => void;
   setFontSize: (fontSize: FontSizeKey) => void;
+  setFx: (fx: EffectType) => void;
+  setFxInt: (fxInt: EffectIntensity) => void;
+  setGbg: (gbg: string) => void;
+  setGbgDir: (gbgDir: number) => void;
+  setNeonColor: (neonColor: string) => void;
+  setBshadow: (bshadow: BoxShadowPreset) => void;
 }
 
 export const commonStyleDefaults = {
@@ -21,6 +34,12 @@ export const commonStyleDefaults = {
   borderRadius: 16,
   padding: 24,
   fontSize: "md" as FontSizeKey,
+  fx: "none" as EffectType,
+  fxInt: 2 as EffectIntensity,
+  gbg: "",
+  gbgDir: 135,
+  neonColor: "",
+  bshadow: "none" as BoxShadowPreset,
 };
 
 /* ─── Simple Factory ─── */
@@ -56,6 +75,12 @@ export function widgetStoreCreator<D extends Record<string, any>, S extends Reco
     setBorderRadius: (borderRadius: number) => set({ borderRadius }),
     setPadding: (padding: number) => set({ padding }),
     setFontSize: (fontSize: FontSizeKey) => set({ fontSize }),
+    setFx: (fx: EffectType) => set({ fx }),
+    setFxInt: (fxInt: EffectIntensity) => set({ fxInt }),
+    setGbg: (gbg: string) => set({ gbg }),
+    setGbgDir: (gbgDir: number) => set({ gbgDir }),
+    setNeonColor: (neonColor: string) => set({ neonColor }),
+    setBshadow: (bshadow: BoxShadowPreset) => set({ bshadow }),
     // Widget-specific setters
     ...widgetSetters(set),
     // loadPreset / reset

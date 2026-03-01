@@ -26,7 +26,10 @@ import { useWidgetUrl } from "@/lib/use-widget-url";
 import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
 import { parseCommonParams } from "@/lib/common-params";
-import { addCommonStyleParams, buildUrl } from "@/lib/url-builder-utils";
+import { addCommonStyleParams, addEffectParams, buildUrl } from "@/lib/url-builder-utils";
+import EffectOptions from "@/components/editor/EffectOptions";
+import EditorEffectsPreview from "@/components/editor/EditorEffectsPreview";
+import EffectPresetSelector from "@/components/editor/EffectPresetSelector";
 import type { QRErrorCorrection, QRModuleStyle, QRSize } from "@/lib/qr-code";
 
 export default function CreateQRCodePage() {
@@ -35,6 +38,8 @@ export default function CreateQRCodePage() {
     borderRadius, padding, fontSize,
     setData, setLabel, setFgColor, setBgColor, setSize, setEc, setModule,
     setBorderRadius, setPadding, setFontSize,
+    fx, fxInt, gbg, gbgDir, neonColor, bshadow,
+    setFx, setFxInt, setGbg, setGbgDir, setNeonColor, setBshadow,
     loadPreset, reset,
   } = useQRCodeStore();
 
@@ -62,8 +67,9 @@ export default function CreateQRCodePage() {
     if (ec !== "M") params.set("ec", ec);
     if (moduleStyle !== "square") params.set("module", moduleStyle);
     addCommonStyleParams(params, borderRadius, padding, fontSize);
+    addEffectParams(params, fx, fxInt, gbg, gbgDir, neonColor, bshadow);
     return buildUrl(base, params);
-  }, [data, label, fgColor, bgColor, size, ec, moduleStyle, borderRadius, padding, fontSize]);
+  }, [data, label, fgColor, bgColor, size, ec, moduleStyle, borderRadius, padding, fontSize, fx, fxInt, gbg, gbgDir, neonColor, bshadow]);
 
   const handleCopy = async () => {
     await copyToClipboard(buildWidgetUrl());
@@ -187,6 +193,22 @@ export default function CreateQRCodePage() {
                 ),
               },
               {
+                id: "effects",
+                title: "효과",
+                children: (
+                  <>
+                    <EffectPresetSelector onSelect={loadPreset} />
+                    <EffectOptions
+                      fx={fx} fxInt={fxInt} gbg={gbg} gbgDir={gbgDir}
+                      neonColor={neonColor} bshadow={bshadow}
+                      onFxChange={setFx} onFxIntChange={setFxInt}
+                      onGbgChange={setGbg} onGbgDirChange={setGbgDir}
+                      onNeonColorChange={setNeonColor} onBshadowChange={setBshadow}
+                    />
+                  </>
+                ),
+              },
+              {
                 id: "style",
                 title: "스타일",
                 children: (
@@ -212,7 +234,11 @@ export default function CreateQRCodePage() {
         <div className="space-y-3 w-full max-w-[400px]">
           <p className="text-xs text-muted-foreground text-center">미리보기</p>
           <div className="border rounded-lg overflow-hidden aspect-square">
-            <QRCodePreview
+            <EditorEffectsPreview
+              fx={fx} fxInt={fxInt} gbg={gbg} gbgDir={gbgDir}
+              neonColor={neonColor} bshadow={bshadow} borderRadius={borderRadius}
+            >
+              <QRCodePreview
               data={data}
               label={label}
               fgColor={fgColor}
@@ -224,6 +250,7 @@ export default function CreateQRCodePage() {
               padding={padding}
               fontSize={fontSize}
             />
+            </EditorEffectsPreview>
           </div>
         </div>
       </div>

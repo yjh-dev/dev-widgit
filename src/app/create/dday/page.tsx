@@ -27,8 +27,11 @@ import { useWidgetUrl } from "@/lib/use-widget-url";
 import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
 import { FONT_OPTIONS, type FontKey } from "@/lib/fonts";
-import { addCommonStyleParams, buildUrl } from "@/lib/url-builder-utils";
+import { addCommonStyleParams, addEffectParams, buildUrl } from "@/lib/url-builder-utils";
 import type { FontSizeKey } from "@/lib/common-widget-options";
+import EffectOptions from "@/components/editor/EffectOptions";
+import EditorEffectsPreview from "@/components/editor/EditorEffectsPreview";
+import EffectPresetSelector from "@/components/editor/EffectPresetSelector";
 
 type DdayDateFormat = "full" | "short" | "dot" | "none";
 
@@ -40,6 +43,8 @@ export default function CreateDdayPage() {
     setTitle, setTargetDate, setBgColor, setTextColor, setIsDarkMode, setCalcType, setIsAnnual,
     setLayout, setStartDate, setIsTransparent, setFont, setBorderRadius, setPadding, setFontSize,
     setShowTime, setBlink, setDoneMsg, setBarColor, setDateFmt,
+    fx, fxInt, gbg, gbgDir, neonColor, bshadow,
+    setFx, setFxInt, setGbg, setGbgDir, setNeonColor, setBshadow,
     loadPreset, reset,
   } = useDdayWidgetStore();
 
@@ -80,13 +85,14 @@ export default function CreateDdayPage() {
     if (isTransparent) params.set("transparent", "true");
     if (font !== "noto-sans-kr") params.set("font", font);
     addCommonStyleParams(params, borderRadius, padding, fontSize);
+    addEffectParams(params, fx, fxInt, gbg, gbgDir, neonColor, bshadow);
     if (showTime) params.set("showTime", "true");
     if (!blink) params.set("blink", "false");
     if (doneMsg) params.set("doneMsg", doneMsg);
     if (barColor) params.set("barColor", barColor);
     if (dateFmt !== "full") params.set("dateFmt", dateFmt);
     return buildUrl(base, params);
-  }, [title, targetDate, bgColor, textColor, calcType, isAnnual, layout, startDate, isTransparent, font, borderRadius, padding, fontSize, showTime, blink, doneMsg, barColor, dateFmt]);
+  }, [title, targetDate, bgColor, textColor, calcType, isAnnual, layout, startDate, isTransparent, font, borderRadius, padding, fontSize, showTime, blink, doneMsg, barColor, dateFmt, fx, fxInt, gbg, gbgDir, neonColor, bshadow]);
 
   const handleCopy = async () => {
     await copyToClipboard(buildWidgetUrl());
@@ -232,6 +238,22 @@ export default function CreateDdayPage() {
                 ),
               },
               {
+                id: "effects",
+                title: "효과",
+                children: (
+                  <>
+                    <EffectPresetSelector onSelect={loadPreset} />
+                    <EffectOptions
+                      fx={fx} fxInt={fxInt} gbg={gbg} gbgDir={gbgDir}
+                      neonColor={neonColor} bshadow={bshadow}
+                      onFxChange={setFx} onFxIntChange={setFxInt}
+                      onGbgChange={setGbg} onGbgDirChange={setGbgDir}
+                      onNeonColorChange={setNeonColor} onBshadowChange={setBshadow}
+                    />
+                  </>
+                ),
+              },
+              {
                 id: "style",
                 title: "스타일",
                 children: (
@@ -253,13 +275,18 @@ export default function CreateDdayPage() {
         <div className="space-y-3 w-full max-w-[400px]">
           <p className="text-xs text-muted-foreground text-center">미리보기</p>
           <div className="border rounded-lg overflow-hidden aspect-[4/3] flex items-center justify-center">
-            <DdayWidgetPreview
+            <EditorEffectsPreview
+              fx={fx} fxInt={fxInt} gbg={gbg} gbgDir={gbgDir}
+              neonColor={neonColor} bshadow={bshadow} borderRadius={borderRadius}
+            >
+              <DdayWidgetPreview
             title={title} targetDate={targetDate} bgColor={bgColor} textColor={textColor}
             calcType={calcType} isAnnual={isAnnual} layout={layout} startDate={startDate}
             isTransparent={isTransparent} font={font} borderRadius={borderRadius} padding={padding}
             fontSize={fontSize} showTime={showTime} blink={blink} doneMsg={doneMsg}
             barColor={barColor} dateFmt={dateFmt}
           />
+            </EditorEffectsPreview>
           </div>
         </div>
       </div>

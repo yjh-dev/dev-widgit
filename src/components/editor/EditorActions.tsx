@@ -19,7 +19,7 @@ import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import { useEditorActions } from "./EditorActionsContext";
 import { compressWidgetUrl, decompressToParams } from "@/lib/url-compression";
-import { toPng } from "html-to-image";
+// html-to-image is lazy-loaded on demand (heavy ~300KB library)
 import { getCustomPresets, type CustomPreset } from "@/lib/custom-presets";
 import type { WidgetType } from "@/lib/templates";
 import ThemeQuickApply from "./ThemeQuickApply";
@@ -171,6 +171,7 @@ export default function EditorActions({
             const preview = document.getElementById("widget-preview");
             if (!preview) { toast.error(t("editor.noPreview")); return; }
             try {
+              const { toPng } = await import("html-to-image");
               const dataUrl = await toPng(preview, { pixelRatio: 2 });
               const a = document.createElement("a");
               a.download = "widget.png";

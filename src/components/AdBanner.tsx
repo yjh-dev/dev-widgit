@@ -14,9 +14,9 @@ import { useEffect, useRef } from "react";
  * <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
  */
 
-// TODO: AdSense 승인 후 실제 값으로 교체
-const AD_CLIENT = "ca-pub-XXXXXXXXXXXXXXXX";
-const AD_SLOT = "XXXXXXXXXX";
+// 환경 변수 또는 하드코딩. AdSense 승인 후 .env.local에 설정하면 자동 활성화.
+const AD_CLIENT = process.env.NEXT_PUBLIC_ADSENSE_CLIENT ?? "ca-pub-XXXXXXXXXXXXXXXX";
+const AD_SLOT = process.env.NEXT_PUBLIC_ADSENSE_SLOT ?? "XXXXXXXXXX";
 
 interface AdBannerProps {
   format?: "auto" | "horizontal" | "vertical" | "rectangle";

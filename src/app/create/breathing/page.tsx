@@ -26,7 +26,10 @@ import { useWidgetUrl } from "@/lib/use-widget-url";
 import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
 import { parseCommonParams } from "@/lib/common-params";
-import { addBgParam, addCommonStyleParams, buildUrl } from "@/lib/url-builder-utils";
+import { addBgParam, addCommonStyleParams, addEffectParams, buildUrl } from "@/lib/url-builder-utils";
+import EffectOptions from "@/components/editor/EffectOptions";
+import EditorEffectsPreview from "@/components/editor/EditorEffectsPreview";
+import EffectPresetSelector from "@/components/editor/EffectPresetSelector";
 import type { BreathingTechnique } from "@/lib/breathing";
 
 export default function CreateBreathingPage() {
@@ -37,6 +40,8 @@ export default function CreateBreathingPage() {
     setTechnique, setInhale, setHold1, setExhale, setHold2, setRounds, setShowGuide,
     setAccentColor, setColor, setBg, setTransparentBg,
     setBorderRadius, setPadding, setFontSize,
+    fx, fxInt, gbg, gbgDir, neonColor, bshadow,
+    setFx, setFxInt, setGbg, setGbgDir, setNeonColor, setBshadow,
     loadPreset, reset,
   } = useBreathingStore();
 
@@ -88,8 +93,9 @@ export default function CreateBreathingPage() {
     if (color !== "1E1E1E") params.set("color", color);
     addBgParam(params, transparentBg, bg);
     addCommonStyleParams(params, borderRadius, padding, fontSize);
+    addEffectParams(params, fx, fxInt, gbg, gbgDir, neonColor, bshadow);
     return buildUrl(base, params);
-  }, [technique, inhale, hold1, exhale, hold2, rounds, showGuide, accentColor, color, bg, transparentBg, borderRadius, padding, fontSize]);
+  }, [technique, inhale, hold1, exhale, hold2, rounds, showGuide, accentColor, color, bg, transparentBg, borderRadius, padding, fontSize, fx, fxInt, gbg, gbgDir, neonColor, bshadow]);
 
   const handleCopy = async () => {
     await copyToClipboard(buildWidgetUrl());
@@ -177,6 +183,22 @@ export default function CreateBreathingPage() {
                 ),
               },
               {
+                id: "effects",
+                title: "효과",
+                children: (
+                  <>
+                    <EffectPresetSelector onSelect={loadPreset} />
+                    <EffectOptions
+                      fx={fx} fxInt={fxInt} gbg={gbg} gbgDir={gbgDir}
+                      neonColor={neonColor} bshadow={bshadow}
+                      onFxChange={setFx} onFxIntChange={setFxInt}
+                      onGbgChange={setGbg} onGbgDirChange={setGbgDir}
+                      onNeonColorChange={setNeonColor} onBshadowChange={setBshadow}
+                    />
+                  </>
+                ),
+              },
+              {
                 id: "style",
                 title: "스타일",
                 children: (
@@ -198,13 +220,18 @@ export default function CreateBreathingPage() {
         <div className="space-y-3 w-full max-w-[400px]">
           <p className="text-xs text-muted-foreground text-center">미리보기</p>
           <div className="border rounded-lg overflow-hidden aspect-square">
-            <BreathingPreview
+            <EditorEffectsPreview
+              fx={fx} fxInt={fxInt} gbg={gbg} gbgDir={gbgDir}
+              neonColor={neonColor} bshadow={bshadow} borderRadius={borderRadius}
+            >
+              <BreathingPreview
               inhale={inhale} hold1={hold1} exhale={exhale} hold2={hold2}
               rounds={rounds} showGuide={showGuide}
               accentColor={accentColor} color={color} bg={bg}
               transparentBg={transparentBg} borderRadius={borderRadius}
               padding={padding} fontSize={fontSize}
             />
+            </EditorEffectsPreview>
           </div>
         </div>
       </div>

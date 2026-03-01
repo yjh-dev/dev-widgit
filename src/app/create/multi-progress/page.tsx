@@ -35,6 +35,10 @@ import {
   type ProgressLayout,
 } from "@/lib/multi-progress";
 import type { FontSizeKey } from "@/lib/common-widget-options";
+import { addEffectParams } from "@/lib/url-builder-utils";
+import EffectOptions from "@/components/editor/EffectOptions";
+import EditorEffectsPreview from "@/components/editor/EditorEffectsPreview";
+import EffectPresetSelector from "@/components/editor/EffectPresetSelector";
 
 export default function CreateMultiProgressPage() {
   const {
@@ -45,6 +49,8 @@ export default function CreateMultiProgressPage() {
     setShowPercent, setShowValue, setBarHeight, setLayout, setAnimated,
     setTextColor, setBg, setTransparentBg,
     setBorderRadius, setPadding, setFontSize,
+    fx, fxInt, gbg, gbgDir, neonColor, bshadow,
+    setFx, setFxInt, setGbg, setGbgDir, setNeonColor, setBshadow,
     loadPreset, reset,
   } = useMultiProgressStore();
 
@@ -104,9 +110,10 @@ export default function CreateMultiProgressPage() {
     if (borderRadius !== 16) params.set("radius", String(borderRadius));
     if (padding !== 24) params.set("pad", String(padding));
     if (fontSize !== "md") params.set("fsize", fontSize);
+    addEffectParams(params, fx, fxInt, gbg, gbgDir, neonColor, bshadow);
     const qs = params.toString();
     return qs ? `${base}?${qs}` : base;
-  }, [items, showPercent, showValue, barHeight, layout, animated, textColor, bg, transparentBg, borderRadius, padding, fontSize]);
+  }, [items, showPercent, showValue, barHeight, layout, animated, textColor, bg, transparentBg, borderRadius, padding, fontSize, fx, fxInt, gbg, gbgDir, neonColor, bshadow]);
 
   const handleCopy = async () => {
     await copyToClipboard(buildWidgetUrl());
@@ -268,6 +275,22 @@ export default function CreateMultiProgressPage() {
                 ),
               },
               {
+                id: "effects",
+                title: "효과",
+                children: (
+                  <>
+                    <EffectPresetSelector onSelect={loadPreset} />
+                    <EffectOptions
+                      fx={fx} fxInt={fxInt} gbg={gbg} gbgDir={gbgDir}
+                      neonColor={neonColor} bshadow={bshadow}
+                      onFxChange={setFx} onFxIntChange={setFxInt}
+                      onGbgChange={setGbg} onGbgDirChange={setGbgDir}
+                      onNeonColorChange={setNeonColor} onBshadowChange={setBshadow}
+                    />
+                  </>
+                ),
+              },
+              {
                 id: "style",
                 title: "스타일",
                 children: (
@@ -289,12 +312,17 @@ export default function CreateMultiProgressPage() {
         <div className="space-y-3 w-full max-w-[400px]">
           <p className="text-xs text-muted-foreground text-center">미리보기</p>
           <div className="border rounded-lg overflow-hidden min-h-[200px]">
-            <MultiProgressPreview
+            <EditorEffectsPreview
+              fx={fx} fxInt={fxInt} gbg={gbg} gbgDir={gbgDir}
+              neonColor={neonColor} bshadow={bshadow} borderRadius={borderRadius}
+            >
+              <MultiProgressPreview
               items={items} showPercent={showPercent} showValue={showValue}
               barHeight={barHeight} layout={layout} animated={animated}
               textColor={textColor} bg={bg} transparentBg={transparentBg}
               borderRadius={borderRadius} padding={padding} fontSize={fontSize}
             />
+            </EditorEffectsPreview>
           </div>
         </div>
       </div>

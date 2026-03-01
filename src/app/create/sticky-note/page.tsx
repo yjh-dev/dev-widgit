@@ -27,8 +27,11 @@ import { useWidgetUrl } from "@/lib/use-widget-url";
 import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
 import { parseCommonParams } from "@/lib/common-params";
-import { addCommonStyleParams, buildUrl } from "@/lib/url-builder-utils";
+import { addCommonStyleParams, addEffectParams, buildUrl } from "@/lib/url-builder-utils";
 import type { StickyPinType, StickyLineHeight } from "@/lib/sticky-note";
+import EffectOptions from "@/components/editor/EffectOptions";
+import EditorEffectsPreview from "@/components/editor/EditorEffectsPreview";
+import EffectPresetSelector from "@/components/editor/EffectPresetSelector";
 
 export default function CreateStickyNotePage() {
   const {
@@ -36,6 +39,8 @@ export default function CreateStickyNotePage() {
     borderRadius, padding, fontSize,
     setText, setNoteColor, setTextColor, setPin, setRotation, setFont, setLh, setShadow,
     setBorderRadius, setPadding, setFontSize,
+    fx, fxInt, gbg, gbgDir, neonColor, bshadow,
+    setFx, setFxInt, setGbg, setGbgDir, setNeonColor, setBshadow,
     loadPreset, reset,
   } = useStickyNoteStore();
 
@@ -65,8 +70,9 @@ export default function CreateStickyNotePage() {
     if (lh !== "normal") params.set("lh", lh);
     if (!shadow) params.set("shadow", "false");
     addCommonStyleParams(params, borderRadius, padding, fontSize);
+    addEffectParams(params, fx, fxInt, gbg, gbgDir, neonColor, bshadow);
     return buildUrl(base, params);
-  }, [text, noteColor, textColor, pin, rotation, font, lh, shadow, borderRadius, padding, fontSize]);
+  }, [text, noteColor, textColor, pin, rotation, font, lh, shadow, borderRadius, padding, fontSize, fx, fxInt, gbg, gbgDir, neonColor, bshadow]);
 
   const handleCopy = async () => {
     await copyToClipboard(buildWidgetUrl());
@@ -191,6 +197,22 @@ export default function CreateStickyNotePage() {
                 ),
               },
               {
+                id: "effects",
+                title: "효과",
+                children: (
+                  <>
+                    <EffectPresetSelector onSelect={loadPreset} />
+                    <EffectOptions
+                      fx={fx} fxInt={fxInt} gbg={gbg} gbgDir={gbgDir}
+                      neonColor={neonColor} bshadow={bshadow}
+                      onFxChange={setFx} onFxIntChange={setFxInt}
+                      onGbgChange={setGbg} onGbgDirChange={setGbgDir}
+                      onNeonColorChange={setNeonColor} onBshadowChange={setBshadow}
+                    />
+                  </>
+                ),
+              },
+              {
                 id: "style",
                 title: "스타일",
                 children: (
@@ -216,7 +238,11 @@ export default function CreateStickyNotePage() {
         <div className="space-y-3 w-full max-w-[400px]">
           <p className="text-xs text-muted-foreground text-center">미리보기</p>
           <div className="border rounded-lg overflow-hidden aspect-square p-4 bg-muted/30 flex items-center justify-center">
-            <StickyNotePreview
+            <EditorEffectsPreview
+              fx={fx} fxInt={fxInt} gbg={gbg} gbgDir={gbgDir}
+              neonColor={neonColor} bshadow={bshadow} borderRadius={borderRadius}
+            >
+              <StickyNotePreview
               text={text}
               noteColor={noteColor}
               textColor={textColor}
@@ -229,6 +255,7 @@ export default function CreateStickyNotePage() {
               padding={padding}
               fontSize={fontSize}
             />
+            </EditorEffectsPreview>
           </div>
         </div>
       </div>

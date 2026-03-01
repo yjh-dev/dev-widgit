@@ -26,6 +26,10 @@ import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
 import type { TestimonialLayout } from "@/lib/testimonial";
 import type { FontSizeKey } from "@/lib/common-widget-options";
+import { addEffectParams } from "@/lib/url-builder-utils";
+import EffectOptions from "@/components/editor/EffectOptions";
+import EditorEffectsPreview from "@/components/editor/EditorEffectsPreview";
+import EffectPresetSelector from "@/components/editor/EffectPresetSelector";
 
 export default function CreateTestimonialPage() {
   const {
@@ -37,6 +41,8 @@ export default function CreateTestimonialPage() {
     setShowAvatar, setShowRole, setShowQuoteMarks, setLayout,
     setAccentColor, setTextColor, setBg, setTransparentBg,
     setBorderRadius, setPadding, setFontSize,
+    fx, fxInt, gbg, gbgDir, neonColor, bshadow,
+    setFx, setFxInt, setGbg, setGbgDir, setNeonColor, setBshadow,
     loadPreset, reset,
   } = useTestimonialStore();
 
@@ -84,9 +90,10 @@ export default function CreateTestimonialPage() {
     if (borderRadius !== 16) params.set("radius", String(borderRadius));
     if (padding !== 24) params.set("pad", String(padding));
     if (fontSize !== "md") params.set("fsize", fontSize);
+    addEffectParams(params, fx, fxInt, gbg, gbgDir, neonColor, bshadow);
     const qs = params.toString();
     return qs ? `${base}?${qs}` : base;
-  }, [quote, author, role, avatarUrl, showAvatar, showRole, showQuoteMarks, layout, accentColor, textColor, bg, transparentBg, borderRadius, padding, fontSize]);
+  }, [quote, author, role, avatarUrl, showAvatar, showRole, showQuoteMarks, layout, accentColor, textColor, bg, transparentBg, borderRadius, padding, fontSize, fx, fxInt, gbg, gbgDir, neonColor, bshadow]);
 
   const handleCopy = async () => {
     await copyToClipboard(buildWidgetUrl());
@@ -180,6 +187,22 @@ export default function CreateTestimonialPage() {
                 ),
               },
               {
+                id: "effects",
+                title: "효과",
+                children: (
+                  <>
+                    <EffectPresetSelector onSelect={loadPreset} />
+                    <EffectOptions
+                      fx={fx} fxInt={fxInt} gbg={gbg} gbgDir={gbgDir}
+                      neonColor={neonColor} bshadow={bshadow}
+                      onFxChange={setFx} onFxIntChange={setFxInt}
+                      onGbgChange={setGbg} onGbgDirChange={setGbgDir}
+                      onNeonColorChange={setNeonColor} onBshadowChange={setBshadow}
+                    />
+                  </>
+                ),
+              },
+              {
                 id: "style",
                 title: "스타일",
                 children: (
@@ -201,13 +224,18 @@ export default function CreateTestimonialPage() {
         <div className="space-y-3 w-full max-w-[400px]">
           <p className="text-xs text-muted-foreground text-center">미리보기</p>
           <div className="border rounded-lg overflow-hidden aspect-[16/9]">
-            <TestimonialPreview
+            <EditorEffectsPreview
+              fx={fx} fxInt={fxInt} gbg={gbg} gbgDir={gbgDir}
+              neonColor={neonColor} bshadow={bshadow} borderRadius={borderRadius}
+            >
+              <TestimonialPreview
               quote={quote} author={author} role={role} avatarUrl={avatarUrl}
               showAvatar={showAvatar} showRole={showRole} showQuoteMarks={showQuoteMarks}
               layout={layout} accentColor={accentColor} textColor={textColor}
               bg={bg} transparentBg={transparentBg} borderRadius={borderRadius}
               padding={padding} fontSize={fontSize}
             />
+            </EditorEffectsPreview>
           </div>
         </div>
       </div>

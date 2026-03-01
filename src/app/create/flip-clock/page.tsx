@@ -25,8 +25,11 @@ import { useWidgetUrl } from "@/lib/use-widget-url";
 import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
 import { parseCommonParams } from "@/lib/common-params";
-import { addBgParam, addCommonStyleParams, buildUrl } from "@/lib/url-builder-utils";
+import { addBgParam, addCommonStyleParams, addEffectParams, buildUrl } from "@/lib/url-builder-utils";
 import type { FlipClockFormat, FlipClockDateFormat } from "@/lib/flip-clock";
+import EffectOptions from "@/components/editor/EffectOptions";
+import EditorEffectsPreview from "@/components/editor/EditorEffectsPreview";
+import EffectPresetSelector from "@/components/editor/EffectPresetSelector";
 
 export default function CreateFlipClockPage() {
   const {
@@ -36,6 +39,8 @@ export default function CreateFlipClockPage() {
     setTimezone, setFormat, setShowSeconds, setFlipColor, setTextColor, setGapColor,
     setBg, setTransparentBg, setShowDate, setDateFmt,
     setBorderRadius, setPadding, setFontSize,
+    fx, fxInt, gbg, gbgDir, neonColor, bshadow,
+    setFx, setFxInt, setGbg, setGbgDir, setNeonColor, setBshadow,
     loadPreset, reset,
   } = useFlipClockStore();
 
@@ -66,8 +71,9 @@ export default function CreateFlipClockPage() {
     if (showDate) params.set("showDate", "true");
     if (showDate && dateFmt !== "kr") params.set("dateFmt", dateFmt);
     addCommonStyleParams(params, borderRadius, padding, fontSize);
+    addEffectParams(params, fx, fxInt, gbg, gbgDir, neonColor, bshadow);
     return buildUrl(base, params);
-  }, [timezone, format, showSeconds, flipColor, textColor, gapColor, bg, transparentBg, showDate, dateFmt, borderRadius, padding, fontSize]);
+  }, [timezone, format, showSeconds, flipColor, textColor, gapColor, bg, transparentBg, showDate, dateFmt, borderRadius, padding, fontSize, fx, fxInt, gbg, gbgDir, neonColor, bshadow]);
 
   const handleCopy = async () => {
     await copyToClipboard(buildWidgetUrl());
@@ -163,6 +169,22 @@ export default function CreateFlipClockPage() {
                 ),
               },
               {
+                id: "effects",
+                title: "효과",
+                children: (
+                  <>
+                    <EffectPresetSelector onSelect={loadPreset} />
+                    <EffectOptions
+                      fx={fx} fxInt={fxInt} gbg={gbg} gbgDir={gbgDir}
+                      neonColor={neonColor} bshadow={bshadow}
+                      onFxChange={setFx} onFxIntChange={setFxInt}
+                      onGbgChange={setGbg} onGbgDirChange={setGbgDir}
+                      onNeonColorChange={setNeonColor} onBshadowChange={setBshadow}
+                    />
+                  </>
+                ),
+              },
+              {
                 id: "style",
                 title: "스타일",
                 children: (
@@ -188,7 +210,11 @@ export default function CreateFlipClockPage() {
         <div className="space-y-3 w-full max-w-[400px]">
           <p className="text-xs text-muted-foreground text-center">미리보기</p>
           <div className="border rounded-lg overflow-hidden aspect-[2/1]">
-            <FlipClockPreview
+            <EditorEffectsPreview
+              fx={fx} fxInt={fxInt} gbg={gbg} gbgDir={gbgDir}
+              neonColor={neonColor} bshadow={bshadow} borderRadius={borderRadius}
+            >
+              <FlipClockPreview
               timezone={timezone}
               format={format}
               showSeconds={showSeconds}
@@ -203,6 +229,7 @@ export default function CreateFlipClockPage() {
               padding={padding}
               fontSize={fontSize}
             />
+            </EditorEffectsPreview>
           </div>
         </div>
       </div>

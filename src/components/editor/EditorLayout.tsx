@@ -15,7 +15,8 @@ import { addRecentWidget } from "@/lib/recent-widgets";
 import { getSizeGuide } from "@/lib/widget-size-guide";
 import { trackEditorVisit } from "@/lib/analytics";
 import { useLocale } from "@/components/LocaleProvider";
-import EditorWidgetNav from "./EditorWidgetNav";
+import dynamic from "next/dynamic";
+const EditorWidgetNav = dynamic(() => import("./EditorWidgetNav"), { ssr: false });
 
 type PreviewSize = "free" | "square" | "wide" | "tall" | "notion-full" | "notion-half" | "notion";
 const previewSizes: { key: PreviewSize; label: string; icon: typeof Square; aspect?: string }[] = [

@@ -25,7 +25,10 @@ import { useWidgetUrl } from "@/lib/use-widget-url";
 import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
 import { parseCommonParams } from "@/lib/common-params";
-import { addBgParam, addCommonStyleParams, buildUrl } from "@/lib/url-builder-utils";
+import EffectOptions from "@/components/editor/EffectOptions";
+import EffectPresetSelector from "@/components/editor/EffectPresetSelector";
+import EditorEffectsPreview from "@/components/editor/EditorEffectsPreview";
+import { addBgParam, addCommonStyleParams, addEffectParams, buildUrl } from "@/lib/url-builder-utils";
 
 const currentYear = new Date().getFullYear();
 const yearOptions = Array.from({ length: 6 }, (_, i) => String(currentYear - i));
@@ -38,6 +41,8 @@ export default function CreateGithubContributionPage() {
     setUsername, setYear, setShowTotal, setShowUsername, setLang, setCellSize, setCellRadius,
     setColor, setTextColor, setBg, setTransparentBg,
     setBorderRadius, setPadding, setFontSize,
+    fx, fxInt, gbg, gbgDir, neonColor, bshadow,
+    setFx, setFxInt, setGbg, setGbgDir, setNeonColor, setBshadow,
     loadPreset, reset,
   } = useGithubContributionStore();
 
@@ -70,8 +75,9 @@ export default function CreateGithubContributionPage() {
     if (textColor) params.set("textColor", textColor);
     addBgParam(params, transparentBg, bg);
     addCommonStyleParams(params, borderRadius, padding, fontSize);
+    addEffectParams(params, fx, fxInt, gbg, gbgDir, neonColor, bshadow);
     return buildUrl(base, params);
-  }, [username, year, showTotal, showUsername, lang, cellSize, cellRadius, color, textColor, bg, transparentBg, borderRadius, padding, fontSize]);
+  }, [username, year, showTotal, showUsername, lang, cellSize, cellRadius, color, textColor, bg, transparentBg, borderRadius, padding, fontSize, fx, fxInt, gbg, gbgDir, neonColor, bshadow]);
 
   const handleCopy = async () => {
     await copyToClipboard(buildWidgetUrl());
@@ -184,6 +190,22 @@ export default function CreateGithubContributionPage() {
                 ),
               },
               {
+                id: "effects",
+                title: "효과",
+                children: (
+                  <>
+                    <EffectPresetSelector onSelect={loadPreset} />
+                    <EffectOptions
+                      fx={fx} fxInt={fxInt} gbg={gbg} gbgDir={gbgDir}
+                      neonColor={neonColor} bshadow={bshadow}
+                      onFxChange={setFx} onFxIntChange={setFxInt}
+                      onGbgChange={setGbg} onGbgDirChange={setGbgDir}
+                      onNeonColorChange={setNeonColor} onBshadowChange={setBshadow}
+                    />
+                  </>
+                ),
+              },
+              {
                 id: "style",
                 title: "스타일",
                 children: (
@@ -201,22 +223,27 @@ export default function CreateGithubContributionPage() {
         </CardContent>
       </Card>
 
-      <GithubContributionPreview
-        username={username}
-        year={year}
-        showTotal={showTotal}
-        showUsername={showUsername}
-        lang={lang}
-        cellSize={cellSize}
-        cellRadius={cellRadius}
-        color={color}
-        textColor={textColor}
-        bg={bg}
-        transparentBg={transparentBg}
-        borderRadius={borderRadius}
-        padding={padding}
-        fontSize={fontSize}
-      />
+      <EditorEffectsPreview
+        fx={fx} fxInt={fxInt} gbg={gbg} gbgDir={gbgDir}
+        neonColor={neonColor} bshadow={bshadow} borderRadius={borderRadius}
+      >
+        <GithubContributionPreview
+          username={username}
+          year={year}
+          showTotal={showTotal}
+          showUsername={showUsername}
+          lang={lang}
+          cellSize={cellSize}
+          cellRadius={cellRadius}
+          color={color}
+          textColor={textColor}
+          bg={bg}
+          transparentBg={transparentBg}
+          borderRadius={borderRadius}
+          padding={padding}
+          fontSize={fontSize}
+        />
+      </EditorEffectsPreview>
     </EditorLayout>
   );
 }

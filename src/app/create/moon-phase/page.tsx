@@ -24,7 +24,10 @@ import { useWidgetUrl } from "@/lib/use-widget-url";
 import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
 import { parseCommonParams } from "@/lib/common-params";
-import { addBgParam, addCommonStyleParams, buildUrl } from "@/lib/url-builder-utils";
+import { addBgParam, addCommonStyleParams, addEffectParams, buildUrl } from "@/lib/url-builder-utils";
+import EffectOptions from "@/components/editor/EffectOptions";
+import EditorEffectsPreview from "@/components/editor/EditorEffectsPreview";
+import EffectPresetSelector from "@/components/editor/EffectPresetSelector";
 import type { MoonStyle, MoonSize } from "@/lib/moon-phase";
 
 export default function CreateMoonPhasePage() {
@@ -35,6 +38,8 @@ export default function CreateMoonPhasePage() {
     setStyle, setShowName, setShowPercent, setShowNext,
     setMoonColor, setShadowColor, setBg, setTransparentBg, setTextColor, setMoonSize,
     setBorderRadius, setPadding, setFontSize,
+    fx, fxInt, gbg, gbgDir, neonColor, bshadow,
+    setFx, setFxInt, setGbg, setGbgDir, setNeonColor, setBshadow,
     loadPreset, reset,
   } = useMoonPhaseStore();
 
@@ -65,8 +70,9 @@ export default function CreateMoonPhasePage() {
     addBgParam(params, transparentBg, bg, "0F172A");
     if (moonSize !== "md") params.set("moonSize", moonSize);
     addCommonStyleParams(params, borderRadius, padding, fontSize);
+    addEffectParams(params, fx, fxInt, gbg, gbgDir, neonColor, bshadow);
     return buildUrl(base, params);
-  }, [style, showName, showPercent, showNext, moonColor, shadowColor, bg, transparentBg, textColor, moonSize, borderRadius, padding, fontSize]);
+  }, [style, showName, showPercent, showNext, moonColor, shadowColor, bg, transparentBg, textColor, moonSize, borderRadius, padding, fontSize, fx, fxInt, gbg, gbgDir, neonColor, bshadow]);
 
   const handleCopy = async () => {
     await copyToClipboard(buildWidgetUrl());
@@ -146,6 +152,22 @@ export default function CreateMoonPhasePage() {
                 ),
               },
               {
+                id: "effects",
+                title: "효과",
+                children: (
+                  <>
+                    <EffectPresetSelector onSelect={loadPreset} />
+                    <EffectOptions
+                      fx={fx} fxInt={fxInt} gbg={gbg} gbgDir={gbgDir}
+                      neonColor={neonColor} bshadow={bshadow}
+                      onFxChange={setFx} onFxIntChange={setFxInt}
+                      onGbgChange={setGbg} onGbgDirChange={setGbgDir}
+                      onNeonColorChange={setNeonColor} onBshadowChange={setBshadow}
+                    />
+                  </>
+                ),
+              },
+              {
                 id: "style",
                 title: "스타일",
                 children: (
@@ -171,7 +193,11 @@ export default function CreateMoonPhasePage() {
         <div className="space-y-3 w-full max-w-[400px]">
           <p className="text-xs text-muted-foreground text-center">미리보기</p>
           <div className="border rounded-lg overflow-hidden aspect-square">
-            <MoonPhasePreview
+            <EditorEffectsPreview
+              fx={fx} fxInt={fxInt} gbg={gbg} gbgDir={gbgDir}
+              neonColor={neonColor} bshadow={bshadow} borderRadius={borderRadius}
+            >
+              <MoonPhasePreview
               style={style}
               showName={showName}
               showPercent={showPercent}
@@ -186,6 +212,7 @@ export default function CreateMoonPhasePage() {
               padding={padding}
               fontSize={fontSize}
             />
+            </EditorEffectsPreview>
           </div>
         </div>
       </div>

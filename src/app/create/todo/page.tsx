@@ -30,7 +30,10 @@ import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
 import { parseTodoItems, serializeTodoItems, generateId } from "@/lib/todo";
 import { parseCommonParams } from "@/lib/common-params";
-import { addBgParam, addCommonStyleParams, buildUrl } from "@/lib/url-builder-utils";
+import { addBgParam, addCommonStyleParams, addEffectParams, buildUrl } from "@/lib/url-builder-utils";
+import EffectOptions from "@/components/editor/EffectOptions";
+import EffectPresetSelector from "@/components/editor/EffectPresetSelector";
+import EditorEffectsPreview from "@/components/editor/EditorEffectsPreview";
 
 export default function CreateTodoPage() {
   const {
@@ -42,6 +45,8 @@ export default function CreateTodoPage() {
     setColor, setTextColor, setFont, setBg, setTransparentBg,
     setShowProgress, setStrikethrough,
     setBorderRadius, setPadding, setFontSize,
+    fx, fxInt, gbg, gbgDir, neonColor, bshadow,
+    setFx, setFxInt, setGbg, setGbgDir, setNeonColor, setBshadow,
     loadPreset, reset,
   } = useTodoStore();
 
@@ -74,8 +79,9 @@ export default function CreateTodoPage() {
     if (!strikethrough) params.set("strike", "false");
     if (font !== "sans") params.set("font", font);
     addCommonStyleParams(params, borderRadius, padding, fontSize);
+    addEffectParams(params, fx, fxInt, gbg, gbgDir, neonColor, bshadow);
     return buildUrl(base, params);
-  }, [title, items, color, textColor, font, bg, transparentBg, showProgress, strikethrough, borderRadius, padding, fontSize]);
+  }, [title, items, color, textColor, font, bg, transparentBg, showProgress, strikethrough, borderRadius, padding, fontSize, fx, fxInt, gbg, gbgDir, neonColor, bshadow]);
 
   const handleCopy = async () => {
     await copyToClipboard(buildWidgetUrl());
@@ -220,6 +226,22 @@ export default function CreateTodoPage() {
                 ),
               },
               {
+                id: "effects",
+                title: "효과",
+                children: (
+                  <>
+                    <EffectPresetSelector onSelect={loadPreset} />
+                    <EffectOptions
+                      fx={fx} fxInt={fxInt} gbg={gbg} gbgDir={gbgDir}
+                      neonColor={neonColor} bshadow={bshadow}
+                      onFxChange={setFx} onFxIntChange={setFxInt}
+                      onGbgChange={setGbg} onGbgDirChange={setGbgDir}
+                      onNeonColorChange={setNeonColor} onBshadowChange={setBshadow}
+                    />
+                  </>
+                ),
+              },
+              {
                 id: "style",
                 title: "스타일",
                 children: (
@@ -237,21 +259,26 @@ export default function CreateTodoPage() {
         </CardContent>
       </Card>
 
-      <TodoPreview
-        title={title}
-        initialItems={todoItems}
-        interactive={false}
-        color={color}
-        textColor={textColor}
-        font={font}
-        bg={bg}
-        transparentBg={transparentBg}
-        showProgress={showProgress}
-        strikethrough={strikethrough}
-        borderRadius={borderRadius}
-        padding={padding}
-        fontSize={fontSize}
-      />
+      <EditorEffectsPreview
+        fx={fx} fxInt={fxInt} gbg={gbg} gbgDir={gbgDir}
+        neonColor={neonColor} bshadow={bshadow} borderRadius={borderRadius}
+      >
+        <TodoPreview
+          title={title}
+          initialItems={todoItems}
+          interactive={false}
+          color={color}
+          textColor={textColor}
+          font={font}
+          bg={bg}
+          transparentBg={transparentBg}
+          showProgress={showProgress}
+          strikethrough={strikethrough}
+          borderRadius={borderRadius}
+          padding={padding}
+          fontSize={fontSize}
+        />
+      </EditorEffectsPreview>
     </EditorLayout>
   );
 }

@@ -83,3 +83,23 @@ export function trackShareCard(widgetType: string) {
 export function trackGallerySubmit(widgetType: string) {
   trackEvent({ action: "gallery_submit", category: "widget", label: widgetType });
 }
+
+/** PWA 설치 */
+export function trackPwaInstall() {
+  trackEvent({ action: "pwa_install", category: "engagement" });
+}
+
+/** 프리셋 적용 */
+export function trackPresetApply(widgetType: string, presetName: string) {
+  trackEvent({ action: "preset_apply", category: "widget", label: `${widgetType}:${presetName}` });
+}
+
+/** 온보딩 완료 */
+export function trackOnboardingComplete(step: number) {
+  trackEvent({ action: "onboarding_complete", category: "engagement", value: step });
+}
+
+/** 블로그 글 조회 */
+export function trackBlogView(slug: string) {
+  trackEvent({ action: "blog_view", category: "content", label: slug });
+}

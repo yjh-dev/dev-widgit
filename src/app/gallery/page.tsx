@@ -76,6 +76,66 @@ const showcase: ShowcaseItem[] = [
       { label: "달 위상", url: "/widget/moon-phase?style=realistic&moonColor=F5F5DC&bg=0F172A&text=E2E8F0" },
     ],
   },
+  {
+    title: "독서 기록 대시보드",
+    desc: "읽기 진행률, 독서 목표, 명언으로 독서 습관 관리",
+    layout: "grid-cols-1 sm:grid-cols-3",
+    widgets: [
+      { label: "읽기 진행률", url: "/widget/reading?title=%ED%81%B4%EB%A6%B0%EC%BD%94%EB%93%9C&current=210&total=300&color=F59E0B&bg=FFFBEB&text=92400E&style=ring" },
+      { label: "독서 목표", url: "/widget/goal?title=%EC%98%AC%ED%95%B4+%EB%AA%A9%ED%91%9C+50%EA%B6%8C&current=23&target=50&unit=%EA%B6%8C&color=F59E0B&bg=FFFBEB&text=92400E" },
+      { label: "독서 명언", url: "/widget/quote?text=%EC%B1%85%EC%9D%80+%EB%A7%88%EC%9D%8C%EC%9D%98+%EC%96%91%EC%8B%9D%EC%9D%B4%EB%8B%A4&author=%ED%82%A4%EC%BC%80%EB%A1%9C&font=serif&bg=FFFBEB&color=92400E" },
+    ],
+  },
+  {
+    title: "노션 헤더 꾸미기",
+    desc: "그라데이션 배너 + 시계로 노션 페이지 상단을 꾸미기",
+    layout: "grid-cols-1 sm:grid-cols-2",
+    widgets: [
+      { label: "그라데이션 배너", url: "/widget/gradient?colors=6366F1|EC4899|F59E0B&dir=135&type=linear&text=Welcome&textColor=FFFFFF" },
+      { label: "미니멀 시계", url: "/widget/clock?timezone=Asia/Seoul&format=24h&bg=1E1E2E&color=FFFFFF&font=mono&seconds=true&blink=true" },
+    ],
+  },
+  {
+    title: "팀 협업 대시보드",
+    desc: "프로젝트 진행률, 타임라인, 카운트다운을 조합",
+    layout: "grid-cols-1 sm:grid-cols-3",
+    widgets: [
+      { label: "프로젝트 진행", url: "/widget/stepper?bg=FFFFFF&text=1E1E1E&color=2563EB" },
+      { label: "마감 타임라인", url: "/widget/timeline?events=%EB%94%94%EC%9E%90%EC%9D%B8~2026-03-15|%EA%B0%9C%EB%B0%9C~2026-04-01|QA~2026-04-15|%EC%B6%9C%EC%8B%9C~2026-05-01&color=2563EB&bg=FFFFFF&text=1E1E1E" },
+      { label: "출시 D-Day", url: "/widget/dday?title=%EC%B6%9C%EC%8B%9C%EC%9D%BC&date=2026-05-01&bg=FFFFFF&text=1E1E1E&color=2563EB" },
+    ],
+  },
+  {
+    title: "레트로 감성",
+    desc: "플립 시계, 포춘 쿠키, 주사위로 레트로 무드",
+    layout: "grid-cols-1 sm:grid-cols-3",
+    widgets: [
+      { label: "플립 시계", url: "/widget/flip-clock?flipColor=2D2B55&textColor=E2E8F0&gapColor=1E1E2E&bg=1E1E2E" },
+      { label: "포춘 쿠키", url: "/widget/fortune-cookie?bg=1E1E2E&text=E2E8F0&color=F59E0B" },
+      { label: "주사위", url: "/widget/dice?mode=dice&count=2&sides=6&color=6366F1&textColor=FFFFFF&bg=1E1E2E" },
+    ],
+  },
+  {
+    title: "자기계발 트래커",
+    desc: "습관, 물, 운동 목표를 한 페이지에서 관리",
+    layout: "grid-cols-1 sm:grid-cols-2",
+    widgets: [
+      { label: "운동 습관", url: "/widget/habit?title=%EC%9A%B4%EB%8F%99&view=month&color=EF4444&bg=FFFFFF&text=1E1E1E" },
+      { label: "물 마시기", url: "/widget/water-tracker?color=3B82F6&bg=FFFFFF" },
+      { label: "독서 목표", url: "/widget/goal?title=%EB%8F%85%EC%84%9C&current=15&target=30&unit=%EA%B6%8C&color=22C55E&bg=FFFFFF&text=1E1E1E" },
+      { label: "인생 달력", url: "/widget/life-calendar?birthdate=2000-01-01&lifespan=80&color=818CF8&bg=FFFFFF" },
+    ],
+  },
+  {
+    title: "파스텔 감성 꾸미기",
+    desc: "부드러운 파스텔 컬러의 위젯 조합",
+    layout: "grid-cols-1 sm:grid-cols-3",
+    widgets: [
+      { label: "메모지", url: "/widget/sticky-note?text=%EC%98%A4%EB%8A%98%EC%9D%98+%EB%AA%A9%ED%91%9C&noteColor=FBCFE8&textColor=831843&pin=tape&font=gaegu" },
+      { label: "캘린더", url: "/widget/mini-calendar?highlight=EC4899&bg=FFF1F2&text=831843" },
+      { label: "배너", url: "/widget/banner?texts=%EC%98%A4%EB%8A%98%EB%8F%84+%ED%96%89%EB%B3%B5%ED%95%9C+%ED%95%98%EB%A3%A8&anim=fade&bg=FDF2F8&color=DB2777&bold=true" },
+    ],
+  },
 ];
 
 export default function GalleryPage() {

@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { toPng } from "html-to-image";
+// html-to-image is lazy-loaded on demand
 import { trackShareCard } from "@/lib/analytics";
 
 interface ShareCardDialogProps {
@@ -37,6 +37,7 @@ export default function ShareCardDialog({
 
     setGenerating(true);
     try {
+      const { toPng } = await import("html-to-image");
       const widgetPng = await toPng(preview, { pixelRatio: 2 });
 
       const canvas = canvasRef.current;

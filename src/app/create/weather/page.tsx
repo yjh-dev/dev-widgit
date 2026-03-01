@@ -26,7 +26,10 @@ import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
 import type { TemperatureUnit, WeatherIconStyle } from "@/lib/weather";
 import { parseCommonParams } from "@/lib/common-params";
-import { addBgParam, addCommonStyleParams, buildUrl } from "@/lib/url-builder-utils";
+import { addBgParam, addCommonStyleParams, addEffectParams, buildUrl } from "@/lib/url-builder-utils";
+import EffectOptions from "@/components/editor/EffectOptions";
+import EditorEffectsPreview from "@/components/editor/EditorEffectsPreview";
+import EffectPresetSelector from "@/components/editor/EffectPresetSelector";
 
 const CITY_PRESETS = [
   { label: "서울", lat: 37.5665, lon: 126.978 },
@@ -51,6 +54,8 @@ export default function CreateWeatherPage() {
     setLat, setLon, setCity, setUnit, setShowForecast, setShowHumidity, setShowWind,
     setIconStyle, setRefresh, setColor, setBg, setTransparentBg,
     setBorderRadius, setPadding, setFontSize,
+    fx, fxInt, gbg, gbgDir, neonColor, bshadow,
+    setFx, setFxInt, setGbg, setGbgDir, setNeonColor, setBshadow,
     loadPreset, reset,
   } = useWeatherStore();
 
@@ -85,8 +90,9 @@ export default function CreateWeatherPage() {
     if (color !== "1E1E1E") params.set("color", color);
     addBgParam(params, transparentBg, bg);
     addCommonStyleParams(params, borderRadius, padding, fontSize);
+    addEffectParams(params, fx, fxInt, gbg, gbgDir, neonColor, bshadow);
     return buildUrl(base, params);
-  }, [lat, lon, city, unit, showForecast, showHumidity, showWind, iconStyle, refresh, color, bg, transparentBg, borderRadius, padding, fontSize]);
+  }, [lat, lon, city, unit, showForecast, showHumidity, showWind, iconStyle, refresh, color, bg, transparentBg, borderRadius, padding, fontSize, fx, fxInt, gbg, gbgDir, neonColor, bshadow]);
 
   const handleCopy = async () => {
     await copyToClipboard(buildWidgetUrl());
@@ -211,6 +217,22 @@ export default function CreateWeatherPage() {
                 ),
               },
               {
+                id: "effects",
+                title: "효과",
+                children: (
+                  <>
+                    <EffectPresetSelector onSelect={loadPreset} />
+                    <EffectOptions
+                      fx={fx} fxInt={fxInt} gbg={gbg} gbgDir={gbgDir}
+                      neonColor={neonColor} bshadow={bshadow}
+                      onFxChange={setFx} onFxIntChange={setFxInt}
+                      onGbgChange={setGbg} onGbgDirChange={setGbgDir}
+                      onNeonColorChange={setNeonColor} onBshadowChange={setBshadow}
+                    />
+                  </>
+                ),
+              },
+              {
                 id: "style",
                 title: "스타일",
                 children: (
@@ -232,13 +254,18 @@ export default function CreateWeatherPage() {
         <div className="space-y-3 w-full max-w-[400px]">
           <p className="text-xs text-muted-foreground text-center">미리보기</p>
           <div className="border rounded-lg overflow-hidden aspect-[4/3]">
-            <WeatherPreview
+            <EditorEffectsPreview
+              fx={fx} fxInt={fxInt} gbg={gbg} gbgDir={gbgDir}
+              neonColor={neonColor} bshadow={bshadow} borderRadius={borderRadius}
+            >
+              <WeatherPreview
               lat={lat} lon={lon} city={city} unit={unit}
               showForecast={showForecast} showHumidity={showHumidity} showWind={showWind}
               iconStyle={iconStyle} refresh={refresh} color={color} bg={bg}
               transparentBg={transparentBg} borderRadius={borderRadius} padding={padding}
               fontSize={fontSize}
             />
+            </EditorEffectsPreview>
           </div>
         </div>
       </div>

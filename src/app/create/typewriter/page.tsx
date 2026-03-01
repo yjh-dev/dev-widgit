@@ -28,7 +28,10 @@ import { useWidgetUrl } from "@/lib/use-widget-url";
 import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
 import { parseCommonParams } from "@/lib/common-params";
-import { addBgParam, addCommonStyleParams, buildUrl } from "@/lib/url-builder-utils";
+import { addBgParam, addCommonStyleParams, addEffectParams, buildUrl } from "@/lib/url-builder-utils";
+import EffectOptions from "@/components/editor/EffectOptions";
+import EditorEffectsPreview from "@/components/editor/EditorEffectsPreview";
+import EffectPresetSelector from "@/components/editor/EffectPresetSelector";
 import type { CursorStyle, TypewriterAlign } from "@/lib/typewriter";
 
 export default function CreateTypewriterPage() {
@@ -41,6 +44,8 @@ export default function CreateTypewriterPage() {
     setAlign, setBold, setFont,
     setColor, setBg, setTransparentBg, setCursorColor,
     setBorderRadius, setPadding, setFontSize,
+    fx, fxInt, gbg, gbgDir, neonColor, bshadow,
+    setFx, setFxInt, setGbg, setGbgDir, setNeonColor, setBshadow,
     loadPreset, reset,
   } = useTypewriterStore();
 
@@ -97,8 +102,9 @@ export default function CreateTypewriterPage() {
     addBgParam(params, transparentBg, bg);
     if (cursorColor) params.set("cursorColor", cursorColor);
     addCommonStyleParams(params, borderRadius, padding, fontSize);
+    addEffectParams(params, fx, fxInt, gbg, gbgDir, neonColor, bshadow);
     return buildUrl(base, params);
-  }, [texts, speed, pause, cursor, loop, deleteAnim, align, bold, font, color, bg, transparentBg, cursorColor, borderRadius, padding, fontSize]);
+  }, [texts, speed, pause, cursor, loop, deleteAnim, align, bold, font, color, bg, transparentBg, cursorColor, borderRadius, padding, fontSize, fx, fxInt, gbg, gbgDir, neonColor, bshadow]);
 
   const handleCopy = async () => {
     await copyToClipboard(buildWidgetUrl());
@@ -252,6 +258,22 @@ export default function CreateTypewriterPage() {
                 ),
               },
               {
+                id: "effects",
+                title: "효과",
+                children: (
+                  <>
+                    <EffectPresetSelector onSelect={loadPreset} />
+                    <EffectOptions
+                      fx={fx} fxInt={fxInt} gbg={gbg} gbgDir={gbgDir}
+                      neonColor={neonColor} bshadow={bshadow}
+                      onFxChange={setFx} onFxIntChange={setFxInt}
+                      onGbgChange={setGbg} onGbgDirChange={setGbgDir}
+                      onNeonColorChange={setNeonColor} onBshadowChange={setBshadow}
+                    />
+                  </>
+                ),
+              },
+              {
                 id: "style",
                 title: "스타일",
                 children: (
@@ -273,13 +295,18 @@ export default function CreateTypewriterPage() {
         <div className="space-y-3 w-full max-w-[400px]">
           <p className="text-xs text-muted-foreground text-center">미리보기</p>
           <div className="border rounded-lg overflow-hidden aspect-[3/1]">
-            <TypewriterPreview
+            <EditorEffectsPreview
+              fx={fx} fxInt={fxInt} gbg={gbg} gbgDir={gbgDir}
+              neonColor={neonColor} bshadow={bshadow} borderRadius={borderRadius}
+            >
+              <TypewriterPreview
               texts={texts} speed={speed} pause={pause} cursor={cursor}
               loop={loop} deleteAnim={deleteAnim} align={align}
               bold={bold} font={font} color={color} bg={bg}
               transparentBg={transparentBg} cursorColor={cursorColor}
               borderRadius={borderRadius} padding={padding} fontSize={fontSize}
             />
+            </EditorEffectsPreview>
           </div>
         </div>
       </div>
