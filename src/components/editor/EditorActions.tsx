@@ -128,17 +128,18 @@ export default function EditorActions({
     <div className="space-y-4">
       <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <Label>위젯 URL</Label>
-          <label className="flex items-center gap-1.5 cursor-pointer">
-            <span className="text-xs text-muted-foreground">짧은 URL</span>
-            <Switch checked={shortUrl} onCheckedChange={handleToggle} />
-          </label>
+          <Label htmlFor="widget-url">위젯 URL</Label>
+          <div className="flex items-center gap-1.5">
+            <Label htmlFor="short-url-toggle" className="text-xs text-muted-foreground cursor-pointer">짧은 URL</Label>
+            <Switch id="short-url-toggle" checked={shortUrl} onCheckedChange={handleToggle} />
+          </div>
         </div>
         <textarea
+          id="widget-url"
           readOnly
           value={displayUrl}
           rows={2}
-          className="w-full rounded-md border bg-muted px-3 py-2 text-xs text-muted-foreground break-all resize-none focus:outline-none"
+          className="w-full rounded-md border bg-muted px-3 py-2 text-xs text-muted-foreground break-all resize-none focus:outline-none focus:ring-2 focus:ring-ring"
         />
       </div>
 
@@ -235,6 +236,8 @@ export default function EditorActions({
           type="button"
           onClick={() => setShowImport(!showImport)}
           className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
+          aria-expanded={showImport}
+          aria-label={showImport ? "기존 URL 불러오기 접기" : "기존 URL 불러오기 펼치기"}
         >
           <Import className={`w-3.5 h-3.5 transition-transform ${showImport ? "rotate-180" : ""}`} />
           기존 URL 불러오기
@@ -243,6 +246,8 @@ export default function EditorActions({
           type="button"
           onClick={() => setGuideOpen(!guideOpen)}
           className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
+          aria-expanded={guideOpen}
+          aria-label={guideOpen ? "노션에 임베드하는 방법 접기" : "노션에 임베드하는 방법 펼치기"}
         >
           <ChevronDown
             className={`w-3.5 h-3.5 transition-transform ${guideOpen ? "rotate-180" : ""}`}
@@ -259,6 +264,7 @@ export default function EditorActions({
             onChange={(e) => setImportUrl(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleImport()}
             placeholder="기존 위젯 URL 붙여넣기"
+            aria-label="기존 위젯 URL 입력"
             className="flex-1 rounded-md border bg-background px-3 py-1.5 text-xs placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
             autoFocus
           />

@@ -19,6 +19,7 @@ export default function MobilePreviewFab({ children, aspect }: MobilePreviewFabP
         onClick={() => setOpen(true)}
         className="fixed bottom-20 right-4 z-40 md:hidden w-12 h-12 rounded-full bg-primary text-primary-foreground shadow-lg flex items-center justify-center active:scale-95 transition-transform"
         title="미리보기"
+        aria-label="미리보기 열기"
       >
         <Eye className="w-5 h-5" />
       </button>
@@ -30,6 +31,7 @@ export default function MobilePreviewFab({ children, aspect }: MobilePreviewFabP
           <div
             className="absolute inset-0 bg-black/50"
             onClick={() => setOpen(false)}
+            aria-hidden="true"
           />
 
           {/* Sheet */}
@@ -46,6 +48,7 @@ export default function MobilePreviewFab({ children, aspect }: MobilePreviewFabP
                 type="button"
                 onClick={() => setOpen(false)}
                 className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-muted transition-colors"
+                aria-label="미리보기 닫기"
               >
                 <X className="w-4 h-4" />
               </button>

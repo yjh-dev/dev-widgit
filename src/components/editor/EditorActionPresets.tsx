@@ -75,6 +75,7 @@ export default function EditorActionPresets({
             onChange={(e) => setSavingName(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSavePreset()}
             placeholder="프리셋 이름"
+            aria-label="프리셋 이름 입력"
             className="flex-1 rounded-md border bg-background px-3 py-1.5 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
             autoFocus
           />
@@ -105,8 +106,9 @@ export default function EditorActionPresets({
               <button
                 type="button"
                 onClick={() => handleDeletePreset(p.id)}
-                className="opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-destructive p-0.5"
+                className="opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity text-muted-foreground hover:text-destructive p-0.5"
                 title="삭제"
+                aria-label={`${p.name} 프리셋 삭제`}
               >
                 <Trash2 className="w-3 h-3" />
               </button>

@@ -62,6 +62,7 @@ export default function EditorActionSaveWidget({
             onChange={(e) => setSaveWidgetName(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSaveWidget()}
             placeholder="위젯 이름 (예: 수능 D-Day)"
+            aria-label="위젯 이름 입력"
             className="flex-1 rounded-md border bg-background px-3 py-1.5 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
             autoFocus
           />

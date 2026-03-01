@@ -35,12 +35,12 @@ export default function CommonStyleOptions({
   return (
     <>
       <div className="space-y-2">
-        <Label>모서리 둥글기</Label>
+        <Label htmlFor="style-border-radius">모서리 둥글기</Label>
         <Select
           value={String(borderRadius)}
           onValueChange={(v) => onBorderRadiusChange(Number(v))}
         >
-          <SelectTrigger className="w-full">
+          <SelectTrigger id="style-border-radius" className="w-full">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -53,12 +53,12 @@ export default function CommonStyleOptions({
         </Select>
       </div>
       <div className="space-y-2">
-        <Label>안쪽 여백</Label>
+        <Label htmlFor="style-padding">안쪽 여백</Label>
         <Select
           value={String(padding)}
           onValueChange={(v) => onPaddingChange(Number(v))}
         >
-          <SelectTrigger className="w-full">
+          <SelectTrigger id="style-padding" className="w-full">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -71,12 +71,12 @@ export default function CommonStyleOptions({
         </Select>
       </div>
       <div className="space-y-2">
-        <Label>글자 크기</Label>
+        <Label htmlFor="style-font-size">글자 크기</Label>
         <Select
           value={fontSize}
           onValueChange={(v) => onFontSizeChange(v as FontSizeKey)}
         >
-          <SelectTrigger className="w-full">
+          <SelectTrigger id="style-font-size" className="w-full">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
