@@ -62,7 +62,13 @@
       "Bash(cd \"C:/dev/2026/dev-widgit\" && npm run lint 2>&1 | tail -30)",
       "Bash(cd \"C:/dev/2026/dev-widgit/.claude/worktrees/agent-aad4b5f6\" && npx tsc --noEmit --pretty 2>&1 | grep -c \"error\")",
       "Bash(cd /c/dev/2026/dev-widgit && ls .claude/worktrees/agent-a33abc77/src/lib/age-calculator.ts .claude/worktrees/agent-a33abc77/src/lib/radar-chart.ts .claude/worktrees/agent-a33abc77/src/store/useAgeCalculator*.ts .claude/worktrees/agent-a33abc77/src/store/useRadarChart*.ts 2>&1)",
-      "Bash(cd /c/dev/2026/dev-widgit && ls .claude/worktrees/agent-ab0d832f/src/lib/pie-chart.ts .claude/worktrees/agent-ab0d832f/src/lib/stepper.ts .claude/worktrees/agent-ab0d832f/src/store/usePieChart*.ts .claude/worktrees/agent-ab0d832f/src/store/useStepper*.ts 2>&1)"
+      "Bash(cd /c/dev/2026/dev-widgit && ls .claude/worktrees/agent-ab0d832f/src/lib/pie-chart.ts .claude/worktrees/agent-ab0d832f/src/lib/stepper.ts .claude/worktrees/agent-ab0d832f/src/store/usePieChart*.ts .claude/worktrees/agent-ab0d832f/src/store/useStepper*.ts 2>&1)",
+      "Bash(cd /C/dev/2026/dev-widgit && ls -1 src/app/create/ | grep -v \"^\\\\.\" | grep -v \"\\\\.tsx$\" | sort > /tmp/create.txt && ls -1 src/app/widget/ | grep -v \"^\\\\.\" | grep -v \"\\\\.tsx$\" | sort > /tmp/widget.txt && comm -23 /tmp/create.txt /tmp/widget.txt)",
+      "Bash(cd /C/dev/2026/dev-widgit && comm -13 /tmp/create.txt /tmp/widget.txt)",
+      "Bash(cd /c/dev/2026/dev-widgit && npm install -D vitest 2>&1 | tail -5)",
+      "Bash(cd /c/dev/2026/dev-widgit && npx vitest run 2>&1 | tail -30)",
+      "Bash(cd /c/dev/2026/dev-widgit && npx vitest run 2>&1 | tail -15)",
+      "Bash(cd /c/dev/2026/dev-widgit && npm run test 2>&1 | tail -10)"
     ]
   }
 }

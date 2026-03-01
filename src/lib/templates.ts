@@ -30,7 +30,8 @@ export type WidgetType =
   | "changelog"
   | "matrix"
   | "multi-progress"
-  | "badge";
+  | "badge"
+  | "fortune-cookie";
 
 // --- Color Theme System ---
 

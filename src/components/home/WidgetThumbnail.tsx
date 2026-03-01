@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import WidgetRenderer from "@/components/widget/WidgetRenderer";
 import { getHomeThumbnailProps, type WidgetType } from "@/lib/templates";
 
@@ -9,14 +9,30 @@ interface WidgetThumbnailProps {
 }
 
 export default function WidgetThumbnail({ type }: WidgetThumbnailProps) {
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+  const [visible, setVisible] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisible(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "200px" },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   const props = getHomeThumbnailProps(type);
 
   return (
-    <div className="relative w-full aspect-[4/3] overflow-hidden rounded-t-xl bg-muted" aria-hidden="true">
-      {mounted && (
+    <div ref={ref} className="relative w-full aspect-[4/3] overflow-hidden rounded-t-xl bg-muted" aria-hidden="true">
+      {visible && (
         <div
           className="absolute inset-0 origin-top-left"
           style={{

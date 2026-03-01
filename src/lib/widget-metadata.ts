@@ -1,6 +1,32 @@
+import type { Metadata } from "next";
+
 export interface WidgetMeta {
   name: string;
   desc: string;
+}
+
+/**
+ * 위젯 타입 키로 SEO 최적화된 Metadata 객체를 생성합니다.
+ */
+export function createWidgetMetadata(widgetType: string): Metadata {
+  const meta = widgetMetadata[widgetType] ?? { name: widgetType, desc: "노션 위젯" };
+  const title = `${meta.name} 만들기 — Widgit`;
+  return {
+    title,
+    description: meta.desc,
+    keywords: [meta.name, "노션 위젯", "Notion widget", "위젯 만들기", "무료", "커스텀", widgetType],
+    openGraph: {
+      title,
+      description: meta.desc,
+      siteName: "Widgit",
+      type: "website",
+    },
+    twitter: {
+      card: "summary",
+      title,
+      description: meta.desc,
+    },
+  };
 }
 
 export const widgetMetadata: Record<string, WidgetMeta> = {
@@ -54,4 +80,5 @@ export const widgetMetadata: Record<string, WidgetMeta> = {
   "changelog": { name: "변경 로그", desc: "버전별 변경 이력을 표시하는 노션 위젯" },
   "matrix": { name: "매트릭스", desc: "아이젠하워 2×2 우선순위 매트릭스 노션 위젯" },
   "multi-progress": { name: "멀티 프로그레스", desc: "여러 항목의 진행률을 비교하는 노션 위젯" },
+  "fortune-cookie": { name: "포춘 쿠키", desc: "랜덤 포춘 메시지를 보여주는 노션 위젯" },
 };

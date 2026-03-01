@@ -66,6 +66,16 @@ export function deleteWidget(id: string): void {
   persist(widgets);
 }
 
+export function importWidgets(data: SavedWidget[]): number {
+  const existing = getSavedWidgets();
+  const existingIds = new Set(existing.map((w) => w.id));
+  const newWidgets = data.filter((w) => !existingIds.has(w.id));
+  if (newWidgets.length === 0) return 0;
+  const merged = [...newWidgets, ...existing].slice(0, MAX_SAVED);
+  persist(merged);
+  return newWidgets.length;
+}
+
 export function duplicateWidget(id: string): SavedWidget | null {
   const widgets = getSavedWidgets();
   const original = widgets.find((w) => w.id === id);

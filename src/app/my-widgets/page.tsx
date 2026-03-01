@@ -11,6 +11,8 @@ import {
   FolderHeart,
   Plus,
   Search,
+  Download,
+  Upload,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -31,6 +33,7 @@ import {
   deleteWidget,
   duplicateWidget,
   updateWidget,
+  importWidgets,
   type SavedWidget,
 } from "@/lib/saved-widgets";
 import { getWidgetName, getWidgetIcon } from "@/lib/widget-names";
@@ -107,6 +110,44 @@ export default function MyWidgetsPage() {
     setEditingName(w.name);
   };
 
+  const handleExport = () => {
+    const data = getSavedWidgets();
+    if (data.length === 0) { toast.error("내보낼 위젯이 없습니다."); return; }
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `widgit-backup-${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast.success(`${data.length}개 위젯을 내보냈습니다!`);
+  };
+
+  const handleImport = () => {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = ".json";
+    input.onchange = (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const data = JSON.parse(reader.result as string);
+          if (!Array.isArray(data)) { toast.error("올바른 위젯 백업 파일이 아닙니다."); return; }
+          const count = importWidgets(data);
+          if (count === 0) { toast.info("가져올 새 위젯이 없습니다. (이미 존재)"); return; }
+          refresh();
+          toast.success(`${count}개 위젯을 가져왔습니다!`);
+        } catch {
+          toast.error("파일을 읽을 수 없습니다.");
+        }
+      };
+      reader.readAsText(file);
+    };
+    input.click();
+  };
+
   const handleRenameSubmit = () => {
     if (!editingId) return;
     const name = editingName.trim();
@@ -146,6 +187,18 @@ export default function MyWidgetsPage() {
         <p className="text-sm text-muted-foreground mt-1">
           에디터에서 저장한 위젯을 관리합니다.
         </p>
+        {mounted && widgets.length > 0 && (
+          <div className="flex gap-2 mt-3">
+            <Button variant="outline" size="sm" className="h-8 text-xs" onClick={handleExport}>
+              <Download className="w-3.5 h-3.5 mr-1" />
+              내보내기
+            </Button>
+            <Button variant="outline" size="sm" className="h-8 text-xs" onClick={handleImport}>
+              <Upload className="w-3.5 h-3.5 mr-1" />
+              가져오기
+            </Button>
+          </div>
+        )}
       </header>
 
       <main className="max-w-5xl mx-auto px-6 pb-20">
@@ -208,12 +261,18 @@ export default function MyWidgetsPage() {
             <p className="text-sm text-muted-foreground mb-6">
               에디터에서 위젯을 만들고 &ldquo;내 위젯에 저장&rdquo; 버튼을 눌러보세요.
             </p>
-            <Button asChild>
-              <Link href="/">
-                <Plus className="w-4 h-4 mr-2" />
-                위젯 만들러 가기
-              </Link>
-            </Button>
+            <div className="flex gap-3 justify-center">
+              <Button asChild>
+                <Link href="/">
+                  <Plus className="w-4 h-4 mr-2" />
+                  위젯 만들러 가기
+                </Link>
+              </Button>
+              <Button variant="outline" onClick={handleImport}>
+                <Upload className="w-4 h-4 mr-2" />
+                가져오기
+              </Button>
+            </div>
           </div>
         ) : (
           /* Widget grid */

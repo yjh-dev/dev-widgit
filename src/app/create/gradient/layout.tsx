@@ -1,17 +1,6 @@
-import type { Metadata } from "next";
-import { widgetMetadata } from "@/lib/widget-metadata";
+import { createWidgetMetadata } from "@/lib/widget-metadata";
 
-const WIDGET_TYPE = "gradient";
-const meta = widgetMetadata[WIDGET_TYPE];
-
-export const metadata: Metadata = {
-  title: `${meta.name} 만들기 — Widgit`,
-  description: meta.desc,
-  openGraph: {
-    title: `${meta.name} 만들기 — Widgit`,
-    description: meta.desc,
-  },
-};
+export const metadata = createWidgetMetadata("gradient");
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return children;

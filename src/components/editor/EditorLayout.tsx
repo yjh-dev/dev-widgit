@@ -10,12 +10,14 @@ import MobileBottomBar from "./MobileBottomBar";
 import MobilePreviewFab from "./MobilePreviewFab";
 import { addRecentWidget } from "@/lib/recent-widgets";
 
-type PreviewSize = "free" | "square" | "wide" | "tall";
+type PreviewSize = "free" | "square" | "wide" | "tall" | "notion-full" | "notion-half";
 const previewSizes: { key: PreviewSize; label: string; icon: typeof Square; aspect?: string }[] = [
   { key: "free", label: "자유", icon: Maximize },
   { key: "square", label: "1:1", icon: Square, aspect: "1/1" },
   { key: "wide", label: "2:1", icon: RectangleHorizontal, aspect: "2/1" },
   { key: "tall", label: "1:2", icon: RectangleVertical, aspect: "1/2" },
+  { key: "notion-full", label: "전체폭", icon: RectangleHorizontal, aspect: "16/5" },
+  { key: "notion-half", label: "반폭", icon: Square, aspect: "4/5" },
 ];
 
 interface EditorLayoutProps {

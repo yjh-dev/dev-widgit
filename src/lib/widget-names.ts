@@ -49,6 +49,8 @@ import {
   FileText,
   Grid2X2,
   BarChartHorizontal,
+  Award,
+  Cookie,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import type { WidgetType } from "@/lib/templates";
@@ -109,6 +111,8 @@ const widgetMetaMap: Record<WidgetType, WidgetMeta> = {
   changelog: { name: "변경 로그", icon: FileText },
   matrix: { name: "매트릭스", icon: Grid2X2 },
   "multi-progress": { name: "멀티 프로그레스", icon: BarChartHorizontal },
+  badge: { name: "뱃지", icon: Award },
+  "fortune-cookie": { name: "포춘 쿠키", icon: Cookie },
 };
 
 export function getWidgetName(type: WidgetType): string {
