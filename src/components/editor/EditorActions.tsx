@@ -252,7 +252,7 @@ export default function EditorActions({
           <Image className="w-3.5 h-3.5 mr-1.5" />
           {t("editor.snsCard")}
         </Button>
-        {widgetType && (
+        {mounted && widgetType && (
           <GallerySubmitButton widgetType={widgetType} widgetUrl={displayUrl} />
         )}
       </div>
