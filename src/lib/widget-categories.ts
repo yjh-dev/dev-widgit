@@ -60,6 +60,7 @@ export const categories: WidgetCategory[] = [
       w("countdown", "분·초 단위 카운트다운 타이머입니다", ["timer", "minute", "초"]),
       w("flashcard", "앞·뒤 카드로 암기를 도와줍니다", ["study", "memory", "공부"]),
       w("matrix", "아이젠하워 2×2 우선순위 매트릭스입니다", ["priority", "eisenhower", "우선순위"]),
+      w("group", "여러 위젯을 하나로 합쳐 표시합니다", ["combine", "layout", "합치기", "묶음"]),
     ],
   },
   {
@@ -95,6 +96,7 @@ export const categories: WidgetCategory[] = [
       w("emoji-rain", "이모지가 떨어지는 장식 애니메이션입니다", ["animation", "emoji", "이모지"]),
       w("changelog", "버전별 변경 이력을 표시합니다", ["version", "history", "변경", "업데이트"]),
       w("fortune-cookie", "랜덤 포춘 메시지를 보여줍니다", ["fortune", "random", "운세", "쿠키"]),
+      w("badge", "텍스트 뱃지 라벨을 만듭니다", ["label", "tag", "뱃지", "라벨"]),
     ],
   },
 ];

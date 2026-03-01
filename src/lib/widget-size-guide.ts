@@ -1,0 +1,65 @@
+import type { WidgetType } from "@/lib/templates";
+
+interface SizeGuide {
+  recommended: string;
+  tip: string;
+}
+
+export const widgetSizeGuide: Partial<Record<WidgetType, SizeGuide>> = {
+  dday: { recommended: "반폭 / 전체폭", tip: "반폭이 가장 깔끔하고, 전체폭은 디데이 바와 잘 어울립니다" },
+  "life-calendar": { recommended: "전체폭", tip: "셀이 많아 전체폭에서 가장 잘 보입니다" },
+  "time-progress": { recommended: "반폭", tip: "바 스타일은 반폭, 링 스타일은 1:1이 자연스럽습니다" },
+  clock: { recommended: "반폭 / 1:1", tip: "1:1 또는 반폭이 가장 자연스럽습니다" },
+  quote: { recommended: "전체폭 / 반폭", tip: "긴 문구는 전체폭, 짧은 문구는 반폭이 좋습니다" },
+  pomodoro: { recommended: "반폭", tip: "반폭에서 컴팩트하게 사용하기 좋습니다" },
+  "mini-calendar": { recommended: "반폭", tip: "반폭이 가장 자연스럽습니다" },
+  "analog-clock": { recommended: "1:1", tip: "정사각형에서 가장 보기 좋습니다" },
+  counter: { recommended: "반폭 / 1:1", tip: "컴팩트한 크기가 잘 어울립니다" },
+  weather: { recommended: "반폭", tip: "반폭에서 핵심 정보가 잘 보입니다" },
+  reading: { recommended: "반폭", tip: "반폭에서 깔끔하게 표시됩니다" },
+  habit: { recommended: "전체폭", tip: "주간은 반폭, 월간은 전체폭이 좋습니다" },
+  timeline: { recommended: "반폭 / 전체폭", tip: "이벤트 수에 따라 조절하세요" },
+  banner: { recommended: "전체폭", tip: "전체폭에서 배너 효과가 가장 좋습니다" },
+  bookmark: { recommended: "반폭", tip: "반폭에서 카드 형태가 자연스럽습니다" },
+  goal: { recommended: "반폭", tip: "반폭에서 깔끔하게 표시됩니다" },
+  stopwatch: { recommended: "반폭 / 1:1", tip: "컴팩트한 크기가 잘 어울립니다" },
+  music: { recommended: "반폭", tip: "반폭에서 플레이어 카드가 자연스럽습니다" },
+  gradient: { recommended: "전체폭", tip: "구분선·배경으로 사용 시 전체폭 추천" },
+  "sticky-note": { recommended: "반폭 / 1:1", tip: "정사각형이나 반폭에서 메모지 느낌이 납니다" },
+  "flip-clock": { recommended: "반폭 / 전체폭", tip: "반폭이 가장 레트로한 느낌입니다" },
+  "moon-phase": { recommended: "1:1 / 반폭", tip: "1:1에서 달이 가장 잘 보입니다" },
+  dice: { recommended: "반폭 / 1:1", tip: "컴팩트한 크기가 잘 어울립니다" },
+  "qr-code": { recommended: "1:1 / 반폭", tip: "정사각형에서 QR 코드가 잘 보입니다" },
+  typewriter: { recommended: "전체폭", tip: "전체폭에서 타이핑 효과가 돋보입니다" },
+  todo: { recommended: "반폭", tip: "반폭에서 체크리스트가 깔끔합니다" },
+  "github-contribution": { recommended: "전체폭", tip: "잔디 그래프는 전체폭에서 가장 잘 보입니다" },
+  "profile-card": { recommended: "반폭", tip: "반폭에서 프로필 카드가 자연스럽습니다" },
+  "link-tree": { recommended: "반폭", tip: "반폭에서 링크 목록이 깔끔합니다" },
+  breathing: { recommended: "1:1 / 반폭", tip: "정사각형에서 호흡 원이 잘 보입니다" },
+  "world-clock": { recommended: "전체폭", tip: "여러 도시를 표시하려면 전체폭이 좋습니다" },
+  countdown: { recommended: "반폭 / 전체폭", tip: "반폭이 가장 깔끔합니다" },
+  "stats-card": { recommended: "반폭", tip: "반폭에서 통계 카드가 자연스럽습니다" },
+  "color-palette": { recommended: "전체폭 / 반폭", tip: "색상 수에 따라 조절하세요" },
+  divider: { recommended: "전체폭", tip: "구분선은 전체폭으로 사용하세요" },
+  timetable: { recommended: "전체폭", tip: "시간표는 전체폭에서 가장 잘 보입니다" },
+  flashcard: { recommended: "반폭 / 1:1", tip: "카드 형태에 맞게 반폭이 좋습니다" },
+  "water-tracker": { recommended: "반폭 / 1:1", tip: "컴팩트한 크기가 잘 어울립니다" },
+  "image-card": { recommended: "반폭 / 전체폭", tip: "이미지 비율에 따라 조절하세요" },
+  currency: { recommended: "반폭", tip: "반폭에서 환율 정보가 깔끔합니다" },
+  "age-calculator": { recommended: "반폭", tip: "반폭에서 나이 정보가 깔끔합니다" },
+  "radar-chart": { recommended: "1:1", tip: "정사각형에서 차트가 잘 보입니다" },
+  "pie-chart": { recommended: "1:1 / 반폭", tip: "정사각형에서 차트가 잘 보입니다" },
+  stepper: { recommended: "전체폭", tip: "단계가 많으면 전체폭이 좋습니다" },
+  battery: { recommended: "반폭 / 1:1", tip: "컴팩트한 크기가 잘 어울립니다" },
+  testimonial: { recommended: "반폭", tip: "반폭에서 인용 카드가 자연스럽습니다" },
+  "emoji-rain": { recommended: "전체폭", tip: "전체폭에서 이모지 효과가 잘 보입니다" },
+  changelog: { recommended: "반폭 / 전체폭", tip: "항목 수에 따라 조절하세요" },
+  matrix: { recommended: "전체폭", tip: "전체폭에서 매트릭스 효과가 돋보입니다" },
+  "multi-progress": { recommended: "반폭 / 전체폭", tip: "항목 수에 따라 조절하세요" },
+  badge: { recommended: "반폭", tip: "반폭에서 배지가 깔끔합니다" },
+  "fortune-cookie": { recommended: "반폭 / 1:1", tip: "컴팩트한 크기가 잘 어울립니다" },
+};
+
+export function getSizeGuide(widgetType: string): SizeGuide | undefined {
+  return widgetSizeGuide[widgetType as WidgetType];
+}

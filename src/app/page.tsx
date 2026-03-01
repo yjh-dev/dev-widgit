@@ -24,6 +24,7 @@ import { Button } from "@/components/ui/button";
 import ThemeToggle from "@/components/ui/theme-toggle";
 import LocaleToggle from "@/components/ui/locale-toggle";
 import WidgetThumbnail from "@/components/home/WidgetThumbnail";
+import AdBanner from "@/components/AdBanner";
 import { getRecentWidgets } from "@/lib/recent-widgets";
 import { categories, allWidgets } from "@/lib/widget-categories";
 
@@ -252,6 +253,11 @@ export default function Home() {
         </div>
       )}
 
+      {/* Ad */}
+      <div className="max-w-5xl mx-auto px-6 pb-8">
+        <AdBanner format="horizontal" />
+      </div>
+
       {/* Categories */}
       <main className="max-w-5xl mx-auto px-6 pb-20 space-y-12">
         {filtered.length === 0 ? (
@@ -313,6 +319,9 @@ export default function Home() {
               </Link>
               <Link href="/my-widgets" className="hover:text-foreground transition-colors">
                 내 위젯
+              </Link>
+              <Link href="/settings" className="hover:text-foreground transition-colors">
+                설정
               </Link>
             </div>
           </div>

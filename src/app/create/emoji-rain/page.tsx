@@ -221,23 +221,19 @@ export default function CreateEmojiRainPage() {
         </CardContent>
       </Card>
 
-      <div className="flex items-center justify-center order-first md:order-last md:sticky md:top-8">
-        <div className="space-y-3 w-full max-w-[400px]">
-          <p className="text-xs text-muted-foreground text-center">미리보기</p>
-          <div className="border rounded-lg overflow-hidden min-h-[300px]">
-            <EmojiRainPreview
-              emojis={emojis}
-              speed={speed}
-              density={density}
-              minSize={minSize}
-              maxSize={maxSize}
-              bg={bg}
-              transparentBg={transparentBg}
-              borderRadius={borderRadius}
-              padding={padding}
-            />
-          </div>
-        </div>
+      {/* Preview — EditorLayout의 두 번째 child로 전달 */}
+      <div className="min-h-[300px] h-[400px]">
+        <EmojiRainPreview
+          emojis={emojis}
+          speed={speed}
+          density={density}
+          minSize={minSize}
+          maxSize={maxSize}
+          bg={bg}
+          transparentBg={transparentBg}
+          borderRadius={borderRadius}
+          padding={padding}
+        />
       </div>
     </EditorLayout>
   );

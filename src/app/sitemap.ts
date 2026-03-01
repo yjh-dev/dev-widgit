@@ -10,7 +10,7 @@ const widgetTypes = [
   "sticky-note", "gradient", "typewriter", "todo", "github-contribution", "profile-card", "link-tree", "breathing",
   "world-clock", "countdown", "stats-card", "color-palette", "divider", "timetable", "flashcard", "water-tracker", "image-card", "currency",
   "age-calculator", "radar-chart", "pie-chart", "stepper", "battery", "testimonial", "emoji-rain", "changelog", "matrix", "multi-progress",
-  "fortune-cookie",
+  "fortune-cookie", "badge", "group",
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {

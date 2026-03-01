@@ -18,6 +18,8 @@ import EditorLayout from "@/components/editor/EditorLayout";
 import EditorActions from "@/components/editor/EditorActions";
 import EditorSection from "@/components/editor/EditorSection";
 import CommonStyleOptions from "@/components/editor/CommonStyleOptions";
+import PresetSelector from "@/components/editor/PresetSelector";
+import { fortuneCookiePresets } from "@/lib/presets";
 import { useFortuneCookieStore } from "@/store/useFortuneCookieStore";
 import { useWidgetUrl } from "@/lib/use-widget-url";
 import { copyToClipboard } from "@/lib/clipboard";
@@ -32,7 +34,7 @@ export default function CreateFortuneCookiePage() {
     setCustomMessage, setLang, setStyle, setCookieColor,
     setTextColor, setBg, setTransparentBg,
     setBorderRadius, setPadding, setFontSize,
-    reset,
+    loadPreset, reset,
   } = useFortuneCookieStore();
 
   const { buildWidgetUrl, widgetUrl } = useWidgetUrl(() => {
@@ -57,6 +59,7 @@ export default function CreateFortuneCookiePage() {
     <EditorLayout title="포춘 쿠키 위젯 만들기">
       <Card>
         <CardContent className="pt-6">
+          <PresetSelector presets={fortuneCookiePresets} onSelect={loadPreset} />
           <EditorSection
             defaultOpen={["basic"]}
             sections={[

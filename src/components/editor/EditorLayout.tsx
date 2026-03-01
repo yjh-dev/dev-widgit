@@ -3,14 +3,17 @@
 import { type ReactNode, Children, Suspense, useEffect, useState, useRef, useCallback, startTransition } from "react";
 import Link from "next/link";
 import { useSearchParams, usePathname } from "next/navigation";
-import { ArrowLeft, LayoutGrid, RectangleHorizontal, Square, RectangleVertical, Maximize } from "lucide-react";
+import { ArrowLeft, LayoutGrid, RectangleHorizontal, Square, RectangleVertical, Maximize, AppWindow, Info } from "lucide-react";
 import ThemeToggle from "@/components/ui/theme-toggle";
 import { EditorActionsProvider } from "./EditorActionsContext";
 import MobileBottomBar from "./MobileBottomBar";
 import MobilePreviewFab from "./MobilePreviewFab";
+import AdBanner from "@/components/AdBanner";
+import NotionPageMockup from "./NotionPageMockup";
 import { addRecentWidget } from "@/lib/recent-widgets";
+import { getSizeGuide } from "@/lib/widget-size-guide";
 
-type PreviewSize = "free" | "square" | "wide" | "tall" | "notion-full" | "notion-half";
+type PreviewSize = "free" | "square" | "wide" | "tall" | "notion-full" | "notion-half" | "notion";
 const previewSizes: { key: PreviewSize; label: string; icon: typeof Square; aspect?: string }[] = [
   { key: "free", label: "자유", icon: Maximize },
   { key: "square", label: "1:1", icon: Square, aspect: "1/1" },
@@ -18,6 +21,7 @@ const previewSizes: { key: PreviewSize; label: string; icon: typeof Square; aspe
   { key: "tall", label: "1:2", icon: RectangleVertical, aspect: "1/2" },
   { key: "notion-full", label: "전체폭", icon: RectangleHorizontal, aspect: "16/5" },
   { key: "notion-half", label: "반폭", icon: Square, aspect: "4/5" },
+  { key: "notion", label: "노션", icon: AppWindow, aspect: "4/3" },
 ];
 
 interface EditorLayoutProps {
@@ -156,6 +160,23 @@ export default function EditorLayout({ title, children }: EditorLayoutProps) {
   }, [pathname]);
 
   const sizeConfig = previewSizes.find((s) => s.key === previewSize)!;
+  const widgetType = pathname.replace("/create/", "");
+  const sizeGuide = widgetType !== pathname ? getSizeGuide(widgetType) : undefined;
+
+  const renderPreview = (panel: ReactNode) => {
+    if (previewSize === "notion") {
+      return (
+        <NotionPageMockup>
+          <div id="widget-preview">{panel}</div>
+        </NotionPageMockup>
+      );
+    }
+    return (
+      <PreviewContainer aspect={sizeConfig.aspect}>
+        {panel}
+      </PreviewContainer>
+    );
+  };
 
   return (
     <EditorActionsProvider>
@@ -182,12 +203,16 @@ export default function EditorLayout({ title, children }: EditorLayoutProps) {
             설정을 변경하면 프리뷰에 실시간으로 반영됩니다.
           </p>
 
+          <div className="mb-6">
+            <AdBanner format="horizontal" className="max-w-5xl mx-auto" />
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 items-start">
             {formPanel}
             {/* Desktop: show preview inline; Mobile: hidden (use FAB instead) */}
             <div className="hidden md:block md:sticky md:top-8">
               {/* Preview size selector */}
-              <div className="flex items-center gap-1 mb-2 justify-end">
+              <div className="flex items-center gap-1 mb-2 justify-end flex-wrap">
                 {previewSizes.map((s) => {
                   const Icon = s.icon;
                   return (
@@ -208,9 +233,13 @@ export default function EditorLayout({ title, children }: EditorLayoutProps) {
                   );
                 })}
               </div>
-              <PreviewContainer aspect={sizeConfig.aspect}>
-                {previewPanel}
-              </PreviewContainer>
+              {sizeGuide && (
+                <div className="flex items-start gap-1.5 mb-2 text-xs text-muted-foreground">
+                  <Info className="w-3.5 h-3.5 mt-0.5 shrink-0" />
+                  <span>추천: <strong className="text-foreground">{sizeGuide.recommended}</strong> — {sizeGuide.tip}</span>
+                </div>
+              )}
+              {renderPreview(previewPanel)}
             </div>
           </div>
         </div>

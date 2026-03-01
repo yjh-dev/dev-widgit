@@ -94,7 +94,10 @@ src/
 │   │   ├── EditorLayout.tsx              # 에디터 페이지 레이아웃 (좌측 폼 + 우측 프리뷰)
 │   │   ├── EditorActions.tsx             # URL 복사 + 초기화 버튼 + 짧은 URL 토글
 │   │   ├── EditorSection.tsx             # 아코디언 기반 접이식 섹션 래퍼
-│   │   └── CommonStyleOptions.tsx        # 공통 스타일 옵션 (모서리/여백/글자크기)
+│   │   ├── CommonStyleOptions.tsx        # 공통 스타일 옵션 (모서리/여백/글자크기)
+│   │   ├── NotionPageMockup.tsx          # 노션 페이지 목업 프리뷰 셸
+│   │   ├── ShareCardDialog.tsx           # SNS 공유 카드 생성 다이얼로그
+│   │   └── GallerySubmitButton.tsx       # 갤러리 제출 버튼
 │   ├── home/                             # 홈 페이지 컴포넌트
 │   │   └── WidgetThumbnail.tsx           # 위젯 라이브 미니 프리뷰 (CSS scale 축소)
 │   ├── ThemeProvider.tsx                 # next-themes 클라이언트 래퍼
@@ -579,11 +582,12 @@ Hex 값을 `#` 없이 저장/전달 (`"2563EB"`, `"FFFFFF"`).
 | 셀 모양 | `cellRadius` | `square\|rounded\|circle` | `rounded` |
 
 ## 홈 페이지 카테고리 구조
-위젯을 4개 카테고리로 그룹화하여 표시:
-- **시간 & 날짜** (6): D-Day, 시계, 아날로그 시계, 미니 캘린더, 타임라인, 플립 시계
-- **진행률 & 목표** (4): 시간 진행률, 인생 달력, 읽기 진행률, 목표 진행률
-- **생산성 & 도구** (7): 뽀모도로, 스톱워치, 카운터, 습관 트래커, 투두리스트, QR 코드, 주사위
-- **콘텐츠 & 장식** (10): 명언 카드, 텍스트 배너, 북마크, 음악 플레이어, 날씨, 달 위상, 메모지, 그라데이션, 타이프라이터, GitHub 잔디
+위젯을 5개 카테고리로 그룹화하여 표시 (총 52종):
+- **시간 & 날짜** (9): D-Day, 시계, 아날로그 시계, 미니 캘린더, 타임라인, 플립 시계, 세계 시계, 시간표, 나이 계산기
+- **진행률 & 목표** (8): 시간 진행률, 인생 달력, 읽기 진행률, 목표 진행률, 물 마시기, 단계 진행, 배터리, 멀티 프로그레스
+- **생산성 & 도구** (10): 뽀모도로, 스톱워치, 카운터, 습관 트래커, 투두리스트, 호흡 타이머, 카운트다운, 플래시카드, 매트릭스, 위젯 그룹
+- **소셜 & 링크** (5): 프로필 카드, 링크 트리, 북마크, GitHub 잔디, 후기 카드
+- **콘텐츠 & 장식** (20): 명언 카드, 텍스트 배너, 음악 플레이어, 날씨, 달 위상, 메모지, 그라데이션, 타이프라이터, QR 코드, 주사위, 통계 카드, 컬러 팔레트, 구분선, 이미지 카드, 환율, 레이더 차트, 도넛 차트, 이모지 비, 변경 로그, 포춘 쿠키, 뱃지
 
 ## 완료된 작업 이력
 
@@ -682,6 +686,20 @@ Hex 값을 `#` 없이 저장/전달 (`"2563EB"`, `"FFFFFF"`).
 - **PWA 아이콘**: SVG→PNG 변환(192/512), manifest.json 업데이트
 - **커스텀 404 페이지**: 브랜딩된 not-found 페이지
 - **SEO**: sitemap.ts + 동적 메타데이터, og:image, 가이드 페이지 보강
+
+### v12 — 수익화 인프라 + 바이럴/성장 + 프리셋 완성
+- **워터마크 시스템**: `WidgetWatermark.tsx`가 `WidgetPage.tsx`에서 자동 렌더, 라이선스 키 입력 시 제거
+- **라이선스 키 시스템**: `src/lib/license.ts` — 클라이언트 사이드 키 검증 (`XXXXX-XXXXX-XXXXX` 형식), localStorage 영속화
+- **설정 페이지** (`/settings`): 라이선스 키 입력/해제, 워터마크 제거 관리
+- **광고 배너**: `AdBanner.tsx` — 홈·에디터에 광고 슬롯 배치 (AdSense 준비)
+- **프리미엄 노션 템플릿 섹션**: `/templates` 페이지에 LemonSqueezy 연동 상품 카드 추가
+- **노션 프리뷰 모드**: 에디터 프리뷰 사이즈에 "노션" 옵션 추가, `NotionPageMockup.tsx`로 노션 페이지 임베드 목업 표시
+- **위젯 크기 가이드**: `widget-size-guide.ts` — 52종 위젯별 추천 크기/팁, 프리뷰 사이즈 선택기 아래 표시
+- **SNS 공유 카드**: `ShareCardDialog.tsx` — html-to-image로 위젯 캡처 → 1200×630 브랜딩 카드 생성, 이미지 저장/복사/X 공유
+- **갤러리 제출**: `GallerySubmitButton.tsx` — GitHub Issues로 위젯 갤러리 제출, 갤러리 페이지에 CTA 배너 추가
+- **프리셋 완성**: 빈 프리셋 8종 채우기 (counter, weather, reading, habit, stopwatch, miniCalendar, analogClock, timeline) + fortune-cookie 프리셋 추가 및 PresetSelector 연동
+- **emoji-rain 위젯 개선**: 비 애니메이션 수정
+- **badge 위젯 등록**: widget-categories + sitemap에 badge 추가
 
 ## 스크립트
 ```bash

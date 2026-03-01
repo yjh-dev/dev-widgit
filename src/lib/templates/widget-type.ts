@@ -31,4 +31,5 @@ export type WidgetType =
   | "matrix"
   | "multi-progress"
   | "badge"
-  | "fortune-cookie";
+  | "fortune-cookie"
+  | "group";

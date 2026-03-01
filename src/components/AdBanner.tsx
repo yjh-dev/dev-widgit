@@ -1,0 +1,69 @@
+"use client";
+
+import { useEffect, useRef } from "react";
+
+/**
+ * Google AdSense 디스플레이 광고 슬롯.
+ * 에디터/홈 페이지에서 사용. 위젯 렌더링 페이지에는 사용하지 않는다.
+ *
+ * 사용법:
+ * 1. Google AdSense 승인 후 data-ad-client, data-ad-slot 값을 설정
+ * 2. layout.tsx <head>에 AdSense 스크립트 태그 추가 (아래 ADSENSE_SCRIPT 참고)
+ *
+ * ADSENSE_SCRIPT (layout.tsx <head>에 추가):
+ * <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+ */
+
+// TODO: AdSense 승인 후 실제 값으로 교체
+const AD_CLIENT = "ca-pub-XXXXXXXXXXXXXXXX";
+const AD_SLOT = "XXXXXXXXXX";
+
+interface AdBannerProps {
+  format?: "auto" | "horizontal" | "vertical" | "rectangle";
+  className?: string;
+}
+
+export default function AdBanner({ format = "auto", className }: AdBannerProps) {
+  const adRef = useRef<HTMLModElement>(null);
+  const pushed = useRef(false);
+
+  useEffect(() => {
+    // AdSense가 로드되지 않은 경우 (개발 환경 등) 스킵
+    if (pushed.current) return;
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const adsbygoogle = (window as any).adsbygoogle;
+      if (adsbygoogle) {
+        adsbygoogle.push({});
+        pushed.current = true;
+      }
+    } catch {
+      // AdSense 미설정 시 무시
+    }
+  }, []);
+
+  // AD_CLIENT가 placeholder이면 개발용 빈 배너 표시
+  if (AD_CLIENT.includes("XXXX")) {
+    return (
+      <div className={`rounded-lg border border-dashed bg-muted/30 flex items-center justify-center text-xs text-muted-foreground ${className ?? ""}`}
+        style={{ minHeight: format === "horizontal" ? 90 : format === "rectangle" ? 250 : 100 }}
+      >
+        광고 영역
+      </div>
+    );
+  }
+
+  return (
+    <div className={className}>
+      <ins
+        ref={adRef}
+        className="adsbygoogle"
+        style={{ display: "block" }}
+        data-ad-client={AD_CLIENT}
+        data-ad-slot={AD_SLOT}
+        data-ad-format={format}
+        data-full-width-responsive="true"
+      />
+    </div>
+  );
+}

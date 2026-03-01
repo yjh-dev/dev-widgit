@@ -315,9 +315,144 @@ export const multiProgressPresets: Preset[] = [
   },
 ];
 
-// Widgets without presets — empty arrays
-export const counterPresets: Preset[] = [];
-export const weatherPresets: Preset[] = [];
-export const readingPresets: Preset[] = [];
-export const habitPresets: Preset[] = [];
-export const stopwatchPresets: Preset[] = [];
+// Counter
+export const counterPresets: Preset[] = [
+  {
+    id: "counter-score",
+    name: "점수 카운터",
+    data: {
+      label: "점수",
+      initial: 0,
+      step: 1,
+      showReset: true,
+      btnColor: "2563EB",
+      bg: "FFFFFF",
+    },
+  },
+  {
+    id: "counter-dark",
+    name: "다크 카운터",
+    data: {
+      label: "카운트",
+      initial: 0,
+      step: 5,
+      showReset: true,
+      btnColor: "7C3AED",
+      color: "E0E0E0",
+      bg: "1A1A2E",
+    },
+  },
+];
+
+// Weather
+export const weatherPresets: Preset[] = [
+  {
+    id: "weather-seoul",
+    name: "서울 날씨",
+    data: {
+      lat: 37.5665,
+      lon: 126.978,
+      city: "서울",
+      unit: "celsius",
+      showForecast: true,
+      showHumidity: true,
+      iconStyle: "emoji",
+    },
+  },
+  {
+    id: "weather-tokyo-dark",
+    name: "도쿄 (다크)",
+    data: {
+      lat: 35.6762,
+      lon: 139.6503,
+      city: "도쿄",
+      unit: "celsius",
+      showForecast: false,
+      showHumidity: true,
+      showWind: true,
+      iconStyle: "minimal",
+      bg: "1A1A2E",
+      color: "E0E0E0",
+    },
+  },
+];
+
+// Reading
+export const readingPresets: Preset[] = [
+  {
+    id: "reading-bar",
+    name: "독서 진행 (바)",
+    data: {
+      title: "클린 코드",
+      current: 180,
+      total: 300,
+      style: "bar",
+      color: "2563EB",
+      pages: true,
+    },
+  },
+  {
+    id: "reading-ring-dark",
+    name: "독서 진행 (링 다크)",
+    data: {
+      title: "사피엔스",
+      current: 250,
+      total: 450,
+      style: "ring",
+      color: "22C55E",
+      pages: true,
+      bg: "1A1A2E",
+      textColor: "E0E0E0",
+    },
+  },
+];
+
+// Habit
+export const habitPresets: Preset[] = [
+  {
+    id: "habit-exercise",
+    name: "운동 습관",
+    data: {
+      title: "운동",
+      view: "week",
+      weekStart: "mon",
+      color: "22C55E",
+    },
+  },
+  {
+    id: "habit-month-dark",
+    name: "월간 (다크)",
+    data: {
+      title: "습관 트래커",
+      view: "month",
+      weekStart: "mon",
+      color: "7C3AED",
+      bg: "1A1A2E",
+      textColor: "E0E0E0",
+    },
+  },
+];
+
+// Stopwatch
+export const stopwatchPresets: Preset[] = [
+  {
+    id: "stopwatch-default",
+    name: "기본 스톱워치",
+    data: {
+      showMs: false,
+      showLap: true,
+      btnColor: "2563EB",
+    },
+  },
+  {
+    id: "stopwatch-dark",
+    name: "다크 스톱워치",
+    data: {
+      showMs: true,
+      showLap: true,
+      btnColor: "7C3AED",
+      bg: "1A1A2E",
+      color: "E0E0E0",
+    },
+  },
+];

@@ -602,6 +602,28 @@ export const emojiRainPresets: Preset[] = [
   },
 ];
 
+// Fortune Cookie
+export const fortuneCookiePresets: Preset[] = [
+  {
+    id: "fortune-classic",
+    name: "클래식 포춘",
+    data: {
+      bg: "FEF3C7",
+      color: "92400E",
+      accentColor: "F59E0B",
+    },
+  },
+  {
+    id: "fortune-dark",
+    name: "다크 포춘",
+    data: {
+      bg: "1A1A2E",
+      color: "E0E0E0",
+      accentColor: "7C3AED",
+    },
+  },
+];
+
 // Changelog
 export const changelogPresets: Preset[] = [
   {

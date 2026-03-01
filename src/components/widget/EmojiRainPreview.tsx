@@ -1,12 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useMemo } from "react";
 import {
   parseEmojis,
-  createParticle,
   SPEED_MULTIPLIER,
   DENSITY_COUNT,
-  type Particle,
   type SpeedKey,
   type DensityKey,
 } from "@/lib/emoji-rain";
@@ -23,6 +21,15 @@ interface EmojiRainPreviewProps {
   padding?: number;
 }
 
+interface RainDrop {
+  emoji: string;
+  x: number;
+  y: number;
+  speed: number;
+  size: number;
+  opacity: number;
+}
+
 export default function EmojiRainPreview({
   emojis = "🎉🎊✨💖🌟",
   speed = "normal",
@@ -32,74 +39,132 @@ export default function EmojiRainPreview({
   bg = "FFFFFF",
   transparentBg = true,
   borderRadius = 16,
-  padding = 24,
+  padding = 0,
 }: EmojiRainPreviewProps) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const particlesRef = useRef<Particle[]>([]);
+  const dropsRef = useRef<RainDrop[]>([]);
   const rafRef = useRef<number>(0);
-  const [renderParticles, setRenderParticles] = useState<Particle[]>([]);
+  const initializedRef = useRef(false);
 
-  const emojiList = parseEmojis(emojis);
+  const emojiList = useMemo(() => parseEmojis(emojis), [emojis]);
   const count = DENSITY_COUNT[density];
   const speedMul = SPEED_MULTIPLIER[speed];
 
-  const initParticles = useCallback(() => {
-    const el = containerRef.current;
-    if (!el) return;
-    const w = el.clientWidth;
-    const h = el.clientHeight;
-    const particles: Particle[] = [];
-    for (let i = 0; i < count; i++) {
-      const p = createParticle(emojiList, w, h, minSize, maxSize);
-      // Spread initial y across the full height for a natural start
-      p.y = Math.random() * h - h;
-      particles.push(p);
-    }
-    particlesRef.current = particles;
-  }, [count, emojiList, minSize, maxSize]);
-
+  // Initialize / re-init drops when config changes
   useEffect(() => {
-    initParticles();
-  }, [initParticles]);
+    const canvas = canvasRef.current;
+    const container = containerRef.current;
+    if (!canvas || !container) return;
 
+    const w = container.clientWidth;
+    const h = container.clientHeight;
+    if (w <= 0 || h <= 0) return;
+
+    canvas.width = w;
+    canvas.height = h;
+
+    const drops: RainDrop[] = [];
+    for (let i = 0; i < count; i++) {
+      drops.push({
+        emoji: emojiList[Math.floor(Math.random() * emojiList.length)],
+        x: Math.random() * w,
+        y: Math.random() * h * 2 - h, // spread across the height for natural start
+        speed: 0.5 + Math.random() * 1.5,
+        size: minSize + Math.random() * (maxSize - minSize),
+        opacity: 0.5 + Math.random() * 0.5,
+      });
+    }
+    dropsRef.current = drops;
+    initializedRef.current = true;
+  }, [emojiList, count, minSize, maxSize]);
+
+  // Animation loop
   useEffect(() => {
     let lastTime = 0;
 
     const animate = (time: number) => {
-      if (!lastTime) lastTime = time;
-      const delta = (time - lastTime) / 16; // normalize to ~60fps
-      lastTime = time;
-
-      const el = containerRef.current;
-      if (!el) {
+      const canvas = canvasRef.current;
+      const container = containerRef.current;
+      if (!canvas || !container) {
         rafRef.current = requestAnimationFrame(animate);
         return;
       }
 
-      const h = el.clientHeight;
-      const w = el.clientWidth;
-      const particles = particlesRef.current;
-
-      for (let i = 0; i < particles.length; i++) {
-        const p = particles[i];
-        p.y += p.speed * speedMul * delta;
-        if (p.y > h + p.size) {
-          // Reset to top
-          p.y = -(p.size + Math.random() * 40);
-          p.x = Math.random() * w;
-          p.emoji = emojiList[Math.floor(Math.random() * emojiList.length)];
-          p.speed = 0.5 + Math.random() * 1.5;
-          p.opacity = 0.5 + Math.random() * 0.5;
-        }
+      // Handle resize
+      const w = container.clientWidth;
+      const h = container.clientHeight;
+      if (w <= 0 || h <= 0) {
+        rafRef.current = requestAnimationFrame(animate);
+        return;
+      }
+      if (canvas.width !== w || canvas.height !== h) {
+        canvas.width = w;
+        canvas.height = h;
       }
 
-      setRenderParticles([...particles]);
+      if (!lastTime) lastTime = time;
+      const delta = (time - lastTime) / 16; // ~60fps normalization
+      lastTime = time;
+
+      const ctx = canvas.getContext("2d");
+      if (!ctx) {
+        rafRef.current = requestAnimationFrame(animate);
+        return;
+      }
+
+      ctx.clearRect(0, 0, w, h);
+
+      const drops = dropsRef.current;
+      const emList = emojiList;
+
+      for (let i = 0; i < drops.length; i++) {
+        const d = drops[i];
+        // Move down
+        d.y += d.speed * speedMul * delta;
+
+        // Reset when past bottom
+        if (d.y > h + d.size) {
+          d.y = -(d.size + Math.random() * 40);
+          d.x = Math.random() * w;
+          d.emoji = emList[Math.floor(Math.random() * emList.length)];
+          d.speed = 0.5 + Math.random() * 1.5;
+          d.opacity = 0.5 + Math.random() * 0.5;
+        }
+
+        // Draw
+        ctx.globalAlpha = d.opacity;
+        ctx.font = `${d.size}px serif`;
+        ctx.textBaseline = "top";
+        ctx.fillText(d.emoji, d.x, d.y);
+      }
+
+      ctx.globalAlpha = 1;
       rafRef.current = requestAnimationFrame(animate);
     };
 
     rafRef.current = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(rafRef.current);
   }, [speedMul, emojiList]);
+
+  // ResizeObserver to keep canvas in sync
+  useEffect(() => {
+    const container = containerRef.current;
+    const canvas = canvasRef.current;
+    if (!container || !canvas) return;
+
+    const ro = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const { width, height } = entry.contentRect;
+        if (width > 0 && height > 0) {
+          canvas.width = width;
+          canvas.height = height;
+        }
+      }
+    });
+    ro.observe(container);
+    return () => ro.disconnect();
+  }, []);
 
   return (
     <div
@@ -111,22 +176,11 @@ export default function EmojiRainPreview({
         padding,
       }}
     >
-      {renderParticles.map((p) => (
-        <span
-          key={p.id}
-          className="absolute select-none pointer-events-none"
-          style={{
-            left: p.x,
-            top: p.y,
-            fontSize: p.size,
-            opacity: p.opacity,
-            lineHeight: 1,
-            willChange: "transform",
-          }}
-        >
-          {p.emoji}
-        </span>
-      ))}
+      <canvas
+        ref={canvasRef}
+        className="absolute inset-0 w-full h-full pointer-events-none"
+        style={{ display: "block" }}
+      />
     </div>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { Suspense, type ReactNode } from "react";
+import WidgetWatermark from "@/components/widget/WidgetWatermark";
 
 function Fallback() {
   return (
@@ -12,12 +13,13 @@ function Fallback() {
 
 /**
  * 위젯 렌더링 페이지의 공통 래퍼.
- * Suspense + 풀스크린 컨테이너 + 로딩 폴백을 한 번에 제공한다.
+ * Suspense + 풀스크린 컨테이너 + 로딩 폴백 + 워터마크를 한 번에 제공한다.
  */
 export default function WidgetPage({ children }: { children: ReactNode }) {
   return (
     <Suspense fallback={<Fallback />}>
       {children}
+      <WidgetWatermark />
     </Suspense>
   );
 }

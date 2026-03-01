@@ -113,6 +113,7 @@ const widgetMetaMap: Record<WidgetType, WidgetMeta> = {
   "multi-progress": { name: "멀티 프로그레스", icon: BarChartHorizontal },
   badge: { name: "뱃지", icon: Award },
   "fortune-cookie": { name: "포춘 쿠키", icon: Cookie },
+  group: { name: "위젯 그룹", icon: Layers },
 };
 
 export function getWidgetName(type: WidgetType): string {

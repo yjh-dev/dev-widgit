@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowLeft, ExternalLink, Copy } from "lucide-react";
+import { ArrowLeft, ExternalLink, Copy, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import ThemeToggle from "@/components/ui/theme-toggle";
@@ -106,6 +106,25 @@ export default function GalleryPage() {
       </header>
 
       <main className="max-w-5xl mx-auto px-6 pb-20 space-y-12">
+        {/* Community submission CTA */}
+        <div className="rounded-xl border bg-gradient-to-r from-primary/5 to-primary/10 p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+          <div className="flex-1 space-y-1">
+            <div className="flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-primary" />
+              <h2 className="text-base font-semibold">나만의 위젯을 공유해보세요!</h2>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              Widgit 에디터에서 만든 위젯을 갤러리에 제출하면 다른 사용자와 공유할 수 있습니다.
+            </p>
+          </div>
+          <Link href="/">
+            <Button size="sm">
+              <Sparkles className="w-4 h-4 mr-1.5" />
+              위젯 만들기
+            </Button>
+          </Link>
+        </div>
+
         {showcase.map((item) => (
           <section key={item.title} className="space-y-4">
             <div>

@@ -1,4 +1,3 @@
-import type { TimelineEvent } from "@/lib/timeline";
 import type { Preset } from "./types";
 
 // D-Day
@@ -201,7 +200,102 @@ export const countdownPresets: Preset[] = [
   },
 ];
 
-// Widgets without presets — empty arrays
-export const miniCalendarPresets: Preset[] = [];
-export const analogClockPresets: Preset[] = [];
-export const timelinePresets: Preset<{ events?: TimelineEvent[] }>[] = [];
+// Mini Calendar
+export const miniCalendarPresets: Preset[] = [
+  {
+    id: "minical-default",
+    name: "기본 캘린더",
+    data: {
+      weekStart: "mon",
+      lang: "ko",
+      header: "full",
+      showDayNames: true,
+      showOtherDays: true,
+      showNav: true,
+      highlight: "2563EB",
+    },
+  },
+  {
+    id: "minical-dark",
+    name: "다크 캘린더",
+    data: {
+      weekStart: "mon",
+      lang: "ko",
+      header: "short",
+      showDayNames: true,
+      showOtherDays: false,
+      showNav: true,
+      highlight: "7C3AED",
+      bg: "1A1A2E",
+      color: "E0E0E0",
+    },
+  },
+];
+
+// Analog Clock
+export const analogClockPresets: Preset[] = [
+  {
+    id: "analog-classic",
+    name: "클래식 시계",
+    data: {
+      showNumbers: true,
+      numStyle: "all",
+      showSeconds: true,
+      showTicks: true,
+      showBorder: true,
+      handColor: "1E1E1E",
+      secHandColor: "E11D48",
+      faceColor: "FFFFFF",
+      borderColor: "1E1E1E",
+    },
+  },
+  {
+    id: "analog-dark-minimal",
+    name: "다크 미니멀",
+    data: {
+      showNumbers: true,
+      numStyle: "quarter",
+      showSeconds: false,
+      showTicks: true,
+      showBorder: false,
+      handColor: "E0E0E0",
+      secHandColor: "7C3AED",
+      faceColor: "1A1A2E",
+      tickColor: "4B5563",
+      bg: "1A1A2E",
+    },
+  },
+];
+
+// Timeline
+export const timelinePresets: Preset[] = [
+  {
+    id: "timeline-exam",
+    name: "시험 일정",
+    data: {
+      events: [
+        { title: "중간고사", date: "2026-04-15" },
+        { title: "기말고사", date: "2026-06-20" },
+        { title: "방학", date: "2026-07-15" },
+      ],
+      color: "2563EB",
+      past: false,
+    },
+  },
+  {
+    id: "timeline-dark",
+    name: "다크 타임라인",
+    data: {
+      events: [
+        { title: "기획 완료", date: "2026-03-01" },
+        { title: "개발 시작", date: "2026-03-15" },
+        { title: "출시", date: "2026-05-01" },
+      ],
+      color: "7C3AED",
+      past: true,
+      pastColor: "6B7280",
+      bg: "1A1A2E",
+      textColor: "E0E0E0",
+    },
+  },
+];

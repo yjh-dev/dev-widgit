@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo, useCallback, startTransition } from "react";
-import { Copy, RotateCcw, ExternalLink, ChevronDown, Download, Import, Code, Share2 } from "lucide-react";
+import { Copy, RotateCcw, ExternalLink, ChevronDown, Download, Import, Code, Share2, Image } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   AlertDialog,
@@ -25,6 +25,8 @@ import type { WidgetType } from "@/lib/templates";
 import ThemeQuickApply from "./ThemeQuickApply";
 import EditorActionPresets from "./EditorActionPresets";
 import EditorActionSaveWidget from "./EditorActionSaveWidget";
+import ShareCardDialog from "./ShareCardDialog";
+import GallerySubmitButton from "./GallerySubmitButton";
 
 const LS_KEY = "widgit-short-url";
 
@@ -55,6 +57,7 @@ export default function EditorActions({
   const [customPresets, setCustomPresets] = useState<CustomPreset[]>([]);
   const [showImport, setShowImport] = useState(false);
   const [importUrl, setImportUrl] = useState("");
+  const [shareOpen, setShareOpen] = useState(false);
   const { register } = useEditorActions();
 
   const [mounted, setMounted] = useState(false);
@@ -231,6 +234,22 @@ export default function EditorActions({
         </Button>
       </div>
 
+      <div className="flex gap-2">
+        <Button
+          variant="outline"
+          size="sm"
+          className="flex-1 h-8 text-xs"
+          onClick={() => setShareOpen(true)}
+        >
+          <Image className="w-3.5 h-3.5 mr-1.5" />
+          SNS 공유 카드
+        </Button>
+        {widgetType && (
+          <GallerySubmitButton widgetType={widgetType} widgetUrl={displayUrl} />
+        )}
+      </div>
+      <ShareCardDialog open={shareOpen} onOpenChange={setShareOpen} widgetUrl={displayUrl} />
+
       <div className="flex flex-wrap gap-x-3 gap-y-1">
         <button
           type="button"
@@ -308,6 +327,7 @@ export default function EditorActions({
         presets={customPresets}
         onPresetsChange={setCustomPresets}
       />
+
     </div>
   );
 }
