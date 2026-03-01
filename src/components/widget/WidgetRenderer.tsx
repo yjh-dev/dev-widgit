@@ -51,6 +51,7 @@ import EmojiRainPreview from "./EmojiRainPreview";
 import ChangelogPreview from "./ChangelogPreview";
 import MatrixPreview from "./MatrixPreview";
 import MultiProgressPreview from "./MultiProgressPreview";
+import FortuneCookiePreview from "./FortuneCookiePreview";
 
 interface WidgetRendererProps {
   type: WidgetType;
@@ -161,6 +162,8 @@ export default function WidgetRenderer({ type, props: p }: WidgetRendererProps) 
       return <MatrixPreview {...a} />;
     case "multi-progress":
       return <MultiProgressPreview {...a} />;
+    case "fortune-cookie":
+      return <FortuneCookiePreview {...a} />;
     default:
       return null;
   }

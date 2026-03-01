@@ -109,6 +109,8 @@ export function applyThemeToWidget(
       return { ...base, textColor: theme.text, bg: theme.bg, ...config };
     case "multi-progress":
       return { ...base, textColor: theme.text, bg: theme.bg, ...config };
+    case "fortune-cookie":
+      return { ...base, cookieColor: theme.accent, textColor: theme.text, bg: theme.bg, ...config };
     default:
       return { ...base, bg: theme.bg, color: theme.text, ...config };
   }
@@ -437,6 +439,11 @@ export function buildThemedWidgetUrl(
       addIfPresent("bg", config.bg ?? theme.bg);
       break;
     case "multi-progress":
+      addIfPresent("bg", config.bg ?? theme.bg);
+      break;
+    case "fortune-cookie":
+      addIfPresent("cookieColor", config.cookieColor ?? theme.accent);
+      addIfPresent("textColor", config.textColor ?? theme.text);
       addIfPresent("bg", config.bg ?? theme.bg);
       break;
   }

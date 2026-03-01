@@ -103,6 +103,8 @@ export function getHomeThumbnailProps(type: WidgetType): Record<string, unknown>
       return { ...common, items: [{ text: "프로젝트 마감", quadrant: 0 }, { text: "운동 계획", quadrant: 1 }, { text: "이메일", quadrant: 2 }, { text: "SNS", quadrant: 3 }], bg: "FFFFFF", padding: 12 };
     case "multi-progress":
       return { ...common, items: [{ label: "프론트엔드", value: 80, max: 100, color: "6366F1" }, { label: "백엔드", value: 65, max: 100, color: "EC4899" }, { label: "디자인", value: 90, max: 100, color: "22C55E" }], bg: "FFFFFF", padding: 16 };
+    case "fortune-cookie":
+      return { ...common, customMessage: "", lang: "ko", style: "classic", cookieColor: "D97706", textColor: "1E1E1E", bg: "FFFFFF", padding: 24 };
     default:
       return common;
   }

@@ -56,4 +56,5 @@ export const widgetDefaults: WidgetDefault[] = [
   { type: "changelog", name: "변경 로그", defaultUrl: "/widget/changelog" },
   { type: "matrix", name: "매트릭스", defaultUrl: "/widget/matrix" },
   { type: "multi-progress", name: "멀티 프로그레스", defaultUrl: "/widget/multi-progress" },
+  { type: "fortune-cookie", name: "포춘 쿠키", defaultUrl: "/widget/fortune-cookie" },
 ];
