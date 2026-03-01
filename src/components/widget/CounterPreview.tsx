@@ -10,6 +10,7 @@ import {
   formatCount,
 } from "@/lib/counter";
 import type { FontSizeKey } from "@/lib/common-widget-options";
+import { resolveFontStyle } from "@/lib/fonts";
 
 const NUM_SIZE_MAP: Record<FontSizeKey, string> = {
   sm: "text-3xl",
@@ -46,6 +47,7 @@ interface CounterPreviewProps {
   borderRadius?: number;
   padding?: number;
   fontSize?: FontSizeKey;
+  font?: string;
   persist?: boolean;
 }
 
@@ -63,6 +65,7 @@ export default function CounterPreview({
   borderRadius = 16,
   padding = 24,
   fontSize = "md",
+  font = "sans",
   persist = false,
 }: CounterPreviewProps) {
   const storageKey = buildStorageKey({ label, initial, step, min, max });
@@ -100,14 +103,17 @@ export default function CounterPreview({
   const atMin = min !== undefined && count <= min;
   const atMax = max !== undefined && count >= max;
 
+  const fontStyle = resolveFontStyle(font);
+
   return (
     <div
-      className="w-full h-full flex flex-col items-center justify-center gap-3"
+      className={`w-full h-full flex flex-col items-center justify-center gap-3 ${fontStyle.className ?? ""}`}
       style={{
         backgroundColor: transparentBg ? "transparent" : `#${bg}`,
         borderRadius,
         padding,
         color: `#${color}`,
+        fontFamily: fontStyle.fontFamily,
       }}
     >
       <p className={`${LABEL_SIZE_MAP[fontSize]} opacity-60 font-medium`}>{label}</p>
@@ -121,7 +127,8 @@ export default function CounterPreview({
           type="button"
           onClick={decrement}
           disabled={atMin}
-          className={`${BTN_SIZE_MAP[fontSize]} rounded-full flex items-center justify-center text-white transition-opacity disabled:opacity-30`}
+          aria-label="감소"
+          className={`${BTN_SIZE_MAP[fontSize]} rounded-full flex items-center justify-center text-white transition-all hover:opacity-80 active:scale-95 disabled:opacity-30`}
           style={{ backgroundColor: `#${btnColor}` }}
         >
           <Minus className="w-4 h-4" />
@@ -131,7 +138,8 @@ export default function CounterPreview({
           type="button"
           onClick={increment}
           disabled={atMax}
-          className={`${BTN_SIZE_MAP[fontSize]} rounded-full flex items-center justify-center text-white transition-opacity disabled:opacity-30`}
+          aria-label="증가"
+          className={`${BTN_SIZE_MAP[fontSize]} rounded-full flex items-center justify-center text-white transition-all hover:opacity-80 active:scale-95 disabled:opacity-30`}
           style={{ backgroundColor: `#${btnColor}` }}
         >
           <Plus className="w-4 h-4" />
@@ -142,7 +150,8 @@ export default function CounterPreview({
         <button
           type="button"
           onClick={handleReset}
-          className="flex items-center gap-1 text-xs opacity-40 hover:opacity-70 transition-opacity mt-1"
+          aria-label="초기화"
+          className="flex items-center gap-1 text-xs opacity-40 hover:opacity-70 active:scale-95 transition-all mt-1"
           style={{ color: `#${color}` }}
         >
           <RotateCcw className="w-3 h-3" />

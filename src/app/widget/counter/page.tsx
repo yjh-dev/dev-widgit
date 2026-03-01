@@ -31,6 +31,7 @@ function CounterWidgetContent() {
   const borderRadius = parseBorderRadius(searchParams.get("radius"));
   const padding = parsePadding(searchParams.get("pad"));
   const fontSize = parseFontSize(searchParams.get("fsize"));
+  const font = searchParams.get("font") || "sans";
 
   return (
     <WidgetScreen>
@@ -43,6 +44,7 @@ function CounterWidgetContent() {
         showReset={showReset}
         color={color}
         btnColor={btnColor}
+        font={font}
         bg={bg}
         transparentBg={transparentBg}
         borderRadius={borderRadius}

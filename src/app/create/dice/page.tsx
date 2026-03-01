@@ -31,13 +31,14 @@ import { copyToClipboard } from "@/lib/clipboard";
 import { parseCommonParams } from "@/lib/common-params";
 import { addBgParam, addCommonStyleParams, buildUrl } from "@/lib/url-builder-utils";
 import type { DiceMode, DiceSides } from "@/lib/dice";
+import { GENERAL_FONT_OPTIONS } from "@/lib/fonts";
 
 export default function CreateDicePage() {
   const {
-    mode, count, sides, color, textColor, bg, transparentBg,
+    mode, count, sides, color, textColor, font, bg, transparentBg,
     items, showTotal, history,
     borderRadius, padding, fontSize,
-    setMode, setCount, setSides, setColor, setTextColor, setBg, setTransparentBg,
+    setMode, setCount, setSides, setColor, setTextColor, setFont, setBg, setTransparentBg,
     setItems, setShowTotal, setHistory,
     setBorderRadius, setPadding, setFontSize,
     loadPreset, reset,
@@ -51,6 +52,7 @@ export default function CreateDicePage() {
       ...(p.has("sides") && { sides: Number(p.get("sides")) as DiceSides }),
       ...(p.has("color") && { color: p.get("color")! }),
       ...(p.has("textColor") && { textColor: p.get("textColor")! }),
+      ...(p.has("font") && { font: p.get("font")! }),
       ...(p.has("items") && { items: p.get("items")!.split("|").map(decodeURIComponent) }),
       ...(p.has("showTotal") && { showTotal: p.get("showTotal") !== "false" }),
       ...(p.has("history") && { history: p.get("history") === "true" }),
@@ -83,11 +85,12 @@ export default function CreateDicePage() {
     }
     if (color !== "2563EB") params.set("color", color);
     if (textColor !== "FFFFFF") params.set("textColor", textColor);
+    if (font !== "sans") params.set("font", font);
     addBgParam(params, transparentBg, bg);
     if (history) params.set("history", "true");
     addCommonStyleParams(params, borderRadius, padding, fontSize);
     return buildUrl(base, params);
-  }, [mode, count, sides, color, textColor, bg, transparentBg, items, showTotal, history, borderRadius, padding, fontSize]);
+  }, [mode, count, sides, color, textColor, font, bg, transparentBg, items, showTotal, history, borderRadius, padding, fontSize]);
 
   const handleCopy = async () => {
     await copyToClipboard(buildWidgetUrl());
@@ -184,6 +187,17 @@ export default function CreateDicePage() {
                 title: "표시 옵션",
                 children: (
                   <>
+                    <div className="space-y-2">
+                      <Label>폰트</Label>
+                      <Select value={font} onValueChange={setFont}>
+                        <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          {GENERAL_FONT_OPTIONS.map((opt) => (
+                            <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
                     {mode === "dice" && count > 1 && (
                       <div className="flex items-center justify-between">
                         <Label htmlFor="showTotal">합계 표시</Label>
@@ -246,6 +260,7 @@ export default function CreateDicePage() {
               sides={sides}
               color={color}
               textColor={textColor}
+              font={font}
               bg={bg}
               transparentBg={transparentBg}
               items={items}

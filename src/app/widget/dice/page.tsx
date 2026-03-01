@@ -39,6 +39,7 @@ function DiceWidgetContent() {
   const borderRadius = parseBorderRadius(searchParams.get("radius"));
   const padding = parsePadding(searchParams.get("pad"));
   const fontSize = parseFontSize(searchParams.get("fsize"));
+  const font = searchParams.get("font") || "sans";
 
   return (
     <WidgetScreen>
@@ -48,6 +49,7 @@ function DiceWidgetContent() {
         sides={sides}
         color={color}
         textColor={textColor}
+        font={font}
         bg={bg}
         transparentBg={transparentBg}
         items={items}

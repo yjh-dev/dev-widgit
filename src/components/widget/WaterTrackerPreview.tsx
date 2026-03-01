@@ -117,6 +117,7 @@ export default function WaterTrackerPreview({
             type="button"
             onClick={() => handleGlassClick(i)}
             className="cursor-pointer transition-transform hover:scale-110 active:scale-95"
+            aria-label={`${i + 1}잔${i < filled ? " (완료)" : ""}`}
             title={`${i + 1}잔`}
           >
             <GlassIcon filled={i < filled} color={color} size={iconSize} />

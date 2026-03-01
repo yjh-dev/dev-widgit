@@ -3,6 +3,7 @@
 import { ExternalLink } from "lucide-react";
 import { extractDomain, getFaviconUrl, normalizeUrl } from "@/lib/bookmark";
 import type { FontSizeKey } from "@/lib/common-widget-options";
+import { resolveFontStyle } from "@/lib/fonts";
 
 const TITLE_SIZE_MAP: Record<FontSizeKey, string> = {
   sm: "text-sm",
@@ -30,6 +31,7 @@ interface BookmarkPreviewProps {
   borderRadius?: number;
   padding?: number;
   fontSize?: FontSizeKey;
+  font?: string;
   linkable?: boolean;
 }
 
@@ -45,21 +47,24 @@ export default function BookmarkPreview({
   borderRadius = 16,
   padding = 24,
   fontSize = "md",
+  font = "sans",
   linkable = true,
 }: BookmarkPreviewProps) {
   const domain = extractDomain(url);
   const faviconUrl = getFaviconUrl(url);
   const href = normalizeUrl(url);
   const displayTitle = title || domain || "링크";
+  const fontStyle = resolveFontStyle(font);
 
   const content = (
     <div
-      className="w-full h-full flex items-center justify-center"
+      className={`w-full h-full flex items-center justify-center ${fontStyle.className ?? ""}`}
       style={{
         backgroundColor: transparentBg ? "transparent" : `#${bg}`,
         borderRadius,
         padding,
         color: `#${color}`,
+        fontFamily: fontStyle.fontFamily,
       }}
     >
       <div className="flex items-center gap-4">

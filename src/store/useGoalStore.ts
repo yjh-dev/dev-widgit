@@ -11,6 +11,7 @@ const widgetDefaults = {
   showValue: true,
   color: "2563EB",
   textColor: "",
+  font: "sans",
 };
 
 interface GoalState extends CommonStyleState {
@@ -22,6 +23,7 @@ interface GoalState extends CommonStyleState {
   showValue: boolean;
   color: string;
   textColor: string;
+  font: string;
   setTitle: (v: string) => void;
   setCurrent: (v: number) => void;
   setTarget: (v: number) => void;
@@ -30,6 +32,7 @@ interface GoalState extends CommonStyleState {
   setShowValue: (v: boolean) => void;
   setColor: (v: string) => void;
   setTextColor: (v: string) => void;
+  setFont: (v: string) => void;
   loadPreset: (preset: Record<string, unknown>) => void;
   reset: () => void;
 }
@@ -44,5 +47,6 @@ export const useGoalStore = create<GoalState>(
     setShowValue: (v: boolean) => set({ showValue: v }),
     setColor: (v: string) => set({ color: v }),
     setTextColor: (v: string) => set({ textColor: v }),
+    setFont: (v: string) => set({ font: v }),
   })),
 );

@@ -8,6 +8,7 @@ const widgetDefaults = {
   showIcon: true,
   showUrl: true,
   color: "1E1E1E",
+  font: "sans",
 };
 
 interface BookmarkState extends CommonStyleState {
@@ -17,12 +18,14 @@ interface BookmarkState extends CommonStyleState {
   showIcon: boolean;
   showUrl: boolean;
   color: string;
+  font: string;
   setUrl: (v: string) => void;
   setTitle: (v: string) => void;
   setDesc: (v: string) => void;
   setShowIcon: (v: boolean) => void;
   setShowUrl: (v: boolean) => void;
   setColor: (v: string) => void;
+  setFont: (v: string) => void;
   loadPreset: (preset: Record<string, unknown>) => void;
   reset: () => void;
 }
@@ -35,5 +38,6 @@ export const useBookmarkStore = create<BookmarkState>(
     setShowIcon: (v: boolean) => set({ showIcon: v }),
     setShowUrl: (v: boolean) => set({ showUrl: v }),
     setColor: (v: string) => set({ color: v }),
+    setFont: (v: string) => set({ font: v }),
   })),
 );

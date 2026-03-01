@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, startTransition } from "react";
 import { saveTodos, loadTodos, generateId, type TodoItem } from "@/lib/todo";
 import type { FontSizeKey } from "@/lib/common-widget-options";
+import { resolveFontStyle } from "@/lib/fonts";
 
 const FONT_SIZE_MAP: Record<FontSizeKey, string> = {
   sm: "0.75rem",
@@ -24,6 +25,7 @@ interface TodoPreviewProps {
   borderRadius: number;
   padding: number;
   fontSize: FontSizeKey;
+  font?: string;
   widgetId?: string;
 }
 
@@ -40,6 +42,7 @@ export default function TodoPreview({
   borderRadius,
   padding,
   fontSize,
+  font = "sans",
   widgetId,
 }: TodoPreviewProps) {
   const [items, setItems] = useState<TodoItem[]>(initialItems);
@@ -89,13 +92,15 @@ export default function TodoPreview({
 
   const fSize = FONT_SIZE_MAP[fontSize];
   const effectiveText = textColor || (transparentBg ? "" : "1E1E1E");
+  const fontStyle = resolveFontStyle(font);
 
   return (
     <div
-      className="w-full h-full flex items-center justify-center"
+      className={`w-full h-full flex items-center justify-center ${fontStyle.className ?? ""}`}
       style={{
         backgroundColor: transparentBg ? "transparent" : `#${bg}`,
         color: effectiveText ? `#${effectiveText}` : undefined,
+        fontFamily: fontStyle.fontFamily,
       }}
     >
       <div

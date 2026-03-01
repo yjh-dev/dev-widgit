@@ -8,6 +8,7 @@ const widgetDefaults = {
   sides: 6 as DiceSides,
   color: "2563EB",
   textColor: "FFFFFF",
+  font: "sans",
   items: [] as string[],
   showTotal: true,
   history: false,
@@ -19,6 +20,7 @@ interface DiceState extends CommonStyleState {
   sides: DiceSides;
   color: string;
   textColor: string;
+  font: string;
   items: string[];
   showTotal: boolean;
   history: boolean;
@@ -27,6 +29,7 @@ interface DiceState extends CommonStyleState {
   setSides: (v: DiceSides) => void;
   setColor: (v: string) => void;
   setTextColor: (v: string) => void;
+  setFont: (v: string) => void;
   setItems: (v: string[]) => void;
   setShowTotal: (v: boolean) => void;
   setHistory: (v: boolean) => void;
@@ -41,6 +44,7 @@ export const useDiceStore = create<DiceState>(
     setSides: (v: DiceSides) => set({ sides: v }),
     setColor: (v: string) => set({ color: v }),
     setTextColor: (v: string) => set({ textColor: v }),
+    setFont: (v: string) => set({ font: v }),
     setItems: (v: string[]) => set({ items: v }),
     setShowTotal: (v: boolean) => set({ showTotal: v }),
     setHistory: (v: boolean) => set({ history: v }),

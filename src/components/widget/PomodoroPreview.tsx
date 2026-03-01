@@ -232,7 +232,7 @@ export default function PomodoroPreview({
           type="button"
           onClick={() => setIsRunning((r) => !r)}
           aria-label={isRunning ? "일시 정지" : "시작"}
-          className="w-10 h-10 rounded-full flex items-center justify-center transition-colors"
+          className="w-10 h-10 rounded-full flex items-center justify-center transition-all hover:opacity-80 active:scale-95"
           style={{
             backgroundColor: modeColor,
             color: transparentBg ? "#FFFFFF" : `#${bg}`,
@@ -244,7 +244,7 @@ export default function PomodoroPreview({
           type="button"
           onClick={handleReset}
           aria-label="초기화"
-          className="w-10 h-10 rounded-full flex items-center justify-center transition-colors"
+          className="w-10 h-10 rounded-full flex items-center justify-center transition-all hover:opacity-80 active:scale-95"
           style={{
             backgroundColor: `${modeColor}18`,
             color: modeColor,

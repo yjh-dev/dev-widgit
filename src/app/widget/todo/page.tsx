@@ -24,6 +24,7 @@ function TodoWidgetContent() {
   const borderRadius = parseBorderRadius(searchParams.get("radius"));
   const padding = parsePadding(searchParams.get("pad"));
   const fontSize = parseFontSize(searchParams.get("fsize"));
+  const font = searchParams.get("font") || "sans";
 
   // widgetId for localStorage persistence (hash of items param)
   const widgetId = rawItems ? btoa(rawItems).slice(0, 12) : "default";
@@ -36,6 +37,7 @@ function TodoWidgetContent() {
         interactive={true}
         color={color}
         textColor={textColor}
+        font={font}
         bg={bg}
         transparentBg={transparentBg}
         showProgress={showProgress}

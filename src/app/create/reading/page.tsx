@@ -27,14 +27,15 @@ import { copyToClipboard } from "@/lib/clipboard";
 import type { ReadingStyle } from "@/lib/reading";
 import { parseCommonParams } from "@/lib/common-params";
 import { addBgParam, addCommonStyleParams, buildUrl } from "@/lib/url-builder-utils";
+import { GENERAL_FONT_OPTIONS } from "@/lib/fonts";
 
 export default function CreateReadingPage() {
   const {
     title, currentPage, totalPages, style, showPages,
-    color, textColor, bg, transparentBg,
+    color, textColor, font, bg, transparentBg,
     borderRadius, padding, fontSize,
     setTitle, setCurrentPage, setTotalPages, setStyle, setShowPages,
-    setColor, setTextColor, setBg, setTransparentBg,
+    setColor, setTextColor, setFont, setBg, setTransparentBg,
     setBorderRadius, setPadding, setFontSize,
     loadPreset, reset,
   } = useReadingStore();
@@ -48,6 +49,7 @@ export default function CreateReadingPage() {
       ...(p.has("pages") && { showPages: p.get("pages") !== "false" }),
       ...(p.has("color") && { color: p.get("color")! }),
       ...(p.has("textColor") && { textColor: p.get("textColor")! }),
+      ...(p.has("font") && { font: p.get("font")! }),
       ...parseCommonParams(p),
     });
   });
@@ -62,10 +64,11 @@ export default function CreateReadingPage() {
     if (!showPages) params.set("pages", "false");
     if (color !== "2563EB") params.set("color", color);
     if (textColor) params.set("textColor", textColor);
+    if (font !== "sans") params.set("font", font);
     addBgParam(params, transparentBg, bg);
     addCommonStyleParams(params, borderRadius, padding, fontSize);
     return buildUrl(base, params);
-  }, [title, currentPage, totalPages, style, showPages, color, textColor, bg, transparentBg, borderRadius, padding, fontSize]);
+  }, [title, currentPage, totalPages, style, showPages, color, textColor, font, bg, transparentBg, borderRadius, padding, fontSize]);
 
   const handleCopy = async () => {
     await copyToClipboard(buildWidgetUrl());
@@ -129,6 +132,17 @@ export default function CreateReadingPage() {
                         </SelectContent>
                       </Select>
                     </div>
+                    <div className="space-y-2">
+                      <Label>폰트</Label>
+                      <Select value={font} onValueChange={setFont}>
+                        <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          {GENERAL_FONT_OPTIONS.map((opt) => (
+                            <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
                     <div className="flex items-center justify-between">
                       <Label htmlFor="showPages">페이지 수 표시</Label>
                       <Switch id="showPages" checked={showPages} onCheckedChange={setShowPages} />
@@ -178,7 +192,7 @@ export default function CreateReadingPage() {
             <ReadingPreview
               title={title} currentPage={currentPage} totalPages={totalPages}
               style={style} showPages={showPages} color={color} textColor={textColor}
-              bg={bg} transparentBg={transparentBg} borderRadius={borderRadius}
+              font={font} bg={bg} transparentBg={transparentBg} borderRadius={borderRadius}
               padding={padding} fontSize={fontSize}
             />
           </div>

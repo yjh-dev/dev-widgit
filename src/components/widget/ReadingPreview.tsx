@@ -2,6 +2,7 @@
 
 import { calculateReadingProgress, type ReadingStyle } from "@/lib/reading";
 import type { FontSizeKey } from "@/lib/common-widget-options";
+import { resolveFontStyle } from "@/lib/fonts";
 
 const FONT_SIZE_MAP: Record<FontSizeKey, string> = {
   sm: "text-2xl",
@@ -25,6 +26,7 @@ interface ReadingPreviewProps {
   borderRadius?: number;
   padding?: number;
   fontSize?: FontSizeKey;
+  font?: string;
 }
 
 export default function ReadingPreview({
@@ -40,19 +42,22 @@ export default function ReadingPreview({
   borderRadius = 16,
   padding = 24,
   fontSize = "md",
+  font = "sans",
 }: ReadingPreviewProps) {
   const { percentage } = calculateReadingProgress(currentPage, totalPages);
   const pct = Math.min(percentage, 100);
   const resolvedTextColor = textColor || color;
   const circumference = 2 * Math.PI * 54;
+  const fontStyle = resolveFontStyle(font);
 
   return (
     <div
-      className="w-full h-full flex flex-col items-center justify-center"
+      className={`w-full h-full flex flex-col items-center justify-center ${fontStyle.className ?? ""}`}
       style={{
         backgroundColor: transparentBg ? "transparent" : `#${bg}`,
         borderRadius,
         padding,
+        fontFamily: fontStyle.fontFamily,
       }}
     >
       {title && (

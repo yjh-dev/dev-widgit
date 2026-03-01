@@ -10,6 +10,7 @@ const widgetDefaults = {
   showPages: true,
   color: "2563EB",
   textColor: "",
+  font: "sans",
 };
 
 interface ReadingState extends CommonStyleState {
@@ -20,6 +21,7 @@ interface ReadingState extends CommonStyleState {
   showPages: boolean;
   color: string;
   textColor: string;
+  font: string;
   setTitle: (v: string) => void;
   setCurrentPage: (v: number) => void;
   setTotalPages: (v: number) => void;
@@ -27,6 +29,7 @@ interface ReadingState extends CommonStyleState {
   setShowPages: (v: boolean) => void;
   setColor: (v: string) => void;
   setTextColor: (v: string) => void;
+  setFont: (v: string) => void;
   loadPreset: (preset: Record<string, unknown>) => void;
   reset: () => void;
 }
@@ -40,5 +43,6 @@ export const useReadingStore = create<ReadingState>(
     setShowPages: (v: boolean) => set({ showPages: v }),
     setColor: (v: string) => set({ color: v }),
     setTextColor: (v: string) => set({ textColor: v }),
+    setFont: (v: string) => set({ font: v }),
   })),
 );

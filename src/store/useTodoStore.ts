@@ -6,6 +6,7 @@ const widgetDefaults = {
   items: "",
   color: "2563EB",
   textColor: "",
+  font: "sans",
   showProgress: true,
   strikethrough: true,
 };
@@ -15,12 +16,14 @@ interface TodoState extends CommonStyleState {
   items: string;
   color: string;
   textColor: string;
+  font: string;
   showProgress: boolean;
   strikethrough: boolean;
   setTitle: (v: string) => void;
   setItems: (v: string) => void;
   setColor: (v: string) => void;
   setTextColor: (v: string) => void;
+  setFont: (v: string) => void;
   setShowProgress: (v: boolean) => void;
   setStrikethrough: (v: boolean) => void;
   loadPreset: (preset: Record<string, unknown>) => void;
@@ -33,6 +36,7 @@ export const useTodoStore = create<TodoState>(
     setItems: (v: string) => set({ items: v }),
     setColor: (v: string) => set({ color: v }),
     setTextColor: (v: string) => set({ textColor: v }),
+    setFont: (v: string) => set({ font: v }),
     setShowProgress: (v: boolean) => set({ showProgress: v }),
     setStrikethrough: (v: boolean) => set({ strikethrough: v }),
   })),

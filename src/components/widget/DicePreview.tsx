@@ -3,6 +3,7 @@
 import { useState, useCallback, useEffect, startTransition } from "react";
 import { rollDice, flipCoin, pickRandom, D6_DOTS, type DiceMode, type DiceSides } from "@/lib/dice";
 import type { FontSizeKey } from "@/lib/common-widget-options";
+import { resolveFontStyle } from "@/lib/fonts";
 
 const FONT_SIZE_MAP: Record<FontSizeKey, { dice: number; text: string }> = {
   sm: { dice: 48, text: "text-sm" },
@@ -72,6 +73,7 @@ interface DicePreviewProps {
   borderRadius?: number;
   padding?: number;
   fontSize?: FontSizeKey;
+  font?: string;
 }
 
 export default function DicePreview({
@@ -88,6 +90,7 @@ export default function DicePreview({
   borderRadius = 16,
   padding = 24,
   fontSize = "md",
+  font = "sans",
 }: DicePreviewProps) {
   const [diceValues, setDiceValues] = useState<number[]>(Array.from({ length: count }, () => 1));
   const [coinResult, setCoinResult] = useState<string>("");
@@ -132,14 +135,16 @@ export default function DicePreview({
   }, [mode, count, sides, items, showHistory]);
 
   const textColorHex = `#${color === "FFFFFF" ? "1E1E1E" : color}`;
+  const fontStyle = resolveFontStyle(font);
 
   return (
     <div
-      className="w-full h-full flex flex-col items-center justify-center gap-3"
+      className={`w-full h-full flex flex-col items-center justify-center gap-3 ${fontStyle.className ?? ""}`}
       style={{
         backgroundColor: transparentBg ? "transparent" : `#${bg}`,
         borderRadius,
         padding,
+        fontFamily: fontStyle.fontFamily,
       }}
     >
       {mode === "dice" && (
@@ -201,7 +206,8 @@ export default function DicePreview({
         type="button"
         onClick={handleRoll}
         disabled={rolling || (mode === "picker" && items.length === 0)}
-        className="px-4 py-2 rounded-lg font-medium text-sm transition-all active:scale-95 disabled:opacity-50"
+        aria-label={mode === "dice" ? "주사위 굴리기" : mode === "coin" ? "동전 던지기" : "랜덤 뽑기"}
+        className="px-4 py-2 rounded-lg font-medium text-sm transition-all hover:opacity-80 active:scale-95 disabled:opacity-50"
         style={{
           backgroundColor: `#${color}`,
           color: `#${textColor}`,

@@ -95,7 +95,8 @@ export default function StopwatchPreview({
           <button
             type="button"
             onClick={start}
-            className={`${BTN_SIZE_MAP[fontSize]} rounded-full flex items-center justify-center text-white transition-opacity`}
+            aria-label="시작"
+            className={`${BTN_SIZE_MAP[fontSize]} rounded-full flex items-center justify-center text-white transition-all hover:opacity-80 active:scale-95`}
             style={{ backgroundColor: `#${btnColor}` }}
           >
             <Play className="w-4 h-4 ml-0.5" />
@@ -104,7 +105,8 @@ export default function StopwatchPreview({
           <button
             type="button"
             onClick={stop}
-            className={`${BTN_SIZE_MAP[fontSize]} rounded-full flex items-center justify-center text-white transition-opacity`}
+            aria-label="정지"
+            className={`${BTN_SIZE_MAP[fontSize]} rounded-full flex items-center justify-center text-white transition-all hover:opacity-80 active:scale-95`}
             style={{ backgroundColor: `#${btnColor}` }}
           >
             <Pause className="w-4 h-4" />
@@ -115,7 +117,8 @@ export default function StopwatchPreview({
           <button
             type="button"
             onClick={lap}
-            className={`${BTN_SIZE_MAP[fontSize]} rounded-full flex items-center justify-center transition-opacity border`}
+            aria-label="랩 기록"
+            className={`${BTN_SIZE_MAP[fontSize]} rounded-full flex items-center justify-center transition-all hover:opacity-80 active:scale-95 border`}
             style={{ borderColor: `#${color}30`, color: `#${color}` }}
           >
             <Flag className="w-4 h-4" />
@@ -126,7 +129,8 @@ export default function StopwatchPreview({
           <button
             type="button"
             onClick={reset}
-            className={`${BTN_SIZE_MAP[fontSize]} rounded-full flex items-center justify-center transition-opacity border`}
+            aria-label="초기화"
+            className={`${BTN_SIZE_MAP[fontSize]} rounded-full flex items-center justify-center transition-all hover:opacity-80 active:scale-95 border`}
             style={{ borderColor: `#${color}30`, color: `#${color}` }}
           >
             <RotateCcw className="w-4 h-4" />

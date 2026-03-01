@@ -30,6 +30,7 @@ function ReadingWidgetContent() {
   const borderRadius = parseBorderRadius(searchParams.get("radius"));
   const padding = parsePadding(searchParams.get("pad"));
   const fontSize = parseFontSize(searchParams.get("fsize"));
+  const font = searchParams.get("font") || "sans";
 
   return (
     <WidgetScreen>
@@ -41,6 +42,7 @@ function ReadingWidgetContent() {
         showPages={showPages}
         color={color}
         textColor={textColor}
+        font={font}
         bg={bg}
         transparentBg={transparentBg}
         borderRadius={borderRadius}

@@ -21,6 +21,7 @@ function BookmarkWidgetContent() {
   const borderRadius = parseBorderRadius(searchParams.get("radius"));
   const padding = parsePadding(searchParams.get("pad"));
   const fontSize = parseFontSize(searchParams.get("fsize"));
+  const font = searchParams.get("font") || "sans";
 
   return (
     <WidgetScreen>
@@ -31,6 +32,7 @@ function BookmarkWidgetContent() {
         showIcon={showIcon}
         showUrl={showUrl}
         color={color}
+        font={font}
         bg={bg}
         transparentBg={transparentBg}
         borderRadius={borderRadius}

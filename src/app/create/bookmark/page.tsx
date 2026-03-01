@@ -6,6 +6,13 @@ import { Input } from "@/components/ui/input";
 import ColorPicker from "@/components/ui/color-picker";
 import { Card, CardContent } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import BookmarkPreview from "@/components/widget/BookmarkPreview";
 import EditorLayout from "@/components/editor/EditorLayout";
 import EditorActions from "@/components/editor/EditorActions";
@@ -19,14 +26,15 @@ import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
 import { parseCommonParams } from "@/lib/common-params";
 import { addBgParam, addCommonStyleParams, buildUrl } from "@/lib/url-builder-utils";
+import { GENERAL_FONT_OPTIONS } from "@/lib/fonts";
 
 export default function CreateBookmarkPage() {
   const {
     url, title, desc, showIcon, showUrl,
-    color, bg, transparentBg,
+    color, font, bg, transparentBg,
     borderRadius, padding, fontSize,
     setUrl, setTitle, setDesc, setShowIcon, setShowUrl,
-    setColor, setBg, setTransparentBg,
+    setColor, setFont, setBg, setTransparentBg,
     setBorderRadius, setPadding, setFontSize,
     loadPreset, reset,
   } = useBookmarkStore();
@@ -39,6 +47,7 @@ export default function CreateBookmarkPage() {
       ...(p.has("showIcon") && { showIcon: p.get("showIcon") !== "false" }),
       ...(p.has("showUrl") && { showUrl: p.get("showUrl") !== "false" }),
       ...(p.has("color") && { color: p.get("color")! }),
+      ...(p.has("font") && { font: p.get("font")! }),
       ...parseCommonParams(p),
     });
   });
@@ -52,10 +61,11 @@ export default function CreateBookmarkPage() {
     if (!showIcon) params.set("showIcon", "false");
     if (!showUrl) params.set("showUrl", "false");
     if (color !== "1E1E1E") params.set("color", color);
+    if (font !== "sans") params.set("font", font);
     addBgParam(params, transparentBg, bg);
     addCommonStyleParams(params, borderRadius, padding, fontSize);
     return buildUrl(base, params);
-  }, [url, title, desc, showIcon, showUrl, color, bg, transparentBg, borderRadius, padding, fontSize]);
+  }, [url, title, desc, showIcon, showUrl, color, font, bg, transparentBg, borderRadius, padding, fontSize]);
 
   const handleCopy = async () => {
     await copyToClipboard(buildWidgetUrl());
@@ -95,6 +105,17 @@ export default function CreateBookmarkPage() {
                 title: "표시 옵션",
                 children: (
                   <>
+                    <div className="space-y-2">
+                      <Label>폰트</Label>
+                      <Select value={font} onValueChange={setFont}>
+                        <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          {GENERAL_FONT_OPTIONS.map((opt) => (
+                            <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
                     <div className="flex items-center justify-between">
                       <Label htmlFor="showIcon">파비콘 표시</Label>
                       <Switch id="showIcon" checked={showIcon} onCheckedChange={setShowIcon} />
@@ -147,7 +168,7 @@ export default function CreateBookmarkPage() {
             <BookmarkPreview
               url={url} title={title} desc={desc}
               showIcon={showIcon} showUrl={showUrl} color={color}
-              bg={bg} transparentBg={transparentBg} borderRadius={borderRadius}
+              font={font} bg={bg} transparentBg={transparentBg} borderRadius={borderRadius}
               padding={padding} fontSize={fontSize}
             />
           </div>

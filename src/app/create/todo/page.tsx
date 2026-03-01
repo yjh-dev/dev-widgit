@@ -14,9 +14,17 @@ import EditorLayout from "@/components/editor/EditorLayout";
 import EditorActions from "@/components/editor/EditorActions";
 import EditorSection from "@/components/editor/EditorSection";
 import CommonStyleOptions from "@/components/editor/CommonStyleOptions";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import PresetSelector from "@/components/editor/PresetSelector";
 import { useTodoStore } from "@/store/useTodoStore";
 import { todoPresets } from "@/lib/presets";
+import { GENERAL_FONT_OPTIONS } from "@/lib/fonts";
 import { useWidgetUrl } from "@/lib/use-widget-url";
 import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
@@ -27,11 +35,11 @@ import { addBgParam, addCommonStyleParams, buildUrl } from "@/lib/url-builder-ut
 export default function CreateTodoPage() {
   const {
     title, items,
-    color, textColor, bg, transparentBg,
+    color, textColor, font, bg, transparentBg,
     showProgress, strikethrough,
     borderRadius, padding, fontSize,
     setTitle, setItems,
-    setColor, setTextColor, setBg, setTransparentBg,
+    setColor, setTextColor, setFont, setBg, setTransparentBg,
     setShowProgress, setStrikethrough,
     setBorderRadius, setPadding, setFontSize,
     loadPreset, reset,
@@ -45,6 +53,7 @@ export default function CreateTodoPage() {
       ...(p.has("items") && { items: p.get("items")! }),
       ...(p.has("color") && { color: p.get("color")! }),
       ...(p.has("textColor") && { textColor: p.get("textColor")! }),
+      ...(p.has("font") && { font: p.get("font")! }),
       ...parseCommonParams(p),
       ...(p.has("progress") && { showProgress: p.get("progress") !== "false" }),
       ...(p.has("strike") && { strikethrough: p.get("strike") !== "false" }),
@@ -63,9 +72,10 @@ export default function CreateTodoPage() {
     addBgParam(params, transparentBg, bg);
     if (!showProgress) params.set("progress", "false");
     if (!strikethrough) params.set("strike", "false");
+    if (font !== "sans") params.set("font", font);
     addCommonStyleParams(params, borderRadius, padding, fontSize);
     return buildUrl(base, params);
-  }, [title, items, color, textColor, bg, transparentBg, showProgress, strikethrough, borderRadius, padding, fontSize]);
+  }, [title, items, color, textColor, font, bg, transparentBg, showProgress, strikethrough, borderRadius, padding, fontSize]);
 
   const handleCopy = async () => {
     await copyToClipboard(buildWidgetUrl());
@@ -170,6 +180,17 @@ export default function CreateTodoPage() {
                 title: "표시 옵션",
                 children: (
                   <>
+                    <div className="space-y-2">
+                      <Label>폰트</Label>
+                      <Select value={font} onValueChange={setFont}>
+                        <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          {GENERAL_FONT_OPTIONS.map((opt) => (
+                            <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
                     <div className="flex items-center justify-between">
                       <Label htmlFor="progress">진행률 바</Label>
                       <Switch id="progress" checked={showProgress} onCheckedChange={setShowProgress} />
@@ -222,6 +243,7 @@ export default function CreateTodoPage() {
         interactive={false}
         color={color}
         textColor={textColor}
+        font={font}
         bg={bg}
         transparentBg={transparentBg}
         showProgress={showProgress}

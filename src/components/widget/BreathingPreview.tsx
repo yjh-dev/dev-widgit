@@ -229,24 +229,30 @@ export default function BreathingPreview({
       <div className="flex items-center gap-2">
         {running ? (
           <button
+            type="button"
             onClick={() => setRunning(false)}
-            className="w-9 h-9 rounded-full flex items-center justify-center transition-opacity hover:opacity-80"
+            aria-label="일시 정지"
+            className="w-9 h-9 rounded-full flex items-center justify-center transition-all hover:opacity-80 active:scale-95"
             style={{ backgroundColor: `#${accentColor}`, color: "#fff" }}
           >
             <Pause className="w-4 h-4" />
           </button>
         ) : (
           <button
+            type="button"
             onClick={handleStart}
-            className="w-9 h-9 rounded-full flex items-center justify-center transition-opacity hover:opacity-80"
+            aria-label="시작"
+            className="w-9 h-9 rounded-full flex items-center justify-center transition-all hover:opacity-80 active:scale-95"
             style={{ backgroundColor: `#${accentColor}`, color: "#fff" }}
           >
             <Play className="w-4 h-4 ml-0.5" />
           </button>
         )}
         <button
+          type="button"
           onClick={handleReset}
-          className="w-9 h-9 rounded-full flex items-center justify-center transition-opacity hover:opacity-80"
+          aria-label="초기화"
+          className="w-9 h-9 rounded-full flex items-center justify-center transition-all hover:opacity-80 active:scale-95"
           style={{ backgroundColor: `#${color}15`, color: `#${color}` }}
         >
           <RotateCcw className="w-4 h-4" />

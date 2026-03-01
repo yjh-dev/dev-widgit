@@ -27,14 +27,15 @@ import { copyToClipboard } from "@/lib/clipboard";
 import type { GoalStyle } from "@/lib/goal";
 import { parseCommonParams } from "@/lib/common-params";
 import { addBgParam, addCommonStyleParams, buildUrl } from "@/lib/url-builder-utils";
+import { GENERAL_FONT_OPTIONS } from "@/lib/fonts";
 
 export default function CreateGoalPage() {
   const {
     title, current, target, unit, style, showValue,
-    color, textColor, bg, transparentBg,
+    color, textColor, font, bg, transparentBg,
     borderRadius, padding, fontSize,
     setTitle, setCurrent, setTarget, setUnit, setStyle, setShowValue,
-    setColor, setTextColor, setBg, setTransparentBg,
+    setColor, setTextColor, setFont, setBg, setTransparentBg,
     setBorderRadius, setPadding, setFontSize,
     loadPreset, reset,
   } = useGoalStore();
@@ -49,6 +50,7 @@ export default function CreateGoalPage() {
       ...(p.has("showValue") && { showValue: p.get("showValue") !== "false" }),
       ...(p.has("color") && { color: p.get("color")! }),
       ...(p.has("textColor") && { textColor: p.get("textColor")! }),
+      ...(p.has("font") && { font: p.get("font")! }),
       ...parseCommonParams(p),
     });
   });
@@ -64,10 +66,11 @@ export default function CreateGoalPage() {
     if (!showValue) params.set("showValue", "false");
     if (color !== "2563EB") params.set("color", color);
     if (textColor) params.set("textColor", textColor);
+    if (font !== "sans") params.set("font", font);
     addBgParam(params, transparentBg, bg);
     addCommonStyleParams(params, borderRadius, padding, fontSize);
     return buildUrl(base, params);
-  }, [title, current, target, unit, style, showValue, color, textColor, bg, transparentBg, borderRadius, padding, fontSize]);
+  }, [title, current, target, unit, style, showValue, color, textColor, font, bg, transparentBg, borderRadius, padding, fontSize]);
 
   const handleCopy = async () => {
     await copyToClipboard(buildWidgetUrl());
@@ -135,6 +138,17 @@ export default function CreateGoalPage() {
                         </SelectContent>
                       </Select>
                     </div>
+                    <div className="space-y-2">
+                      <Label>폰트</Label>
+                      <Select value={font} onValueChange={setFont}>
+                        <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          {GENERAL_FONT_OPTIONS.map((opt) => (
+                            <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
                     <div className="flex items-center justify-between">
                       <Label htmlFor="showValue">값 표시</Label>
                       <Switch id="showValue" checked={showValue} onCheckedChange={setShowValue} />
@@ -184,7 +198,7 @@ export default function CreateGoalPage() {
             <GoalPreview
               title={title} current={current} target={target} unit={unit}
               style={style} showValue={showValue} color={color} textColor={textColor}
-              bg={bg} transparentBg={transparentBg} borderRadius={borderRadius}
+              font={font} bg={bg} transparentBg={transparentBg} borderRadius={borderRadius}
               padding={padding} fontSize={fontSize}
             />
           </div>

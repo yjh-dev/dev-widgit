@@ -114,6 +114,12 @@ export const QUOTE_FONT_OPTIONS_EXTENDED: { value: string; label: string }[] = [
   ...FONT_OPTIONS,
 ];
 
+export const GENERAL_FONT_OPTIONS: { value: string; label: string }[] = [
+  { value: "sans", label: "Sans (고딕)" },
+  { value: "serif", label: "Serif (명조)" },
+  ...FONT_OPTIONS,
+];
+
 export const ALL_FONT_KEYS: string[] = [
   "sans", "serif", "mono", "script",
   ...Object.keys(fontMap),

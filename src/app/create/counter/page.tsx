@@ -6,6 +6,13 @@ import { Input } from "@/components/ui/input";
 import ColorPicker from "@/components/ui/color-picker";
 import { Card, CardContent } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import CounterPreview from "@/components/widget/CounterPreview";
 import EditorLayout from "@/components/editor/EditorLayout";
 import EditorActions from "@/components/editor/EditorActions";
@@ -19,14 +26,15 @@ import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
 import { parseCommonParams } from "@/lib/common-params";
 import { addBgParam, addCommonStyleParams, buildUrl } from "@/lib/url-builder-utils";
+import { GENERAL_FONT_OPTIONS } from "@/lib/fonts";
 
 export default function CreateCounterPage() {
   const {
     label, initial, step, min, max, showReset,
-    color, btnColor, bg, transparentBg,
+    color, btnColor, font, bg, transparentBg,
     borderRadius, padding, fontSize,
     setLabel, setInitial, setStep, setMin, setMax, setShowReset,
-    setColor, setBtnColor, setBg, setTransparentBg,
+    setColor, setBtnColor, setFont, setBg, setTransparentBg,
     setBorderRadius, setPadding, setFontSize,
     loadPreset, reset,
   } = useCounterStore();
@@ -41,6 +49,7 @@ export default function CreateCounterPage() {
       ...(p.has("showReset") && { showReset: p.get("showReset") !== "false" }),
       ...(p.has("color") && { color: p.get("color")! }),
       ...(p.has("btnColor") && { btnColor: p.get("btnColor")! }),
+      ...(p.has("font") && { font: p.get("font")! }),
       ...parseCommonParams(p),
     });
   });
@@ -59,10 +68,11 @@ export default function CreateCounterPage() {
     if (!showReset) params.set("showReset", "false");
     if (color !== "1E1E1E") params.set("color", color);
     if (btnColor !== "2563EB") params.set("btnColor", btnColor);
+    if (font !== "sans") params.set("font", font);
     addBgParam(params, transparentBg, bg);
     addCommonStyleParams(params, borderRadius, padding, fontSize);
     return buildUrl(base, params);
-  }, [label, initial, step, min, max, showReset, color, btnColor, bg, transparentBg, borderRadius, padding, fontSize]);
+  }, [label, initial, step, min, max, showReset, color, btnColor, font, bg, transparentBg, borderRadius, padding, fontSize]);
 
   const handleCopy = async () => {
     await copyToClipboard(buildWidgetUrl());
@@ -109,6 +119,17 @@ export default function CreateCounterPage() {
                 title: "표시 옵션",
                 children: (
                   <>
+                    <div className="space-y-2">
+                      <Label>폰트</Label>
+                      <Select value={font} onValueChange={setFont}>
+                        <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          {GENERAL_FONT_OPTIONS.map((opt) => (
+                            <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
                     <div className="space-y-2">
                       <Label htmlFor="min">최소값 (비우면 제한 없음)</Label>
                       <Input
@@ -175,7 +196,7 @@ export default function CreateCounterPage() {
           <div className="border rounded-lg overflow-hidden aspect-[16/9]">
             <CounterPreview
               label={label} initial={initial} step={step} min={minNum} max={maxNum}
-              showReset={showReset} color={color} btnColor={btnColor} bg={bg}
+              showReset={showReset} color={color} btnColor={btnColor} font={font} bg={bg}
               transparentBg={transparentBg} borderRadius={borderRadius} padding={padding}
               fontSize={fontSize} persist={false}
             />

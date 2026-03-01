@@ -10,6 +10,7 @@ const widgetDefaults = {
   showReset: true,
   color: "1E1E1E",
   btnColor: "2563EB",
+  font: "sans",
 };
 
 interface CounterState extends CommonStyleState {
@@ -21,6 +22,7 @@ interface CounterState extends CommonStyleState {
   showReset: boolean;
   color: string;
   btnColor: string;
+  font: string;
   setLabel: (v: string) => void;
   setInitial: (v: number) => void;
   setStep: (v: number) => void;
@@ -29,6 +31,7 @@ interface CounterState extends CommonStyleState {
   setShowReset: (v: boolean) => void;
   setColor: (v: string) => void;
   setBtnColor: (v: string) => void;
+  setFont: (v: string) => void;
   loadPreset: (preset: Record<string, unknown>) => void;
   reset: () => void;
 }
@@ -43,5 +46,6 @@ export const useCounterStore = create<CounterState>(
     setShowReset: (v: boolean) => set({ showReset: v }),
     setColor: (v: string) => set({ color: v }),
     setBtnColor: (v: string) => set({ btnColor: v }),
+    setFont: (v: string) => set({ font: v }),
   })),
 );
