@@ -2,6 +2,7 @@
 
 import { Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { trackGallerySubmit } from "@/lib/analytics";
 
 interface GallerySubmitButtonProps {
   widgetType: string;
@@ -32,6 +33,7 @@ export default function GallerySubmitButton({
       ].join("\n")
     );
 
+    trackGallerySubmit(widgetType);
     window.open(
       `https://github.com/widgit-app/widgit/issues/new?title=${title}&body=${body}&labels=gallery`,
       "_blank"

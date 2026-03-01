@@ -16,6 +16,7 @@ export interface Template {
   layout: number[][];
   widgets: TemplateWidget[];
   notionTip: string;
+  notionTemplateUrl?: string;
 }
 
 // --- 8 Templates (theme-differentiated) ---
@@ -28,6 +29,7 @@ export const templates: Template[] = [
     themeId: "cool-pastel",
     layout: [[0, 4], [1, 2], [3, 5]],
     notionTip: "D-Day를 상단 좌측에 크게, 아래에 타이머와 진행률을 2열로 배치하세요.",
+    notionTemplateUrl: "https://notion.so/PLACEHOLDER_STUDENT",
     widgets: [
       { type: "dday", name: "수능 D-Day", widgetConfig: { title: "수능", targetDate: "2026-11-19" } },
       { type: "pomodoro", name: "뽀모도로 타이머", widgetConfig: { workTime: 25, breakTime: 5 } },
@@ -44,6 +46,7 @@ export const templates: Template[] = [
     themeId: "monochrome",
     layout: [[0, 1, 2], [4], [3]],
     notionTip: "3열로 나란히 배치하면 깔끔한 헤더가 됩니다. 그라데이션 구분선 아래 배너를 전폭으로 추가하세요.",
+    notionTemplateUrl: "https://notion.so/PLACEHOLDER_MINIMAL",
     widgets: [
       { type: "clock", name: "모노 시계", widgetConfig: { timezone: "Asia/Seoul", format: "24h", font: "mono" } },
       { type: "weather", name: "서울 날씨", widgetConfig: { city: "서울" } },
@@ -59,6 +62,7 @@ export const templates: Template[] = [
     themeId: "warm-pastel",
     layout: [[4], [0, 1], [2, 3]],
     notionTip: "배너를 전폭 상단에, 읽기 진행률과 목표를 2열로 배치하세요.",
+    notionTemplateUrl: "https://notion.so/PLACEHOLDER_READING",
     widgets: [
       { type: "reading", name: "읽기 진행률", widgetConfig: { title: "클린 코드", currentPage: 180, totalPages: 300 } },
       { type: "goal", name: "올해 독서 목표", widgetConfig: { title: "올해 독서", current: 8, target: 24, unit: "권" } },
@@ -74,6 +78,7 @@ export const templates: Template[] = [
     themeId: "midnight",
     layout: [[0, 1], [2, 3], [4]],
     notionTip: "노션을 다크모드로 설정하면 위젯과 조화롭습니다. 시계와 타이머를 상단에 배치하세요.",
+    notionTemplateUrl: "https://notion.so/PLACEHOLDER_DARK",
     widgets: [
       { type: "flip-clock", name: "플립 시계", widgetConfig: { timezone: "Asia/Seoul", showDate: true, flipColor: "E0E0E0", textColor: "0F172A", gapColor: "94A3B8" } },
       { type: "pomodoro", name: "뽀모도로", widgetConfig: { workTime: 25, breakTime: 5, pStyle: "ring" } },
@@ -89,6 +94,7 @@ export const templates: Template[] = [
     themeId: "rose",
     layout: [[5], [0], [1, 3], [4, 6], [2]],
     notionTip: "그라데이션 헤더를 최상단에, 배너와 음악+시계를 중간에, 메모지와 명언을 함께 배치하세요.",
+    notionTemplateUrl: "https://notion.so/PLACEHOLDER_AESTHETIC",
     widgets: [
       { type: "banner", name: "감성 배너", widgetConfig: { texts: ["오늘도 화이팅!"], animation: "fade", bold: true } },
       { type: "music", name: "음악 플레이어", widgetConfig: { title: "Spring Day", artist: "Lo-Fi Chill", progress: 42 } },
@@ -106,6 +112,7 @@ export const templates: Template[] = [
     themeId: "forest",
     layout: [[0, 1], [2, 3], [4]],
     notionTip: "목표 2개를 상단에 나란히, 습관과 인생달력을 중간에, D-Day를 하단 전폭에 배치하세요.",
+    notionTemplateUrl: "https://notion.so/PLACEHOLDER_GOALS",
     widgets: [
       { type: "goal", name: "저축 목표", widgetConfig: { title: "저축", current: 350000, target: 1000000, unit: "원", style: "bar" } },
       { type: "goal", name: "운동 목표", widgetConfig: { title: "운동", current: 12, target: 30, unit: "회", style: "ring" } },
@@ -121,6 +128,7 @@ export const templates: Template[] = [
     themeId: "light-default",
     layout: [[2, 0], [1, 3], [4]],
     notionTip: "시계를 좌측 상단에, 날씨를 우측에 배치해 매일 확인하세요.",
+    notionTemplateUrl: "https://notion.so/PLACEHOLDER_DAILY",
     widgets: [
       { type: "weather", name: "오늘 날씨", widgetConfig: { city: "서울" } },
       { type: "mini-calendar", name: "이번 달 캘린더", widgetConfig: { weekStart: "mon", lang: "ko" } },
@@ -136,6 +144,7 @@ export const templates: Template[] = [
     themeId: "sunset",
     layout: [[0, 1], [2, 3], [4, 5]],
     notionTip: "노션 다크모드와 함께 사용하면 눈이 편합니다. 플립 시계와 진행률을 상단에, 달 위상을 하단에 배치하세요.",
+    notionTemplateUrl: "https://notion.so/PLACEHOLDER_NIGHT",
     widgets: [
       { type: "flip-clock", name: "플립 시계", widgetConfig: { timezone: "Asia/Seoul", flipColor: "FEF3C7", textColor: "1C1917", gapColor: "D97706", showDate: true, dateFmt: "kr" } },
       { type: "time-progress", name: "올해 진행률", widgetConfig: { type: "year" } },

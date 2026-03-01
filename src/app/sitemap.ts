@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { articles } from "@/lib/blog";
 
 const BASE_URL = "https://widgit.vercel.app";
 
@@ -14,13 +15,19 @@ const widgetTypes = [
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const now = new Date();
+  const now = new Date("2026-03-01");
 
   const staticPages: MetadataRoute.Sitemap = [
     { url: BASE_URL, lastModified: now, changeFrequency: "weekly", priority: 1 },
     { url: `${BASE_URL}/templates`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
     { url: `${BASE_URL}/guide`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
     { url: `${BASE_URL}/my-widgets`, lastModified: now, changeFrequency: "weekly", priority: 0.6 },
+    { url: `${BASE_URL}/gallery`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
+    { url: `${BASE_URL}/settings`, lastModified: now, changeFrequency: "monthly", priority: 0.4 },
+    { url: `${BASE_URL}/blog`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
+    { url: `${BASE_URL}/feedback`, lastModified: now, changeFrequency: "monthly", priority: 0.5 },
+    { url: `${BASE_URL}/terms`, lastModified: now, changeFrequency: "yearly", priority: 0.3 },
+    { url: `${BASE_URL}/privacy`, lastModified: now, changeFrequency: "yearly", priority: 0.3 },
   ];
 
   const editorPages: MetadataRoute.Sitemap = widgetTypes.map((type) => ({
@@ -30,5 +37,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.9,
   }));
 
-  return [...staticPages, ...editorPages];
+  const blogPages: MetadataRoute.Sitemap = articles.map((article) => ({
+    url: `${BASE_URL}/blog/${article.slug}`,
+    lastModified: new Date(article.date),
+    changeFrequency: "monthly" as const,
+    priority: 0.6,
+  }));
+
+  const landingPages: MetadataRoute.Sitemap = widgetTypes.map((type) => ({
+    url: `${BASE_URL}/widgets/${type}`,
+    lastModified: now,
+    changeFrequency: "monthly" as const,
+    priority: 0.8,
+  }));
+
+  return [...staticPages, ...editorPages, ...landingPages, ...blogPages];
 }

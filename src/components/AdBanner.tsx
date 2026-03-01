@@ -42,15 +42,9 @@ export default function AdBanner({ format = "auto", className }: AdBannerProps) 
     }
   }, []);
 
-  // AD_CLIENT가 placeholder이면 개발용 빈 배너 표시
+  // AD_CLIENT가 placeholder이면 아무것도 표시하지 않음
   if (AD_CLIENT.includes("XXXX")) {
-    return (
-      <div className={`rounded-lg border border-dashed bg-muted/30 flex items-center justify-center text-xs text-muted-foreground ${className ?? ""}`}
-        style={{ minHeight: format === "horizontal" ? 90 : format === "rectangle" ? 250 : 100 }}
-      >
-        광고 영역
-      </div>
-    );
+    return null;
   }
 
   return (

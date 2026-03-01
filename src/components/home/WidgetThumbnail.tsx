@@ -34,7 +34,7 @@ export default function WidgetThumbnail({ type }: WidgetThumbnailProps) {
     <div ref={ref} className="relative w-full aspect-[4/3] overflow-hidden rounded-t-xl bg-muted" aria-hidden="true">
       {visible && (
         <div
-          className="absolute inset-0 origin-top-left"
+          className="absolute inset-0 origin-top-left transition-opacity duration-400 ease-in"
           style={{
             width: "200%",
             height: "200%",

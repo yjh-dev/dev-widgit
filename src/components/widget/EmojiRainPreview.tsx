@@ -82,8 +82,22 @@ export default function EmojiRainPreview({
   // Animation loop
   useEffect(() => {
     let lastTime = 0;
+    let paused = false;
+
+    const onVisChange = () => {
+      if (document.hidden) {
+        paused = true;
+        cancelAnimationFrame(rafRef.current);
+      } else {
+        paused = false;
+        lastTime = 0;
+        rafRef.current = requestAnimationFrame(animate);
+      }
+    };
 
     const animate = (time: number) => {
+      if (paused) return;
+
       const canvas = canvasRef.current;
       const container = containerRef.current;
       if (!canvas || !container) {
@@ -143,8 +157,12 @@ export default function EmojiRainPreview({
       rafRef.current = requestAnimationFrame(animate);
     };
 
+    document.addEventListener("visibilitychange", onVisChange);
     rafRef.current = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(rafRef.current);
+    return () => {
+      document.removeEventListener("visibilitychange", onVisChange);
+      cancelAnimationFrame(rafRef.current);
+    };
   }, [speedMul, emojiList]);
 
   // ResizeObserver to keep canvas in sync
@@ -159,6 +177,13 @@ export default function EmojiRainPreview({
         if (width > 0 && height > 0) {
           canvas.width = width;
           canvas.height = height;
+          // Clamp existing drop x-coordinates to new width
+          const drops = dropsRef.current;
+          for (let i = 0; i < drops.length; i++) {
+            if (drops[i].x > width) {
+              drops[i].x = Math.random() * width;
+            }
+          }
         }
       }
     });

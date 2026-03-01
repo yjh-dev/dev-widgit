@@ -4,6 +4,7 @@ import { allFontVariables } from "@/lib/fonts";
 import { Toaster } from "@/components/ui/sonner";
 import ThemeProvider from "@/components/ThemeProvider";
 import { LocaleProvider } from "@/components/LocaleProvider";
+import GoogleAnalytics from "@/components/GoogleAnalytics";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -20,7 +21,7 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://widgit.vercel.app"),
   title: "Widgit — 노션 위젯 생성기",
   description:
-    "URL 하나로 동작하는 노션 전용 위젯 생성 서비스. D-Day, 시계, 명언, 진행률 바 등 50종의 위젯을 무료로 만들어보세요.",
+    "URL 하나로 동작하는 노션 전용 위젯 생성 서비스. D-Day, 시계, 명언, 진행률 바 등 53종의 위젯을 무료로 만들어보세요.",
   keywords: [
     "노션 위젯",
     "Notion widget",
@@ -49,7 +50,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Widgit — 노션 위젯 생성기",
     description:
-      "URL 하나로 동작하는 노션 전용 위젯. 50종의 위젯을 무료로 만들어보세요.",
+      "URL 하나로 동작하는 노션 전용 위젯. 53종의 위젯을 무료로 만들어보세요.",
   },
 };
 
@@ -76,6 +77,7 @@ export default function RootLayout({
           </LocaleProvider>
           <Toaster position="bottom-center" duration={2000} offset={72} />
         </ThemeProvider>
+        <GoogleAnalytics />
       </body>
     </html>
   );

@@ -11,6 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { toPng } from "html-to-image";
+import { trackShareCard } from "@/lib/analytics";
 
 interface ShareCardDialogProps {
   open: boolean;
@@ -87,6 +88,7 @@ export default function ShareCardDialog({
 
       const dataUrl = canvas.toDataURL("image/png");
       setCardDataUrl(dataUrl);
+      trackShareCard(new URL(widgetUrl).pathname.split("/").pop() || "");
     } catch {
       toast.error("카드 이미지 생성에 실패했습니다.");
     } finally {

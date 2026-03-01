@@ -5,6 +5,7 @@ import { FolderHeart, Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { saveWidget } from "@/lib/saved-widgets";
+import { trackSaveWidget } from "@/lib/analytics";
 import type { WidgetType } from "@/lib/templates";
 
 interface EditorActionSaveWidgetProps {
@@ -26,6 +27,7 @@ export default function EditorActionSaveWidget({
       const parsed = new URL(widgetUrl);
       const relativeUrl = parsed.pathname + parsed.search;
       saveWidget(name, widgetType as WidgetType, relativeUrl);
+      trackSaveWidget(widgetType);
       setSaveWidgetName("");
       setShowSaveWidget(false);
       toast.success("내 위젯에 저장되었습니다!");

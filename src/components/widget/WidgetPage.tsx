@@ -5,8 +5,9 @@ import WidgetWatermark from "@/components/widget/WidgetWatermark";
 
 function Fallback() {
   return (
-    <div className="w-screen h-screen flex items-center justify-center">
-      <p className="text-muted-foreground text-sm">로딩 중...</p>
+    <div className="w-screen h-screen flex flex-col items-center justify-center gap-3">
+      <div className="w-8 h-8 border-3 border-muted-foreground/30 border-t-muted-foreground rounded-full animate-spin" />
+      <p className="text-muted-foreground text-sm animate-pulse">위젯 로딩 중...</p>
     </div>
   );
 }

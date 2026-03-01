@@ -10,8 +10,12 @@ import MobileBottomBar from "./MobileBottomBar";
 import MobilePreviewFab from "./MobilePreviewFab";
 import AdBanner from "@/components/AdBanner";
 import NotionPageMockup from "./NotionPageMockup";
+import OnboardingTour from "./OnboardingTour";
 import { addRecentWidget } from "@/lib/recent-widgets";
 import { getSizeGuide } from "@/lib/widget-size-guide";
+import { trackEditorVisit } from "@/lib/analytics";
+import { useLocale } from "@/components/LocaleProvider";
+import EditorWidgetNav from "./EditorWidgetNav";
 
 type PreviewSize = "free" | "square" | "wide" | "tall" | "notion-full" | "notion-half" | "notion";
 const previewSizes: { key: PreviewSize; label: string; icon: typeof Square; aspect?: string }[] = [
@@ -32,6 +36,7 @@ interface EditorLayoutProps {
 function EditorBackLinks() {
   const searchParams = useSearchParams();
   const fromTemplates = searchParams.get("from") === "templates";
+  const { t } = useLocale();
 
   return (
     <div className="flex items-center gap-3">
@@ -40,7 +45,7 @@ function EditorBackLinks() {
         className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
       >
         <ArrowLeft className="w-4 h-4" />
-        홈으로
+        {t("nav.home")}
       </Link>
       {fromTemplates && (
         <Link
@@ -48,7 +53,7 @@ function EditorBackLinks() {
           className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
         >
           <LayoutGrid className="w-4 h-4" />
-          추천 조합으로
+          {t("nav.backToTemplates")}
         </Link>
       )}
     </div>
@@ -136,6 +141,7 @@ export default function EditorLayout({ title, children }: EditorLayoutProps) {
   const formPanel = childArray[0];
   const previewPanel = childArray[1];
   const pathname = usePathname();
+  const { t } = useLocale();
   const [previewSize, setPreviewSize] = useState<PreviewSize>("free");
 
   // localStorage에서 프리뷰 사이즈 복원
@@ -156,7 +162,10 @@ export default function EditorLayout({ title, children }: EditorLayoutProps) {
   useEffect(() => {
     // /create/dday → dday
     const type = pathname.replace("/create/", "");
-    if (type && type !== pathname) addRecentWidget(type);
+    if (type && type !== pathname) {
+      addRecentWidget(type);
+      trackEditorVisit(type);
+    }
   }, [pathname]);
 
   const sizeConfig = previewSizes.find((s) => s.key === previewSize)!;
@@ -190,7 +199,7 @@ export default function EditorLayout({ title, children }: EditorLayoutProps) {
                   className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
                 >
                   <ArrowLeft className="w-4 h-4" />
-                  홈으로
+                  {t("nav.home")}
                 </Link>
               }
             >
@@ -198,16 +207,19 @@ export default function EditorLayout({ title, children }: EditorLayoutProps) {
             </Suspense>
             <ThemeToggle />
           </div>
-          <h1 className="text-2xl font-bold mb-1">{title}</h1>
+          <div className="flex items-center gap-3 mb-1">
+            <h1 className="text-2xl font-bold">{title}</h1>
+            <EditorWidgetNav />
+          </div>
           <p className="text-muted-foreground text-sm mb-8">
-            설정을 변경하면 프리뷰에 실시간으로 반영됩니다.
+            {t("editor.settingsDesc")}
           </p>
 
           <div className="mb-6">
             <AdBanner format="horizontal" className="max-w-5xl mx-auto" />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 items-start">
+          <div id="editor-grid" className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 items-start">
             {formPanel}
             {/* Desktop: show preview inline; Mobile: hidden (use FAB instead) */}
             <div className="hidden md:block md:sticky md:top-8">
@@ -249,6 +261,8 @@ export default function EditorLayout({ title, children }: EditorLayoutProps) {
 
         {/* Mobile-only: fixed bottom action bar */}
         <MobileBottomBar />
+
+        <OnboardingTour />
       </div>
     </EditorActionsProvider>
   );

@@ -27,6 +27,8 @@ import EditorActionPresets from "./EditorActionPresets";
 import EditorActionSaveWidget from "./EditorActionSaveWidget";
 import ShareCardDialog from "./ShareCardDialog";
 import GallerySubmitButton from "./GallerySubmitButton";
+import { trackCopyUrl, trackCopyEmbed, trackCopyShareLink, trackExportImage } from "@/lib/analytics";
+import { useLocale } from "@/components/LocaleProvider";
 
 const LS_KEY = "widgit-short-url";
 
@@ -59,6 +61,7 @@ export default function EditorActions({
   const [importUrl, setImportUrl] = useState("");
   const [shareOpen, setShareOpen] = useState(false);
   const { register } = useEditorActions();
+  const { t } = useLocale();
 
   const [mounted, setMounted] = useState(false);
   useEffect(() => { startTransition(() => setMounted(true)); }, []);
@@ -80,12 +83,12 @@ export default function EditorActions({
 
   const handleImport = () => {
     const raw = importUrl.trim();
-    if (!raw) { toast.error("URL을 입력하세요."); return; }
+    if (!raw) { toast.error(t("editor.enterUrl")); return; }
     try {
       const parsed = new URL(raw);
       const path = parsed.pathname;
       if (!path.startsWith("/widget/")) {
-        toast.error("위젯 URL 형식이 아닙니다. (/widget/... 형태)");
+        toast.error(t("editor.notWidgetUrl"));
         return;
       }
       const compressed = parsed.searchParams.get("c");
@@ -99,7 +102,7 @@ export default function EditorActions({
       const createPath = path.replace("/widget/", "/create/");
       window.location.href = `${createPath}${qs}`;
     } catch {
-      toast.error("올바른 URL을 입력하세요.");
+      toast.error(t("editor.invalidUrl"));
     }
   };
 
@@ -114,14 +117,15 @@ export default function EditorActions({
   );
 
   const wrappedOnCopy = useCallback(() => {
+    trackCopyUrl(widgetType);
     if (shortUrl) {
       navigator.clipboard.writeText(displayUrl).then(() => {
-        toast.success("짧은 URL이 복사되었습니다!");
+        toast.success(t("editor.shortUrlCopied"));
       });
     } else {
       onCopy();
     }
-  }, [shortUrl, displayUrl, onCopy]);
+  }, [shortUrl, displayUrl, onCopy, widgetType]);
 
   useEffect(() => {
     register({ widgetUrl: displayUrl, onCopy: wrappedOnCopy, onReset });
@@ -131,9 +135,9 @@ export default function EditorActions({
     <div className="space-y-4">
       <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <Label htmlFor="widget-url">위젯 URL</Label>
+          <Label htmlFor="widget-url">{t("editor.widgetUrl")}</Label>
           <div className="flex items-center gap-1.5">
-            <Label htmlFor="short-url-toggle" className="text-xs text-muted-foreground cursor-pointer">짧은 URL</Label>
+            <Label htmlFor="short-url-toggle" className="text-xs text-muted-foreground cursor-pointer">{t("editor.shortUrl")}</Label>
             <Switch id="short-url-toggle" checked={shortUrl} onCheckedChange={handleToggle} />
           </div>
         </div>
@@ -147,16 +151,16 @@ export default function EditorActions({
       </div>
 
       <div className="flex gap-2">
-        <Button onClick={wrappedOnCopy} className="flex-1">
+        <Button onClick={wrappedOnCopy} className="flex-1" data-tour-step="copy-url">
           <Copy className="w-4 h-4 mr-2" />
-          URL 복사
+          {t("editor.copyUrl")}
         </Button>
         <Button
           variant="outline"
           size="icon"
           onClick={() => window.open(displayUrl, "_blank")}
-          title="새 탭에서 열기"
-          aria-label="새 탭에서 열기"
+          title={t("editor.openNew")}
+          aria-label={t("editor.openNew")}
         >
           <ExternalLink className="w-4 h-4" />
         </Button>
@@ -165,39 +169,40 @@ export default function EditorActions({
           size="icon"
           onClick={async () => {
             const preview = document.getElementById("widget-preview");
-            if (!preview) { toast.error("프리뷰를 찾을 수 없습니다."); return; }
+            if (!preview) { toast.error(t("editor.noPreview")); return; }
             try {
               const dataUrl = await toPng(preview, { pixelRatio: 2 });
               const a = document.createElement("a");
               a.download = "widget.png";
               a.href = dataUrl;
               a.click();
-              toast.success("이미지가 다운로드되었습니다!");
+              trackExportImage(widgetType);
+              toast.success(t("editor.imageSaved"));
             } catch {
-              toast.error("이미지 내보내기에 실패했습니다.");
+              toast.error(t("editor.imageFailed"));
             }
           }}
-          title="이미지로 저장"
-          aria-label="이미지로 저장"
+          title={t("editor.saveImage")}
+          aria-label={t("editor.saveImage")}
         >
           <Download className="w-4 h-4" />
         </Button>
         <AlertDialog>
           <AlertDialogTrigger asChild>
-            <Button variant="outline" size="icon" title="초기화" aria-label="초기화">
+            <Button variant="outline" size="icon" title={t("editor.reset")} aria-label={t("editor.reset")}>
               <RotateCcw className="w-4 h-4" />
             </Button>
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>설정을 초기화할까요?</AlertDialogTitle>
+              <AlertDialogTitle>{t("editor.resetConfirm")}</AlertDialogTitle>
               <AlertDialogDescription>
-                모든 설정이 기본값으로 되돌아갑니다. 이 작업은 되돌릴 수 없습니다.
+                {t("editor.resetDesc")}
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel>취소</AlertDialogCancel>
-              <AlertDialogAction onClick={onReset}>초기화</AlertDialogAction>
+              <AlertDialogCancel>{t("editor.cancel")}</AlertDialogCancel>
+              <AlertDialogAction onClick={onReset}>{t("editor.reset")}</AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
@@ -211,12 +216,13 @@ export default function EditorActions({
           onClick={() => {
             const iframe = `<iframe src="${displayUrl}" width="100%" height="300" style="border:none;" loading="lazy"></iframe>`;
             navigator.clipboard.writeText(iframe).then(() => {
-              toast.success("Embed 코드가 복사되었습니다!");
+              trackCopyEmbed(widgetType);
+              toast.success(t("editor.embedCopied"));
             });
           }}
         >
           <Code className="w-3.5 h-3.5 mr-1.5" />
-          Embed 코드
+          {t("editor.embedCode")}
         </Button>
         <Button
           variant="outline"
@@ -225,12 +231,13 @@ export default function EditorActions({
           onClick={() => {
             const editorUrl = displayUrl.replace("/widget/", "/create/");
             navigator.clipboard.writeText(editorUrl).then(() => {
-              toast.success("에디터 공유 링크가 복사되었습니다!");
+              trackCopyShareLink(widgetType);
+              toast.success(t("editor.shareLinkCopied"));
             });
           }}
         >
           <Share2 className="w-3.5 h-3.5 mr-1.5" />
-          공유 링크
+          {t("editor.shareLink")}
         </Button>
       </div>
 
@@ -242,7 +249,7 @@ export default function EditorActions({
           onClick={() => setShareOpen(true)}
         >
           <Image className="w-3.5 h-3.5 mr-1.5" />
-          SNS 공유 카드
+          {t("editor.snsCard")}
         </Button>
         {widgetType && (
           <GallerySubmitButton widgetType={widgetType} widgetUrl={displayUrl} />
@@ -256,22 +263,23 @@ export default function EditorActions({
           onClick={() => setShowImport(!showImport)}
           className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
           aria-expanded={showImport}
-          aria-label={showImport ? "기존 URL 불러오기 접기" : "기존 URL 불러오기 펼치기"}
+          aria-label={t("editor.importUrl")}
         >
           <Import className={`w-3.5 h-3.5 transition-transform ${showImport ? "rotate-180" : ""}`} />
-          기존 URL 불러오기
+          {t("editor.importUrl")}
         </button>
         <button
           type="button"
           onClick={() => setGuideOpen(!guideOpen)}
           className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
           aria-expanded={guideOpen}
-          aria-label={guideOpen ? "노션에 임베드하는 방법 접기" : "노션에 임베드하는 방법 펼치기"}
+          aria-label={t("editor.embedGuide")}
+          data-tour-step="embed-guide"
         >
           <ChevronDown
             className={`w-3.5 h-3.5 transition-transform ${guideOpen ? "rotate-180" : ""}`}
           />
-          노션에 임베드하는 방법
+          {t("editor.embedGuide")}
         </button>
       </div>
 
@@ -282,12 +290,12 @@ export default function EditorActions({
             value={importUrl}
             onChange={(e) => setImportUrl(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleImport()}
-            placeholder="기존 위젯 URL 붙여넣기"
-            aria-label="기존 위젯 URL 입력"
+            placeholder={t("editor.importPlaceholder")}
+            aria-label={t("editor.importUrl")}
             className="flex-1 rounded-md border bg-background px-3 py-1.5 text-xs placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
             autoFocus
           />
-          <Button size="sm" className="h-8 text-xs" onClick={handleImport}>불러오기</Button>
+          <Button size="sm" className="h-8 text-xs" onClick={handleImport}>{t("editor.loadBtn")}</Button>
         </div>
       )}
       {guideOpen && (
@@ -313,7 +321,7 @@ export default function EditorActions({
             widgetType={widgetType as WidgetType}
             onApply={(colors) => {
               onApplyTheme(colors);
-              toast.success("테마가 적용되었습니다!");
+              toast.success(t("editor.themeApplied"));
             }}
           />
         </div>

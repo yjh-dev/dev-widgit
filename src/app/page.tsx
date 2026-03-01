@@ -19,22 +19,36 @@ import {
   CreditCard,
   GalleryHorizontalEnd,
   Group,
+  Zap,
+  Server,
+  Puzzle,
+  ArrowRight,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ThemeToggle from "@/components/ui/theme-toggle";
 import LocaleToggle from "@/components/ui/locale-toggle";
 import WidgetThumbnail from "@/components/home/WidgetThumbnail";
+import HeroWidgetShowcase from "@/components/home/HeroWidgetShowcase";
 import AdBanner from "@/components/AdBanner";
 import { getRecentWidgets } from "@/lib/recent-widgets";
-import { categories, allWidgets } from "@/lib/widget-categories";
-
-const CATEGORY_ALL = "전체";
-const categoryNames = [CATEGORY_ALL, ...categories.map((c) => c.title)];
+import { getCategories, getAllWidgets } from "@/lib/widget-categories";
+import { useLocale } from "@/components/LocaleProvider";
 
 export default function Home() {
+  const { locale, t } = useLocale();
   const [query, setQuery] = useState("");
+  const CATEGORY_ALL = t("home.all");
   const [activeCategory, setActiveCategory] = useState(CATEGORY_ALL);
   const [recentTypes, setRecentTypes] = useState<string[]>([]);
+
+  const localCategories = useMemo(() => getCategories(locale), [locale]);
+  const localAllWidgets = useMemo(() => getAllWidgets(locale), [locale]);
+  const categoryNames = useMemo(() => [CATEGORY_ALL, ...localCategories.map((c) => c.title)], [CATEGORY_ALL, localCategories]);
+
+  // Reset category filter when locale changes
+  useEffect(() => {
+    setActiveCategory(CATEGORY_ALL);
+  }, [CATEGORY_ALL]);
 
   useEffect(() => {
     startTransition(() => {
@@ -44,23 +58,21 @@ export default function Home() {
 
   const recentWidgets = useMemo(
     () => recentTypes
-      .map((type) => allWidgets.find((w) => w.type === type))
-      .filter(Boolean) as (typeof allWidgets)[number][],
-    [recentTypes],
+      .map((type) => localAllWidgets.find((w) => w.type === type))
+      .filter(Boolean) as (typeof localAllWidgets)[number][],
+    [recentTypes, localAllWidgets],
   );
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
 
-    // 카테고리 필터
     const byCat =
       activeCategory === CATEGORY_ALL
-        ? categories
-        : categories.filter((c) => c.title === activeCategory);
+        ? localCategories
+        : localCategories.filter((c) => c.title === activeCategory);
 
     if (!q) return byCat;
 
-    // 검색 필터: 이름, 설명, 태그 모두 매칭
     return byCat
       .map((c) => ({
         ...c,
@@ -72,40 +84,100 @@ export default function Home() {
         ),
       }))
       .filter((c) => c.widgets.length > 0);
-  }, [query, activeCategory]);
+  }, [query, activeCategory, localCategories, CATEGORY_ALL]);
 
   const totalCount = filtered.reduce((sum, c) => sum + c.widgets.length, 0);
 
   return (
     <div className="min-h-screen bg-background">
       {/* Hero */}
-      <header className="pt-16 pb-12 px-6 text-center">
-        <div className="flex items-center justify-center gap-3 mb-4">
-          <h1 className="text-4xl font-bold tracking-tight">Widgit</h1>
-          <ThemeToggle />
-          <LocaleToggle />
+      <header className="pt-12 pb-16 px-6">
+        <div className="max-w-5xl mx-auto">
+          {/* Top bar */}
+          <div className="flex items-center justify-between mb-12">
+            <h1 className="text-2xl font-bold tracking-tight">Widgit</h1>
+            <div className="flex items-center gap-2">
+              <ThemeToggle />
+              <LocaleToggle />
+            </div>
+          </div>
+
+          {/* Hero content — 2 columns on desktop */}
+          <div className="grid md:grid-cols-2 gap-10 items-center">
+            {/* Left — text */}
+            <div className="text-center md:text-left space-y-5">
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight leading-tight">
+                {t("home.heroTitle1")}
+                <br />
+                <span className="text-primary">{t("home.heroTitle2")}</span>{t("home.heroTitle3")}
+              </h2>
+              <p className="text-muted-foreground text-base sm:text-lg max-w-lg mx-auto md:mx-0">
+                {localAllWidgets.length}{t("home.heroDesc")}
+              </p>
+              <div className="flex flex-wrap gap-3 justify-center md:justify-start">
+                <Button size="lg" asChild>
+                  <a href="#widgets">
+                    {t("home.heroCta")}
+                    <ArrowRight className="w-4 h-4 ml-1.5" />
+                  </a>
+                </Button>
+                <Button size="lg" variant="outline" asChild>
+                  <Link href="/guide">
+                    <BookOpenCheck className="w-4 h-4 mr-1.5" />
+                    {t("home.heroGuide")}
+                  </Link>
+                </Button>
+              </div>
+            </div>
+
+            {/* Right — live widget showcase */}
+            <div className="hidden md:block">
+              <HeroWidgetShowcase />
+            </div>
+          </div>
         </div>
-        <p className="text-muted-foreground max-w-md mx-auto">
-          URL 하나로 동작하는 노션 전용 위젯을 만들어보세요.
-          <br />
-          서버 없이, 무한히 커스터마이징 가능합니다.
-        </p>
       </header>
 
+      {/* Stats strip */}
+      <section className="border-y bg-muted/30">
+        <div className="max-w-4xl mx-auto px-6 py-6 grid grid-cols-3 gap-4 text-center">
+          {[
+            { icon: Puzzle, value: `${localAllWidgets.length}`, label: t("home.statWidgets") },
+            { icon: Zap, value: t("home.statFree"), label: t("home.statFreeLabel") },
+            { icon: Server, value: t("home.statServerless"), label: t("home.statServerlessLabel") },
+          ].map((stat) => {
+            const StatIcon = stat.icon;
+            return (
+              <div key={stat.label} className="flex flex-col items-center gap-1.5">
+                <StatIcon className="w-5 h-5 text-primary" />
+                <p className="text-xl sm:text-2xl font-bold">{stat.value}</p>
+                <p className="text-xs text-muted-foreground">{stat.label}</p>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
       {/* How to use */}
-      <section className="max-w-3xl mx-auto px-6 pb-14">
+      <section className="max-w-3xl mx-auto px-6 py-14">
+        <h3 className="text-center text-sm font-semibold text-muted-foreground mb-6 uppercase tracking-wider">{t("home.howToUse")}</h3>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
           {[
-            { icon: MousePointerClick, label: "위젯 선택", desc: "원하는 위젯 고르기" },
-            { icon: Palette, label: "커스터마이징", desc: "색상·스타일 설정" },
-            { icon: Copy, label: "URL 복사", desc: "생성된 URL 복사" },
-            { icon: Code, label: "노션 임베드", desc: "/embed로 붙여넣기" },
+            { icon: MousePointerClick, label: t("step.select"), desc: t("step.selectDesc") },
+            { icon: Palette, label: t("step.customize"), desc: t("step.customizeDesc") },
+            { icon: Copy, label: t("step.copy"), desc: t("step.copyDesc") },
+            { icon: Code, label: t("step.embed"), desc: t("step.embedDesc") },
           ].map((step, i) => {
             const StepIcon = step.icon;
             return (
               <div key={i} className="flex flex-col items-center gap-2 p-3">
-                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                  <StepIcon className="w-5 h-5 text-primary" />
+                <div className="relative">
+                  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                    <StepIcon className="w-5 h-5 text-primary" />
+                  </div>
+                  <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-primary text-primary-foreground text-[10px] font-bold flex items-center justify-center">
+                    {i + 1}
+                  </span>
                 </div>
                 <p className="text-sm font-medium">{step.label}</p>
                 <p className="text-xs text-muted-foreground">{step.desc}</p>
@@ -120,55 +192,55 @@ export default function Home() {
         <Button variant="outline" asChild>
           <Link href="/templates">
             <LayoutGrid className="w-4 h-4 mr-2" />
-            추천 조합 보기
+            {t("nav.templates")}
           </Link>
         </Button>
         <Button variant="outline" asChild>
           <Link href="/guide">
             <BookOpenCheck className="w-4 h-4 mr-2" />
-            임베드 가이드
+            {t("nav.guide")}
           </Link>
         </Button>
         <Button variant="outline" asChild>
           <Link href="/my-widgets">
             <FolderHeart className="w-4 h-4 mr-2" />
-            내 위젯
+            {t("nav.myWidgets")}
           </Link>
         </Button>
         <Button variant="outline" asChild>
           <Link href="/create/icon">
             <Sparkles className="w-4 h-4 mr-2" />
-            아이콘 만들기
+            {t("nav.iconMaker")}
           </Link>
         </Button>
         <Button variant="outline" asChild>
           <Link href="/create/cover">
             <ImageIcon className="w-4 h-4 mr-2" />
-            커버 이미지 만들기
+            {t("nav.coverMaker")}
           </Link>
         </Button>
         <Button variant="outline" asChild>
           <Link href="/gallery">
             <GalleryHorizontalEnd className="w-4 h-4 mr-2" />
-            갤러리
+            {t("nav.gallery")}
           </Link>
         </Button>
         <Button variant="outline" asChild>
           <Link href="/create/group">
             <Group className="w-4 h-4 mr-2" />
-            위젯 그룹 만들기
+            {t("nav.groupMaker")}
           </Link>
         </Button>
         <Button variant="outline" asChild>
           <Link href="/create/badge">
             <Award className="w-4 h-4 mr-2" />
-            뱃지 만들기
+            {t("nav.badgeMaker")}
           </Link>
         </Button>
         <Button variant="outline" asChild>
           <Link href="/create/card">
             <CreditCard className="w-4 h-4 mr-2" />
-            카드 이미지 만들기
+            {t("nav.cardMaker")}
           </Link>
         </Button>
       </section>
@@ -178,7 +250,7 @@ export default function Home() {
         <section className="max-w-5xl mx-auto px-6 pb-8">
           <div className="flex items-center gap-2 mb-3">
             <History className="w-4 h-4 text-muted-foreground" />
-            <h2 className="text-sm font-medium text-muted-foreground">최근 사용한 위젯</h2>
+            <h2 className="text-sm font-medium text-muted-foreground">{t("home.recentWidgets")}</h2>
           </div>
           <div className="flex gap-3 overflow-x-auto pb-1">
             {recentWidgets.map((w) => {
@@ -199,7 +271,7 @@ export default function Home() {
       )}
 
       {/* Search & Filter */}
-      <section className="max-w-5xl mx-auto px-6 pb-8 space-y-4">
+      <section id="widgets" className="max-w-5xl mx-auto px-6 pb-8 space-y-4 scroll-mt-4">
         {/* Search input */}
         <div className="relative max-w-md mx-auto">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
@@ -207,8 +279,8 @@ export default function Home() {
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="위젯 검색..."
-            aria-label="위젯 검색"
+            placeholder={t("home.search")}
+            aria-label={t("home.search")}
             className="w-full rounded-lg border bg-background pl-9 pr-9 py-2.5 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
           />
           {query && (
@@ -248,7 +320,7 @@ export default function Home() {
       {query.trim() && (
         <div className="max-w-5xl mx-auto px-6 pb-2">
           <p className="text-sm text-muted-foreground">
-            {totalCount > 0 ? `${totalCount}개의 위젯을 찾았습니다` : ""}
+            {totalCount > 0 ? `${totalCount} ${t("home.resultCount")}` : ""}
           </p>
         </div>
       )}
@@ -264,7 +336,7 @@ export default function Home() {
           <div className="text-center py-16 text-muted-foreground">
             <Search className="w-10 h-10 mx-auto mb-3 opacity-40" />
             <p className="text-sm">
-              &ldquo;{query}&rdquo;에 해당하는 위젯이 없습니다.
+              &ldquo;{query}&rdquo; {t("home.noResult")}
             </p>
           </div>
         ) : (
@@ -303,30 +375,42 @@ export default function Home() {
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-6 text-sm text-muted-foreground">
               <span className="font-semibold text-foreground">Widgit</span>
-              <span>{allWidgets.length}종 위젯</span>
-              <span>서버리스</span>
-              <span>무료</span>
+              <span>{localAllWidgets.length} {t("footer.widgets")}</span>
+              <span>{t("footer.serverless")}</span>
+              <span>{t("footer.free")}</span>
             </div>
-            <div className="flex items-center gap-4 text-sm text-muted-foreground">
+            <div className="flex items-center gap-4 text-sm text-muted-foreground flex-wrap">
               <Link href="/guide" className="hover:text-foreground transition-colors">
-                임베드 가이드
+                {t("nav.guide")}
               </Link>
               <Link href="/templates" className="hover:text-foreground transition-colors">
-                추천 조합
+                {t("nav.templates")}
               </Link>
               <Link href="/gallery" className="hover:text-foreground transition-colors">
-                갤러리
+                {t("nav.gallery")}
               </Link>
               <Link href="/my-widgets" className="hover:text-foreground transition-colors">
-                내 위젯
+                {t("nav.myWidgets")}
+              </Link>
+              <Link href="/blog" className="hover:text-foreground transition-colors">
+                {t("nav.blog")}
+              </Link>
+              <Link href="/feedback" className="hover:text-foreground transition-colors">
+                {t("nav.feedback")}
+              </Link>
+              <Link href="/terms" className="hover:text-foreground transition-colors">
+                {t("nav.terms")}
+              </Link>
+              <Link href="/privacy" className="hover:text-foreground transition-colors">
+                {t("nav.privacy")}
               </Link>
               <Link href="/settings" className="hover:text-foreground transition-colors">
-                설정
+                {t("nav.settings")}
               </Link>
             </div>
           </div>
           <p className="text-center text-xs text-muted-foreground mt-6">
-            URL 파라미터만으로 동작하는 무상태 노션 위젯. 서버·DB 없이, 무한히 커스터마이징 가능합니다.
+            {t("footer.desc")}
           </p>
         </div>
       </footer>

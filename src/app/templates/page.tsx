@@ -2,7 +2,7 @@
 
 import { useEffect, useState, startTransition } from "react";
 import Link from "next/link";
-import { ArrowLeft, Copy, ExternalLink, ChevronDown, ChevronUp, BookOpen, Link2, ShoppingBag } from "lucide-react";
+import { ArrowLeft, Copy, ExternalLink, ChevronDown, ChevronUp, BookOpen, Link2, ShoppingBag, FileDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import ThemeToggle from "@/components/ui/theme-toggle";
@@ -17,6 +17,7 @@ import {
 import { copyToClipboard } from "@/lib/clipboard";
 import { compressWidgetUrl } from "@/lib/url-compression";
 import { toast } from "sonner";
+import { trackTemplateCopy } from "@/lib/analytics";
 
 function getTemplateWidgetPreviewProps(template: Template) {
   const theme = getThemeById(template.themeId);
@@ -29,6 +30,7 @@ function handleCopySingle(template: Template, widgetIndex: number, short: boolea
   const url = buildThemedWidgetUrl(w.type, theme, w.widgetConfig);
   const fullUrl = `${window.location.origin}${url}`;
   copyToClipboard(short ? compressWidgetUrl(fullUrl) : fullUrl);
+  trackTemplateCopy(template.id, w.name);
   toast.success("URL이 클립보드에 복사되었습니다!");
 }
 
@@ -250,6 +252,18 @@ export default function TemplatesPage() {
 
               {/* Notion embed guide */}
               <NotionEmbedInstructions notionTip={template.notionTip} />
+
+              {/* Notion template duplicate button */}
+              {template.notionTemplateUrl && !template.notionTemplateUrl.includes("PLACEHOLDER") && (
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  onClick={() => window.open(template.notionTemplateUrl, "_blank")}
+                >
+                  <FileDown className="w-4 h-4 mr-2" />
+                  노션에 복제하기
+                </Button>
+              )}
             </CardContent>
           </Card>
         ))}

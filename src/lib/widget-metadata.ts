@@ -81,4 +81,6 @@ export const widgetMetadata: Record<string, WidgetMeta> = {
   "matrix": { name: "매트릭스", desc: "아이젠하워 2×2 우선순위 매트릭스 노션 위젯" },
   "multi-progress": { name: "멀티 프로그레스", desc: "여러 항목의 진행률을 비교하는 노션 위젯" },
   "fortune-cookie": { name: "포춘 쿠키", desc: "랜덤 포춘 메시지를 보여주는 노션 위젯" },
+  "badge": { name: "뱃지", desc: "텍스트 뱃지를 만드는 노션 위젯" },
+  "group": { name: "위젯 그룹", desc: "여러 위젯을 하나로 묶어 표시하는 노션 위젯" },
 };
