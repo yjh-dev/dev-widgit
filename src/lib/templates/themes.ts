@@ -8,6 +8,8 @@ export interface ColorTheme {
 }
 
 export const colorThemes: ColorTheme[] = [
+  { id: "notion-light", name: "노션 라이트", bg: "FFFFFF", text: "37352F", accent: "2383E2", secondary: "6940A5" },
+  { id: "notion-dark", name: "노션 다크", bg: "191919", text: "FFFFFF", accent: "529CCA", secondary: "9A6DD7" },
   { id: "light-default", name: "라이트 기본", bg: "FFFFFF", text: "1E1E1E", accent: "2563EB", secondary: "22C55E" },
   { id: "dark-night", name: "다크 나이트", bg: "1A1A2E", text: "E0E0E0", accent: "7C3AED", secondary: "06B6D4" },
   { id: "warm-pastel", name: "웜 파스텔", bg: "FFF7ED", text: "78350F", accent: "F97316", secondary: "FB923C" },

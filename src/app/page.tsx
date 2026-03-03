@@ -399,7 +399,7 @@ export default function Home() {
           filtered.map((category) => (
             <section key={category.title}>
               <h2 className="text-lg font-semibold mb-4">{category.title}</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5">
                 {category.widgets.map((w) => {
                   const Icon = w.icon;
                   return (
@@ -409,11 +409,11 @@ export default function Home() {
                       className="group rounded-xl border bg-card overflow-hidden transition-all duration-200 hover:-translate-y-1 hover:shadow-lg relative"
                     >
                       <WidgetThumbnail type={w.type} />
-                      <div className="p-4 flex items-start gap-3">
-                        <Icon className="w-5 h-5 text-primary mt-0.5 shrink-0" />
+                      <div className="p-3 sm:p-4 flex items-start gap-2 sm:gap-3">
+                        <Icon className="w-4 h-4 sm:w-5 sm:h-5 text-primary mt-0.5 shrink-0" />
                         <div className="flex-1 min-w-0">
-                          <p className="font-semibold text-card-foreground">{highlight(w.name)}</p>
-                          <p className="text-sm text-muted-foreground">{highlight(w.desc)}</p>
+                          <p className="font-semibold text-card-foreground text-sm sm:text-base">{highlight(w.name)}</p>
+                          <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2">{highlight(w.desc)}</p>
                         </div>
                         <button
                           type="button"
@@ -422,7 +422,7 @@ export default function Home() {
                           aria-label={favoriteTypes.includes(w.type) ? "즐겨찾기 해제" : "즐겨찾기 추가"}
                         >
                           <Star
-                            className={`w-4 h-4 ${
+                            className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${
                               favoriteTypes.includes(w.type)
                                 ? "text-yellow-500 fill-yellow-500"
                                 : "text-muted-foreground/40"

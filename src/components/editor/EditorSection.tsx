@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { useState, useRef, useCallback, type ReactNode } from "react";
 import {
   Accordion,
   AccordionItem,
@@ -23,13 +23,43 @@ export default function EditorSection({
   sections,
   defaultOpen,
 }: EditorSectionProps) {
+  const [value, setValue] = useState<string[]>(
+    defaultOpen ?? sections.map((s) => s.id),
+  );
+  const itemRefs = useRef<Record<string, HTMLDivElement | null>>({});
+
+  const handleValueChange = useCallback(
+    (next: string[]) => {
+      // Find newly opened section(s)
+      const opened = next.filter((id) => !value.includes(id));
+      setValue(next);
+
+      if (opened.length > 0) {
+        const targetId = opened[0];
+        // Wait for accordion animation to start, then scroll
+        requestAnimationFrame(() => {
+          const el = itemRefs.current[targetId];
+          if (el) {
+            el.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+        });
+      }
+    },
+    [value],
+  );
+
   return (
     <Accordion
       type="multiple"
-      defaultValue={defaultOpen ?? sections.map((s) => s.id)}
+      value={value}
+      onValueChange={handleValueChange}
     >
       {sections.map((section) => (
-        <AccordionItem key={section.id} value={section.id}>
+        <AccordionItem
+          key={section.id}
+          value={section.id}
+          ref={(el) => { itemRefs.current[section.id] = el; }}
+        >
           <AccordionTrigger className="text-sm font-semibold text-muted-foreground hover:no-underline">
             {section.title}
           </AccordionTrigger>
