@@ -35,10 +35,10 @@ const yearOptions = Array.from({ length: 6 }, (_, i) => String(currentYear - i))
 
 export default function CreateGithubContributionPage() {
   const {
-    username, year, showTotal, showUsername, lang, cellSize, cellRadius,
+    username, year, showTotal, showUsername, showStreak, showStats, lang, cellSize, cellRadius,
     color, textColor, bg, transparentBg,
     borderRadius, padding, fontSize,
-    setUsername, setYear, setShowTotal, setShowUsername, setLang, setCellSize, setCellRadius,
+    setUsername, setYear, setShowTotal, setShowUsername, setShowStreak, setShowStats, setLang, setCellSize, setCellRadius,
     setColor, setTextColor, setBg, setTransparentBg,
     setBorderRadius, setPadding, setFontSize,
     fx, fxInt, gbg, gbgDir, neonColor, bshadow,
@@ -54,6 +54,8 @@ export default function CreateGithubContributionPage() {
       ...(p.has("year") && { year: p.get("year")! }),
       ...(p.has("total") && { showTotal: p.get("total") !== "false" }),
       ...(p.has("showUser") && { showUsername: p.get("showUser") !== "false" }),
+      ...(p.has("streak") && { showStreak: p.get("streak") === "true" }),
+      ...(p.has("stats") && { showStats: p.get("stats") === "true" }),
       ...(p.has("lang") && { lang: p.get("lang") as "ko" | "en" }),
       ...(p.has("cellSize") && { cellSize: p.get("cellSize") as "sm" | "md" | "lg" }),
       ...(p.has("cellRadius") && { cellRadius: p.get("cellRadius") as "square" | "rounded" | "circle" }),
@@ -75,6 +77,8 @@ export default function CreateGithubContributionPage() {
     if (year !== "last") params.set("year", year);
     if (!showTotal) params.set("total", "false");
     if (!showUsername) params.set("showUser", "false");
+    if (showStreak) params.set("streak", "true");
+    if (showStats) params.set("stats", "true");
     if (lang !== "ko") params.set("lang", lang);
     if (cellSize !== "sm") params.set("cellSize", cellSize);
     if (cellRadius !== "rounded") params.set("cellRadius", cellRadius);
@@ -85,7 +89,7 @@ export default function CreateGithubContributionPage() {
     addEffectParams(params, fx, fxInt, gbg, gbgDir, neonColor, bshadow);
     addExtraStyleParams(params, tshadow, bw, bc, opacity, ls);
     return buildUrl(base, params);
-  }, [username, year, showTotal, showUsername, lang, cellSize, cellRadius, color, textColor, bg, transparentBg, borderRadius, padding, fontSize, fx, fxInt, gbg, gbgDir, neonColor, bshadow, tshadow, bw, bc, opacity, ls]);
+  }, [username, year, showTotal, showUsername, showStreak, showStats, lang, cellSize, cellRadius, color, textColor, bg, transparentBg, borderRadius, padding, fontSize, fx, fxInt, gbg, gbgDir, neonColor, bshadow, tshadow, bw, bc, opacity, ls]);
 
   const handleCopy = async () => {
     await copyToClipboard(buildWidgetUrl());
@@ -144,6 +148,14 @@ export default function CreateGithubContributionPage() {
                     <div className="flex items-center justify-between">
                       <Label htmlFor="showUsername">사용자명 표시</Label>
                       <Switch id="showUsername" checked={showUsername} onCheckedChange={setShowUsername} />
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <Label htmlFor="showStreak">연속 기여일 표시</Label>
+                      <Switch id="showStreak" checked={showStreak} onCheckedChange={setShowStreak} />
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <Label htmlFor="showStats">활동 통계 표시</Label>
+                      <Switch id="showStats" checked={showStats} onCheckedChange={setShowStats} />
                     </div>
                     <div className="space-y-2">
                       <Label>언어</Label>
@@ -244,6 +256,8 @@ export default function CreateGithubContributionPage() {
           year={year}
           showTotal={showTotal}
           showUsername={showUsername}
+          showStreak={showStreak}
+          showStats={showStats}
           lang={lang}
           cellSize={cellSize}
           cellRadius={cellRadius}

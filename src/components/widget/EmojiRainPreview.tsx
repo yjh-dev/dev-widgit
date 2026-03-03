@@ -8,6 +8,7 @@ import {
   type SpeedKey,
   type DensityKey,
 } from "@/lib/emoji-rain";
+import { useReducedMotion } from "@/lib/use-reduced-motion";
 
 interface EmojiRainPreviewProps {
   emojis?: string;
@@ -46,6 +47,7 @@ export default function EmojiRainPreview({
   const dropsRef = useRef<RainDrop[]>([]);
   const rafRef = useRef<number>(0);
   const initializedRef = useRef(false);
+  const reducedMotion = useReducedMotion();
 
   const emojiList = useMemo(() => parseEmojis(emojis), [emojis]);
   const count = DENSITY_COUNT[density];
@@ -79,8 +81,37 @@ export default function EmojiRainPreview({
     initializedRef.current = true;
   }, [emojiList, count, minSize, maxSize]);
 
-  // Animation loop
+  // Animation loop (or static frame for reduced motion)
   useEffect(() => {
+    const canvas = canvasRef.current;
+    const container = containerRef.current;
+    if (!canvas || !container) return;
+
+    // Reduced motion: draw one static frame and stop
+    if (reducedMotion) {
+      const w = container.clientWidth;
+      const h = container.clientHeight;
+      if (w <= 0 || h <= 0) return;
+      canvas.width = w;
+      canvas.height = h;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
+      ctx.clearRect(0, 0, w, h);
+      const drops = dropsRef.current;
+      for (let i = 0; i < drops.length; i++) {
+        const d = drops[i];
+        // Clamp y to visible area for static display
+        if (d.y < 0) d.y = Math.random() * h;
+        if (d.y > h) d.y = Math.random() * h;
+        ctx.globalAlpha = d.opacity;
+        ctx.font = `${d.size}px serif`;
+        ctx.textBaseline = "top";
+        ctx.fillText(d.emoji, d.x, d.y);
+      }
+      ctx.globalAlpha = 1;
+      return;
+    }
+
     let lastTime = 0;
     let paused = false;
 
@@ -98,8 +129,6 @@ export default function EmojiRainPreview({
     const animate = (time: number) => {
       if (paused) return;
 
-      const canvas = canvasRef.current;
-      const container = containerRef.current;
       if (!canvas || !container) {
         rafRef.current = requestAnimationFrame(animate);
         return;
@@ -163,7 +192,7 @@ export default function EmojiRainPreview({
       document.removeEventListener("visibilitychange", onVisChange);
       cancelAnimationFrame(rafRef.current);
     };
-  }, [speedMul, emojiList]);
+  }, [speedMul, emojiList, reducedMotion]);
 
   // ResizeObserver to keep canvas in sync
   useEffect(() => {

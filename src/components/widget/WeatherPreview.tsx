@@ -4,9 +4,15 @@ import { useEffect, useState } from "react";
 import {
   fetchWeather,
   fetchForecast,
+  fetchHourlyForecast,
+  fetchAirQuality,
+  fetchUvIndex,
   weatherCodeToEmoji,
   type WeatherData,
   type ForecastDay,
+  type HourlyForecast,
+  type AirQualityData,
+  type UvData,
   type TemperatureUnit,
   type WeatherIconStyle,
 } from "@/lib/weather";
@@ -41,6 +47,9 @@ interface WeatherPreviewProps {
   showForecast?: boolean;
   showHumidity?: boolean;
   showWind?: boolean;
+  showHourly?: boolean;
+  showAqi?: boolean;
+  showUv?: boolean;
   iconStyle?: WeatherIconStyle;
   refresh?: number;
   color?: string;
@@ -59,6 +68,9 @@ export default function WeatherPreview({
   showForecast = false,
   showHumidity = false,
   showWind = false,
+  showHourly = false,
+  showAqi = false,
+  showUv = false,
   iconStyle = "emoji",
   refresh = 30,
   color = "1E1E1E",
@@ -70,6 +82,9 @@ export default function WeatherPreview({
 }: WeatherPreviewProps) {
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [forecast, setForecast] = useState<ForecastDay[]>([]);
+  const [hourly, setHourly] = useState<HourlyForecast[]>([]);
+  const [aqi, setAqi] = useState<AirQualityData | null>(null);
+  const [uv, setUv] = useState<UvData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -80,13 +95,19 @@ export default function WeatherPreview({
       setLoading(true);
       setError(null);
       try {
-        const [w, f] = await Promise.all([
+        const [w, f, h, a, u] = await Promise.all([
           fetchWeather(lat, lon, unit),
           showForecast ? fetchForecast(lat, lon, unit) : Promise.resolve([]),
+          showHourly ? fetchHourlyForecast(lat, lon, unit) : Promise.resolve([]),
+          showAqi ? fetchAirQuality(lat, lon) : Promise.resolve(null),
+          showUv ? fetchUvIndex(lat, lon) : Promise.resolve(null),
         ]);
         if (cancelled) return;
         setWeather(w);
         setForecast(f);
+        setHourly(h);
+        setAqi(a);
+        setUv(u);
       } catch {
         if (!cancelled) setError("날씨 정보를 불러올 수 없습니다");
       } finally {
@@ -101,7 +122,7 @@ export default function WeatherPreview({
       cancelled = true;
       clearInterval(interval);
     };
-  }, [lat, lon, unit, showForecast, refresh]);
+  }, [lat, lon, unit, showForecast, showHourly, showAqi, showUv, refresh]);
 
   const unitSymbol = unit === "fahrenheit" ? "°F" : "°C";
 
@@ -149,14 +170,35 @@ export default function WeatherPreview({
 
           <p className={`${LABEL_SIZE_MAP[fontSize]} opacity-70`}>{weather.condition}</p>
 
-          {(showHumidity || showWind) && (
-            <div className="flex items-center gap-3 opacity-60">
+          {(showHumidity || showWind || (showAqi && aqi) || (showUv && uv)) && (
+            <div className="flex items-center gap-3 opacity-60 flex-wrap justify-center">
               {showHumidity && (
                 <span className={LABEL_SIZE_MAP[fontSize]}>💧 {weather.humidity}%</span>
               )}
               {showWind && (
                 <span className={LABEL_SIZE_MAP[fontSize]}>💨 {weather.windSpeed}km/h</span>
               )}
+              {showAqi && aqi && (
+                <span className={LABEL_SIZE_MAP[fontSize]}>🌬️ AQI {aqi.aqi} ({aqi.label})</span>
+              )}
+              {showUv && uv && (
+                <span className={LABEL_SIZE_MAP[fontSize]}>☀️ UV {uv.index} ({uv.label})</span>
+              )}
+            </div>
+          )}
+
+          {showHourly && hourly.length > 0 && (
+            <div className="flex items-center gap-3 mt-2 pt-2 border-t border-current/10 w-full justify-center">
+              {hourly.map((h) => {
+                const hour = new Date(h.time).getHours();
+                return (
+                  <div key={h.time} className="flex flex-col items-center gap-0.5">
+                    <span className="text-xs opacity-50">{hour}시</span>
+                    <span className="text-sm">{weatherCodeToEmoji(h.weatherCode)}</span>
+                    <span className="text-xs">{h.temp}°</span>
+                  </div>
+                );
+              })}
             </div>
           )}
 

@@ -25,6 +25,9 @@ function WeatherWidgetContent() {
   const showForecast = searchParams.get("forecast") === "true";
   const showHumidity = searchParams.get("humidity") === "true";
   const showWind = searchParams.get("wind") === "true";
+  const showHourly = searchParams.get("hourly") === "true";
+  const showAqi = searchParams.get("aqi") === "true";
+  const showUv = searchParams.get("uv") === "true";
 
   const rawIcon = searchParams.get("icon");
   const iconStyle: WeatherIconStyle = VALID_ICON_STYLES.includes(rawIcon as WeatherIconStyle)
@@ -52,6 +55,9 @@ function WeatherWidgetContent() {
         showForecast={showForecast}
         showHumidity={showHumidity}
         showWind={showWind}
+        showHourly={showHourly}
+        showAqi={showAqi}
+        showUv={showUv}
         iconStyle={iconStyle}
         refresh={refresh}
         color={color}

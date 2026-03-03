@@ -10,6 +10,9 @@ const widgetDefaults = {
   showForecast: false,
   showHumidity: false,
   showWind: false,
+  showHourly: false,
+  showAqi: false,
+  showUv: false,
   iconStyle: "emoji" as WeatherIconStyle,
   refresh: 30,
   color: "1E1E1E",
@@ -23,6 +26,9 @@ interface WeatherState extends CommonStyleState {
   showForecast: boolean;
   showHumidity: boolean;
   showWind: boolean;
+  showHourly: boolean;
+  showAqi: boolean;
+  showUv: boolean;
   iconStyle: WeatherIconStyle;
   refresh: number;
   color: string;
@@ -33,6 +39,9 @@ interface WeatherState extends CommonStyleState {
   setShowForecast: (v: boolean) => void;
   setShowHumidity: (v: boolean) => void;
   setShowWind: (v: boolean) => void;
+  setShowHourly: (v: boolean) => void;
+  setShowAqi: (v: boolean) => void;
+  setShowUv: (v: boolean) => void;
   setIconStyle: (v: WeatherIconStyle) => void;
   setRefresh: (v: number) => void;
   setColor: (v: string) => void;
@@ -49,6 +58,9 @@ export const useWeatherStore = create<WeatherState>(
     setShowForecast: (v: boolean) => set({ showForecast: v }),
     setShowHumidity: (v: boolean) => set({ showHumidity: v }),
     setShowWind: (v: boolean) => set({ showWind: v }),
+    setShowHourly: (v: boolean) => set({ showHourly: v }),
+    setShowAqi: (v: boolean) => set({ showAqi: v }),
+    setShowUv: (v: boolean) => set({ showUv: v }),
     setIconStyle: (v: WeatherIconStyle) => set({ iconStyle: v }),
     setRefresh: (v: number) => set({ refresh: v }),
     setColor: (v: string) => set({ color: v }),

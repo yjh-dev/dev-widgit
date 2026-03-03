@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from "react";
 import { resolveFontStyle } from "@/lib/fonts";
 import type { CursorStyle, TypewriterAlign } from "@/lib/typewriter";
 import type { FontSizeKey } from "@/lib/common-widget-options";
+import { useReducedMotion } from "@/lib/use-reduced-motion";
 
 const FONT_SIZE_MAP: Record<FontSizeKey, string> = {
   sm: "text-lg",
@@ -49,6 +50,7 @@ export default function TypewriterPreview({
   padding = 24,
   fontSize = "lg",
 }: TypewriterPreviewProps) {
+  const reducedMotion = useReducedMotion();
   const [displayText, setDisplayText] = useState("");
   const [showCursor, setShowCursor] = useState(true);
   const textIndexRef = useRef(0);
@@ -67,6 +69,13 @@ export default function TypewriterPreview({
     textIndexRef.current = 0;
     charIndexRef.current = 0;
     isDeletingRef.current = false;
+
+    // Reduced motion: show full text immediately, no animation
+    if (reducedMotion) {
+      setDisplayText(displayTexts[0] || "");
+      return;
+    }
+
     setDisplayText("");
 
     const tick = () => {
@@ -113,7 +122,7 @@ export default function TypewriterPreview({
       if (timerRef.current) clearTimeout(timerRef.current);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [texts.join("|"), speed, pause, loop, deleteAnim]);
+  }, [texts.join("|"), speed, pause, loop, deleteAnim, reducedMotion]);
 
   // Cursor blink
   useEffect(() => {

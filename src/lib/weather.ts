@@ -16,6 +16,22 @@ export interface ForecastDay {
   weatherCode: number;
 }
 
+export interface HourlyForecast {
+  time: string;
+  temp: number;
+  weatherCode: number;
+}
+
+export interface AirQualityData {
+  aqi: number;
+  label: string;
+}
+
+export interface UvData {
+  index: number;
+  label: string;
+}
+
 const WMO_CONDITIONS: Record<number, string> = {
   0: "맑음",
   1: "대체로 맑음",
@@ -117,4 +133,69 @@ export async function fetchForecast(
     minTemp: Math.round(daily.temperature_2m_min[i]),
     weatherCode: daily.weather_code[i],
   }));
+}
+
+export async function fetchHourlyForecast(
+  lat: number,
+  lon: number,
+  unit: TemperatureUnit,
+): Promise<HourlyForecast[]> {
+  const tempUnit = unit === "fahrenheit" ? "fahrenheit" : "celsius";
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,weather_code&temperature_unit=${tempUnit}&forecast_hours=6`;
+
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`Hourly API error: ${res.status}`);
+
+  const data = await res.json();
+  const hourly = data.hourly;
+
+  return hourly.time.map((time: string, i: number) => ({
+    time,
+    temp: Math.round(hourly.temperature_2m[i]),
+    weatherCode: hourly.weather_code[i],
+  }));
+}
+
+function aqiLabel(aqi: number): string {
+  if (aqi <= 20) return "좋음";
+  if (aqi <= 40) return "보통";
+  if (aqi <= 60) return "나쁨";
+  if (aqi <= 80) return "매우 나쁨";
+  return "위험";
+}
+
+export async function fetchAirQuality(
+  lat: number,
+  lon: number,
+): Promise<AirQualityData> {
+  const url = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${lat}&longitude=${lon}&current=european_aqi`;
+
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`AQI API error: ${res.status}`);
+
+  const data = await res.json();
+  const aqi = Math.round(data.current.european_aqi);
+  return { aqi, label: aqiLabel(aqi) };
+}
+
+function uvLabel(index: number): string {
+  if (index <= 2) return "낮음";
+  if (index <= 5) return "보통";
+  if (index <= 7) return "높음";
+  if (index <= 10) return "매우 높음";
+  return "위험";
+}
+
+export async function fetchUvIndex(
+  lat: number,
+  lon: number,
+): Promise<UvData> {
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=uv_index&forecast_hours=1`;
+
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`UV API error: ${res.status}`);
+
+  const data = await res.json();
+  const index = Math.round(data.hourly.uv_index[0] * 10) / 10;
+  return { index, label: uvLabel(index) };
 }

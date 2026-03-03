@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback, startTransition } from "react
 import { Play, Pause, RotateCcw } from "lucide-react";
 import type { FontSizeKey } from "@/lib/common-widget-options";
 import type { BreathingPhase } from "@/lib/breathing";
+import { useReducedMotion } from "@/lib/use-reduced-motion";
 
 const LABEL_SIZE_MAP: Record<FontSizeKey, string> = {
   sm: "text-sm",
@@ -67,6 +68,7 @@ export default function BreathingPreview({
   fontSize = "md",
 }: BreathingPreviewProps) {
   const phases = buildPhases(inhale, hold1, exhale, hold2);
+  const reducedMotion = useReducedMotion();
 
   const [running, setRunning] = useState(false);
   const [phaseIdx, setPhaseIdx] = useState(0);
@@ -199,7 +201,7 @@ export default function BreathingPreview({
             backgroundColor: `#${accentColor}20`,
             border: `2px solid #${accentColor}`,
             transform: `scale(${scale})`,
-            transition: running ? `transform ${currentPhase.duration}s linear` : "transform 0.3s ease",
+            transition: reducedMotion ? "none" : (running ? `transform ${currentPhase.duration}s linear` : "transform 0.3s ease"),
           }}
         >
           <div className="text-center">

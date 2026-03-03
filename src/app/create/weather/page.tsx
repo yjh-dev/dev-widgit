@@ -49,9 +49,11 @@ const CITY_PRESETS = [
 export default function CreateWeatherPage() {
   const {
     lat, lon, city, unit, showForecast, showHumidity, showWind,
+    showHourly, showAqi, showUv,
     iconStyle, refresh, color, bg, transparentBg,
     borderRadius, padding, fontSize,
     setLat, setLon, setCity, setUnit, setShowForecast, setShowHumidity, setShowWind,
+    setShowHourly, setShowAqi, setShowUv,
     setIconStyle, setRefresh, setColor, setBg, setTransparentBg,
     setBorderRadius, setPadding, setFontSize,
     fx, fxInt, gbg, gbgDir, neonColor, bshadow,
@@ -70,6 +72,9 @@ export default function CreateWeatherPage() {
       ...(p.has("forecast") && { showForecast: p.get("forecast") === "true" }),
       ...(p.has("humidity") && { showHumidity: p.get("humidity") === "true" }),
       ...(p.has("wind") && { showWind: p.get("wind") === "true" }),
+      ...(p.has("hourly") && { showHourly: p.get("hourly") === "true" }),
+      ...(p.has("aqi") && { showAqi: p.get("aqi") === "true" }),
+      ...(p.has("uv") && { showUv: p.get("uv") === "true" }),
       ...(p.has("icon") && { iconStyle: p.get("icon") as WeatherIconStyle }),
       ...(p.has("refresh") && { refresh: Number(p.get("refresh")) }),
       ...(p.has("color") && { color: p.get("color")! }),
@@ -92,6 +97,9 @@ export default function CreateWeatherPage() {
     if (showForecast) params.set("forecast", "true");
     if (showHumidity) params.set("humidity", "true");
     if (showWind) params.set("wind", "true");
+    if (showHourly) params.set("hourly", "true");
+    if (showAqi) params.set("aqi", "true");
+    if (showUv) params.set("uv", "true");
     if (iconStyle !== "emoji") params.set("icon", iconStyle);
     if (refresh !== 30) params.set("refresh", String(refresh));
     if (color !== "1E1E1E") params.set("color", color);
@@ -100,7 +108,7 @@ export default function CreateWeatherPage() {
     addEffectParams(params, fx, fxInt, gbg, gbgDir, neonColor, bshadow);
     addExtraStyleParams(params, tshadow, bw, bc, opacity, ls);
     return buildUrl(base, params);
-  }, [lat, lon, city, unit, showForecast, showHumidity, showWind, iconStyle, refresh, color, bg, transparentBg, borderRadius, padding, fontSize, fx, fxInt, gbg, gbgDir, neonColor, bshadow, tshadow, bw, bc, opacity, ls]);
+  }, [lat, lon, city, unit, showForecast, showHumidity, showWind, showHourly, showAqi, showUv, iconStyle, refresh, color, bg, transparentBg, borderRadius, padding, fontSize, fx, fxInt, gbg, gbgDir, neonColor, bshadow, tshadow, bw, bc, opacity, ls]);
 
   const handleCopy = async () => {
     await copyToClipboard(buildWidgetUrl());
@@ -183,6 +191,18 @@ export default function CreateWeatherPage() {
                     <div className="flex items-center justify-between">
                       <Label htmlFor="showWind">풍속 표시</Label>
                       <Switch id="showWind" checked={showWind} onCheckedChange={setShowWind} />
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <Label htmlFor="showHourly">6시간 예보</Label>
+                      <Switch id="showHourly" checked={showHourly} onCheckedChange={setShowHourly} />
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <Label htmlFor="showAqi">대기질 지수</Label>
+                      <Switch id="showAqi" checked={showAqi} onCheckedChange={setShowAqi} />
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <Label htmlFor="showUv">자외선 지수</Label>
+                      <Switch id="showUv" checked={showUv} onCheckedChange={setShowUv} />
                     </div>
                     <div className="space-y-2">
                       <Label>아이콘 스타일</Label>
@@ -273,6 +293,7 @@ export default function CreateWeatherPage() {
               <WeatherPreview
               lat={lat} lon={lon} city={city} unit={unit}
               showForecast={showForecast} showHumidity={showHumidity} showWind={showWind}
+              showHourly={showHourly} showAqi={showAqi} showUv={showUv}
               iconStyle={iconStyle} refresh={refresh} color={color} bg={bg}
               transparentBg={transparentBg} borderRadius={borderRadius} padding={padding}
               fontSize={fontSize}

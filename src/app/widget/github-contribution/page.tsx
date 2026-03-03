@@ -22,6 +22,8 @@ function GithubContributionContent() {
   const year = sp.get("year") || "last";
   const showTotal = sp.get("total") !== "false";
   const showUsername = sp.get("showUser") !== "false";
+  const showStreak = sp.get("streak") === "true";
+  const showStats = sp.get("stats") === "true";
 
   const rawLang = sp.get("lang");
   const lang = VALID_LANGS.includes(rawLang as "ko" | "en")
@@ -53,6 +55,8 @@ function GithubContributionContent() {
         year={year}
         showTotal={showTotal}
         showUsername={showUsername}
+        showStreak={showStreak}
+        showStats={showStats}
         lang={lang}
         cellSize={cellSize}
         cellRadius={cellRadius}

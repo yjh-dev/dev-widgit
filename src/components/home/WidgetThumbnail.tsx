@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef, Component, type ReactNode } from "react";
 import WidgetRenderer from "@/components/widget/WidgetRenderer";
 import { getHomeThumbnailProps, type WidgetType } from "@/lib/templates";
+import { Skeleton } from "@/components/ui/skeleton";
 
 class ThumbnailErrorBoundary extends Component<
   { children: ReactNode },
@@ -52,6 +53,9 @@ export default function WidgetThumbnail({ type }: WidgetThumbnailProps) {
 
   return (
     <div ref={ref} className="relative w-full aspect-[4/3] overflow-hidden rounded-t-xl bg-muted" aria-hidden="true">
+      {!visible && (
+        <Skeleton className="absolute inset-0 rounded-none" />
+      )}
       {visible && (
         <div
           className="absolute inset-0 origin-top-left transition-opacity duration-400 ease-in"

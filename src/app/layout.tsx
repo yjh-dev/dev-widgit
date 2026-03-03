@@ -75,9 +75,17 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${allFontVariables} antialiased`}
       >
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-md focus:text-sm focus:font-medium"
+        >
+          본문으로 건너뛰기
+        </a>
         <ThemeProvider>
           <LocaleProvider>
-            {children}
+            <main id="main-content" tabIndex={-1}>
+              {children}
+            </main>
           </LocaleProvider>
           <Toaster position="bottom-center" duration={2000} offset={72} />
         </ThemeProvider>

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { resolveFontStyle } from "@/lib/fonts";
 import type { BannerAnimation, BannerAlign } from "@/lib/banner";
 import type { FontSizeKey } from "@/lib/common-widget-options";
+import { useReducedMotion } from "@/lib/use-reduced-motion";
 
 const FONT_SIZE_MAP: Record<FontSizeKey, string> = {
   sm: "text-lg",
@@ -41,11 +42,15 @@ export default function BannerPreview({
   padding = 24,
   fontSize = "lg",
 }: BannerPreviewProps) {
+  const reducedMotion = useReducedMotion();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [fadeIn, setFadeIn] = useState(true);
 
   const displayTexts = texts.filter(Boolean);
   if (displayTexts.length === 0) displayTexts.push("텍스트를 입력하세요");
+
+  // Treat animation as "none" when reduced motion is preferred
+  const effectiveAnimation = reducedMotion ? "none" : animation;
 
   useEffect(() => {
     if (animation !== "fade" || displayTexts.length <= 1) return;
@@ -78,7 +83,7 @@ export default function BannerPreview({
         padding,
       }}
     >
-      {animation === "scroll" ? (
+      {effectiveAnimation === "scroll" ? (
         <div className="w-full overflow-hidden">
           <p
             className={`${FONT_SIZE_MAP[fontSize]} ${bold ? "font-bold" : "font-normal"} whitespace-nowrap animate-marquee`}
@@ -99,7 +104,7 @@ export default function BannerPreview({
             }
           `}</style>
         </div>
-      ) : animation === "fade" ? (
+      ) : effectiveAnimation === "fade" ? (
         <div className={`w-full ${alignClass}`}>
           <p
             className={`${FONT_SIZE_MAP[fontSize]} ${bold ? "font-bold" : "font-normal"} transition-opacity duration-500`}

@@ -118,6 +118,53 @@ export function generatePlaceholderData(year: number): ContributionDay[] {
   return days;
 }
 
+export interface ContributionStats {
+  currentStreak: number;
+  longestStreak: number;
+  activeDays: number;
+}
+
+/** Calculate streak and activity stats from contribution data */
+export function calculateStats(contributions: ContributionDay[]): ContributionStats {
+  if (contributions.length === 0) return { currentStreak: 0, longestStreak: 0, activeDays: 0 };
+
+  let activeDays = 0;
+  let longestStreak = 0;
+  let tempStreak = 0;
+
+  for (const day of contributions) {
+    if (day.count > 0) {
+      activeDays++;
+      tempStreak++;
+      if (tempStreak > longestStreak) longestStreak = tempStreak;
+    } else {
+      tempStreak = 0;
+    }
+  }
+
+  // Current streak: count backwards from the end
+  // Allow today to have 0 contributions (check from yesterday)
+  let currentStreak = 0;
+  const today = new Date();
+  const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+
+  let startIdx = contributions.length - 1;
+  // If the last entry is today and has 0 contributions, start from the day before
+  if (contributions[startIdx]?.date === todayStr && contributions[startIdx]?.count === 0) {
+    startIdx--;
+  }
+
+  for (let i = startIdx; i >= 0; i--) {
+    if (contributions[i].count > 0) {
+      currentStreak++;
+    } else {
+      break;
+    }
+  }
+
+  return { currentStreak, longestStreak, activeDays };
+}
+
 const MONTH_LABELS_KO = [
   "1월", "2월", "3월", "4월", "5월", "6월",
   "7월", "8월", "9월", "10월", "11월", "12월",

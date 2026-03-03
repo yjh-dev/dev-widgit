@@ -8,7 +8,9 @@ import {
   levelColor,
   generatePlaceholderData,
   getMonthLabels,
+  calculateStats,
   type ContributionDay,
+  type ContributionStats,
 } from "@/lib/github-contribution";
 
 const FONT_SIZE_MAP: Record<FontSizeKey, string> = {
@@ -38,6 +40,8 @@ interface GithubContributionPreviewProps {
   year: string;
   showTotal: boolean;
   showUsername: boolean;
+  showStreak?: boolean;
+  showStats?: boolean;
   lang: "ko" | "en";
   cellSize: "sm" | "md" | "lg";
   cellRadius: "square" | "rounded" | "circle";
@@ -55,6 +59,8 @@ export default function GithubContributionPreview({
   year,
   showTotal,
   showUsername,
+  showStreak = false,
+  showStats = false,
   lang,
   cellSize,
   cellRadius,
@@ -68,6 +74,7 @@ export default function GithubContributionPreview({
 }: GithubContributionPreviewProps) {
   const [contributions, setContributions] = useState<ContributionDay[]>([]);
   const [total, setTotal] = useState(0);
+  const [stats, setStats] = useState<ContributionStats>({ currentStreak: 0, longestStreak: 0, activeDays: 0 });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -81,6 +88,7 @@ export default function GithubContributionPreview({
       startTransition(() => {
         setContributions(placeholder);
         setTotal(placeholder.reduce((s, d) => s + d.count, 0));
+        setStats(calculateStats(placeholder));
         setError("");
       });
       return;
@@ -98,6 +106,7 @@ export default function GithubContributionPreview({
         if (cancelled) return;
         setContributions(data.contributions);
         setTotal(data.total);
+        setStats(calculateStats(data.contributions));
         setLoading(false);
       })
       .catch((e) => {
@@ -189,6 +198,27 @@ export default function GithubContributionPreview({
                       ? `${total.toLocaleString()}개 기여`
                       : `${total.toLocaleString()} contributions`}
               </span>
+            )}
+          </div>
+        )}
+
+        {/* Streak & Stats */}
+        {(showStreak || showStats) && !loading && !error && (
+          <div className="mb-2 flex items-center gap-3 flex-wrap" style={{ fontSize: `calc(${fSize} * 0.85)` }}>
+            {showStreak && (
+              <span className="opacity-70">
+                🔥 {lang === "ko" ? `${stats.currentStreak}일 연속` : `${stats.currentStreak} day streak`}
+              </span>
+            )}
+            {showStats && (
+              <>
+                <span className="opacity-70">
+                  📈 {lang === "ko" ? `최장 ${stats.longestStreak}일` : `Best ${stats.longestStreak}d`}
+                </span>
+                <span className="opacity-70">
+                  📅 {lang === "ko" ? `활동 ${stats.activeDays}일` : `${stats.activeDays} active`}
+                </span>
+              </>
             )}
           </div>
         )}

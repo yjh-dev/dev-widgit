@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useState, useEffect, useRef, useCallback, type ReactNode } from "react";
 import { Eye, X } from "lucide-react";
 
 interface MobilePreviewFabProps {
@@ -10,6 +10,64 @@ interface MobilePreviewFabProps {
 
 export default function MobilePreviewFab({ children, aspect }: MobilePreviewFabProps) {
   const [open, setOpen] = useState(false);
+  const sheetRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const previousFocusRef = useRef<HTMLElement | null>(null);
+
+  const close = useCallback(() => setOpen(false), []);
+
+  // Focus trap: trap Tab inside sheet, Escape to close, restore focus on close
+  useEffect(() => {
+    if (!open) return;
+
+    // Save previously focused element
+    previousFocusRef.current = document.activeElement as HTMLElement | null;
+
+    // Focus close button on open
+    requestAnimationFrame(() => {
+      closeButtonRef.current?.focus();
+    });
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        close();
+        return;
+      }
+
+      if (e.key === "Tab") {
+        const sheet = sheetRef.current;
+        if (!sheet) return;
+
+        const focusable = sheet.querySelectorAll<HTMLElement>(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        );
+        if (focusable.length === 0) return;
+
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+
+        if (e.shiftKey) {
+          if (document.activeElement === first) {
+            e.preventDefault();
+            last.focus();
+          }
+        } else {
+          if (document.activeElement === last) {
+            e.preventDefault();
+            first.focus();
+          }
+        }
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      // Restore focus on close
+      previousFocusRef.current?.focus();
+    };
+  }, [open, close]);
 
   return (
     <>
@@ -30,12 +88,18 @@ export default function MobilePreviewFab({ children, aspect }: MobilePreviewFabP
           {/* Backdrop */}
           <div
             className="absolute inset-0 bg-black/50"
-            onClick={() => setOpen(false)}
+            onClick={close}
             aria-hidden="true"
           />
 
           {/* Sheet */}
-          <div className="absolute bottom-0 inset-x-0 bg-background rounded-t-2xl max-h-[70vh] flex flex-col animate-in slide-in-from-bottom duration-300">
+          <div
+            ref={sheetRef}
+            role="dialog"
+            aria-modal="true"
+            aria-label="미리보기"
+            className="absolute bottom-0 inset-x-0 bg-background rounded-t-2xl max-h-[70vh] flex flex-col animate-in slide-in-from-bottom duration-300"
+          >
             {/* Handle bar */}
             <div className="flex justify-center pt-3 pb-1">
               <div className="w-10 h-1 rounded-full bg-muted-foreground/30" />
@@ -45,8 +109,9 @@ export default function MobilePreviewFab({ children, aspect }: MobilePreviewFabP
             <div className="flex items-center justify-between px-4 pb-3">
               <span className="text-sm font-medium">미리보기</span>
               <button
+                ref={closeButtonRef}
                 type="button"
-                onClick={() => setOpen(false)}
+                onClick={close}
                 className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-muted transition-colors"
                 aria-label="미리보기 닫기"
               >
