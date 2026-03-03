@@ -94,7 +94,7 @@ export default function OnboardingTour() {
   }, [active, currentStep]);
 
   useEffect(() => {
-    positionTooltip();
+    requestAnimationFrame(positionTooltip);
     window.addEventListener("resize", positionTooltip);
     window.addEventListener("scroll", positionTooltip, true);
     return () => {

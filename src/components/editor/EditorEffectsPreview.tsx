@@ -28,6 +28,7 @@ interface Props {
  * (외부 box-shadow는 에디터에서 잘리므로 생략, 실제 위젯에서만 표시)
  */
 export default function EditorEffectsPreview({
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   fx, fxInt, gbg, gbgDir, neonColor, bshadow: _bshadow, borderRadius, children,
 }: Props) {
   const gbgColors = gbg ? gbg.split("|").filter(Boolean) : [];

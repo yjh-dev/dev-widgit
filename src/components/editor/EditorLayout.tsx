@@ -3,7 +3,7 @@
 import { type ReactNode, Children, Suspense, useEffect, useState, useRef, useCallback, startTransition } from "react";
 import Link from "next/link";
 import { useSearchParams, usePathname } from "next/navigation";
-import { ArrowLeft, LayoutGrid, RectangleHorizontal, Square, RectangleVertical, Maximize, AppWindow, Info } from "lucide-react";
+import { ArrowLeft, LayoutGrid, RectangleHorizontal, Square, RectangleVertical, Maximize, AppWindow, Smartphone, Info } from "lucide-react";
 import ThemeToggle from "@/components/ui/theme-toggle";
 import { EditorActionsProvider } from "./EditorActionsContext";
 import MobileBottomBar from "./MobileBottomBar";
@@ -18,12 +18,13 @@ import { useLocale } from "@/components/LocaleProvider";
 import dynamic from "next/dynamic";
 const EditorWidgetNav = dynamic(() => import("./EditorWidgetNav"), { ssr: false });
 
-type PreviewSize = "free" | "square" | "wide" | "tall" | "notion-full" | "notion-half" | "notion";
+type PreviewSize = "free" | "square" | "wide" | "tall" | "mobile" | "notion-full" | "notion-half" | "notion";
 const previewSizes: { key: PreviewSize; label: string; icon: typeof Square; aspect?: string }[] = [
   { key: "free", label: "자유", icon: Maximize },
   { key: "square", label: "1:1", icon: Square, aspect: "1/1" },
   { key: "wide", label: "2:1", icon: RectangleHorizontal, aspect: "2/1" },
   { key: "tall", label: "1:2", icon: RectangleVertical, aspect: "1/2" },
+  { key: "mobile", label: "모바일", icon: Smartphone, aspect: "9/16" },
   { key: "notion-full", label: "전체폭", icon: RectangleHorizontal, aspect: "16/5" },
   { key: "notion-half", label: "반폭", icon: Square, aspect: "4/5" },
   { key: "notion", label: "노션", icon: AppWindow, aspect: "4/3" },

@@ -22,6 +22,8 @@ import PresetSelector from "@/components/editor/PresetSelector";
 import { fortuneCookiePresets } from "@/lib/presets";
 import { useFortuneCookieStore } from "@/store/useFortuneCookieStore";
 import { useWidgetUrl } from "@/lib/use-widget-url";
+import { useInitFromUrl } from "@/lib/use-init-from-url";
+import { parseCommonParams } from "@/lib/common-params";
 import { copyToClipboard } from "@/lib/clipboard";
 import { addBgParam, addCommonStyleParams, addEffectParams, buildUrl } from "@/lib/url-builder-utils";
 import type { CookieStyle } from "@/lib/fortune-cookie";
@@ -41,6 +43,17 @@ export default function CreateFortuneCookiePage() {
     setFx, setFxInt, setGbg, setGbgDir, setNeonColor, setBshadow,
     loadPreset, reset,
   } = useFortuneCookieStore();
+
+  useInitFromUrl((p) => {
+    loadPreset({
+      ...(p.has("message") && { customMessage: p.get("message")! }),
+      ...(p.has("lang") && { lang: p.get("lang")! }),
+      ...(p.has("style") && { style: p.get("style")! }),
+      ...(p.has("cookieColor") && { cookieColor: p.get("cookieColor")! }),
+      ...(p.has("textColor") && { textColor: p.get("textColor")! }),
+      ...parseCommonParams(p),
+    });
+  });
 
   const { buildWidgetUrl, widgetUrl } = useWidgetUrl(() => {
     const base = `${window.location.origin}/widget/fortune-cookie`;
@@ -157,7 +170,7 @@ export default function CreateFortuneCookiePage() {
             ]}
           />
           <div className="mt-6">
-            <EditorActions widgetUrl={widgetUrl} onCopy={handleCopy} onReset={reset} />
+            <EditorActions widgetUrl={widgetUrl} onCopy={handleCopy} onReset={reset} onApplyTheme={(c) => useFortuneCookieStore.setState(c)} />
           </div>
         </CardContent>
       </Card>

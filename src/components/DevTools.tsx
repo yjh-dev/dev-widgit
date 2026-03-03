@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, startTransition } from "react";
 import { Wrench, Trash2, X, RefreshCw, Cookie, Database, HardDrive, Download } from "lucide-react";
 import { toast } from "sonner";
 
@@ -24,8 +24,10 @@ export default function DevTools() {
       window.location.hostname === "localhost" ||
       window.location.hostname === "127.0.0.1" ||
       window.location.hostname === "0.0.0.0";
-    setVisible(isDev);
-    if (isDev) setLsCount(getWidgitKeys().length);
+    startTransition(() => {
+      setVisible(isDev);
+      if (isDev) setLsCount(getWidgitKeys().length);
+    });
   }, []);
 
   if (!visible) return null;

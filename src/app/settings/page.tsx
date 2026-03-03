@@ -2,10 +2,17 @@
 
 import { useState, useEffect, startTransition } from "react";
 import Link from "next/link";
-import { ArrowLeft, Check, Trash2, ExternalLink, EyeOff } from "lucide-react";
+import { ArrowLeft, Check, Trash2, ExternalLink, EyeOff, Settings2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { toast } from "sonner";
 import ThemeToggle from "@/components/ui/theme-toggle";
 import {
@@ -23,11 +30,19 @@ export default function SettingsPage() {
   const [licenseKey, setLicenseKey] = useState("");
   const [licenseInfo, setLicenseInfo] = useState<LicenseInfo | null>(null);
   const [removed, setRemoved] = useState(false);
+  const [defaultPreviewSize, setDefaultPreviewSize] = useState("free");
+  const [defaultShortUrl, setDefaultShortUrl] = useState(false);
 
   useEffect(() => {
     startTransition(() => {
       setLicenseInfo(getLicenseInfo());
       setRemoved(isWatermarkRemoved());
+      try {
+        const savedSize = localStorage.getItem("widgit-preview-size");
+        if (savedSize) setDefaultPreviewSize(savedSize);
+        const savedShort = localStorage.getItem("widgit-short-url");
+        if (savedShort === "true") setDefaultShortUrl(true);
+      } catch { /* 무시 */ }
       setMounted(true);
     });
   }, []);
@@ -144,6 +159,91 @@ export default function SettingsPage() {
               </div>
             </div>
           )}
+        </section>
+
+        {/* Preferences */}
+        <section className="rounded-xl border bg-card p-6">
+          <h2 className="text-lg font-semibold mb-2 flex items-center gap-2">
+            <Settings2 className="w-5 h-5 text-primary" />
+            환경 설정
+          </h2>
+          <p className="text-sm text-muted-foreground mb-4">
+            에디터의 기본 설정을 관리합니다.
+          </p>
+
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label>기본 프리뷰 크기</Label>
+              <Select
+                value={defaultPreviewSize}
+                onValueChange={(v) => {
+                  setDefaultPreviewSize(v);
+                  try { localStorage.setItem("widgit-preview-size", v); } catch { /* 무시 */ }
+                  toast.success("기본 프리뷰 크기가 변경되었습니다.");
+                }}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="free">자유</SelectItem>
+                  <SelectItem value="square">1:1 정사각형</SelectItem>
+                  <SelectItem value="wide">2:1 와이드</SelectItem>
+                  <SelectItem value="tall">1:2 세로</SelectItem>
+                  <SelectItem value="mobile">9:16 모바일</SelectItem>
+                  <SelectItem value="notion-full">노션 전체폭</SelectItem>
+                  <SelectItem value="notion-half">노션 반폭</SelectItem>
+                  <SelectItem value="notion">노션 목업</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="flex items-center justify-between">
+              <div>
+                <Label>짧은 URL 기본값</Label>
+                <p className="text-xs text-muted-foreground">에디터에서 LZ 압축 URL을 기본으로 사용합니다</p>
+              </div>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={defaultShortUrl}
+                onClick={() => {
+                  const next = !defaultShortUrl;
+                  setDefaultShortUrl(next);
+                  try { localStorage.setItem("widgit-short-url", String(next)); } catch { /* 무시 */ }
+                  toast.success(next ? "짧은 URL이 기본으로 설정되었습니다." : "기본 URL이 기본으로 설정되었습니다.");
+                }}
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                  defaultShortUrl ? "bg-primary" : "bg-muted"
+                }`}
+              >
+                <span
+                  className={`inline-block h-4 w-4 rounded-full bg-background transition-transform ${
+                    defaultShortUrl ? "translate-x-6" : "translate-x-1"
+                  }`}
+                />
+              </button>
+            </div>
+
+            <div className="pt-2">
+              <Button
+                variant="outline"
+                size="sm"
+                className="text-destructive hover:text-destructive"
+                onClick={() => {
+                  try {
+                    localStorage.removeItem("widgit-preview-size");
+                    localStorage.removeItem("widgit-short-url");
+                    setDefaultPreviewSize("free");
+                    setDefaultShortUrl(false);
+                    toast.success("환경 설정이 초기화되었습니다.");
+                  } catch { /* 무시 */ }
+                }}
+              >
+                설정 초기화
+              </Button>
+            </div>
+          </div>
         </section>
 
         {/* Info */}

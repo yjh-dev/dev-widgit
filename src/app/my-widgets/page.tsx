@@ -13,6 +13,7 @@ import {
   Search,
   Download,
   Upload,
+  Code2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -125,6 +126,19 @@ export default function MyWidgetsPage() {
     toast.success(`${data.length}개 위젯을 내보냈습니다!`);
   };
 
+  const handleBatchEmbed = () => {
+    const list = filtered.length > 0 ? filtered : widgets;
+    if (list.length === 0) { toast.error("위젯이 없습니다."); return; }
+    const origin = window.location.origin;
+    const embedCodes = list.map((w) => {
+      const fullUrl = `${origin}${w.widgetUrl}`;
+      return `<!-- ${w.name} -->\n<iframe src="${fullUrl}" style="border:none;width:100%;height:300px;" loading="lazy"></iframe>`;
+    }).join("\n\n");
+    navigator.clipboard.writeText(embedCodes).then(() => {
+      toast.success(`${list.length}개 위젯 임베드 코드가 복사되었습니다!`);
+    });
+  };
+
   const handleImport = () => {
     const input = document.createElement("input");
     input.type = "file";
@@ -198,6 +212,10 @@ export default function MyWidgetsPage() {
             <Button variant="outline" size="sm" className="h-8 text-xs" onClick={handleImport}>
               <Upload className="w-3.5 h-3.5 mr-1" />
               가져오기
+            </Button>
+            <Button variant="outline" size="sm" className="h-8 text-xs" onClick={handleBatchEmbed}>
+              <Code2 className="w-3.5 h-3.5 mr-1" />
+              일괄 임베드 코드
             </Button>
           </div>
         )}

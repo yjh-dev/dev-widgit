@@ -24,8 +24,10 @@ import PresetSelector from "@/components/editor/PresetSelector";
 import { useRadarChartStore } from "@/store/useRadarChartStore";
 import { radarChartPresets } from "@/lib/presets";
 import { useWidgetUrl } from "@/lib/use-widget-url";
+import { useInitFromUrl } from "@/lib/use-init-from-url";
+import { parseCommonParams } from "@/lib/common-params";
 import { copyToClipboard } from "@/lib/clipboard";
-import { serializeItems, type RadarItem } from "@/lib/radar-chart";
+import { serializeItems, deserializeItems, type RadarItem } from "@/lib/radar-chart";
 import { addEffectParams } from "@/lib/url-builder-utils";
 import EffectOptions from "@/components/editor/EffectOptions";
 import EditorEffectsPreview from "@/components/editor/EditorEffectsPreview";
@@ -43,6 +45,20 @@ export default function CreateRadarChartPage() {
     setFx, setFxInt, setGbg, setGbgDir, setNeonColor, setBshadow,
     loadPreset, reset,
   } = useRadarChartStore();
+
+  useInitFromUrl((p) => {
+    loadPreset({
+      ...(p.has("items") && { items: deserializeItems(p.get("items")!) }),
+      ...(p.has("showValues") && { showValues: p.get("showValues") !== "false" }),
+      ...(p.has("showGrid") && { showGrid: p.get("showGrid") !== "false" }),
+      ...(p.has("gridLevels") && { gridLevels: Number(p.get("gridLevels")) }),
+      ...(p.has("fillOpacity") && { fillOpacity: Number(p.get("fillOpacity")) }),
+      ...(p.has("color") && { color: p.get("color")! }),
+      ...(p.has("gridColor") && { gridColor: p.get("gridColor")! }),
+      ...(p.has("textColor") && { textColor: p.get("textColor")! }),
+      ...parseCommonParams(p),
+    });
+  });
 
   const { buildWidgetUrl, widgetUrl } = useWidgetUrl(() => {
     const base = `${window.location.origin}/widget/radar-chart`;
@@ -243,7 +259,7 @@ export default function CreateRadarChartPage() {
             ]}
           />
           <div className="mt-6">
-            <EditorActions widgetUrl={widgetUrl} onCopy={handleCopy} onReset={reset} />
+            <EditorActions widgetUrl={widgetUrl} onCopy={handleCopy} onReset={reset} onApplyTheme={(c) => useRadarChartStore.setState(c)} />
           </div>
         </CardContent>
       </Card>

@@ -24,6 +24,7 @@ import {
   Server,
   Puzzle,
   ArrowRight,
+  Star,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ThemeToggle from "@/components/ui/theme-toggle";
@@ -36,6 +37,7 @@ const HeroWidgetShowcase = dynamic(
 import AdBanner from "@/components/AdBanner";
 import { getRecentWidgets } from "@/lib/recent-widgets";
 import { getCategories, getAllWidgets } from "@/lib/widget-categories";
+import { getFavorites, toggleFavorite } from "@/lib/favorites";
 import { useLocale } from "@/components/LocaleProvider";
 
 export default function Home() {
@@ -44,6 +46,7 @@ export default function Home() {
   const CATEGORY_ALL = t("home.all");
   const [activeCategory, setActiveCategory] = useState(CATEGORY_ALL);
   const [recentTypes, setRecentTypes] = useState<string[]>([]);
+  const [favoriteTypes, setFavoriteTypes] = useState<string[]>([]);
 
   const localCategories = useMemo(() => getCategories(locale), [locale]);
   const localAllWidgets = useMemo(() => getAllWidgets(locale), [locale]);
@@ -57,6 +60,7 @@ export default function Home() {
   useEffect(() => {
     startTransition(() => {
       setRecentTypes(getRecentWidgets().map((r) => r.type));
+      setFavoriteTypes(getFavorites());
     });
   }, []);
 
@@ -66,6 +70,20 @@ export default function Home() {
       .filter(Boolean) as (typeof localAllWidgets)[number][],
     [recentTypes, localAllWidgets],
   );
+
+  const favoriteWidgets = useMemo(
+    () => favoriteTypes
+      .map((type) => localAllWidgets.find((w) => w.type === type))
+      .filter(Boolean) as (typeof localAllWidgets)[number][],
+    [favoriteTypes, localAllWidgets],
+  );
+
+  const handleToggleFavorite = (type: string, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    toggleFavorite(type);
+    setFavoriteTypes(getFavorites());
+  };
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -91,6 +109,20 @@ export default function Home() {
   }, [query, activeCategory, localCategories, CATEGORY_ALL]);
 
   const totalCount = filtered.reduce((sum, c) => sum + c.widgets.length, 0);
+
+  const highlight = (text: string) => {
+    const q = query.trim();
+    if (!q) return text;
+    const idx = text.toLowerCase().indexOf(q.toLowerCase());
+    if (idx === -1) return text;
+    return (
+      <>
+        {text.slice(0, idx)}
+        <mark className="bg-primary/20 text-inherit rounded-sm px-0.5">{text.slice(idx, idx + q.length)}</mark>
+        {text.slice(idx + q.length)}
+      </>
+    );
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -192,62 +224,82 @@ export default function Home() {
       </section>
 
       {/* Navigation links */}
-      <section className="max-w-3xl mx-auto px-6 pb-14 flex flex-wrap justify-center gap-3">
-        <Button variant="outline" asChild>
-          <Link href="/templates">
-            <LayoutGrid className="w-4 h-4 mr-2" />
-            {t("nav.templates")}
-          </Link>
-        </Button>
-        <Button variant="outline" asChild>
-          <Link href="/guide">
-            <BookOpenCheck className="w-4 h-4 mr-2" />
-            {t("nav.guide")}
-          </Link>
-        </Button>
-        <Button variant="outline" asChild>
-          <Link href="/my-widgets">
-            <FolderHeart className="w-4 h-4 mr-2" />
-            {t("nav.myWidgets")}
-          </Link>
-        </Button>
-        <Button variant="outline" asChild>
-          <Link href="/create/icon">
-            <Sparkles className="w-4 h-4 mr-2" />
-            {t("nav.iconMaker")}
-          </Link>
-        </Button>
-        <Button variant="outline" asChild>
-          <Link href="/create/cover">
-            <ImageIcon className="w-4 h-4 mr-2" />
-            {t("nav.coverMaker")}
-          </Link>
-        </Button>
-        <Button variant="outline" asChild>
-          <Link href="/gallery">
-            <GalleryHorizontalEnd className="w-4 h-4 mr-2" />
-            {t("nav.gallery")}
-          </Link>
-        </Button>
-        <Button variant="outline" asChild>
-          <Link href="/create/group">
-            <Group className="w-4 h-4 mr-2" />
-            {t("nav.groupMaker")}
-          </Link>
-        </Button>
-        <Button variant="outline" asChild>
-          <Link href="/create/badge">
-            <Award className="w-4 h-4 mr-2" />
-            {t("nav.badgeMaker")}
-          </Link>
-        </Button>
-        <Button variant="outline" asChild>
-          <Link href="/create/card">
-            <CreditCard className="w-4 h-4 mr-2" />
-            {t("nav.cardMaker")}
-          </Link>
-        </Button>
+      <section className="max-w-3xl mx-auto px-6 pb-14 space-y-4">
+        {/* Primary */}
+        <div className="flex flex-wrap justify-center gap-3">
+          <Button variant="outline" asChild>
+            <Link href="/templates">
+              <LayoutGrid className="w-4 h-4 mr-2" />
+              {t("nav.templates")}
+            </Link>
+          </Button>
+          <Button variant="outline" asChild>
+            <Link href="/guide">
+              <BookOpenCheck className="w-4 h-4 mr-2" />
+              {t("nav.guide")}
+            </Link>
+          </Button>
+          <Button variant="outline" asChild>
+            <Link href="/my-widgets">
+              <FolderHeart className="w-4 h-4 mr-2" />
+              {t("nav.myWidgets")}
+            </Link>
+          </Button>
+          <Button variant="outline" asChild>
+            <Link href="/gallery">
+              <GalleryHorizontalEnd className="w-4 h-4 mr-2" />
+              {t("nav.gallery")}
+            </Link>
+          </Button>
+        </div>
+        {/* Makers */}
+        <div className="flex flex-wrap justify-center gap-2">
+          {[
+            { href: "/create/icon", icon: Sparkles, label: t("nav.iconMaker") },
+            { href: "/create/cover", icon: ImageIcon, label: t("nav.coverMaker") },
+            { href: "/create/badge", icon: Award, label: t("nav.badgeMaker") },
+            { href: "/create/card", icon: CreditCard, label: t("nav.cardMaker") },
+            { href: "/create/group", icon: Group, label: t("nav.groupMaker") },
+          ].map((item) => {
+            const NavIcon = item.icon;
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium text-muted-foreground bg-muted hover:bg-muted/80 transition-colors"
+              >
+                <NavIcon className="w-3.5 h-3.5" />
+                {item.label}
+              </Link>
+            );
+          })}
+        </div>
       </section>
+
+      {/* Favorite widgets */}
+      {favoriteWidgets.length > 0 && (
+        <section className="max-w-5xl mx-auto px-6 pb-8">
+          <div className="flex items-center gap-2 mb-3">
+            <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+            <h2 className="text-sm font-medium text-muted-foreground">즐겨찾기</h2>
+          </div>
+          <div className="flex gap-3 overflow-x-auto pb-1">
+            {favoriteWidgets.map((w) => {
+              const Icon = w.icon;
+              return (
+                <Link
+                  key={w.type}
+                  href={w.href}
+                  className="flex items-center gap-2 px-4 py-2.5 rounded-lg border bg-card shrink-0 transition-colors hover:bg-accent"
+                >
+                  <Icon className="w-4 h-4 text-primary" />
+                  <span className="text-sm font-medium whitespace-nowrap">{w.name}</span>
+                </Link>
+              );
+            })}
+          </div>
+        </section>
+      )}
 
       {/* Recent widgets */}
       {recentWidgets.length > 0 && (
@@ -354,15 +406,29 @@ export default function Home() {
                     <Link
                       key={w.href}
                       href={w.href}
-                      className="group rounded-xl border bg-card overflow-hidden transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
+                      className="group rounded-xl border bg-card overflow-hidden transition-all duration-200 hover:-translate-y-1 hover:shadow-lg relative"
                     >
                       <WidgetThumbnail type={w.type} />
                       <div className="p-4 flex items-start gap-3">
                         <Icon className="w-5 h-5 text-primary mt-0.5 shrink-0" />
-                        <div>
-                          <p className="font-semibold text-card-foreground">{w.name}</p>
-                          <p className="text-sm text-muted-foreground">{w.desc}</p>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-semibold text-card-foreground">{highlight(w.name)}</p>
+                          <p className="text-sm text-muted-foreground">{highlight(w.desc)}</p>
                         </div>
+                        <button
+                          type="button"
+                          onClick={(e) => handleToggleFavorite(w.type, e)}
+                          className="shrink-0 p-1 rounded-md hover:bg-muted transition-colors"
+                          aria-label={favoriteTypes.includes(w.type) ? "즐겨찾기 해제" : "즐겨찾기 추가"}
+                        >
+                          <Star
+                            className={`w-4 h-4 ${
+                              favoriteTypes.includes(w.type)
+                                ? "text-yellow-500 fill-yellow-500"
+                                : "text-muted-foreground/40"
+                            }`}
+                          />
+                        </button>
                       </div>
                     </Link>
                   );

@@ -125,7 +125,7 @@ export default function EditorActions({
     } else {
       onCopy();
     }
-  }, [shortUrl, displayUrl, onCopy, widgetType]);
+  }, [shortUrl, displayUrl, onCopy, widgetType, t]);
 
   useEffect(() => {
     register({ widgetUrl: displayUrl, onCopy: wrappedOnCopy, onReset });
@@ -249,6 +249,7 @@ export default function EditorActions({
           className="flex-1 h-8 text-xs"
           onClick={() => setShareOpen(true)}
         >
+{/* eslint-disable-next-line jsx-a11y/alt-text */}
           <Image className="w-3.5 h-3.5 mr-1.5" />
           {t("editor.snsCard")}
         </Button>

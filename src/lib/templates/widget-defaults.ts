@@ -57,4 +57,6 @@ export const widgetDefaults: WidgetDefault[] = [
   { type: "matrix", name: "매트릭스", defaultUrl: "/widget/matrix" },
   { type: "multi-progress", name: "멀티 프로그레스", defaultUrl: "/widget/multi-progress" },
   { type: "fortune-cookie", name: "포춘 쿠키", defaultUrl: "/widget/fortune-cookie" },
+  { type: "badge", name: "뱃지", defaultUrl: "/api/badge?label=상태&value=활성&color=22C55E" },
+  { type: "group", name: "위젯 그룹", defaultUrl: "/widget/group" },
 ];

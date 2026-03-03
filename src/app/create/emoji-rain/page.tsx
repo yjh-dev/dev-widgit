@@ -21,6 +21,8 @@ import PresetSelector from "@/components/editor/PresetSelector";
 import { useEmojiRainStore } from "@/store/useEmojiRainStore";
 import { emojiRainPresets } from "@/lib/presets";
 import { useWidgetUrl } from "@/lib/use-widget-url";
+import { useInitFromUrl } from "@/lib/use-init-from-url";
+import { parseCommonParams } from "@/lib/common-params";
 import { copyToClipboard } from "@/lib/clipboard";
 import {
   SPEED_OPTIONS,
@@ -47,6 +49,17 @@ export default function CreateEmojiRainPage() {
     setFx, setFxInt, setGbg, setGbgDir, setNeonColor, setBshadow,
     loadPreset, reset,
   } = useEmojiRainStore();
+
+  useInitFromUrl((p) => {
+    loadPreset({
+      ...(p.has("emojis") && { emojis: p.get("emojis")! }),
+      ...(p.has("speed") && { speed: p.get("speed")! }),
+      ...(p.has("density") && { density: p.get("density")! }),
+      ...(p.has("minSize") && { minSize: Number(p.get("minSize")) }),
+      ...(p.has("maxSize") && { maxSize: Number(p.get("maxSize")) }),
+      ...parseCommonParams(p),
+    });
+  });
 
   const { buildWidgetUrl, widgetUrl } = useWidgetUrl(() => {
     const base = `${window.location.origin}/widget/emoji-rain`;
@@ -239,7 +252,7 @@ export default function CreateEmojiRainPage() {
             ]}
           />
           <div className="mt-6">
-            <EditorActions widgetUrl={widgetUrl} onCopy={handleCopy} onReset={reset} />
+            <EditorActions widgetUrl={widgetUrl} onCopy={handleCopy} onReset={reset} onApplyTheme={(c) => useEmojiRainStore.setState(c)} />
           </div>
         </CardContent>
       </Card>

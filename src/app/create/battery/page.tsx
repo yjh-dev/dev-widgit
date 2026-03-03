@@ -183,7 +183,7 @@ export default function CreateBatteryPage() {
             ]}
           />
           <div className="mt-6">
-            <EditorActions widgetUrl={widgetUrl} onCopy={handleCopy} onReset={reset} />
+            <EditorActions widgetUrl={widgetUrl} onCopy={handleCopy} onReset={reset} onApplyTheme={(c) => useBatteryStore.setState(c)} />
           </div>
         </CardContent>
       </Card>

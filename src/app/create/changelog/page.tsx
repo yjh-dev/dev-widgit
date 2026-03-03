@@ -18,8 +18,10 @@ import PresetSelector from "@/components/editor/PresetSelector";
 import { useChangelogStore } from "@/store/useChangelogStore";
 import { changelogPresets } from "@/lib/presets";
 import { useWidgetUrl } from "@/lib/use-widget-url";
+import { useInitFromUrl } from "@/lib/use-init-from-url";
+import { parseCommonParams } from "@/lib/common-params";
 import { copyToClipboard } from "@/lib/clipboard";
-import { serializeEntries } from "@/lib/changelog";
+import { serializeEntries, deserializeEntries } from "@/lib/changelog";
 import { addEffectParams } from "@/lib/url-builder-utils";
 import EffectOptions from "@/components/editor/EffectOptions";
 import EditorEffectsPreview from "@/components/editor/EditorEffectsPreview";
@@ -38,6 +40,17 @@ export default function CreateChangelogPage() {
     setFx, setFxInt, setGbg, setGbgDir, setNeonColor, setBshadow,
     loadPreset, reset,
   } = useChangelogStore();
+
+  useInitFromUrl((p) => {
+    loadPreset({
+      ...(p.has("entries") && { entries: deserializeEntries(p.get("entries")!) }),
+      ...(p.has("showDate") && { showDate: p.get("showDate") !== "false" }),
+      ...(p.has("showVersion") && { showVersion: p.get("showVersion") !== "false" }),
+      ...(p.has("accentColor") && { accentColor: p.get("accentColor")! }),
+      ...(p.has("textColor") && { textColor: p.get("textColor")! }),
+      ...parseCommonParams(p),
+    });
+  });
 
   const [newVersion, setNewVersion] = useState("");
   const [newDate, setNewDate] = useState("");
@@ -215,7 +228,7 @@ export default function CreateChangelogPage() {
             ]}
           />
           <div className="mt-6">
-            <EditorActions widgetUrl={widgetUrl} onCopy={handleCopy} onReset={reset} />
+            <EditorActions widgetUrl={widgetUrl} onCopy={handleCopy} onReset={reset} onApplyTheme={(c) => useChangelogStore.setState(c)} />
           </div>
         </CardContent>
       </Card>

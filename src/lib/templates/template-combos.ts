@@ -19,7 +19,7 @@ export interface Template {
   notionTemplateUrl?: string;
 }
 
-// --- 8 Templates (theme-differentiated) ---
+// --- 15 Templates (theme-differentiated) ---
 
 export const templates: Template[] = [
   {
@@ -152,6 +152,108 @@ export const templates: Template[] = [
       { type: "quote", name: "밤 명언", widgetConfig: { text: "밤은 낮보다 더 많은 별을 가지고 있다", author: "헤밍웨이", font: "serif" } },
       { type: "timeline", name: "이번 주 일정", widgetConfig: { events: [{ title: "프로젝트 마감", date: "2026-03-06" }, { title: "미팅", date: "2026-03-10" }, { title: "발표", date: "2026-03-15" }] } },
       { type: "moon-phase", name: "달 위상", widgetConfig: { style: "realistic", moonSize: "md", showName: true, showPercent: true } },
+    ],
+  },
+  {
+    id: "developer",
+    title: "개발자 대시보드",
+    desc: "GitHub 잔디 + 코딩 타이머 + QR 코드로 개발자 홈 화면",
+    themeId: "ocean",
+    layout: [[0], [1, 2], [3, 4]],
+    notionTip: "GitHub 잔디를 전폭으로 배치하고, 아래에 뽀모도로와 카운터를 2열로 추가하세요.",
+    widgets: [
+      { type: "github-contribution", name: "GitHub 잔디", widgetConfig: { username: "torvalds", year: "last" } },
+      { type: "pomodoro", name: "코딩 타이머", widgetConfig: { workTime: 50, breakTime: 10, pStyle: "ring" } },
+      { type: "counter", name: "커밋 카운터", widgetConfig: { label: "오늘 커밋", initial: 0, step: 1 } },
+      { type: "qr-code", name: "GitHub QR", widgetConfig: { data: "https://github.com", label: "GitHub" } },
+      { type: "stopwatch", name: "코딩 스톱워치", widgetConfig: { showMs: true, showLap: true } },
+    ],
+  },
+  {
+    id: "health",
+    title: "건강 & 웰빙",
+    desc: "호흡·물·운동 습관으로 건강한 하루를 관리하는 웰빙 세트",
+    themeId: "cool-pastel",
+    layout: [[0, 1], [2, 3], [4]],
+    notionTip: "호흡 타이머와 물 마시기를 상단에, 습관과 진행률을 중간에 배치하세요.",
+    widgets: [
+      { type: "breathing", name: "호흡 타이머", widgetConfig: { tech: "478" } },
+      { type: "water-tracker", name: "물 마시기", widgetConfig: {} },
+      { type: "habit", name: "운동 습관", widgetConfig: { title: "운동", view: "week", weekStart: "mon", checkedDates: new Set(["2026-02-24", "2026-02-26"]) } },
+      { type: "time-progress", name: "하루 진행률", widgetConfig: { type: "day", style: "ring" } },
+      { type: "quote", name: "건강 명언", widgetConfig: { text: "건강은 최고의 재산이다", author: "버질", font: "serif" } },
+    ],
+  },
+  {
+    id: "retro",
+    title: "레트로 감성",
+    desc: "플립 시계, 포춘 쿠키, 주사위로 복고풍 노션 꾸미기",
+    themeId: "sunset",
+    layout: [[0], [1, 2], [3]],
+    notionTip: "플립 시계를 전폭 상단에 크게 배치하고, 포춘 쿠키와 주사위를 아래 2열로 배치하세요.",
+    widgets: [
+      { type: "flip-clock", name: "레트로 플립 시계", widgetConfig: { timezone: "Asia/Seoul", showDate: true, dateFmt: "kr" } },
+      { type: "fortune-cookie", name: "포춘 쿠키", widgetConfig: {} },
+      { type: "dice", name: "주사위", widgetConfig: { mode: "dice", count: 2, sides: 6 } },
+      { type: "music", name: "레트로 음악", widgetConfig: { title: "Retro Vibes", artist: "80s Mix", progress: 55 } },
+    ],
+  },
+  {
+    id: "pastel-cute",
+    title: "파스텔 꾸미기",
+    desc: "부드러운 파스텔 색감으로 노션을 예쁘게 꾸미는 위젯 세트",
+    themeId: "rose",
+    layout: [[0, 1], [2], [3, 4]],
+    notionTip: "메모지와 캘린더를 상단에, 배너를 중간 전폭으로, 명언과 아날로그 시계를 하단에 배치하세요.",
+    widgets: [
+      { type: "sticky-note", name: "핑크 메모지", widgetConfig: { text: "오늘의 목표 💕", noteColor: "FBCFE8", textColor: "831843", pin: "tape", font: "gaegu" } },
+      { type: "mini-calendar", name: "파스텔 캘린더", widgetConfig: { weekStart: "mon", lang: "ko" } },
+      { type: "banner", name: "감성 배너", widgetConfig: { texts: ["오늘도 행복한 하루"], animation: "fade", bold: true } },
+      { type: "quote", name: "감성 명언", widgetConfig: { text: "작은 것에서 행복을 찾자", author: "나", font: "serif", italic: true } },
+      { type: "analog-clock", name: "파스텔 시계", widgetConfig: { timezone: "Asia/Seoul", showNumbers: true, numStyle: "quarter" } },
+    ],
+  },
+  {
+    id: "team",
+    title: "팀 프로젝트 관리",
+    desc: "마감일, 진행률, 타임라인으로 팀 프로젝트를 한눈에",
+    themeId: "light-default",
+    layout: [[0, 1], [2], [3, 4]],
+    notionTip: "D-Day와 진행률을 상단에, 타임라인을 전폭 중간에, 습관과 카운터를 하단에 배치하세요.",
+    widgets: [
+      { type: "dday", name: "출시일 D-Day", widgetConfig: { title: "출시일", targetDate: "2026-06-01" } },
+      { type: "goal", name: "마일스톤 진행", widgetConfig: { title: "스프린트", current: 7, target: 12, unit: "태스크", style: "bar" } },
+      { type: "timeline", name: "프로젝트 일정", widgetConfig: { events: [{ title: "기획", date: "2026-03-15" }, { title: "디자인", date: "2026-04-01" }, { title: "개발", date: "2026-05-01" }, { title: "출시", date: "2026-06-01" }] } },
+      { type: "habit", name: "데일리 스탠드업", widgetConfig: { title: "스탠드업", view: "week", weekStart: "mon", checkedDates: new Set(["2026-02-24", "2026-02-25", "2026-02-26"]) } },
+      { type: "counter", name: "완료 태스크", widgetConfig: { label: "완료", initial: 0, step: 1 } },
+    ],
+  },
+  {
+    id: "ocean-calm",
+    title: "오션 카밍",
+    desc: "바다 색감의 차분한 위젯 세트로 집중력 향상",
+    themeId: "ocean",
+    layout: [[0, 1], [2], [3, 4]],
+    notionTip: "시계와 날씨를 상단에, 그라데이션을 중간 구분선으로, 명언과 달 위상을 하단에 배치하세요.",
+    widgets: [
+      { type: "clock", name: "오션 시계", widgetConfig: { timezone: "Asia/Seoul", format: "24h", font: "mono", showDate: true } },
+      { type: "weather", name: "날씨", widgetConfig: { city: "서울" } },
+      { type: "gradient", name: "바다 그라데이션", widgetConfig: { colors: ["0EA5E9", "06B6D4", "22D3EE"], dir: 90, animate: true } },
+      { type: "quote", name: "명언", widgetConfig: { text: "고요한 바다는 좋은 선원을 만들지 못한다", author: "아프리카 속담", font: "serif" } },
+      { type: "moon-phase", name: "달 위상", widgetConfig: { style: "realistic", moonSize: "md", showName: true } },
+    ],
+  },
+  {
+    id: "focus",
+    title: "딥 포커스",
+    desc: "방해 없는 집중 환경을 위한 다크 테마 최소 세트",
+    themeId: "dark-night",
+    layout: [[0, 1], [2]],
+    notionTip: "뽀모도로와 진행률을 상단 2열에, 배너를 하단 전폭에 배치해 집중 환경을 만드세요.",
+    widgets: [
+      { type: "pomodoro", name: "집중 타이머", widgetConfig: { workTime: 50, breakTime: 10, pStyle: "ring" } },
+      { type: "time-progress", name: "오늘 진행률", widgetConfig: { type: "day", style: "ring" } },
+      { type: "banner", name: "포커스 배너", widgetConfig: { texts: ["Deep Focus Mode"], animation: "none", bold: true } },
     ],
   },
 ];

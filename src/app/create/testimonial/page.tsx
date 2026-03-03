@@ -215,7 +215,7 @@ export default function CreateTestimonialPage() {
             ]}
           />
           <div className="mt-6">
-            <EditorActions widgetUrl={widgetUrl} onCopy={handleCopy} onReset={reset} />
+            <EditorActions widgetUrl={widgetUrl} onCopy={handleCopy} onReset={reset} onApplyTheme={(c) => useTestimonialStore.setState(c)} />
           </div>
         </CardContent>
       </Card>

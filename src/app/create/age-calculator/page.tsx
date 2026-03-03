@@ -22,6 +22,8 @@ import PresetSelector from "@/components/editor/PresetSelector";
 import { useAgeCalculatorStore } from "@/store/useAgeCalculatorStore";
 import { ageCalculatorPresets } from "@/lib/presets";
 import { useWidgetUrl } from "@/lib/use-widget-url";
+import { useInitFromUrl } from "@/lib/use-init-from-url";
+import { parseCommonParams } from "@/lib/common-params";
 import { copyToClipboard } from "@/lib/clipboard";
 import type { AgeStyle } from "@/lib/age-calculator";
 import { addEffectParams } from "@/lib/url-builder-utils";
@@ -41,6 +43,18 @@ export default function CreateAgeCalculatorPage() {
     setFx, setFxInt, setGbg, setGbgDir, setNeonColor, setBshadow,
     loadPreset, reset,
   } = useAgeCalculatorStore();
+
+  useInitFromUrl((p) => {
+    loadPreset({
+      ...(p.has("birthdate") && { birthdate: p.get("birthdate")! }),
+      ...(p.has("showTime") && { showTime: p.get("showTime") !== "false" }),
+      ...(p.has("showLabel") && { showLabel: p.get("showLabel") !== "false" }),
+      ...(p.has("style") && { style: p.get("style")! as AgeStyle }),
+      ...(p.has("color") && { color: p.get("color")! }),
+      ...(p.has("textColor") && { textColor: p.get("textColor")! }),
+      ...parseCommonParams(p),
+    });
+  });
 
   const { buildWidgetUrl, widgetUrl } = useWidgetUrl(() => {
     const base = `${window.location.origin}/widget/age-calculator`;
@@ -165,7 +179,7 @@ export default function CreateAgeCalculatorPage() {
             ]}
           />
           <div className="mt-6">
-            <EditorActions widgetUrl={widgetUrl} onCopy={handleCopy} onReset={reset} />
+            <EditorActions widgetUrl={widgetUrl} onCopy={handleCopy} onReset={reset} onApplyTheme={(c) => useAgeCalculatorStore.setState(c)} />
           </div>
         </CardContent>
       </Card>

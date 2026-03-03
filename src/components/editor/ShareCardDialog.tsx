@@ -95,7 +95,7 @@ export default function ShareCardDialog({
     } finally {
       setGenerating(false);
     }
-  }, []);
+  }, [widgetUrl]);
 
   const handleOpen = useCallback(
     (isOpen: boolean) => {

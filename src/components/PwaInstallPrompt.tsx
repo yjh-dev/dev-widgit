@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, startTransition } from "react";
 import { Download, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { trackPwaInstall } from "@/lib/analytics";
@@ -21,7 +21,7 @@ export default function PwaInstallPrompt() {
     // Don't show if already dismissed this session or already installed
     if (window.matchMedia("(display-mode: standalone)").matches) return;
     if (sessionStorage.getItem("widgit-pwa-dismissed")) {
-      setDismissed(true);
+      startTransition(() => setDismissed(true));
       return;
     }
 

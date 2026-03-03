@@ -1,8 +1,28 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, Component, type ReactNode } from "react";
 import WidgetRenderer from "@/components/widget/WidgetRenderer";
 import { getHomeThumbnailProps, type WidgetType } from "@/lib/templates";
+
+class ThumbnailErrorBoundary extends Component<
+  { children: ReactNode },
+  { hasError: boolean }
+> {
+  state = { hasError: false };
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="w-full h-full flex items-center justify-center bg-muted">
+          <span className="text-xs text-muted-foreground">미리보기 불가</span>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 interface WidgetThumbnailProps {
   type: WidgetType;
@@ -42,21 +62,23 @@ export default function WidgetThumbnail({ type }: WidgetThumbnailProps) {
             pointerEvents: "none",
           }}
         >
-          {type === "weather" ? (
-            <div
-              className="w-full h-full flex flex-col items-center justify-center gap-1"
-              style={{ backgroundColor: "#FFFFFF", color: "#1E1E1E" }}
-            >
-              <span className="text-xs opacity-60 font-medium">서울</span>
-              <div className="flex items-center gap-1.5">
-                <span className="text-2xl">☀️</span>
-                <span className="text-2xl font-bold">22°C</span>
+          <ThumbnailErrorBoundary>
+            {type === "weather" ? (
+              <div
+                className="w-full h-full flex flex-col items-center justify-center gap-1"
+                style={{ backgroundColor: "#FFFFFF", color: "#1E1E1E" }}
+              >
+                <span className="text-xs opacity-60 font-medium">서울</span>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-2xl">☀️</span>
+                  <span className="text-2xl font-bold">22°C</span>
+                </div>
+                <span className="text-xs opacity-70">맑음</span>
               </div>
-              <span className="text-xs opacity-70">맑음</span>
-            </div>
-          ) : (
-            <WidgetRenderer type={type} props={props} />
-          )}
+            ) : (
+              <WidgetRenderer type={type} props={props} />
+            )}
+          </ThumbnailErrorBoundary>
         </div>
       )}
     </div>
