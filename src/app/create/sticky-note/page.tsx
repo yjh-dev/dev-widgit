@@ -27,7 +27,7 @@ import { useWidgetUrl } from "@/lib/use-widget-url";
 import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
 import { parseCommonParams } from "@/lib/common-params";
-import { addCommonStyleParams, addEffectParams, buildUrl } from "@/lib/url-builder-utils";
+import { addCommonStyleParams, addEffectParams, addExtraStyleParams, buildUrl } from "@/lib/url-builder-utils";
 import type { StickyPinType, StickyLineHeight } from "@/lib/sticky-note";
 import EffectOptions from "@/components/editor/EffectOptions";
 import EditorEffectsPreview from "@/components/editor/EditorEffectsPreview";
@@ -41,6 +41,8 @@ export default function CreateStickyNotePage() {
     setBorderRadius, setPadding, setFontSize,
     fx, fxInt, gbg, gbgDir, neonColor, bshadow,
     setFx, setFxInt, setGbg, setGbgDir, setNeonColor, setBshadow,
+    tshadow, bw, bc, opacity, ls,
+    setTshadow, setBw, setBc, setOpacity, setLs,
     loadPreset, reset,
   } = useStickyNoteStore();
 
@@ -54,6 +56,11 @@ export default function CreateStickyNotePage() {
       ...(p.has("font") && { font: p.get("font")! }),
       ...(p.has("lh") && { lh: p.get("lh") as StickyLineHeight }),
       ...(p.has("shadow") && { shadow: p.get("shadow") !== "false" }),
+      ...(p.has("tshadow") && { tshadow: p.get("tshadow")! }),
+      ...(p.has("bw") && { bw: p.get("bw")! }),
+      ...(p.has("bc") && { bc: p.get("bc")! }),
+      ...(p.has("opacity") && { opacity: p.get("opacity")! }),
+      ...(p.has("ls") && { ls: p.get("ls")! }),
       ...parseCommonParams(p),
     });
   });
@@ -71,8 +78,9 @@ export default function CreateStickyNotePage() {
     if (!shadow) params.set("shadow", "false");
     addCommonStyleParams(params, borderRadius, padding, fontSize);
     addEffectParams(params, fx, fxInt, gbg, gbgDir, neonColor, bshadow);
+    addExtraStyleParams(params, tshadow, bw, bc, opacity, ls);
     return buildUrl(base, params);
-  }, [text, noteColor, textColor, pin, rotation, font, lh, shadow, borderRadius, padding, fontSize, fx, fxInt, gbg, gbgDir, neonColor, bshadow]);
+  }, [text, noteColor, textColor, pin, rotation, font, lh, shadow, borderRadius, padding, fontSize, fx, fxInt, gbg, gbgDir, neonColor, bshadow, tshadow, bw, bc, opacity, ls]);
 
   const handleCopy = async () => {
     await copyToClipboard(buildWidgetUrl());
@@ -223,6 +231,9 @@ export default function CreateStickyNotePage() {
                     onBorderRadiusChange={setBorderRadius}
                     onPaddingChange={setPadding}
                     onFontSizeChange={setFontSize}
+                    tshadow={tshadow} bw={bw} bc={bc} opacity={opacity} ls={ls}
+                    onTshadowChange={setTshadow} onBwChange={setBw} onBcChange={setBc}
+                    onOpacityChange={setOpacity} onLsChange={setLs}
                   />
                 ),
               },
@@ -241,6 +252,7 @@ export default function CreateStickyNotePage() {
             <EditorEffectsPreview
               fx={fx} fxInt={fxInt} gbg={gbg} gbgDir={gbgDir}
               neonColor={neonColor} bshadow={bshadow} borderRadius={borderRadius}
+              tshadow={tshadow} bw={bw} bc={bc} opacity={opacity} ls={ls}
             >
               <StickyNotePreview
               text={text}

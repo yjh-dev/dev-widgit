@@ -22,6 +22,42 @@ export const PADDING_OPTIONS: { value: number; label: string }[] = [
   { value: 32, label: "매우 넓게" },
 ];
 
+/* ─── 새로운 공통 스타일 옵션 ─── */
+
+export type TextShadowKey = "none" | "sm" | "md" | "lg";
+export type BorderWidthKey = "none" | "thin" | "medium";
+export type OpacityKey = "100" | "90" | "80" | "70" | "60";
+export type LetterSpacingKey = "tight" | "normal" | "wide";
+
+export const TEXT_SHADOW_OPTIONS: { value: TextShadowKey; label: string }[] = [
+  { value: "none", label: "없음" },
+  { value: "sm", label: "작게" },
+  { value: "md", label: "보통" },
+  { value: "lg", label: "크게" },
+];
+
+export const BORDER_WIDTH_OPTIONS: { value: BorderWidthKey; label: string }[] = [
+  { value: "none", label: "없음" },
+  { value: "thin", label: "얇게" },
+  { value: "medium", label: "보통" },
+];
+
+export const OPACITY_OPTIONS: { value: OpacityKey; label: string }[] = [
+  { value: "100", label: "100%" },
+  { value: "90", label: "90%" },
+  { value: "80", label: "80%" },
+  { value: "70", label: "70%" },
+  { value: "60", label: "60%" },
+];
+
+export const LETTER_SPACING_OPTIONS: { value: LetterSpacingKey; label: string }[] = [
+  { value: "tight", label: "좁게" },
+  { value: "normal", label: "보통" },
+  { value: "wide", label: "넓게" },
+];
+
+/* ─── 파서 ─── */
+
 export function parseBorderRadius(raw: string | null): number {
   if (!raw) return 16;
   const n = Number(raw);
@@ -48,6 +84,32 @@ export function parseHexColor(raw: string | null, fallback: string): string {
   return /^[0-9a-fA-F]{6}$/.test(raw) ? raw : fallback;
 }
 
+export function parseTextShadow(raw: string | null): TextShadowKey {
+  if (!raw) return "none";
+  const valid: TextShadowKey[] = ["none", "sm", "md", "lg"];
+  return valid.includes(raw as TextShadowKey) ? (raw as TextShadowKey) : "none";
+}
+
+export function parseBorderWidth(raw: string | null): BorderWidthKey {
+  if (!raw) return "none";
+  const valid: BorderWidthKey[] = ["none", "thin", "medium"];
+  return valid.includes(raw as BorderWidthKey) ? (raw as BorderWidthKey) : "none";
+}
+
+export function parseOpacity(raw: string | null): OpacityKey {
+  if (!raw) return "100";
+  const valid: OpacityKey[] = ["100", "90", "80", "70", "60"];
+  return valid.includes(raw as OpacityKey) ? (raw as OpacityKey) : "100";
+}
+
+export function parseLetterSpacing(raw: string | null): LetterSpacingKey {
+  if (!raw) return "normal";
+  const valid: LetterSpacingKey[] = ["tight", "normal", "wide"];
+  return valid.includes(raw as LetterSpacingKey) ? (raw as LetterSpacingKey) : "normal";
+}
+
+/* ─── CSS 매핑 ─── */
+
 /**
  * 프리뷰 컴포넌트에서 공통으로 사용하는 글자 크기 Tailwind 클래스 맵.
  * 위젯별로 커스텀 맵이 필요하면 이 맵을 참조하지 않아도 된다.
@@ -65,4 +127,26 @@ export const TITLE_FONT_SIZE_CLASS: Record<FontSizeKey, string> = {
   md: "text-2xl",
   lg: "text-3xl",
   xl: "text-4xl",
+};
+
+/** textShadow CSS 값 맵 */
+export const TEXT_SHADOW_CSS: Record<TextShadowKey, string> = {
+  none: "none",
+  sm: "0 1px 2px rgba(0,0,0,0.15)",
+  md: "0 2px 4px rgba(0,0,0,0.25)",
+  lg: "0 4px 8px rgba(0,0,0,0.35)",
+};
+
+/** border-width CSS 값 맵 */
+export const BORDER_WIDTH_CSS: Record<BorderWidthKey, string> = {
+  none: "0",
+  thin: "1px",
+  medium: "2px",
+};
+
+/** letter-spacing CSS 값 맵 */
+export const LETTER_SPACING_CSS: Record<LetterSpacingKey, string> = {
+  tight: "-0.025em",
+  normal: "0",
+  wide: "0.05em",
 };

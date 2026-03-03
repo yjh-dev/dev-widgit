@@ -29,7 +29,7 @@ import { useWidgetUrl } from "@/lib/use-widget-url";
 import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
 import { parseCommonParams } from "@/lib/common-params";
-import { addBgParam, addCommonStyleParams, addEffectParams, buildUrl } from "@/lib/url-builder-utils";
+import { addBgParam, addCommonStyleParams, addEffectParams, addExtraStyleParams, buildUrl } from "@/lib/url-builder-utils";
 import type { DiceMode, DiceSides } from "@/lib/dice";
 import EffectOptions from "@/components/editor/EffectOptions";
 import EditorEffectsPreview from "@/components/editor/EditorEffectsPreview";
@@ -46,6 +46,8 @@ export default function CreateDicePage() {
     setBorderRadius, setPadding, setFontSize,
     fx, fxInt, gbg, gbgDir, neonColor, bshadow,
     setFx, setFxInt, setGbg, setGbgDir, setNeonColor, setBshadow,
+    tshadow, bw, bc, opacity, ls,
+    setTshadow, setBw, setBc, setOpacity, setLs,
     loadPreset, reset,
   } = useDiceStore();
 
@@ -61,6 +63,11 @@ export default function CreateDicePage() {
       ...(p.has("items") && { items: p.get("items")!.split("|").map(decodeURIComponent) }),
       ...(p.has("showTotal") && { showTotal: p.get("showTotal") !== "false" }),
       ...(p.has("history") && { history: p.get("history") === "true" }),
+      ...(p.has("tshadow") && { tshadow: p.get("tshadow")! }),
+      ...(p.has("bw") && { bw: p.get("bw")! }),
+      ...(p.has("bc") && { bc: p.get("bc")! }),
+      ...(p.has("opacity") && { opacity: p.get("opacity")! }),
+      ...(p.has("ls") && { ls: p.get("ls")! }),
     });
   });
 
@@ -95,8 +102,9 @@ export default function CreateDicePage() {
     if (history) params.set("history", "true");
     addCommonStyleParams(params, borderRadius, padding, fontSize);
     addEffectParams(params, fx, fxInt, gbg, gbgDir, neonColor, bshadow);
+    addExtraStyleParams(params, tshadow, bw, bc, opacity, ls);
     return buildUrl(base, params);
-  }, [mode, count, sides, color, textColor, font, bg, transparentBg, items, showTotal, history, borderRadius, padding, fontSize, fx, fxInt, gbg, gbgDir, neonColor, bshadow]);
+  }, [mode, count, sides, color, textColor, font, bg, transparentBg, items, showTotal, history, borderRadius, padding, fontSize, fx, fxInt, gbg, gbgDir, neonColor, bshadow, tshadow, bw, bc, opacity, ls]);
 
   const handleCopy = async () => {
     await copyToClipboard(buildWidgetUrl());
@@ -261,6 +269,9 @@ export default function CreateDicePage() {
                     onBorderRadiusChange={setBorderRadius}
                     onPaddingChange={setPadding}
                     onFontSizeChange={setFontSize}
+                    tshadow={tshadow} bw={bw} bc={bc} opacity={opacity} ls={ls}
+                    onTshadowChange={setTshadow} onBwChange={setBw} onBcChange={setBc}
+                    onOpacityChange={setOpacity} onLsChange={setLs}
                   />
                 ),
               },
@@ -279,6 +290,7 @@ export default function CreateDicePage() {
             <EditorEffectsPreview
               fx={fx} fxInt={fxInt} gbg={gbg} gbgDir={gbgDir}
               neonColor={neonColor} bshadow={bshadow} borderRadius={borderRadius}
+              tshadow={tshadow} bw={bw} bc={bc} opacity={opacity} ls={ls}
             >
               <DicePreview
               mode={mode}

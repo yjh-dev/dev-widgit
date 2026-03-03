@@ -27,7 +27,7 @@ import { useWidgetUrl } from "@/lib/use-widget-url";
 import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
 import { FONT_OPTIONS, type FontKey } from "@/lib/fonts";
-import { addCommonStyleParams, addEffectParams, buildUrl } from "@/lib/url-builder-utils";
+import { addCommonStyleParams, addEffectParams, addExtraStyleParams, buildUrl } from "@/lib/url-builder-utils";
 import type { FontSizeKey } from "@/lib/common-widget-options";
 import EffectOptions from "@/components/editor/EffectOptions";
 import EditorEffectsPreview from "@/components/editor/EditorEffectsPreview";
@@ -45,6 +45,8 @@ export default function CreateDdayPage() {
     setShowTime, setBlink, setDoneMsg, setBarColor, setDateFmt,
     fx, fxInt, gbg, gbgDir, neonColor, bshadow,
     setFx, setFxInt, setGbg, setGbgDir, setNeonColor, setBshadow,
+    tshadow, bw, bc, opacity, ls,
+    setTshadow, setBw, setBc, setOpacity, setLs,
     loadPreset, reset,
   } = useDdayWidgetStore();
 
@@ -68,6 +70,11 @@ export default function CreateDdayPage() {
       ...(p.has("doneMsg") && { doneMsg: p.get("doneMsg")! }),
       ...(p.has("barColor") && { barColor: p.get("barColor")! }),
       ...(p.has("dateFmt") && { dateFmt: p.get("dateFmt") as DdayDateFormat }),
+      ...(p.has("tshadow") && { tshadow: p.get("tshadow")! }),
+      ...(p.has("bw") && { bw: p.get("bw")! }),
+      ...(p.has("bc") && { bc: p.get("bc")! }),
+      ...(p.has("opacity") && { opacity: p.get("opacity")! }),
+      ...(p.has("ls") && { ls: p.get("ls")! }),
     });
   });
 
@@ -86,13 +93,14 @@ export default function CreateDdayPage() {
     if (font !== "noto-sans-kr") params.set("font", font);
     addCommonStyleParams(params, borderRadius, padding, fontSize);
     addEffectParams(params, fx, fxInt, gbg, gbgDir, neonColor, bshadow);
+    addExtraStyleParams(params, tshadow, bw, bc, opacity, ls);
     if (showTime) params.set("showTime", "true");
     if (!blink) params.set("blink", "false");
     if (doneMsg) params.set("doneMsg", doneMsg);
     if (barColor) params.set("barColor", barColor);
     if (dateFmt !== "full") params.set("dateFmt", dateFmt);
     return buildUrl(base, params);
-  }, [title, targetDate, bgColor, textColor, calcType, isAnnual, layout, startDate, isTransparent, font, borderRadius, padding, fontSize, showTime, blink, doneMsg, barColor, dateFmt, fx, fxInt, gbg, gbgDir, neonColor, bshadow]);
+  }, [title, targetDate, bgColor, textColor, calcType, isAnnual, layout, startDate, isTransparent, font, borderRadius, padding, fontSize, showTime, blink, doneMsg, barColor, dateFmt, fx, fxInt, gbg, gbgDir, neonColor, bshadow, tshadow, bw, bc, opacity, ls]);
 
   const handleCopy = async () => {
     await copyToClipboard(buildWidgetUrl());
@@ -260,6 +268,9 @@ export default function CreateDdayPage() {
                   <CommonStyleOptions
                     borderRadius={borderRadius} padding={padding} fontSize={fontSize}
                     onBorderRadiusChange={setBorderRadius} onPaddingChange={setPadding} onFontSizeChange={setFontSize}
+                    tshadow={tshadow} bw={bw} bc={bc} opacity={opacity} ls={ls}
+                    onTshadowChange={setTshadow} onBwChange={setBw} onBcChange={setBc}
+                    onOpacityChange={setOpacity} onLsChange={setLs}
                   />
                 ),
               },
@@ -278,6 +289,7 @@ export default function CreateDdayPage() {
             <EditorEffectsPreview
               fx={fx} fxInt={fxInt} gbg={gbg} gbgDir={gbgDir}
               neonColor={neonColor} bshadow={bshadow} borderRadius={borderRadius}
+              tshadow={tshadow} bw={bw} bc={bc} opacity={opacity} ls={ls}
             >
               <DdayWidgetPreview
             title={title} targetDate={targetDate} bgColor={bgColor} textColor={textColor}

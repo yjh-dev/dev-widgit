@@ -24,7 +24,7 @@ import { useWidgetUrl } from "@/lib/use-widget-url";
 import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
 import { parseCommonParams } from "@/lib/common-params";
-import { addBgParam, addCommonStyleParams, addEffectParams, buildUrl } from "@/lib/url-builder-utils";
+import { addBgParam, addCommonStyleParams, addEffectParams, addExtraStyleParams, buildUrl } from "@/lib/url-builder-utils";
 import { TIMEZONE_OPTIONS, CLOCK_DATE_FORMAT_OPTIONS, type ClockFormat, type ClockDateFormat } from "@/lib/clock";
 import { CLOCK_FONT_OPTIONS } from "@/lib/fonts";
 import EffectOptions from "@/components/editor/EffectOptions";
@@ -41,6 +41,8 @@ export default function CreateClockPage() {
     setDateColor, setDateFmt,
     fx, fxInt, gbg, gbgDir, neonColor, bshadow,
     setFx, setFxInt, setGbg, setGbgDir, setNeonColor, setBshadow,
+    tshadow, bw, bc, opacity, ls,
+    setTshadow, setBw, setBc, setOpacity, setLs,
     loadPreset, reset,
   } = useClockStore();
 
@@ -56,6 +58,11 @@ export default function CreateClockPage() {
       ...(p.has("blink") && { blink: p.get("blink") !== "false" }),
       ...(p.has("dateColor") && { dateColor: p.get("dateColor")! }),
       ...(p.has("dateFmt") && { dateFmt: p.get("dateFmt") as ClockDateFormat }),
+      ...(p.has("tshadow") && { tshadow: p.get("tshadow")! }),
+      ...(p.has("bw") && { bw: p.get("bw")! }),
+      ...(p.has("bc") && { bc: p.get("bc")! }),
+      ...(p.has("opacity") && { opacity: p.get("opacity")! }),
+      ...(p.has("ls") && { ls: p.get("ls")! }),
     });
   });
 
@@ -69,13 +76,14 @@ export default function CreateClockPage() {
     addBgParam(params, transparentBg, bg);
     addCommonStyleParams(params, borderRadius, padding, fontSize);
     addEffectParams(params, fx, fxInt, gbg, gbgDir, neonColor, bshadow);
+    addExtraStyleParams(params, tshadow, bw, bc, opacity, ls);
     if (!showSeconds) params.set("seconds", "false");
     if (showDate) params.set("date", "true");
     if (!blink) params.set("blink", "false");
     if (dateColor) params.set("dateColor", dateColor);
     if (dateFmt !== "kr") params.set("dateFmt", dateFmt);
     return buildUrl(base, params);
-  }, [timezone, format, font, color, bg, transparentBg, borderRadius, padding, fontSize, showSeconds, showDate, blink, dateColor, dateFmt, fx, fxInt, gbg, gbgDir, neonColor, bshadow]);
+  }, [timezone, format, font, color, bg, transparentBg, borderRadius, padding, fontSize, showSeconds, showDate, blink, dateColor, dateFmt, fx, fxInt, gbg, gbgDir, neonColor, bshadow, tshadow, bw, bc, opacity, ls]);
 
   const handleCopy = async () => {
     await copyToClipboard(buildWidgetUrl());
@@ -205,6 +213,9 @@ export default function CreateClockPage() {
                   <CommonStyleOptions
                     borderRadius={borderRadius} padding={padding} fontSize={fontSize}
                     onBorderRadiusChange={setBorderRadius} onPaddingChange={setPadding} onFontSizeChange={setFontSize}
+                    tshadow={tshadow} bw={bw} bc={bc} opacity={opacity} ls={ls}
+                    onTshadowChange={setTshadow} onBwChange={setBw} onBcChange={setBc}
+                    onOpacityChange={setOpacity} onLsChange={setLs}
                   />
                 ),
               },
@@ -223,6 +234,7 @@ export default function CreateClockPage() {
             <EditorEffectsPreview
               fx={fx} fxInt={fxInt} gbg={gbg} gbgDir={gbgDir}
               neonColor={neonColor} bshadow={bshadow} borderRadius={borderRadius}
+              tshadow={tshadow} bw={bw} bc={bc} opacity={opacity} ls={ls}
             >
               <ClockPreview
               timezone={timezone} format={format} font={font} color={color} bg={bg}

@@ -25,7 +25,7 @@ import { useWidgetUrl } from "@/lib/use-widget-url";
 import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
 import { parseCommonParams } from "@/lib/common-params";
-import { addBgParam, addCommonStyleParams, addEffectParams, buildUrl } from "@/lib/url-builder-utils";
+import { addBgParam, addCommonStyleParams, addEffectParams, addExtraStyleParams, buildUrl } from "@/lib/url-builder-utils";
 import { GENERAL_FONT_OPTIONS } from "@/lib/fonts";
 import EffectOptions from "@/components/editor/EffectOptions";
 import EditorEffectsPreview from "@/components/editor/EditorEffectsPreview";
@@ -41,6 +41,8 @@ export default function CreateBookmarkPage() {
     setBorderRadius, setPadding, setFontSize,
     fx, fxInt, gbg, gbgDir, neonColor, bshadow,
     setFx, setFxInt, setGbg, setGbgDir, setNeonColor, setBshadow,
+    tshadow, bw, bc, opacity, ls,
+    setTshadow, setBw, setBc, setOpacity, setLs,
     loadPreset, reset,
   } = useBookmarkStore();
 
@@ -53,6 +55,11 @@ export default function CreateBookmarkPage() {
       ...(p.has("showUrl") && { showUrl: p.get("showUrl") !== "false" }),
       ...(p.has("color") && { color: p.get("color")! }),
       ...(p.has("font") && { font: p.get("font")! }),
+      ...(p.has("tshadow") && { tshadow: p.get("tshadow")! }),
+      ...(p.has("bw") && { bw: p.get("bw")! }),
+      ...(p.has("bc") && { bc: p.get("bc")! }),
+      ...(p.has("opacity") && { opacity: p.get("opacity")! }),
+      ...(p.has("ls") && { ls: p.get("ls")! }),
       ...parseCommonParams(p),
     });
   });
@@ -70,8 +77,9 @@ export default function CreateBookmarkPage() {
     addBgParam(params, transparentBg, bg);
     addCommonStyleParams(params, borderRadius, padding, fontSize);
     addEffectParams(params, fx, fxInt, gbg, gbgDir, neonColor, bshadow);
+    addExtraStyleParams(params, tshadow, bw, bc, opacity, ls);
     return buildUrl(base, params);
-  }, [url, title, desc, showIcon, showUrl, color, font, bg, transparentBg, borderRadius, padding, fontSize, fx, fxInt, gbg, gbgDir, neonColor, bshadow]);
+  }, [url, title, desc, showIcon, showUrl, color, font, bg, transparentBg, borderRadius, padding, fontSize, fx, fxInt, gbg, gbgDir, neonColor, bshadow, tshadow, bw, bc, opacity, ls]);
 
   const handleCopy = async () => {
     await copyToClipboard(buildWidgetUrl());
@@ -172,6 +180,9 @@ export default function CreateBookmarkPage() {
                   <CommonStyleOptions
                     borderRadius={borderRadius} padding={padding} fontSize={fontSize}
                     onBorderRadiusChange={setBorderRadius} onPaddingChange={setPadding} onFontSizeChange={setFontSize}
+                    tshadow={tshadow} bw={bw} bc={bc} opacity={opacity} ls={ls}
+                    onTshadowChange={setTshadow} onBwChange={setBw} onBcChange={setBc}
+                    onOpacityChange={setOpacity} onLsChange={setLs}
                   />
                 ),
               },
@@ -190,6 +201,7 @@ export default function CreateBookmarkPage() {
             <EditorEffectsPreview
               fx={fx} fxInt={fxInt} gbg={gbg} gbgDir={gbgDir}
               neonColor={neonColor} bshadow={bshadow} borderRadius={borderRadius}
+              tshadow={tshadow} bw={bw} bc={bc} opacity={opacity} ls={ls}
             >
               <BookmarkPreview
               url={url} title={title} desc={desc}

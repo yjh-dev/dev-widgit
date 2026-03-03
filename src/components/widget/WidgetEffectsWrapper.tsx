@@ -10,11 +10,22 @@ import {
   buildGlowShadow,
   buildBoxShadow,
 } from "@/lib/widget-effects";
+import type { TextShadowKey, BorderWidthKey, OpacityKey, LetterSpacingKey } from "@/lib/common-widget-options";
+import { TEXT_SHADOW_CSS, BORDER_WIDTH_CSS, LETTER_SPACING_CSS } from "@/lib/common-widget-options";
+
+export interface ExtraStyleConfig {
+  tshadow: TextShadowKey;
+  bw: BorderWidthKey;
+  bc: string;
+  opacity: OpacityKey;
+  ls: LetterSpacingKey;
+}
 
 interface Props {
   config: WidgetEffectConfig;
   /** widget의 borderRadius (URL의 radius 파라미터). 효과 레이어에 동일한 radius 적용 */
   borderRadius?: number;
+  extraStyle?: ExtraStyleConfig;
   children: ReactNode;
 }
 
@@ -25,8 +36,15 @@ interface Props {
  * shadow/neon/glow → 외부 컨테이너에 padding을 줘서 shadow가 viewport 내에 보이게 함
  * glass/gradient  → content bg를 강제 투명화하고 underlay 레이어를 노출
  */
-export default function WidgetEffectsWrapper({ config, borderRadius = 16, children }: Props) {
-  if (!hasActiveEffects(config)) {
+export default function WidgetEffectsWrapper({ config, borderRadius = 16, extraStyle, children }: Props) {
+  const hasExtra = extraStyle && (
+    extraStyle.tshadow !== "none" ||
+    extraStyle.bw !== "none" ||
+    extraStyle.opacity !== "100" ||
+    extraStyle.ls !== "normal"
+  );
+
+  if (!hasActiveEffects(config) && !hasExtra) {
     return <>{children}</>;
   }
 
@@ -70,6 +88,19 @@ export default function WidgetEffectsWrapper({ config, borderRadius = 16, childr
     cardStyle.border = neonStyles.border;
   }
 
+  // Extra style: border
+  if (extraStyle && extraStyle.bw !== "none") {
+    const bwCss = BORDER_WIDTH_CSS[extraStyle.bw];
+    if (!hasNeon) {
+      cardStyle.border = `${bwCss} solid #${extraStyle.bc || "D1D5DB"}`;
+    }
+  }
+
+  // Extra style: opacity
+  if (extraStyle && extraStyle.opacity !== "100") {
+    cardStyle.opacity = Number(extraStyle.opacity) / 100;
+  }
+
   // Glass overlay styles
   const glassStyles = hasGlass ? { ...buildGlassStyles(fxInt), borderRadius } : {};
 
@@ -89,6 +120,22 @@ export default function WidgetEffectsWrapper({ config, borderRadius = 16, childr
     padding: hasOuterShadow ? 16 : 0,
     boxSizing: "border-box",
   };
+
+  // Content style: textShadow + letterSpacing (CSS inherited → propagates to all text children)
+  const contentStyle: React.CSSProperties = {
+    position: "relative",
+    zIndex: 10,
+    width: "100%",
+    height: "100%",
+  };
+  if (extraStyle) {
+    if (extraStyle.tshadow !== "none") {
+      contentStyle.textShadow = TEXT_SHADOW_CSS[extraStyle.tshadow];
+    }
+    if (extraStyle.ls !== "normal") {
+      contentStyle.letterSpacing = LETTER_SPACING_CSS[extraStyle.ls];
+    }
+  }
 
   return (
     <div style={outerStyle}>
@@ -119,7 +166,7 @@ export default function WidgetEffectsWrapper({ config, borderRadius = 16, childr
         )}
 
         {/* Content */}
-        <div style={{ position: "relative", zIndex: 10, width: "100%", height: "100%" }}>
+        <div style={contentStyle}>
           {needsBgOverride && (
             <style>{`
               .wfx-bg-override > * {

@@ -1,4 +1,10 @@
-import type { FontSizeKey } from "@/lib/common-widget-options";
+import type {
+  FontSizeKey,
+  TextShadowKey,
+  BorderWidthKey,
+  OpacityKey,
+  LetterSpacingKey,
+} from "@/lib/common-widget-options";
 import type { EffectType, EffectIntensity, BoxShadowPreset } from "@/lib/widget-effects";
 
 /* ─── Common Style State ─── */
@@ -15,6 +21,11 @@ export interface CommonStyleState {
   gbgDir: number;
   neonColor: string;
   bshadow: BoxShadowPreset;
+  tshadow: TextShadowKey;
+  bw: BorderWidthKey;
+  bc: string;
+  opacity: OpacityKey;
+  ls: LetterSpacingKey;
   setBg: (bg: string) => void;
   setTransparentBg: (transparentBg: boolean) => void;
   setBorderRadius: (borderRadius: number) => void;
@@ -26,6 +37,11 @@ export interface CommonStyleState {
   setGbgDir: (gbgDir: number) => void;
   setNeonColor: (neonColor: string) => void;
   setBshadow: (bshadow: BoxShadowPreset) => void;
+  setTshadow: (tshadow: TextShadowKey) => void;
+  setBw: (bw: BorderWidthKey) => void;
+  setBc: (bc: string) => void;
+  setOpacity: (opacity: OpacityKey) => void;
+  setLs: (ls: LetterSpacingKey) => void;
 }
 
 export const commonStyleDefaults = {
@@ -40,6 +56,11 @@ export const commonStyleDefaults = {
   gbgDir: 135,
   neonColor: "",
   bshadow: "none" as BoxShadowPreset,
+  tshadow: "none" as TextShadowKey,
+  bw: "none" as BorderWidthKey,
+  bc: "D1D5DB",
+  opacity: "100" as OpacityKey,
+  ls: "normal" as LetterSpacingKey,
 };
 
 /* ─── Simple Factory ─── */
@@ -81,6 +102,11 @@ export function widgetStoreCreator<D extends Record<string, any>, S extends Reco
     setGbgDir: (gbgDir: number) => set({ gbgDir }),
     setNeonColor: (neonColor: string) => set({ neonColor }),
     setBshadow: (bshadow: BoxShadowPreset) => set({ bshadow }),
+    setTshadow: (tshadow: TextShadowKey) => set({ tshadow }),
+    setBw: (bw: BorderWidthKey) => set({ bw }),
+    setBc: (bc: string) => set({ bc }),
+    setOpacity: (opacity: OpacityKey) => set({ opacity }),
+    setLs: (ls: LetterSpacingKey) => set({ ls }),
     // Widget-specific setters
     ...widgetSetters(set),
     // loadPreset / reset

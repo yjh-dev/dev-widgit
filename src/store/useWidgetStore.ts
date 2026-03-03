@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import type { FontKey } from "@/lib/fonts";
-import type { FontSizeKey } from "@/lib/common-widget-options";
+import type { FontSizeKey, TextShadowKey, BorderWidthKey, OpacityKey, LetterSpacingKey } from "@/lib/common-widget-options";
 import type { EffectType, EffectIntensity, BoxShadowPreset } from "@/lib/widget-effects";
 
 type CalcType = "down" | "up";
@@ -60,7 +60,17 @@ interface DdayWidgetState {
   setGbgDir: (gbgDir: number) => void;
   setNeonColor: (neonColor: string) => void;
   setBshadow: (bshadow: BoxShadowPreset) => void;
-  loadPreset: (preset: Partial<typeof initialState>) => void;
+  tshadow: TextShadowKey;
+  bw: BorderWidthKey;
+  bc: string;
+  opacity: OpacityKey;
+  ls: LetterSpacingKey;
+  setTshadow: (tshadow: TextShadowKey) => void;
+  setBw: (bw: BorderWidthKey) => void;
+  setBc: (bc: string) => void;
+  setOpacity: (opacity: OpacityKey) => void;
+  setLs: (ls: LetterSpacingKey) => void;
+  loadPreset: (preset: Record<string, unknown>) => void;
   reset: () => void;
 }
 
@@ -90,6 +100,11 @@ const initialState = {
   gbgDir: 135,
   neonColor: "",
   bshadow: "none" as BoxShadowPreset,
+  tshadow: "none" as TextShadowKey,
+  bw: "none" as BorderWidthKey,
+  bc: "D1D5DB",
+  opacity: "100" as OpacityKey,
+  ls: "normal" as LetterSpacingKey,
 };
 
 export const useDdayWidgetStore = create<DdayWidgetState>((set) => ({
@@ -125,6 +140,11 @@ export const useDdayWidgetStore = create<DdayWidgetState>((set) => ({
   setGbgDir: (gbgDir) => set({ gbgDir }),
   setNeonColor: (neonColor) => set({ neonColor }),
   setBshadow: (bshadow) => set({ bshadow }),
+  setTshadow: (tshadow) => set({ tshadow }),
+  setBw: (bw) => set({ bw }),
+  setBc: (bc) => set({ bc }),
+  setOpacity: (opacity) => set({ opacity }),
+  setLs: (ls) => set({ ls }),
   loadPreset: (preset) => set({ ...initialState, ...preset }),
   reset: () => set(initialState),
 }));

@@ -34,7 +34,7 @@ import {
   BORDER_RADIUS_OPTIONS,
   PADDING_OPTIONS,
 } from "@/lib/common-widget-options";
-import { addEffectParams } from "@/lib/url-builder-utils";
+import { addEffectParams, addExtraStyleParams } from "@/lib/url-builder-utils";
 import EffectOptions from "@/components/editor/EffectOptions";
 import EffectPresetSelector from "@/components/editor/EffectPresetSelector";
 import EditorEffectsPreview from "@/components/editor/EditorEffectsPreview";
@@ -47,6 +47,8 @@ export default function CreateEmojiRainPage() {
     setBg, setTransparentBg, setBorderRadius, setPadding,
     fx, fxInt, gbg, gbgDir, neonColor, bshadow,
     setFx, setFxInt, setGbg, setGbgDir, setNeonColor, setBshadow,
+    tshadow, bw, bc, opacity, ls,
+    setTshadow, setBw, setBc, setOpacity, setLs,
     loadPreset, reset,
   } = useEmojiRainStore();
 
@@ -57,6 +59,11 @@ export default function CreateEmojiRainPage() {
       ...(p.has("density") && { density: p.get("density")! }),
       ...(p.has("minSize") && { minSize: Number(p.get("minSize")) }),
       ...(p.has("maxSize") && { maxSize: Number(p.get("maxSize")) }),
+      ...(p.has("tshadow") && { tshadow: p.get("tshadow")! }),
+      ...(p.has("bw") && { bw: p.get("bw")! }),
+      ...(p.has("bc") && { bc: p.get("bc")! }),
+      ...(p.has("opacity") && { opacity: p.get("opacity")! }),
+      ...(p.has("ls") && { ls: p.get("ls")! }),
       ...parseCommonParams(p),
     });
   });
@@ -77,9 +84,10 @@ export default function CreateEmojiRainPage() {
     if (borderRadius !== 16) params.set("radius", String(borderRadius));
     if (padding !== 24) params.set("pad", String(padding));
     addEffectParams(params, fx, fxInt, gbg, gbgDir, neonColor, bshadow);
+    addExtraStyleParams(params, tshadow, bw, bc, opacity, ls);
     const qs = params.toString();
     return qs ? `${base}?${qs}` : base;
-  }, [emojis, speed, density, minSize, maxSize, bg, transparentBg, borderRadius, padding, fx, fxInt, gbg, gbgDir, neonColor, bshadow]);
+  }, [emojis, speed, density, minSize, maxSize, bg, transparentBg, borderRadius, padding, fx, fxInt, gbg, gbgDir, neonColor, bshadow, tshadow, bw, bc, opacity, ls]);
 
   const handleCopy = async () => {
     await copyToClipboard(buildWidgetUrl());
@@ -262,7 +270,8 @@ export default function CreateEmojiRainPage() {
         <EditorEffectsPreview
           fx={fx} fxInt={fxInt} gbg={gbg} gbgDir={gbgDir}
           neonColor={neonColor} bshadow={bshadow} borderRadius={borderRadius}
-        >
+              tshadow={tshadow} bw={bw} bc={bc} opacity={opacity} ls={ls}
+            >
           <EmojiRainPreview
             emojis={emojis}
             speed={speed}

@@ -33,7 +33,7 @@ import {
   type PieChartStyle,
 } from "@/lib/pie-chart";
 import type { FontSizeKey } from "@/lib/common-widget-options";
-import { addEffectParams } from "@/lib/url-builder-utils";
+import { addEffectParams, addExtraStyleParams } from "@/lib/url-builder-utils";
 import EffectOptions from "@/components/editor/EffectOptions";
 import EditorEffectsPreview from "@/components/editor/EditorEffectsPreview";
 import EffectPresetSelector from "@/components/editor/EffectPresetSelector";
@@ -49,6 +49,8 @@ export default function CreatePieChartPage() {
     setBorderRadius, setPadding, setFontSize,
     fx, fxInt, gbg, gbgDir, neonColor, bshadow,
     setFx, setFxInt, setGbg, setGbgDir, setNeonColor, setBshadow,
+    tshadow, bw, bc, opacity, ls,
+    setTshadow, setBw, setBc, setOpacity, setLs,
     loadPreset, reset,
   } = usePieChartStore();
 
@@ -69,6 +71,11 @@ export default function CreatePieChartPage() {
       ...(p.has("radius") && { borderRadius: Number(p.get("radius")) }),
       ...(p.has("pad") && { padding: Number(p.get("pad")) }),
       ...(p.has("fsize") && { fontSize: p.get("fsize") as FontSizeKey }),
+      ...(p.has("tshadow") && { tshadow: p.get("tshadow")! }),
+      ...(p.has("bw") && { bw: p.get("bw")! }),
+      ...(p.has("bc") && { bc: p.get("bc")! }),
+      ...(p.has("opacity") && { opacity: p.get("opacity")! }),
+      ...(p.has("ls") && { ls: p.get("ls")! }),
     });
   });
 
@@ -91,9 +98,10 @@ export default function CreatePieChartPage() {
     if (padding !== 24) params.set("pad", String(padding));
     if (fontSize !== "md") params.set("fsize", fontSize);
     addEffectParams(params, fx, fxInt, gbg, gbgDir, neonColor, bshadow);
+    addExtraStyleParams(params, tshadow, bw, bc, opacity, ls);
     const qs = params.toString();
     return qs ? `${base}?${qs}` : base;
-  }, [slices, style, showLabels, showPercent, showLegend, innerRadius, textColor, bg, transparentBg, borderRadius, padding, fontSize, fx, fxInt, gbg, gbgDir, neonColor, bshadow]);
+  }, [slices, style, showLabels, showPercent, showLegend, innerRadius, textColor, bg, transparentBg, borderRadius, padding, fontSize, fx, fxInt, gbg, gbgDir, neonColor, bshadow, tshadow, bw, bc, opacity, ls]);
 
   const handleCopy = async () => {
     await copyToClipboard(buildWidgetUrl());
@@ -251,6 +259,9 @@ export default function CreatePieChartPage() {
                   <CommonStyleOptions
                     borderRadius={borderRadius} padding={padding} fontSize={fontSize}
                     onBorderRadiusChange={setBorderRadius} onPaddingChange={setPadding} onFontSizeChange={setFontSize}
+                    tshadow={tshadow} bw={bw} bc={bc} opacity={opacity} ls={ls}
+                    onTshadowChange={setTshadow} onBwChange={setBw} onBcChange={setBc}
+                    onOpacityChange={setOpacity} onLsChange={setLs}
                   />
                 ),
               },
@@ -269,6 +280,7 @@ export default function CreatePieChartPage() {
             <EditorEffectsPreview
               fx={fx} fxInt={fxInt} gbg={gbg} gbgDir={gbgDir}
               neonColor={neonColor} bshadow={bshadow} borderRadius={borderRadius}
+              tshadow={tshadow} bw={bw} bc={bc} opacity={opacity} ls={ls}
             >
               <PieChartPreview
               slices={slices} style={style}

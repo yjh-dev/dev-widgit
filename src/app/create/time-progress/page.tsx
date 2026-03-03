@@ -26,7 +26,7 @@ import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
 import type { ProgressType, WeekStart } from "@/lib/time-progress";
 import { parseCommonParams } from "@/lib/common-params";
-import { addBgParam, addCommonStyleParams, addEffectParams, buildUrl } from "@/lib/url-builder-utils";
+import { addBgParam, addCommonStyleParams, addEffectParams, addExtraStyleParams, buildUrl } from "@/lib/url-builder-utils";
 import EffectOptions from "@/components/editor/EffectOptions";
 import EditorEffectsPreview from "@/components/editor/EditorEffectsPreview";
 import EffectPresetSelector from "@/components/editor/EffectPresetSelector";
@@ -39,6 +39,8 @@ export default function CreateTimeProgressPage() {
     setStyle, setShowLabel, setShowPercent, setBarHeight, setTextColor, setWeekStart, setRingSize, setShowRemain,
     fx, fxInt, gbg, gbgDir, neonColor, bshadow,
     setFx, setFxInt, setGbg, setGbgDir, setNeonColor, setBshadow,
+    tshadow, bw, bc, opacity, ls,
+    setTshadow, setBw, setBc, setOpacity, setLs,
     loadPreset, reset,
   } = useTimeProgressStore();
 
@@ -55,6 +57,11 @@ export default function CreateTimeProgressPage() {
       ...(p.has("weekStart") && { weekStart: p.get("weekStart") as WeekStart }),
       ...(p.has("ringSize") && { ringSize: p.get("ringSize") as RingSize }),
       ...(p.has("remain") && { showRemain: p.get("remain") === "true" }),
+      ...(p.has("tshadow") && { tshadow: p.get("tshadow")! }),
+      ...(p.has("bw") && { bw: p.get("bw")! }),
+      ...(p.has("bc") && { bc: p.get("bc")! }),
+      ...(p.has("opacity") && { opacity: p.get("opacity")! }),
+      ...(p.has("ls") && { ls: p.get("ls")! }),
     });
   });
 
@@ -66,6 +73,7 @@ export default function CreateTimeProgressPage() {
     addBgParam(params, transparentBg, bg);
     addCommonStyleParams(params, borderRadius, padding, fontSize);
     addEffectParams(params, fx, fxInt, gbg, gbgDir, neonColor, bshadow);
+    addExtraStyleParams(params, tshadow, bw, bc, opacity, ls);
     if (style !== "bar") params.set("style", style);
     if (!showLabel) params.set("label", "false");
     if (!showPercent) params.set("percent", "false");
@@ -77,7 +85,7 @@ export default function CreateTimeProgressPage() {
     if (ringSize !== "md") params.set("ringSize", ringSize);
     if (showRemain) params.set("remain", "true");
     return buildUrl(base, params);
-  }, [type, color, bg, transparentBg, borderRadius, padding, fontSize, style, showLabel, showPercent, barHeight, textColor, weekStart, ringSize, showRemain, fx, fxInt, gbg, gbgDir, neonColor, bshadow]);
+  }, [type, color, bg, transparentBg, borderRadius, padding, fontSize, style, showLabel, showPercent, barHeight, textColor, weekStart, ringSize, showRemain, fx, fxInt, gbg, gbgDir, neonColor, bshadow, tshadow, bw, bc, opacity, ls]);
 
   const handleCopy = async () => {
     await copyToClipboard(buildWidgetUrl());
@@ -220,6 +228,9 @@ export default function CreateTimeProgressPage() {
                   <CommonStyleOptions
                     borderRadius={borderRadius} padding={padding} fontSize={fontSize}
                     onBorderRadiusChange={setBorderRadius} onPaddingChange={setPadding} onFontSizeChange={setFontSize}
+                    tshadow={tshadow} bw={bw} bc={bc} opacity={opacity} ls={ls}
+                    onTshadowChange={setTshadow} onBwChange={setBw} onBcChange={setBc}
+                    onOpacityChange={setOpacity} onLsChange={setLs}
                   />
                 ),
               },
@@ -238,6 +249,7 @@ export default function CreateTimeProgressPage() {
             <EditorEffectsPreview
               fx={fx} fxInt={fxInt} gbg={gbg} gbgDir={gbgDir}
               neonColor={neonColor} bshadow={bshadow} borderRadius={borderRadius}
+              tshadow={tshadow} bw={bw} bc={bc} opacity={opacity} ls={ls}
             >
               <TimeProgressPreview
               type={type} color={color} bg={bg} transparentBg={transparentBg}

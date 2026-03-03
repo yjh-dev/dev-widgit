@@ -30,7 +30,7 @@ import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
 import { parseTodoItems, serializeTodoItems, generateId } from "@/lib/todo";
 import { parseCommonParams } from "@/lib/common-params";
-import { addBgParam, addCommonStyleParams, addEffectParams, buildUrl } from "@/lib/url-builder-utils";
+import { addBgParam, addCommonStyleParams, addEffectParams, addExtraStyleParams, buildUrl } from "@/lib/url-builder-utils";
 import EffectOptions from "@/components/editor/EffectOptions";
 import EffectPresetSelector from "@/components/editor/EffectPresetSelector";
 import EditorEffectsPreview from "@/components/editor/EditorEffectsPreview";
@@ -47,6 +47,8 @@ export default function CreateTodoPage() {
     setBorderRadius, setPadding, setFontSize,
     fx, fxInt, gbg, gbgDir, neonColor, bshadow,
     setFx, setFxInt, setGbg, setGbgDir, setNeonColor, setBshadow,
+    tshadow, bw, bc, opacity, ls,
+    setTshadow, setBw, setBc, setOpacity, setLs,
     loadPreset, reset,
   } = useTodoStore();
 
@@ -62,6 +64,11 @@ export default function CreateTodoPage() {
       ...parseCommonParams(p),
       ...(p.has("progress") && { showProgress: p.get("progress") !== "false" }),
       ...(p.has("strike") && { strikethrough: p.get("strike") !== "false" }),
+      ...(p.has("tshadow") && { tshadow: p.get("tshadow")! }),
+      ...(p.has("bw") && { bw: p.get("bw")! }),
+      ...(p.has("bc") && { bc: p.get("bc")! }),
+      ...(p.has("opacity") && { opacity: p.get("opacity")! }),
+      ...(p.has("ls") && { ls: p.get("ls")! }),
     });
   });
 
@@ -80,8 +87,9 @@ export default function CreateTodoPage() {
     if (font !== "sans") params.set("font", font);
     addCommonStyleParams(params, borderRadius, padding, fontSize);
     addEffectParams(params, fx, fxInt, gbg, gbgDir, neonColor, bshadow);
+    addExtraStyleParams(params, tshadow, bw, bc, opacity, ls);
     return buildUrl(base, params);
-  }, [title, items, color, textColor, font, bg, transparentBg, showProgress, strikethrough, borderRadius, padding, fontSize, fx, fxInt, gbg, gbgDir, neonColor, bshadow]);
+  }, [title, items, color, textColor, font, bg, transparentBg, showProgress, strikethrough, borderRadius, padding, fontSize, fx, fxInt, gbg, gbgDir, neonColor, bshadow, tshadow, bw, bc, opacity, ls]);
 
   const handleCopy = async () => {
     await copyToClipboard(buildWidgetUrl());
@@ -248,6 +256,9 @@ export default function CreateTodoPage() {
                   <CommonStyleOptions
                     borderRadius={borderRadius} padding={padding} fontSize={fontSize}
                     onBorderRadiusChange={setBorderRadius} onPaddingChange={setPadding} onFontSizeChange={setFontSize}
+                    tshadow={tshadow} bw={bw} bc={bc} opacity={opacity} ls={ls}
+                    onTshadowChange={setTshadow} onBwChange={setBw} onBcChange={setBc}
+                    onOpacityChange={setOpacity} onLsChange={setLs}
                   />
                 ),
               },
@@ -262,7 +273,8 @@ export default function CreateTodoPage() {
       <EditorEffectsPreview
         fx={fx} fxInt={fxInt} gbg={gbg} gbgDir={gbgDir}
         neonColor={neonColor} bshadow={bshadow} borderRadius={borderRadius}
-      >
+              tshadow={tshadow} bw={bw} bc={bc} opacity={opacity} ls={ls}
+            >
         <TodoPreview
           title={title}
           initialItems={todoItems}

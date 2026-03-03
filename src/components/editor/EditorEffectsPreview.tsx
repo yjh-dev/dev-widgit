@@ -7,6 +7,8 @@ import {
   buildGlassStyles,
   buildNeonStyles,
 } from "@/lib/widget-effects";
+import type { TextShadowKey, BorderWidthKey, OpacityKey, LetterSpacingKey } from "@/lib/common-widget-options";
+import { TEXT_SHADOW_CSS, BORDER_WIDTH_CSS, LETTER_SPACING_CSS } from "@/lib/common-widget-options";
 
 interface Props {
   fx: EffectType;
@@ -16,6 +18,11 @@ interface Props {
   neonColor: string;
   bshadow: BoxShadowPreset;
   borderRadius: number;
+  tshadow?: TextShadowKey;
+  bw?: BorderWidthKey;
+  bc?: string;
+  opacity?: OpacityKey;
+  ls?: LetterSpacingKey;
   children: ReactNode;
 }
 
@@ -29,14 +36,17 @@ interface Props {
  */
 export default function EditorEffectsPreview({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  fx, fxInt, gbg, gbgDir, neonColor, bshadow: _bshadow, borderRadius, children,
+  fx, fxInt, gbg, gbgDir, neonColor, bshadow: _bshadow, borderRadius,
+  tshadow = "none", bw = "none", bc = "D1D5DB", opacity = "100", ls = "normal",
+  children,
 }: Props) {
   const gbgColors = gbg ? gbg.split("|").filter(Boolean) : [];
   const hasGradientBg = gbgColors.length >= 2;
   const hasGlass = fx === "glass";
   const hasNeon = fx === "neon";
   const hasGlow = fx === "glow";
-  const hasAnyEffect = fx !== "none" || hasGradientBg;
+  const hasExtraStyle = tshadow !== "none" || bw !== "none" || opacity !== "100" || ls !== "normal";
+  const hasAnyEffect = fx !== "none" || hasGradientBg || hasExtraStyle;
 
   if (!hasAnyEffect) {
     return <>{children}</>;
@@ -70,6 +80,30 @@ export default function EditorEffectsPreview({
     cardStyle.boxShadow = `inset 0 0 20px rgba(${hexToRgb(c)},0.2)`;
   }
 
+  // Extra style: border
+  if (bw !== "none" && !hasNeon) {
+    cardStyle.border = `${BORDER_WIDTH_CSS[bw]} solid #${bc}`;
+  }
+
+  // Extra style: opacity
+  if (opacity !== "100") {
+    cardStyle.opacity = Number(opacity) / 100;
+  }
+
+  // Content style: textShadow + letterSpacing
+  const contentStyle: React.CSSProperties = {
+    position: "relative",
+    zIndex: 10,
+    width: "100%",
+    height: "100%",
+  };
+  if (tshadow !== "none") {
+    contentStyle.textShadow = TEXT_SHADOW_CSS[tshadow];
+  }
+  if (ls !== "normal") {
+    contentStyle.letterSpacing = LETTER_SPACING_CSS[ls];
+  }
+
   return (
     <div style={cardStyle}>
       {/* Gradient underlay */}
@@ -97,7 +131,7 @@ export default function EditorEffectsPreview({
       )}
 
       {/* Content */}
-      <div style={{ position: "relative", zIndex: 10, width: "100%", height: "100%" }}>
+      <div style={contentStyle}>
         {needsBgOverride && (
           <style>{`
             .wfx-editor-override > * {

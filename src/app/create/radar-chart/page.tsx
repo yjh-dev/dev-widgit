@@ -28,7 +28,7 @@ import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { parseCommonParams } from "@/lib/common-params";
 import { copyToClipboard } from "@/lib/clipboard";
 import { serializeItems, deserializeItems, type RadarItem } from "@/lib/radar-chart";
-import { addEffectParams } from "@/lib/url-builder-utils";
+import { addEffectParams, addExtraStyleParams } from "@/lib/url-builder-utils";
 import EffectOptions from "@/components/editor/EffectOptions";
 import EditorEffectsPreview from "@/components/editor/EditorEffectsPreview";
 import EffectPresetSelector from "@/components/editor/EffectPresetSelector";
@@ -43,6 +43,8 @@ export default function CreateRadarChartPage() {
     setBorderRadius, setPadding, setFontSize,
     fx, fxInt, gbg, gbgDir, neonColor, bshadow,
     setFx, setFxInt, setGbg, setGbgDir, setNeonColor, setBshadow,
+    tshadow, bw, bc, opacity, ls,
+    setTshadow, setBw, setBc, setOpacity, setLs,
     loadPreset, reset,
   } = useRadarChartStore();
 
@@ -56,6 +58,11 @@ export default function CreateRadarChartPage() {
       ...(p.has("color") && { color: p.get("color")! }),
       ...(p.has("gridColor") && { gridColor: p.get("gridColor")! }),
       ...(p.has("textColor") && { textColor: p.get("textColor")! }),
+      ...(p.has("tshadow") && { tshadow: p.get("tshadow")! }),
+      ...(p.has("bw") && { bw: p.get("bw")! }),
+      ...(p.has("bc") && { bc: p.get("bc")! }),
+      ...(p.has("opacity") && { opacity: p.get("opacity")! }),
+      ...(p.has("ls") && { ls: p.get("ls")! }),
       ...parseCommonParams(p),
     });
   });
@@ -80,9 +87,10 @@ export default function CreateRadarChartPage() {
     if (padding !== 24) params.set("pad", String(padding));
     if (fontSize !== "md") params.set("fsize", fontSize);
     addEffectParams(params, fx, fxInt, gbg, gbgDir, neonColor, bshadow);
+    addExtraStyleParams(params, tshadow, bw, bc, opacity, ls);
     const qs = params.toString();
     return qs ? `${base}?${qs}` : base;
-  }, [items, showValues, showGrid, gridLevels, fillOpacity, color, gridColor, textColor, bg, transparentBg, borderRadius, padding, fontSize, fx, fxInt, gbg, gbgDir, neonColor, bshadow]);
+  }, [items, showValues, showGrid, gridLevels, fillOpacity, color, gridColor, textColor, bg, transparentBg, borderRadius, padding, fontSize, fx, fxInt, gbg, gbgDir, neonColor, bshadow, tshadow, bw, bc, opacity, ls]);
 
   const handleCopy = async () => {
     await copyToClipboard(buildWidgetUrl());
@@ -253,6 +261,9 @@ export default function CreateRadarChartPage() {
                   <CommonStyleOptions
                     borderRadius={borderRadius} padding={padding} fontSize={fontSize}
                     onBorderRadiusChange={setBorderRadius} onPaddingChange={setPadding} onFontSizeChange={setFontSize}
+                    tshadow={tshadow} bw={bw} bc={bc} opacity={opacity} ls={ls}
+                    onTshadowChange={setTshadow} onBwChange={setBw} onBcChange={setBc}
+                    onOpacityChange={setOpacity} onLsChange={setLs}
                   />
                 ),
               },
@@ -271,6 +282,7 @@ export default function CreateRadarChartPage() {
             <EditorEffectsPreview
               fx={fx} fxInt={fxInt} gbg={gbg} gbgDir={gbgDir}
               neonColor={neonColor} bshadow={bshadow} borderRadius={borderRadius}
+              tshadow={tshadow} bw={bw} bc={bc} opacity={opacity} ls={ls}
             >
               <RadarChartPreview
               items={items} showValues={showValues} showGrid={showGrid}

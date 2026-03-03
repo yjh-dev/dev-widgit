@@ -28,6 +28,36 @@ export const ddayPresets: Preset[] = [
       doneMsg: "새해 복 많이 받으세요! 🎉",
     },
   },
+  {
+    id: "dday-pastel",
+    name: "파스텔 D-Day",
+    data: {
+      bgColor: "FFF7ED",
+      textColor: "92400E",
+      showTime: false,
+      dateFmt: "dot",
+    },
+  },
+  {
+    id: "dday-neon",
+    name: "네온 D-Day",
+    data: {
+      bgColor: "0F172A",
+      textColor: "22D3EE",
+      isDarkMode: true,
+      showTime: true,
+      blink: true,
+    },
+  },
+  {
+    id: "dday-retro",
+    name: "레트로 D-Day",
+    data: {
+      bgColor: "FFFBEB",
+      textColor: "92400E",
+      dateFmt: "short",
+    },
+  },
 ];
 
 // Clock
@@ -60,6 +90,38 @@ export const clockPresets: Preset[] = [
       dateFmt: "en",
     },
   },
+  {
+    id: "clock-pastel",
+    name: "파스텔 시계",
+    data: {
+      bg: "F0FDF4",
+      color: "365314",
+      font: "noto-serif-kr",
+      showDate: true,
+      dateFmt: "kr",
+    },
+  },
+  {
+    id: "clock-neon",
+    name: "네온 시계",
+    data: {
+      bg: "0F172A",
+      color: "A78BFA",
+      font: "mono",
+      showSeconds: true,
+      blink: true,
+    },
+  },
+  {
+    id: "clock-retro",
+    name: "레트로 시계",
+    data: {
+      bg: "FEF3C7",
+      color: "78350F",
+      font: "noto-serif-kr",
+      showDate: true,
+    },
+  },
 ];
 
 // Time Progress
@@ -89,6 +151,38 @@ export const timeProgressPresets: Preset[] = [
       showPercent: true,
     },
   },
+  {
+    id: "tp-pastel-ring",
+    name: "파스텔 링",
+    data: {
+      type: "year",
+      style: "ring",
+      color: "EC4899",
+      ringSize: "md",
+      bg: "FDF2F8",
+    },
+  },
+  {
+    id: "tp-neon",
+    name: "네온 바",
+    data: {
+      type: "month",
+      style: "bar",
+      color: "22D3EE",
+      bg: "0F172A",
+      textColor: "E0E0E0",
+    },
+  },
+  {
+    id: "tp-retro",
+    name: "레트로 바",
+    data: {
+      type: "week",
+      style: "bar",
+      color: "D97706",
+      bg: "FFFBEB",
+    },
+  },
 ];
 
 // Flip Clock
@@ -116,6 +210,36 @@ export const flipClockPresets: Preset[] = [
       bg: "FFFBEB",
       showDate: false,
       fontSize: "md",
+    },
+  },
+  {
+    id: "flip-pastel",
+    name: "파스텔 플립",
+    data: {
+      flipColor: "FDF2F8",
+      textColor: "831843",
+      gapColor: "FECDD3",
+      bg: "FFF1F2",
+    },
+  },
+  {
+    id: "flip-neon",
+    name: "네온 플립",
+    data: {
+      flipColor: "1E1E2E",
+      textColor: "22D3EE",
+      gapColor: "0F172A",
+      bg: "020617",
+    },
+  },
+  {
+    id: "flip-wood",
+    name: "우드 스타일",
+    data: {
+      flipColor: "78350F",
+      textColor: "FBBF24",
+      gapColor: "451A03",
+      bg: "92400E",
     },
   },
 ];
@@ -148,6 +272,28 @@ export const moonPhasePresets: Preset[] = [
       showPercent: false,
     },
   },
+  {
+    id: "moon-pastel",
+    name: "파스텔 달",
+    data: {
+      style: "simple",
+      bg: "EDE9FE",
+      textColor: "4C1D95",
+      moonColor: "C4B5FD",
+      moonSize: "md",
+    },
+  },
+  {
+    id: "moon-neon",
+    name: "네온 달",
+    data: {
+      style: "realistic",
+      bg: "020617",
+      textColor: "22D3EE",
+      moonColor: "F5F5DC",
+      moonSize: "lg",
+    },
+  },
 ];
 
 // World Clock
@@ -174,6 +320,15 @@ export const worldClockPresets: Preset[] = [
       color: "E0E0E0",
     },
   },
+  {
+    id: "wc-pastel",
+    name: "파스텔 세계시계",
+    data: {
+      bg: "FDF2F8",
+      color: "831843",
+      format: "12h",
+    },
+  },
 ];
 
 // Countdown
@@ -196,6 +351,15 @@ export const countdownPresets: Preset[] = [
       accentColor: "7C3AED",
       bg: "1A1A2E",
       color: "E0E0E0",
+    },
+  },
+  {
+    id: "cd-pastel",
+    name: "파스텔 카운트다운",
+    data: {
+      accentColor: "EC4899",
+      bg: "FDF2F8",
+      color: "831843",
     },
   },
 ];
@@ -228,6 +392,26 @@ export const miniCalendarPresets: Preset[] = [
       highlight: "7C3AED",
       bg: "1A1A2E",
       color: "E0E0E0",
+    },
+  },
+  {
+    id: "minical-pastel",
+    name: "파스텔 캘린더",
+    data: {
+      highlight: "EC4899",
+      bg: "FDF2F8",
+      color: "831843",
+      header: "full",
+    },
+  },
+  {
+    id: "minical-neon",
+    name: "네온 캘린더",
+    data: {
+      highlight: "22D3EE",
+      bg: "0F172A",
+      color: "E0E0E0",
+      header: "short",
     },
   },
 ];
@@ -265,6 +449,28 @@ export const analogClockPresets: Preset[] = [
       bg: "1A1A2E",
     },
   },
+  {
+    id: "analog-pastel",
+    name: "파스텔 아날로그",
+    data: {
+      handColor: "831843",
+      secHandColor: "EC4899",
+      faceColor: "FDF2F8",
+      borderColor: "FECDD3",
+      bg: "FFF1F2",
+    },
+  },
+  {
+    id: "analog-neon",
+    name: "네온 아날로그",
+    data: {
+      handColor: "A78BFA",
+      secHandColor: "22D3EE",
+      faceColor: "0F172A",
+      borderColor: "7C3AED",
+      bg: "020617",
+    },
+  },
 ];
 
 // Timeline
@@ -296,6 +502,15 @@ export const timelinePresets: Preset[] = [
       pastColor: "6B7280",
       bg: "1A1A2E",
       textColor: "E0E0E0",
+    },
+  },
+  {
+    id: "timeline-pastel",
+    name: "파스텔 타임라인",
+    data: {
+      color: "EC4899",
+      bg: "FDF2F8",
+      textColor: "831843",
     },
   },
 ];

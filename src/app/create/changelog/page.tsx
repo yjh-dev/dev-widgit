@@ -22,7 +22,7 @@ import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { parseCommonParams } from "@/lib/common-params";
 import { copyToClipboard } from "@/lib/clipboard";
 import { serializeEntries, deserializeEntries } from "@/lib/changelog";
-import { addEffectParams } from "@/lib/url-builder-utils";
+import { addEffectParams, addExtraStyleParams } from "@/lib/url-builder-utils";
 import EffectOptions from "@/components/editor/EffectOptions";
 import EditorEffectsPreview from "@/components/editor/EditorEffectsPreview";
 import EffectPresetSelector from "@/components/editor/EffectPresetSelector";
@@ -38,6 +38,8 @@ export default function CreateChangelogPage() {
     setBorderRadius, setPadding, setFontSize,
     fx, fxInt, gbg, gbgDir, neonColor, bshadow,
     setFx, setFxInt, setGbg, setGbgDir, setNeonColor, setBshadow,
+    tshadow, bw, bc, opacity, ls,
+    setTshadow, setBw, setBc, setOpacity, setLs,
     loadPreset, reset,
   } = useChangelogStore();
 
@@ -48,6 +50,11 @@ export default function CreateChangelogPage() {
       ...(p.has("showVersion") && { showVersion: p.get("showVersion") !== "false" }),
       ...(p.has("accentColor") && { accentColor: p.get("accentColor")! }),
       ...(p.has("textColor") && { textColor: p.get("textColor")! }),
+      ...(p.has("tshadow") && { tshadow: p.get("tshadow")! }),
+      ...(p.has("bw") && { bw: p.get("bw")! }),
+      ...(p.has("bc") && { bc: p.get("bc")! }),
+      ...(p.has("opacity") && { opacity: p.get("opacity")! }),
+      ...(p.has("ls") && { ls: p.get("ls")! }),
       ...parseCommonParams(p),
     });
   });
@@ -81,9 +88,10 @@ export default function CreateChangelogPage() {
     if (padding !== 24) params.set("pad", String(padding));
     if (fontSize !== "md") params.set("fsize", fontSize);
     addEffectParams(params, fx, fxInt, gbg, gbgDir, neonColor, bshadow);
+    addExtraStyleParams(params, tshadow, bw, bc, opacity, ls);
     const qs = params.toString();
     return qs ? `${base}?${qs}` : base;
-  }, [entries, showDate, showVersion, accentColor, textColor, bg, transparentBg, borderRadius, padding, fontSize, fx, fxInt, gbg, gbgDir, neonColor, bshadow]);
+  }, [entries, showDate, showVersion, accentColor, textColor, bg, transparentBg, borderRadius, padding, fontSize, fx, fxInt, gbg, gbgDir, neonColor, bshadow, tshadow, bw, bc, opacity, ls]);
 
   const handleCopy = async () => {
     await copyToClipboard(buildWidgetUrl());
@@ -222,6 +230,9 @@ export default function CreateChangelogPage() {
                   <CommonStyleOptions
                     borderRadius={borderRadius} padding={padding} fontSize={fontSize}
                     onBorderRadiusChange={setBorderRadius} onPaddingChange={setPadding} onFontSizeChange={setFontSize}
+                    tshadow={tshadow} bw={bw} bc={bc} opacity={opacity} ls={ls}
+                    onTshadowChange={setTshadow} onBwChange={setBw} onBcChange={setBc}
+                    onOpacityChange={setOpacity} onLsChange={setLs}
                   />
                 ),
               },
@@ -240,6 +251,7 @@ export default function CreateChangelogPage() {
             <EditorEffectsPreview
               fx={fx} fxInt={fxInt} gbg={gbg} gbgDir={gbgDir}
               neonColor={neonColor} bshadow={bshadow} borderRadius={borderRadius}
+              tshadow={tshadow} bw={bw} bc={bc} opacity={opacity} ls={ls}
             >
               <ChangelogPreview
               entries={entries}

@@ -4,12 +4,7 @@ import { useRef } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
-
-const PRESET_COLORS = [
-  "000000", "1E1E1E", "6B7280", "FFFFFF",
-  "2563EB", "3B82F6", "E11D48", "EF4444",
-  "22C55E", "10B981", "F59E0B", "8B5CF6",
-];
+import { COLOR_PALETTES } from "@/lib/color-palettes";
 
 interface ColorPickerProps {
   value: string;
@@ -74,19 +69,26 @@ export default function ColorPicker({
       </div>
 
       {!disabled && (
-        <div className="flex flex-wrap gap-1.5">
-          {PRESET_COLORS.map((c) => (
-            <button
-              key={c}
-              type="button"
-              onClick={() => onChange(c)}
-              className={cn(
-                "w-5 h-5 rounded-full border transition-transform hover:scale-110",
-                value === c && "ring-2 ring-ring ring-offset-1",
-              )}
-              style={{ backgroundColor: `#${c}` }}
-              aria-label={`색상 #${c}`}
-            />
+        <div className="space-y-2">
+          {COLOR_PALETTES.map((category) => (
+            <div key={category.name}>
+              <p className="text-[10px] text-muted-foreground mb-1">{category.name}</p>
+              <div className="flex flex-wrap gap-1.5">
+                {category.colors.map((c) => (
+                  <button
+                    key={c}
+                    type="button"
+                    onClick={() => onChange(c)}
+                    className={cn(
+                      "w-5 h-5 rounded-full border transition-transform hover:scale-110",
+                      value === c && "ring-2 ring-ring ring-offset-1",
+                    )}
+                    style={{ backgroundColor: `#${c}` }}
+                    aria-label={`색상 #${c}`}
+                  />
+                ))}
+              </div>
+            </div>
           ))}
         </div>
       )}

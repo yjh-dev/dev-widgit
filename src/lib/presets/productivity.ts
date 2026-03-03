@@ -28,6 +28,31 @@ export const pomodoroPresets: Preset[] = [
       pStyle: "ring",
     },
   },
+  {
+    id: "pomo-pastel",
+    name: "파스텔 뽀모도로",
+    data: {
+      workTime: 25,
+      breakTime: 5,
+      color: "EC4899",
+      breakColor: "06B6D4",
+      pStyle: "ring",
+      bg: "FDF2F8",
+    },
+  },
+  {
+    id: "pomo-neon",
+    name: "네온 뽀모도로",
+    data: {
+      workTime: 25,
+      breakTime: 5,
+      color: "22D3EE",
+      breakColor: "A78BFA",
+      pStyle: "bar",
+      bg: "0F172A",
+      textColor: "E0E0E0",
+    },
+  },
 ];
 
 // Todo
@@ -56,6 +81,26 @@ export const todoPresets: Preset[] = [
       showProgress: true,
     },
   },
+  {
+    id: "todo-pastel",
+    name: "파스텔 투두",
+    data: {
+      title: "할 일",
+      color: "EC4899",
+      bg: "FDF2F8",
+      textColor: "831843",
+    },
+  },
+  {
+    id: "todo-neon",
+    name: "네온 투두",
+    data: {
+      title: "오늘의 할 일",
+      color: "22D3EE",
+      bg: "0F172A",
+      textColor: "E0E0E0",
+    },
+  },
 ];
 
 // Dice
@@ -80,6 +125,18 @@ export const dicePresets: Preset[] = [
       color: "F59E0B",
       textColor: "FFFFFF",
       bg: "FFFBEB",
+    },
+  },
+  {
+    id: "dice-neon",
+    name: "네온 주사위",
+    data: {
+      mode: "dice",
+      count: 1,
+      sides: 20,
+      color: "A78BFA",
+      textColor: "FFFFFF",
+      bg: "0F172A",
     },
   },
 ];
@@ -116,6 +173,15 @@ export const flashcardPresets: Preset[] = [
       showCount: true,
     },
   },
+  {
+    id: "flashcard-pastel",
+    name: "파스텔 플래시카드",
+    data: {
+      accentColor: "EC4899",
+      bg: "FDF2F8",
+      color: "831843",
+    },
+  },
 ];
 
 // Water Tracker
@@ -139,6 +205,15 @@ export const waterTrackerPresets: Preset[] = [
       color: "06B6D4",
       bg: "1A1A2E",
       textColor: "E0E0E0",
+      showMl: true,
+    },
+  },
+  {
+    id: "water-pastel",
+    name: "파스텔 물 트래커",
+    data: {
+      color: "06B6D4",
+      bg: "ECFEFF",
       showMl: true,
     },
   },
@@ -176,6 +251,16 @@ export const breathingPresets: Preset[] = [
       bg: "0F172A",
     },
   },
+  {
+    id: "breathing-pastel",
+    name: "파스텔 호흡",
+    data: {
+      technique: "478",
+      accentColor: "EC4899",
+      bg: "FDF2F8",
+      color: "831843",
+    },
+  },
 ];
 
 // Age Calculator
@@ -203,6 +288,15 @@ export const ageCalculatorPresets: Preset[] = [
       color: "06B6D4",
       textColor: "E0E0E0",
       bg: "1A1A2E",
+    },
+  },
+  {
+    id: "age-neon",
+    name: "네온 나이 계산기",
+    data: {
+      color: "22D3EE",
+      bg: "0F172A",
+      textColor: "E0E0E0",
     },
   },
 ];
@@ -243,6 +337,15 @@ export const stepperPresets: Preset[] = [
       bg: "1A1A2E",
     },
   },
+  {
+    id: "stepper-pastel",
+    name: "파스텔 단계",
+    data: {
+      color: "EC4899",
+      completedColor: "06B6D4",
+      bg: "FDF2F8",
+    },
+  },
 ];
 
 // Matrix
@@ -276,6 +379,14 @@ export const matrixPresets: Preset[] = [
       showAxes: true,
       textColor: "E0E0E0",
       bg: "1A1A2E",
+    },
+  },
+  {
+    id: "matrix-pastel",
+    name: "파스텔 매트릭스",
+    data: {
+      bg: "FFF7ED",
+      textColor: "92400E",
     },
   },
 ];
@@ -313,6 +424,20 @@ export const multiProgressPresets: Preset[] = [
       bg: "1A1A2E",
     },
   },
+  {
+    id: "multi-pastel",
+    name: "파스텔 프로그레스",
+    data: {
+      items: [
+        { label: "항목 1", value: 70, max: 100, color: "EC4899" },
+        { label: "항목 2", value: 55, max: 100, color: "06B6D4" },
+        { label: "항목 3", value: 85, max: 100, color: "A78BFA" },
+        { label: "항목 4", value: 40, max: 100, color: "F472B6" },
+      ],
+      showPercent: true,
+      bg: "FDF2F8",
+    },
+  },
 ];
 
 // Counter
@@ -340,6 +465,24 @@ export const counterPresets: Preset[] = [
       btnColor: "7C3AED",
       color: "E0E0E0",
       bg: "1A1A2E",
+    },
+  },
+  {
+    id: "counter-pastel",
+    name: "파스텔 카운터",
+    data: {
+      btnColor: "EC4899",
+      bg: "FDF2F8",
+      color: "831843",
+    },
+  },
+  {
+    id: "counter-neon",
+    name: "네온 카운터",
+    data: {
+      btnColor: "22D3EE",
+      bg: "0F172A",
+      color: "E0E0E0",
     },
   },
 ];
@@ -375,6 +518,17 @@ export const weatherPresets: Preset[] = [
       color: "E0E0E0",
     },
   },
+  {
+    id: "weather-pastel",
+    name: "파스텔 날씨",
+    data: {
+      lat: 37.5665,
+      lon: 126.978,
+      city: "서울",
+      bg: "F0FDF4",
+      color: "365314",
+    },
+  },
 ];
 
 // Reading
@@ -405,6 +559,16 @@ export const readingPresets: Preset[] = [
       textColor: "E0E0E0",
     },
   },
+  {
+    id: "reading-pastel",
+    name: "파스텔 독서",
+    data: {
+      title: "독서 중",
+      color: "EC4899",
+      bg: "FDF2F8",
+      style: "ring",
+    },
+  },
 ];
 
 // Habit
@@ -431,6 +595,16 @@ export const habitPresets: Preset[] = [
       textColor: "E0E0E0",
     },
   },
+  {
+    id: "habit-pastel",
+    name: "파스텔 습관",
+    data: {
+      title: "습관",
+      color: "EC4899",
+      bg: "FDF2F8",
+      view: "week",
+    },
+  },
 ];
 
 // Stopwatch
@@ -453,6 +627,16 @@ export const stopwatchPresets: Preset[] = [
       btnColor: "7C3AED",
       bg: "1A1A2E",
       color: "E0E0E0",
+    },
+  },
+  {
+    id: "stopwatch-neon",
+    name: "네온 스톱워치",
+    data: {
+      btnColor: "22D3EE",
+      bg: "0F172A",
+      color: "E0E0E0",
+      showMs: true,
     },
   },
 ];

@@ -26,7 +26,7 @@ import { useWidgetUrl } from "@/lib/use-widget-url";
 import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
 import { parseCommonParams } from "@/lib/common-params";
-import { addBgParam, addCommonStyleParams, addEffectParams, buildUrl } from "@/lib/url-builder-utils";
+import { addBgParam, addCommonStyleParams, addEffectParams, addExtraStyleParams, buildUrl } from "@/lib/url-builder-utils";
 import EffectOptions from "@/components/editor/EffectOptions";
 import EditorEffectsPreview from "@/components/editor/EditorEffectsPreview";
 import EffectPresetSelector from "@/components/editor/EffectPresetSelector";
@@ -39,6 +39,8 @@ export default function CreatePomodoroPage() {
     setBorderRadius, setPadding, setFontSize, setLongBreak, setRounds, setShowRounds, setBreakColor, setAutoStart, setPStyle,
     fx, fxInt, gbg, gbgDir, neonColor, bshadow,
     setFx, setFxInt, setGbg, setGbgDir, setNeonColor, setBshadow,
+    tshadow, bw, bc, opacity, ls,
+    setTshadow, setBw, setBc, setOpacity, setLs,
     loadPreset, reset,
   } = usePomodoroStore();
 
@@ -54,6 +56,11 @@ export default function CreatePomodoroPage() {
       ...(p.has("breakColor") && { breakColor: p.get("breakColor")! }),
       ...(p.has("autoStart") && { autoStart: p.get("autoStart") === "true" }),
       ...(p.has("pStyle") && { pStyle: p.get("pStyle") as PomodoroProgressStyle }),
+      ...(p.has("tshadow") && { tshadow: p.get("tshadow")! }),
+      ...(p.has("bw") && { bw: p.get("bw")! }),
+      ...(p.has("bc") && { bc: p.get("bc")! }),
+      ...(p.has("opacity") && { opacity: p.get("opacity")! }),
+      ...(p.has("ls") && { ls: p.get("ls")! }),
     });
   });
 
@@ -66,6 +73,7 @@ export default function CreatePomodoroPage() {
     addBgParam(params, transparentBg, bg);
     addCommonStyleParams(params, borderRadius, padding, fontSize);
     addEffectParams(params, fx, fxInt, gbg, gbgDir, neonColor, bshadow);
+    addExtraStyleParams(params, tshadow, bw, bc, opacity, ls);
     if (longBreak !== 15) params.set("longBreak", String(longBreak));
     if (rounds !== 4) params.set("rounds", String(rounds));
     if (!showRounds) params.set("showRounds", "false");
@@ -73,7 +81,7 @@ export default function CreatePomodoroPage() {
     if (autoStart) params.set("autoStart", "true");
     if (pStyle !== "bar") params.set("pStyle", pStyle);
     return buildUrl(base, params);
-  }, [workTime, breakTime, color, bg, transparentBg, borderRadius, padding, fontSize, longBreak, rounds, showRounds, breakColor, autoStart, pStyle, fx, fxInt, gbg, gbgDir, neonColor, bshadow]);
+  }, [workTime, breakTime, color, bg, transparentBg, borderRadius, padding, fontSize, longBreak, rounds, showRounds, breakColor, autoStart, pStyle, fx, fxInt, gbg, gbgDir, neonColor, bshadow, tshadow, bw, bc, opacity, ls]);
 
   const handleCopy = async () => {
     await copyToClipboard(buildWidgetUrl());
@@ -182,6 +190,9 @@ export default function CreatePomodoroPage() {
                   <CommonStyleOptions
                     borderRadius={borderRadius} padding={padding} fontSize={fontSize}
                     onBorderRadiusChange={setBorderRadius} onPaddingChange={setPadding} onFontSizeChange={setFontSize}
+                    tshadow={tshadow} bw={bw} bc={bc} opacity={opacity} ls={ls}
+                    onTshadowChange={setTshadow} onBwChange={setBw} onBcChange={setBc}
+                    onOpacityChange={setOpacity} onLsChange={setLs}
                   />
                 ),
               },
@@ -200,6 +211,7 @@ export default function CreatePomodoroPage() {
             <EditorEffectsPreview
               fx={fx} fxInt={fxInt} gbg={gbg} gbgDir={gbgDir}
               neonColor={neonColor} bshadow={bshadow} borderRadius={borderRadius}
+              tshadow={tshadow} bw={bw} bc={bc} opacity={opacity} ls={ls}
             >
               <PomodoroPreview
               workTime={workTime} breakTime={breakTime} color={color} bg={bg}

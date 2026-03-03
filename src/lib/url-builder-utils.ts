@@ -3,6 +3,8 @@
  * 위젯별 비기본값 파라미터만 URL에 추가하는 패턴을 공통화한다.
  */
 
+import type { TextShadowKey, BorderWidthKey, OpacityKey, LetterSpacingKey } from "@/lib/common-widget-options";
+
 /** 투명 배경 / 배경색 파라미터를 URL에 추가한다. */
 export function addBgParam(
   params: URLSearchParams,
@@ -47,6 +49,22 @@ export function addEffectParams(
   if (gbg && gbgDir !== 135) params.set("gbgDir", String(gbgDir));
   if (neonColor) params.set("neonColor", neonColor);
   if (bshadow !== "none") params.set("bshadow", bshadow);
+}
+
+/** 추가 스타일(tshadow, bw, bc, opacity, ls) 파라미터를 URL에 추가한다. 기본값이면 생략. */
+export function addExtraStyleParams(
+  params: URLSearchParams,
+  tshadow: TextShadowKey,
+  bw: BorderWidthKey,
+  bc: string,
+  opacity: OpacityKey,
+  ls: LetterSpacingKey,
+) {
+  if (tshadow !== "none") params.set("tshadow", tshadow);
+  if (bw !== "none") params.set("bw", bw);
+  if (bw !== "none" && bc !== "D1D5DB") params.set("bc", bc);
+  if (opacity !== "100") params.set("opacity", opacity);
+  if (ls !== "normal") params.set("ls", ls);
 }
 
 /** base + params를 합쳐 최종 URL을 반환한다. */

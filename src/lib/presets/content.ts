@@ -33,6 +33,31 @@ export const quotePresets: Preset[] = [
       padding: 32,
     },
   },
+  {
+    id: "quote-pastel",
+    name: "파스텔 명언",
+    data: {
+      text: "매일 조금씩 성장하자",
+      author: "작자미상",
+      font: "noto-serif-kr",
+      textColor: "831843",
+      bg: "FDF2F8",
+      showMarks: true,
+      italic: true,
+    },
+  },
+  {
+    id: "quote-neon",
+    name: "네온 명언",
+    data: {
+      text: "꿈을 향해 나아가자",
+      author: "",
+      font: "mono",
+      textColor: "22D3EE",
+      bg: "0F172A",
+      showMarks: false,
+    },
+  },
 ];
 
 // Life Calendar
@@ -60,6 +85,29 @@ export const lifeCalendarPresets: Preset[] = [
       showYears: true,
       nowColor: "EAB308",
       futureColor: "D1FAE5",
+    },
+  },
+  {
+    id: "life-pastel",
+    name: "파스텔 인생 달력",
+    data: {
+      color: "EC4899",
+      bg: "FDF2F8",
+      shape: "round",
+      cellSize: "md",
+      futureColor: "FECDD3",
+    },
+  },
+  {
+    id: "life-neon",
+    name: "네온 인생 달력",
+    data: {
+      color: "22D3EE",
+      bg: "0F172A",
+      shape: "square",
+      cellSize: "sm",
+      futureColor: "1E293B",
+      nowColor: "A78BFA",
     },
   },
 ];
@@ -93,6 +141,29 @@ export const bannerPresets: Preset[] = [
       font: "sans",
     },
   },
+  {
+    id: "banner-neon",
+    name: "네온 배너",
+    data: {
+      texts: ["네온 스타일 배너"],
+      animation: "scroll",
+      bold: true,
+      color: "22D3EE",
+      bg: "0F172A",
+      fontSize: "xl",
+    },
+  },
+  {
+    id: "banner-retro",
+    name: "레트로 배너",
+    data: {
+      texts: ["레트로 감성 배너"],
+      animation: "fade",
+      color: "92400E",
+      bg: "FFFBEB",
+      fontSize: "lg",
+    },
+  },
 ];
 
 // Bookmark
@@ -123,6 +194,16 @@ export const bookmarkPresets: Preset[] = [
       bg: "1E1E1E",
     },
   },
+  {
+    id: "bookmark-pastel",
+    name: "파스텔 북마크",
+    data: {
+      title: "내 포트폴리오",
+      desc: "개인 사이트",
+      color: "831843",
+      bg: "FDF2F8",
+    },
+  },
 ];
 
 // Goal
@@ -149,6 +230,33 @@ export const goalPresets: Preset[] = [
       unit: "회",
       style: "ring",
       color: "E11D48",
+    },
+  },
+  {
+    id: "goal-pastel",
+    name: "파스텔 목표",
+    data: {
+      title: "이번 달 독서",
+      current: 5,
+      target: 10,
+      unit: "권",
+      style: "ring",
+      color: "EC4899",
+      bg: "FDF2F8",
+    },
+  },
+  {
+    id: "goal-neon",
+    name: "네온 목표",
+    data: {
+      title: "프로젝트",
+      current: 75,
+      target: 100,
+      unit: "%",
+      style: "bar",
+      color: "22D3EE",
+      bg: "0F172A",
+      textColor: "E0E0E0",
     },
   },
 ];
@@ -179,6 +287,28 @@ export const musicPresets: Preset[] = [
       bg: "FDF2F8",
     },
   },
+  {
+    id: "music-neon",
+    name: "네온 뮤직",
+    data: {
+      title: "Midnight",
+      artist: "Synthwave",
+      artColor: "A78BFA",
+      color: "22D3EE",
+      bg: "0F172A",
+    },
+  },
+  {
+    id: "music-retro",
+    name: "레트로 뮤직",
+    data: {
+      title: "올드 팝",
+      artist: "Classic",
+      artColor: "D97706",
+      color: "92400E",
+      bg: "FFFBEB",
+    },
+  },
 ];
 
 // Gradient
@@ -198,6 +328,26 @@ export const gradientPresets: Preset[] = [
     name: "오션 (애니메이션)",
     data: {
       colors: ["06B6D4", "3B82F6", "8B5CF6"],
+      dir: 180,
+      type: "linear",
+      animate: true,
+      speed: 8,
+    },
+  },
+  {
+    id: "gradient-pastel",
+    name: "파스텔 그라데이션",
+    data: {
+      colors: ["FEC5BB", "D8E2DC", "B5C7D3"],
+      dir: 135,
+      type: "linear",
+    },
+  },
+  {
+    id: "gradient-neon",
+    name: "네온 그라데이션",
+    data: {
+      colors: ["7C3AED", "22D3EE", "EC4899"],
       dir: 180,
       type: "linear",
       animate: true,
@@ -232,6 +382,28 @@ export const stickyNotePresets: Preset[] = [
       font: "gaegu",
     },
   },
+  {
+    id: "sticky-pastel",
+    name: "파스텔 메모",
+    data: {
+      text: "오늘의 감사 일기",
+      noteColor: "FEC5BB",
+      textColor: "92400E",
+      pin: "tape",
+      rotation: -2,
+    },
+  },
+  {
+    id: "sticky-retro",
+    name: "레트로 메모",
+    data: {
+      text: "빈티지 메모",
+      noteColor: "FEF3C7",
+      textColor: "78350F",
+      pin: "pin",
+      rotation: 3,
+    },
+  },
 ];
 
 // QR Code
@@ -257,6 +429,24 @@ export const qrCodePresets: Preset[] = [
       fgColor: "F8F8F2",
       bgColor: "1E1E1E",
       size: "md",
+      module: "rounded",
+    },
+  },
+  {
+    id: "qr-pastel",
+    name: "파스텔 QR",
+    data: {
+      fgColor: "831843",
+      bgColor: "FDF2F8",
+      module: "dots",
+    },
+  },
+  {
+    id: "qr-neon",
+    name: "네온 QR",
+    data: {
+      fgColor: "22D3EE",
+      bgColor: "0F172A",
       module: "rounded",
     },
   },
@@ -294,6 +484,30 @@ export const typewriterPresets: Preset[] = [
       fontSize: "lg",
     },
   },
+  {
+    id: "typewriter-neon",
+    name: "네온 타이프라이터",
+    data: {
+      texts: ["Welcome to the future", "Neon dreams"],
+      speed: 50,
+      cursor: "block",
+      font: "mono",
+      color: "22D3EE",
+      bg: "0F172A",
+    },
+  },
+  {
+    id: "typewriter-retro",
+    name: "레트로 타이프라이터",
+    data: {
+      texts: ["옛날 옛적에...", "이야기가 시작됩니다"],
+      speed: 100,
+      cursor: "underscore",
+      font: "serif",
+      color: "78350F",
+      bg: "FFFBEB",
+    },
+  },
 ];
 
 // GitHub Contribution
@@ -318,6 +532,26 @@ export const githubContributionPresets: Preset[] = [
       textColor: "1E1E1E",
       cellRadius: "circle",
       cellSize: "sm",
+    },
+  },
+  {
+    id: "github-pastel",
+    name: "파스텔 잔디",
+    data: {
+      color: "EC4899",
+      bg: "FDF2F8",
+      textColor: "831843",
+      cellRadius: "circle",
+    },
+  },
+  {
+    id: "github-neon",
+    name: "네온 잔디",
+    data: {
+      color: "22D3EE",
+      bg: "020617",
+      textColor: "E0E0E0",
+      cellRadius: "rounded",
     },
   },
 ];
@@ -352,6 +586,16 @@ export const profileCardPresets: Preset[] = [
       accentColor: "7C3AED",
       color: "E0E0E0",
       bg: "1A1A2E",
+    },
+  },
+  {
+    id: "profile-pastel",
+    name: "파스텔 프로필",
+    data: {
+      accentColor: "EC4899",
+      color: "831843",
+      bg: "FDF2F8",
+      layout: "vertical",
     },
   },
 ];
@@ -389,6 +633,16 @@ export const linkTreePresets: Preset[] = [
       ],
     },
   },
+  {
+    id: "linktree-pastel",
+    name: "파스텔 링크",
+    data: {
+      accentColor: "EC4899",
+      color: "831843",
+      bg: "FDF2F8",
+      linkStyle: "filled",
+    },
+  },
 ];
 
 // Image Card
@@ -414,6 +668,15 @@ export const imageCardPresets: Preset[] = [
       showCaption: true,
       color: "1E1E1E",
       bg: "FFFFFF",
+      borderRadius: 16,
+    },
+  },
+  {
+    id: "image-card-dark",
+    name: "다크 이미지",
+    data: {
+      color: "E0E0E0",
+      bg: "1A1A2E",
       borderRadius: 16,
     },
   },
@@ -443,6 +706,15 @@ export const currencyPresets: Preset[] = [
       accentColor: "06B6D4",
       color: "E0E0E0",
       bg: "1A1A2E",
+    },
+  },
+  {
+    id: "currency-pastel",
+    name: "파스텔 환율",
+    data: {
+      accentColor: "EC4899",
+      color: "831843",
+      bg: "FDF2F8",
     },
   },
 ];
@@ -484,6 +756,16 @@ export const radarChartPresets: Preset[] = [
       fillOpacity: 25,
     },
   },
+  {
+    id: "radar-pastel",
+    name: "파스텔 레이더",
+    data: {
+      color: "EC4899",
+      gridColor: "FECDD3",
+      bg: "FDF2F8",
+      fillOpacity: 25,
+    },
+  },
 ];
 
 // Pie Chart
@@ -518,6 +800,20 @@ export const pieChartPresets: Preset[] = [
       bg: "1A1A2E",
     },
   },
+  {
+    id: "pie-pastel",
+    name: "파스텔 파이",
+    data: {
+      slices: [
+        { label: "A", value: 30, color: "EC4899" },
+        { label: "B", value: 25, color: "06B6D4" },
+        { label: "C", value: 25, color: "A78BFA" },
+        { label: "D", value: 20, color: "F472B6" },
+      ],
+      style: "donut",
+      bg: "FDF2F8",
+    },
+  },
 ];
 
 // Battery
@@ -543,6 +839,16 @@ export const batteryPresets: Preset[] = [
       animate: true,
       textColor: "E0E0E0",
       bg: "1A1A2E",
+    },
+  },
+  {
+    id: "battery-pastel",
+    name: "파스텔 배터리",
+    data: {
+      level: 80,
+      color: "EC4899",
+      bg: "FDF2F8",
+      autoColor: false,
     },
   },
 ];
@@ -576,6 +882,15 @@ export const testimonialPresets: Preset[] = [
       bg: "1A1A2E",
     },
   },
+  {
+    id: "testimonial-pastel",
+    name: "파스텔 후기",
+    data: {
+      accentColor: "EC4899",
+      bg: "FDF2F8",
+      layout: "card",
+    },
+  },
 ];
 
 // Emoji Rain
@@ -600,6 +915,15 @@ export const emojiRainPresets: Preset[] = [
       transparentBg: true,
     },
   },
+  {
+    id: "emoji-hearts",
+    name: "하트 비",
+    data: {
+      emojis: "❤️💕💗💖💝",
+      speed: "slow",
+      density: "normal",
+    },
+  },
 ];
 
 // Fortune Cookie
@@ -620,6 +944,15 @@ export const fortuneCookiePresets: Preset[] = [
       bg: "1A1A2E",
       color: "E0E0E0",
       accentColor: "7C3AED",
+    },
+  },
+  {
+    id: "fortune-pastel",
+    name: "파스텔 포춘",
+    data: {
+      bg: "FDF2F8",
+      color: "831843",
+      accentColor: "EC4899",
     },
   },
 ];
@@ -650,6 +983,14 @@ export const changelogPresets: Preset[] = [
       accentColor: "06B6D4",
       textColor: "E0E0E0",
       bg: "1A1A2E",
+    },
+  },
+  {
+    id: "changelog-pastel",
+    name: "파스텔 변경로그",
+    data: {
+      accentColor: "EC4899",
+      bg: "FDF2F8",
     },
   },
 ];

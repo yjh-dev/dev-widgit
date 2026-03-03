@@ -28,7 +28,7 @@ import { parseCommonParams } from "@/lib/common-params";
 import EffectOptions from "@/components/editor/EffectOptions";
 import EffectPresetSelector from "@/components/editor/EffectPresetSelector";
 import EditorEffectsPreview from "@/components/editor/EditorEffectsPreview";
-import { addBgParam, addCommonStyleParams, addEffectParams, buildUrl } from "@/lib/url-builder-utils";
+import { addBgParam, addCommonStyleParams, addEffectParams, addExtraStyleParams, buildUrl } from "@/lib/url-builder-utils";
 
 const currentYear = new Date().getFullYear();
 const yearOptions = Array.from({ length: 6 }, (_, i) => String(currentYear - i));
@@ -43,6 +43,8 @@ export default function CreateGithubContributionPage() {
     setBorderRadius, setPadding, setFontSize,
     fx, fxInt, gbg, gbgDir, neonColor, bshadow,
     setFx, setFxInt, setGbg, setGbgDir, setNeonColor, setBshadow,
+    tshadow, bw, bc, opacity, ls,
+    setTshadow, setBw, setBc, setOpacity, setLs,
     loadPreset, reset,
   } = useGithubContributionStore();
 
@@ -57,6 +59,11 @@ export default function CreateGithubContributionPage() {
       ...(p.has("cellRadius") && { cellRadius: p.get("cellRadius") as "square" | "rounded" | "circle" }),
       ...(p.has("color") && { color: p.get("color")! }),
       ...(p.has("textColor") && { textColor: p.get("textColor")! }),
+      ...(p.has("tshadow") && { tshadow: p.get("tshadow")! }),
+      ...(p.has("bw") && { bw: p.get("bw")! }),
+      ...(p.has("bc") && { bc: p.get("bc")! }),
+      ...(p.has("opacity") && { opacity: p.get("opacity")! }),
+      ...(p.has("ls") && { ls: p.get("ls")! }),
       ...parseCommonParams(p),
     });
   });
@@ -76,8 +83,9 @@ export default function CreateGithubContributionPage() {
     addBgParam(params, transparentBg, bg);
     addCommonStyleParams(params, borderRadius, padding, fontSize);
     addEffectParams(params, fx, fxInt, gbg, gbgDir, neonColor, bshadow);
+    addExtraStyleParams(params, tshadow, bw, bc, opacity, ls);
     return buildUrl(base, params);
-  }, [username, year, showTotal, showUsername, lang, cellSize, cellRadius, color, textColor, bg, transparentBg, borderRadius, padding, fontSize, fx, fxInt, gbg, gbgDir, neonColor, bshadow]);
+  }, [username, year, showTotal, showUsername, lang, cellSize, cellRadius, color, textColor, bg, transparentBg, borderRadius, padding, fontSize, fx, fxInt, gbg, gbgDir, neonColor, bshadow, tshadow, bw, bc, opacity, ls]);
 
   const handleCopy = async () => {
     await copyToClipboard(buildWidgetUrl());
@@ -212,6 +220,9 @@ export default function CreateGithubContributionPage() {
                   <CommonStyleOptions
                     borderRadius={borderRadius} padding={padding} fontSize={fontSize}
                     onBorderRadiusChange={setBorderRadius} onPaddingChange={setPadding} onFontSizeChange={setFontSize}
+                    tshadow={tshadow} bw={bw} bc={bc} opacity={opacity} ls={ls}
+                    onTshadowChange={setTshadow} onBwChange={setBw} onBcChange={setBc}
+                    onOpacityChange={setOpacity} onLsChange={setLs}
                   />
                 ),
               },
@@ -226,7 +237,8 @@ export default function CreateGithubContributionPage() {
       <EditorEffectsPreview
         fx={fx} fxInt={fxInt} gbg={gbg} gbgDir={gbgDir}
         neonColor={neonColor} bshadow={bshadow} borderRadius={borderRadius}
-      >
+              tshadow={tshadow} bw={bw} bc={bc} opacity={opacity} ls={ls}
+            >
         <GithubContributionPreview
           username={username}
           year={year}
