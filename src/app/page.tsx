@@ -31,6 +31,8 @@ export default function Home() {
   const [favoriteTypes, setFavoriteTypes] = useState<string[]>([]);
   const [headerHidden, setHeaderHidden] = useState(false);
   const lastScrollY = useRef(0);
+  const headerRef = useRef<HTMLElement>(null);
+  const [headerH, setHeaderH] = useState(0);
 
   const localCategories = useMemo(() => getCategories(locale), [locale]);
   const localAllWidgets = useMemo(() => getAllWidgets(locale), [locale]);
@@ -55,6 +57,15 @@ export default function Home() {
       setFavoriteTypes(getFavorites());
     });
   }, []);
+
+  useEffect(() => {
+    const el = headerRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(() => setHeaderH(el.offsetHeight));
+    ro.observe(el);
+    setHeaderH(el.offsetHeight);
+    return () => ro.disconnect();
+  }, [ready]);
 
   useEffect(() => {
     const onScroll = () => {
@@ -135,9 +146,9 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className={`border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 transition-transform duration-300 ${headerHidden ? "max-md:-translate-y-full" : ""}`}>
+      <header ref={headerRef} className={`border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 transition-transform duration-300 ${headerHidden ? "max-md:-translate-y-full" : ""}`}>
         <div className="max-w-5xl mx-auto px-6 py-3 flex items-center justify-between">
-          <Link href="/" className="text-xl font-bold tracking-tight">Widgit</Link>
+          <Link href="/intro" className="text-xl font-bold tracking-tight">Widgit</Link>
           <div className="flex items-center gap-2">
             <ThemeToggle />
             <LocaleToggle />
@@ -269,7 +280,10 @@ export default function Home() {
         ) : (
           filtered.map((category) => (
             <section key={category.title}>
-              <h2 className="text-lg font-semibold mb-4 sticky top-0 z-40 bg-background py-2 -mx-6 px-6 md:static md:mx-0 md:px-0 md:py-0">{category.title}</h2>
+              <h2
+                className="text-lg font-semibold mb-4 sticky z-40 bg-background py-2 -mx-6 px-6 md:static md:mx-0 md:px-0 md:py-0 transition-[top] duration-300"
+                style={{ top: headerHidden ? 0 : headerH }}
+              >{category.title}</h2>
               <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5">
                 {category.widgets.map((w) => {
                   const Icon = w.icon;

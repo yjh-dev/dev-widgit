@@ -123,7 +123,7 @@ export default function MobilePreviewFab({ children, aspect }: MobilePreviewFabP
             <div className="flex-1 overflow-auto px-4 pb-6">
               <div
                 className="w-full bg-muted/30 rounded-lg overflow-hidden flex items-center justify-center"
-                style={{ aspectRatio: aspect || "4/3" }}
+                style={{ aspectRatio: aspect || undefined, minHeight: aspect ? undefined : 280 }}
               >
                 {children}
               </div>

@@ -212,7 +212,7 @@ export default function EditorLayout({ title, children }: EditorLayoutProps) {
           </div>
           <div className="flex items-center gap-3 mb-1">
             <h1 className="text-2xl font-bold">{title}</h1>
-            <EditorWidgetNav />
+            <div className="hidden md:block"><EditorWidgetNav /></div>
           </div>
           <p className="text-muted-foreground text-sm mb-8">
             {t("editor.settingsDesc")}

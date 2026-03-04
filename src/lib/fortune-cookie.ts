@@ -46,7 +46,11 @@ export const FORTUNE_MESSAGES_EN = [
 
 export type CookieStyle = "classic" | "modern" | "paper";
 
-export function getRandomFortune(lang: "ko" | "en" = "ko", seed?: number): string {
+export function getRandomFortune(lang: "ko" | "en" = "ko", seed?: number, customMessages?: string[]): string {
+  if (customMessages && customMessages.length > 0) {
+    const idx = seed !== undefined ? seed % customMessages.length : Math.floor(Math.random() * customMessages.length);
+    return customMessages[idx];
+  }
   const messages = lang === "en" ? FORTUNE_MESSAGES_EN : FORTUNE_MESSAGES_KO;
   const idx = seed !== undefined ? seed % messages.length : Math.floor(Math.random() * messages.length);
   return messages[idx];
