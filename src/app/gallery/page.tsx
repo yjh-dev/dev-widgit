@@ -11,9 +11,11 @@ import {
   galleryCategories,
   type GalleryCategory,
 } from "@/lib/gallery-data";
+import { useHomePath } from "@/lib/use-home-path";
 
 export default function GalleryPage() {
   const [activeCategory, setActiveCategory] = useState<GalleryCategory | null>(null);
+  const homePath = useHomePath();
 
   const filtered = useMemo(() => {
     if (!activeCategory) return galleryShowcase;
@@ -32,7 +34,7 @@ export default function GalleryPage() {
       <header className="max-w-5xl mx-auto px-6 pt-8 pb-6">
         <div className="flex items-center justify-between mb-4">
           <Link
-            href="/"
+            href={homePath}
             className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -90,7 +92,7 @@ export default function GalleryPage() {
               Widgit 에디터에서 만든 위젯을 갤러리에 제출하면 다른 사용자와 공유할 수 있습니다.
             </p>
           </div>
-          <Link href="/">
+          <Link href={homePath}>
             <Button size="sm">
               <Sparkles className="w-4 h-4 mr-1.5" />
               위젯 만들기

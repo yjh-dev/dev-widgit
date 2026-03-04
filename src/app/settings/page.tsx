@@ -22,16 +22,19 @@ import {
   isWatermarkRemoved,
   type LicenseInfo,
 } from "@/lib/license";
+import { useHomePath } from "@/lib/use-home-path";
 
 const PURCHASE_URL = "https://widgit.lemonsqueezy.com";
 
 export default function SettingsPage() {
   const [mounted, setMounted] = useState(false);
+  const homePath = useHomePath();
   const [licenseKey, setLicenseKey] = useState("");
   const [licenseInfo, setLicenseInfo] = useState<LicenseInfo | null>(null);
   const [removed, setRemoved] = useState(false);
   const [defaultPreviewSize, setDefaultPreviewSize] = useState("free");
   const [defaultShortUrl, setDefaultShortUrl] = useState(false);
+  const [skipSplash, setSkipSplash] = useState(false);
 
   useEffect(() => {
     startTransition(() => {
@@ -42,6 +45,8 @@ export default function SettingsPage() {
         if (savedSize) setDefaultPreviewSize(savedSize);
         const savedShort = localStorage.getItem("widgit-short-url");
         if (savedShort === "true") setDefaultShortUrl(true);
+        const savedSkip = localStorage.getItem("widgit-skip-splash");
+        if (savedSkip === "true") setSkipSplash(true);
       } catch { /* 무시 */ }
       setMounted(true);
     });
@@ -76,7 +81,7 @@ export default function SettingsPage() {
       <header className="max-w-2xl mx-auto px-6 pt-8 pb-6">
         <div className="flex items-center justify-between mb-6">
           <Link
-            href="/"
+            href={homePath}
             className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -225,6 +230,33 @@ export default function SettingsPage() {
               </button>
             </div>
 
+            <div className="flex items-center justify-between">
+              <div>
+                <Label>스플래시 건너뛰기</Label>
+                <p className="text-xs text-muted-foreground">홈 접속 시 바로 위젯 목록으로 이동합니다</p>
+              </div>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={skipSplash}
+                onClick={() => {
+                  const next = !skipSplash;
+                  setSkipSplash(next);
+                  try { localStorage.setItem("widgit-skip-splash", String(next)); } catch { /* 무시 */ }
+                  toast.success(next ? "다음부터 위젯 목록으로 바로 이동합니다." : "다음부터 스플래시가 표시됩니다.");
+                }}
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                  skipSplash ? "bg-primary" : "bg-muted"
+                }`}
+              >
+                <span
+                  className={`inline-block h-4 w-4 rounded-full bg-background transition-transform ${
+                    skipSplash ? "translate-x-6" : "translate-x-1"
+                  }`}
+                />
+              </button>
+            </div>
+
             <div className="pt-2">
               <Button
                 variant="outline"
@@ -234,8 +266,10 @@ export default function SettingsPage() {
                   try {
                     localStorage.removeItem("widgit-preview-size");
                     localStorage.removeItem("widgit-short-url");
+                    localStorage.removeItem("widgit-skip-splash");
                     setDefaultPreviewSize("free");
                     setDefaultShortUrl(false);
+                    setSkipSplash(false);
                     toast.success("환경 설정이 초기화되었습니다.");
                   } catch { /* 무시 */ }
                 }}

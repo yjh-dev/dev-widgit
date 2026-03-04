@@ -16,6 +16,7 @@ import WidgetRenderer from "@/components/widget/WidgetRenderer";
 import type { WidgetType } from "@/lib/templates";
 import type { Preset } from "@/lib/presets";
 import { getWidgetName } from "@/lib/widget-names";
+import { useHomePath } from "@/lib/use-home-path";
 import {
   ddayPresets,
   clockPresets,
@@ -124,6 +125,7 @@ const presetEntries: PresetEntry[] = [
 
 export default function ComparePage() {
   const [selectedType, setSelectedType] = useState<string>(presetEntries[0].type);
+  const homePath = useHomePath();
 
   const entry = presetEntries.find((e) => e.type === selectedType) ?? presetEntries[0];
 
@@ -132,7 +134,7 @@ export default function ComparePage() {
       <header className="max-w-5xl mx-auto px-6 pt-8 pb-6">
         <div className="flex items-center justify-between mb-4">
           <Link
-            href="/"
+            href={homePath}
             className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
           >
             <ArrowLeft className="w-4 h-4" />

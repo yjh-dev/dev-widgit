@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { ArrowLeft, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useHomePath } from "@/lib/use-home-path";
 
 export default function CreateErrorPage({
   reset,
@@ -10,6 +11,8 @@ export default function CreateErrorPage({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  const homePath = useHomePath();
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-background p-6">
       <div className="max-w-sm text-center space-y-4">
@@ -23,7 +26,7 @@ export default function CreateErrorPage({
             다시 시도
           </Button>
           <Button asChild>
-            <Link href="/">
+            <Link href={homePath}>
               <ArrowLeft className="w-4 h-4 mr-2" />
               홈으로
             </Link>

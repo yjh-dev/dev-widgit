@@ -17,6 +17,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import ThemeToggle from "@/components/ui/theme-toggle";
 import { toast } from "sonner";
 import { trackFeedbackSubmit } from "@/lib/analytics";
+import { useHomePath } from "@/lib/use-home-path";
 
 const GITHUB_REPO = "https://github.com/widgit-app/widgit";
 
@@ -36,6 +37,7 @@ const categoryLabels: Record<string, string> = {
 
 export default function FeedbackPage() {
   const [title, setTitle] = useState("");
+  const homePath = useHomePath();
   const [category, setCategory] = useState("");
   const [description, setDescription] = useState("");
 
@@ -84,7 +86,7 @@ export default function FeedbackPage() {
       <header className="pt-12 pb-8 px-6 text-center">
         <div className="max-w-3xl mx-auto flex items-center justify-between mb-6">
           <Link
-            href="/"
+            href={homePath}
             className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />

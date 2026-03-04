@@ -18,6 +18,7 @@ import { copyToClipboard } from "@/lib/clipboard";
 import { compressWidgetUrl } from "@/lib/url-compression";
 import { toast } from "sonner";
 import { trackTemplateCopy } from "@/lib/analytics";
+import { useHomePath } from "@/lib/use-home-path";
 
 function getTemplateWidgetPreviewProps(template: Template) {
   const theme = getThemeById(template.themeId);
@@ -149,6 +150,7 @@ const LS_KEY = "widgit-short-url";
 export default function TemplatesPage() {
   const [mounted, setMounted] = useState(false);
   const [shortUrl, setShortUrl] = useState(false);
+  const homePath = useHomePath();
 
   useEffect(() => {
     startTransition(() => {
@@ -170,7 +172,7 @@ export default function TemplatesPage() {
       {/* Header */}
       <header className="pt-12 pb-8 px-6 text-center">
         <div className="max-w-5xl mx-auto flex items-center justify-between mb-6">
-          <Link href="/" className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors">
+          <Link href={homePath} className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors">
             <ArrowLeft className="w-4 h-4" />
             홈으로
           </Link>

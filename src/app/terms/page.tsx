@@ -1,10 +1,9 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "이용약관 — Widgit",
-  description: "Widgit 서비스 이용약관",
 };
 
 export default function TermsPage() {

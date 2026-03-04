@@ -27,6 +27,7 @@ import {
 import ColorPicker from "@/components/ui/color-picker";
 import ThemeToggle from "@/components/ui/theme-toggle";
 import { copyToClipboard } from "@/lib/clipboard";
+import { useHomePath } from "@/lib/use-home-path";
 
 type CoverType = "gradient" | "pattern" | "text" | "solid";
 type PatternType = "dots" | "grid" | "diagonal" | "waves";
@@ -87,6 +88,7 @@ function InitFromUrl({
 }
 
 export default function CreateCoverPage() {
+  const homePath = useHomePath();
   const [type, setType] = useState<CoverType>(DEFAULTS.type);
   const [colors, setColors] = useState<string[]>(DEFAULTS.colors);
   const [dir, setDir] = useState(DEFAULTS.dir);
@@ -236,7 +238,7 @@ export default function CreateCoverPage() {
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
           <Link
-            href="/"
+            href={homePath}
             className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
           >
             <ArrowLeft className="w-4 h-4" />

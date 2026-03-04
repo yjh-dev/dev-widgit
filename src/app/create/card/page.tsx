@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/select";
 import ThemeToggle from "@/components/ui/theme-toggle";
 import { copyToClipboard } from "@/lib/clipboard";
+import { useHomePath } from "@/lib/use-home-path";
 
 type CardType = "quote" | "stats" | "profile" | "announcement";
 type Theme = "light" | "dark";
@@ -170,6 +171,7 @@ const CARD_DIMENSIONS: Record<CardType, { w: number; h: number }> = {
 };
 
 function CardEditorInner() {
+  const homePath = useHomePath();
   const [state, setState] = useState<CardState>(INITIAL_STATE);
 
   const update = useCallback(
@@ -250,7 +252,7 @@ function CardEditorInner() {
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
           <Link
-            href="/"
+            href={homePath}
             className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
           >
             <ArrowLeft className="w-4 h-4" />

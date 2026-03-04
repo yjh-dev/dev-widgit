@@ -1,16 +1,11 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft, Clock, Tag } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { articles } from "@/lib/blog";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "블로그 — Widgit",
-  description: "노션 위젯 활용법, 꾸미기 팁, 생산성 가이드를 소개합니다.",
-  openGraph: {
-    title: "블로그 — Widgit",
-    description: "노션 위젯 활용법, 꾸미기 팁, 생산성 가이드를 소개합니다.",
-  },
 };
 
 export default function BlogPage() {

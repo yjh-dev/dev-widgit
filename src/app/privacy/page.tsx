@@ -1,10 +1,9 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "개인정보처리방침 — Widgit",
-  description: "Widgit 서비스 개인정보처리방침",
 };
 
 export default function PrivacyPage() {
