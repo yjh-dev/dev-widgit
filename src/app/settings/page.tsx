@@ -22,13 +22,12 @@ import {
   isWatermarkRemoved,
   type LicenseInfo,
 } from "@/lib/license";
-import { useHomePath } from "@/lib/use-home-path";
+
 
 const PURCHASE_URL = "https://widgit.lemonsqueezy.com";
 
 export default function SettingsPage() {
   const [mounted, setMounted] = useState(false);
-  const homePath = useHomePath();
   const [licenseKey, setLicenseKey] = useState("");
   const [licenseInfo, setLicenseInfo] = useState<LicenseInfo | null>(null);
   const [removed, setRemoved] = useState(false);
@@ -45,7 +44,7 @@ export default function SettingsPage() {
         if (savedSize) setDefaultPreviewSize(savedSize);
         const savedShort = localStorage.getItem("widgit-short-url");
         if (savedShort === "true") setDefaultShortUrl(true);
-        const savedSkip = localStorage.getItem("widgit-skip-splash");
+        const savedSkip = localStorage.getItem("widgit-visited");
         if (savedSkip === "true") setSkipSplash(true);
       } catch { /* 무시 */ }
       setMounted(true);
@@ -81,7 +80,7 @@ export default function SettingsPage() {
       <header className="max-w-2xl mx-auto px-6 pt-8 pb-6">
         <div className="flex items-center justify-between mb-6">
           <Link
-            href={homePath}
+            href="/"
             className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -242,8 +241,11 @@ export default function SettingsPage() {
                 onClick={() => {
                   const next = !skipSplash;
                   setSkipSplash(next);
-                  try { localStorage.setItem("widgit-skip-splash", String(next)); } catch { /* 무시 */ }
-                  toast.success(next ? "다음부터 위젯 목록으로 바로 이동합니다." : "다음부터 스플래시가 표시됩니다.");
+                  try {
+                    if (next) localStorage.setItem("widgit-visited", "true");
+                    else localStorage.removeItem("widgit-visited");
+                  } catch { /* 무시 */ }
+                  toast.success(next ? "다음부터 위젯 목록으로 바로 이동합니다." : "다음 홈 접속 시 서비스 소개가 표시됩니다.");
                 }}
                 className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
                   skipSplash ? "bg-primary" : "bg-muted"
@@ -266,7 +268,7 @@ export default function SettingsPage() {
                   try {
                     localStorage.removeItem("widgit-preview-size");
                     localStorage.removeItem("widgit-short-url");
-                    localStorage.removeItem("widgit-skip-splash");
+                    localStorage.removeItem("widgit-visited");
                     setDefaultPreviewSize("free");
                     setDefaultShortUrl(false);
                     setSkipSplash(false);

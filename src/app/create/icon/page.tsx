@@ -19,7 +19,7 @@ import {
 import ColorPicker from "@/components/ui/color-picker";
 import ThemeToggle from "@/components/ui/theme-toggle";
 import { copyToClipboard } from "@/lib/clipboard";
-import { useHomePath } from "@/lib/use-home-path";
+
 
 type IconType = "letter" | "emoji" | "gradient";
 type ShapeType = "circle" | "rounded" | "square";
@@ -48,7 +48,6 @@ const PRESETS: Preset[] = [
 ];
 
 export default function CreateIconPage() {
-  const homePath = useHomePath();
   const [type, setType] = useState<IconType>("letter");
   const [char, setChar] = useState("W");
   const [emoji, setEmoji] = useState("\u{1F680}");
@@ -110,7 +109,7 @@ export default function CreateIconPage() {
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
           <Link
-            href={homePath}
+            href="/"
             className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
           >
             <ArrowLeft className="w-4 h-4" />

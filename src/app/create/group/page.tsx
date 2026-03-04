@@ -21,12 +21,11 @@ import EffectOptions from "@/components/editor/EffectOptions";
 import EffectPresetSelector from "@/components/editor/EffectPresetSelector";
 import type { EffectType, EffectIntensity, BoxShadowPreset } from "@/lib/widget-effects";
 import { EFFECT_DEFAULTS } from "@/lib/widget-effects";
-import { useHomePath } from "@/lib/use-home-path";
+
 
 type Layout = "vertical" | "horizontal" | "grid";
 
 export default function CreateGroupPage() {
-  const homePath = useHomePath();
   const [urls, setUrls] = useState<string[]>([""]);
   const [layout, setLayout] = useState<Layout>("vertical");
   const [cols, setCols] = useState(2);
@@ -88,7 +87,7 @@ export default function CreateGroupPage() {
       <header className="max-w-4xl mx-auto px-6 pt-8 pb-6">
         <div className="flex items-center justify-between mb-4">
           <Link
-            href={homePath}
+            href="/"
             className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
           >
             <ArrowLeft className="w-4 h-4" />

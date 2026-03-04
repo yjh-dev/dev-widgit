@@ -39,7 +39,7 @@ import {
 } from "@/lib/saved-widgets";
 import { getWidgetName, getWidgetIcon } from "@/lib/widget-names";
 import type { WidgetType } from "@/lib/templates";
-import { useHomePath } from "@/lib/use-home-path";
+
 
 function formatDate(ts: number): string {
   const d = new Date(ts);
@@ -54,7 +54,6 @@ function formatDate(ts: number): string {
 export default function MyWidgetsPage() {
   const [widgets, setWidgets] = useState<SavedWidget[]>([]);
   const [mounted, setMounted] = useState(false);
-  const homePath = useHomePath();
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingName, setEditingName] = useState("");
   const [search, setSearch] = useState("");
@@ -185,7 +184,7 @@ export default function MyWidgetsPage() {
       <header className="max-w-5xl mx-auto px-6 pt-8 pb-6">
         <div className="flex items-center justify-between mb-4">
           <Link
-            href={homePath}
+            href="/"
             className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -285,7 +284,7 @@ export default function MyWidgetsPage() {
             </p>
             <div className="flex gap-3 justify-center">
               <Button asChild>
-                <Link href={homePath}>
+                <Link href="/">
                   <Plus className="w-4 h-4 mr-2" />
                   위젯 만들러 가기
                 </Link>

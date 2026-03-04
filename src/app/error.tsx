@@ -2,7 +2,6 @@
 
 import { useEffect } from "react";
 import Link from "next/link";
-import { useHomePath } from "@/lib/use-home-path";
 
 export default function Error({
   error,
@@ -11,8 +10,6 @@ export default function Error({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
-  const homePath = useHomePath();
-
   useEffect(() => {
     console.error(error);
   }, [error]);
@@ -34,7 +31,7 @@ export default function Error({
             다시 시도
           </button>
           <Link
-            href={homePath}
+            href="/"
             className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border text-sm font-medium hover:bg-muted transition-colors"
           >
             홈으로 돌아가기

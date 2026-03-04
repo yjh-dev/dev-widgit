@@ -15,7 +15,7 @@ import { addRecentWidget } from "@/lib/recent-widgets";
 import { getSizeGuide } from "@/lib/widget-size-guide";
 import { trackEditorVisit } from "@/lib/analytics";
 import { useLocale } from "@/components/LocaleProvider";
-import { useHomePath } from "@/lib/use-home-path";
+
 import dynamic from "next/dynamic";
 const EditorWidgetNav = dynamic(() => import("./EditorWidgetNav"), { ssr: false });
 
@@ -40,12 +40,11 @@ function EditorBackLinks() {
   const searchParams = useSearchParams();
   const fromTemplates = searchParams.get("from") === "templates";
   const { t } = useLocale();
-  const homePath = useHomePath();
 
   return (
     <div className="flex items-center gap-3">
       <Link
-        href={homePath}
+        href="/"
         className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
       >
         <ArrowLeft className="w-4 h-4" />
@@ -146,7 +145,6 @@ export default function EditorLayout({ title, children }: EditorLayoutProps) {
   const previewPanel = childArray[1];
   const pathname = usePathname();
   const { t } = useLocale();
-  const homePath = useHomePath();
   const [previewSize, setPreviewSize] = useState<PreviewSize>("free");
 
   // localStorage에서 프리뷰 사이즈 복원
@@ -200,7 +198,7 @@ export default function EditorLayout({ title, children }: EditorLayoutProps) {
             <Suspense
               fallback={
                 <Link
-                  href={homePath}
+                  href="/"
                   className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
                 >
                   <ArrowLeft className="w-4 h-4" />

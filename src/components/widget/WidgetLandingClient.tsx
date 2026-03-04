@@ -12,7 +12,7 @@ import { getWidgetIcon } from "@/lib/widget-names";
 import type { WidgetType } from "@/lib/templates";
 import type { WidgetLanding } from "@/lib/widget-landing";
 import { trackLandingCta } from "@/lib/analytics";
-import { useHomePath } from "@/lib/use-home-path";
+
 
 interface WidgetLandingClientProps {
   slug: string;
@@ -28,7 +28,6 @@ export default function WidgetLandingClient({
   landing,
 }: WidgetLandingClientProps) {
   const [mounted, setMounted] = useState(false);
-  const homePath = useHomePath();
   useEffect(() => setMounted(true), []);
 
   const Icon = getWidgetIcon(slug as WidgetType);
@@ -40,7 +39,7 @@ export default function WidgetLandingClient({
       <header className="pt-12 pb-4 px-6">
         <div className="max-w-3xl mx-auto flex items-center justify-between mb-8">
           <Link
-            href={homePath}
+            href="/"
             className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />

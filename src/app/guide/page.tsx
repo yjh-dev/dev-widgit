@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useHomePath } from "@/lib/use-home-path";
+
 import {
   Accordion,
   AccordionContent,
@@ -29,15 +29,13 @@ function Kbd({ children }: { children: React.ReactNode }) {
 }
 
 export default function GuidePage() {
-  const homePath = useHomePath();
-
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="pt-12 pb-8 px-6 text-center">
         <div className="max-w-3xl mx-auto flex items-center justify-between mb-6">
           <Link
-            href={homePath}
+            href="/"
             className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
