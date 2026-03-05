@@ -26,7 +26,7 @@ export function parseColumns(raw: string): KanbanColumn[] {
   }
 }
 
-const LS_KEY = "widgit-kanban";
+const LS_KEY = "wiget-tree-kanban";
 
 function storageKey(boardId: string): string {
   return `${LS_KEY}-${boardId}`;

@@ -122,7 +122,7 @@ export default function MyWidgetsPage() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `widgit-backup-${new Date().toISOString().slice(0, 10)}.json`;
+    a.download = `wiget-tree-backup-${new Date().toISOString().slice(0, 10)}.json`;
     a.click();
     URL.revokeObjectURL(url);
     toast.success(`${data.length}개 위젯을 내보냈습니다!`);

@@ -29,13 +29,13 @@ export default function GallerySubmitButton({
         "이 위젯을 갤러리에 공유합니다!",
         "",
         "---",
-        "_이 이슈는 Widgit 에디터에서 자동 생성되었습니다._",
+        "_이 이슈는 Wiget-Tree 에디터에서 자동 생성되었습니다._",
       ].join("\n")
     );
 
     trackGallerySubmit(widgetType);
     window.open(
-      `https://github.com/widgit-app/widgit/issues/new?title=${title}&body=${body}&labels=gallery`,
+      `https://github.com/wiget-tree-app/wiget-tree/issues/new?title=${title}&body=${body}&labels=gallery`,
       "_blank"
     );
   };

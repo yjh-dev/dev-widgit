@@ -44,7 +44,7 @@ export default function GalleryPage() {
         </div>
         <h1 className="text-2xl font-bold">갤러리</h1>
         <p className="text-sm text-muted-foreground mt-1">
-          Widgit으로 만든 다양한 위젯 조합 예시입니다. URL을 복사해 바로 사용해보세요.
+          Wiget-Tree으로 만든 다양한 위젯 조합 예시입니다. URL을 복사해 바로 사용해보세요.
         </p>
 
         {/* Category filter */}
@@ -89,7 +89,7 @@ export default function GalleryPage() {
               <h2 className="text-base font-semibold">나만의 위젯을 공유해보세요!</h2>
             </div>
             <p className="text-sm text-muted-foreground">
-              Widgit 에디터에서 만든 위젯을 갤러리에 제출하면 다른 사용자와 공유할 수 있습니다.
+              Wiget-Tree 에디터에서 만든 위젯을 갤러리에 제출하면 다른 사용자와 공유할 수 있습니다.
             </p>
           </div>
           <Link href="/">

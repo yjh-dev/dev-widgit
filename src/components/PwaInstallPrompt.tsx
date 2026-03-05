@@ -20,7 +20,7 @@ export default function PwaInstallPrompt() {
   useEffect(() => {
     // Don't show if already dismissed this session or already installed
     if (window.matchMedia("(display-mode: standalone)").matches) return;
-    if (sessionStorage.getItem("widgit-pwa-dismissed")) {
+    if (sessionStorage.getItem("wiget-tree-pwa-dismissed")) {
       startTransition(() => setDismissed(true));
       return;
     }
@@ -65,7 +65,7 @@ export default function PwaInstallPrompt() {
   const handleDismiss = () => {
     setDismissed(true);
     setForceShow(false);
-    sessionStorage.setItem("widgit-pwa-dismissed", "1");
+    sessionStorage.setItem("wiget-tree-pwa-dismissed", "1");
   };
 
   return (
@@ -75,7 +75,7 @@ export default function PwaInstallPrompt() {
           W
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium truncate">Widgit 앱 설치</p>
+          <p className="text-sm font-medium truncate">Wiget-Tree 앱 설치</p>
           <p className="text-xs text-muted-foreground">
             홈 화면에 추가하여 빠르게 접속하세요
           </p>

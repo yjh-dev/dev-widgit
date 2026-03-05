@@ -5,7 +5,7 @@ import { articles } from "@/lib/blog";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "블로그 — Widgit",
+  title: "블로그 — Wiget-Tree",
 };
 
 export default function BlogPage() {

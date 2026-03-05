@@ -31,7 +31,7 @@ import { trackCopyUrl, trackCopyEmbed, trackCopyShareLink, trackExportImage } fr
 import { copyToClipboard } from "@/lib/clipboard";
 import { useLocale } from "@/components/LocaleProvider";
 
-const LS_KEY = "widgit-short-url";
+const LS_KEY = "wiget-tree-short-url";
 
 interface EditorActionsProps {
   widgetUrl: string;

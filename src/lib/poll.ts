@@ -17,7 +17,7 @@ export function calculatePercentages(options: PollOption[]): { text: string; vot
   return options.map((o) => ({ ...o, pct: total > 0 ? (o.votes / total) * 100 : 0 }));
 }
 
-const LS_KEY = "widgit-poll";
+const LS_KEY = "wiget-tree-poll";
 
 function storageKey(pollId: string): string {
   return `${LS_KEY}-${pollId}`;

@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 
-const LS_KEY = "widgit-onboarding-done";
+const LS_KEY = "wiget-tree-onboarding-done";
 
 interface TourStep {
   selector: string;

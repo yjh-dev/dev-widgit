@@ -85,7 +85,7 @@ export default function MemoBoardPreview({
 
   return (
     <div
-      className={`w-full h-full flex flex-col items-center justify-center ${fontStyle.className ?? ""}`}
+      className={`w-full h-full flex flex-col items-center justify-center overflow-hidden ${fontStyle.className ?? ""}`}
       style={{
         backgroundColor: transparentBg ? "transparent" : `#${bg}`,
         fontFamily: fontStyle.fontFamily,

@@ -3,7 +3,7 @@ import { ArrowLeft } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "이용약관 — Widgit",
+  title: "이용약관 — Wiget-Tree",
 };
 
 export default function TermsPage() {
@@ -27,7 +27,7 @@ export default function TermsPage() {
         <section>
           <h2>1. 서비스 개요</h2>
           <p>
-            Widgit(이하 &quot;서비스&quot;)은 노션(Notion) 페이지에 임베드할 수 있는 위젯을 생성하는
+            Wiget-Tree(이하 &quot;서비스&quot;)은 노션(Notion) 페이지에 임베드할 수 있는 위젯을 생성하는
             무료 웹 서비스입니다. 모든 위젯 설정은 URL 쿼리 파라미터에 저장되며,
             별도의 서버나 데이터베이스를 사용하지 않는 무상태(stateless) 아키텍처로 운영됩니다.
           </p>
@@ -46,7 +46,7 @@ export default function TermsPage() {
         <section>
           <h2>3. 데이터 처리</h2>
           <p>
-            Widgit은 사용자의 개인정보를 서버에 저장하지 않습니다.
+            Wiget-Tree은 사용자의 개인정보를 서버에 저장하지 않습니다.
             일부 위젯(카운터, 투두리스트, 습관 트래커 등)은 브라우저의 <code>localStorage</code>를
             사용하여 상태를 유지하며, 이 데이터는 사용자의 기기에만 저장됩니다.
           </p>
@@ -65,7 +65,7 @@ export default function TermsPage() {
         <section>
           <h2>5. 지적 재산권</h2>
           <p>
-            서비스의 디자인, 코드, 브랜드 등에 대한 지적 재산권은 Widgit에 있습니다.
+            서비스의 디자인, 코드, 브랜드 등에 대한 지적 재산권은 Wiget-Tree에 있습니다.
             사용자가 생성한 위젯 콘텐츠(텍스트, 색상 설정 등)에 대한 권리는 사용자에게 있습니다.
           </p>
         </section>

@@ -19,7 +19,7 @@ import { toast } from "sonner";
 import { trackFeedbackSubmit } from "@/lib/analytics";
 
 
-const GITHUB_REPO = "https://github.com/widgit-app/widgit";
+const GITHUB_REPO = "https://github.com/wiget-tree-app/wiget-tree";
 
 const categories = [
   { value: "widget-request", label: "위젯 요청" },
@@ -62,7 +62,7 @@ export default function FeedbackPage() {
         description.trim() || "(설명 없음)",
         "",
         "---",
-        "_이 이슈는 Widgit 피드백 페이지에서 자동 생성되었습니다._",
+        "_이 이슈는 Wiget-Tree 피드백 페이지에서 자동 생성되었습니다._",
       ].join("\n")
     );
 

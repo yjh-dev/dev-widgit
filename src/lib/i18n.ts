@@ -1,4 +1,4 @@
-const LS_KEY = "widgit-lang";
+const LS_KEY = "wiget-tree-lang";
 
 export type Locale = "ko" | "en";
 
@@ -21,7 +21,7 @@ export function setLocale(locale: Locale): void {
 const translations = {
   ko: {
     // Home — Hero
-    "home.title": "Widgit",
+    "home.title": "Wiget-Tree",
     "home.heroTitle1": "노션 위젯,",
     "home.heroTitle2": "URL 하나",
     "home.heroTitle3": "로 완성",
@@ -129,7 +129,7 @@ const translations = {
   },
   en: {
     // Home — Hero
-    "home.title": "Widgit",
+    "home.title": "Wiget-Tree",
     "home.heroTitle1": "Notion Widgets,",
     "home.heroTitle2": "One URL",
     "home.heroTitle3": " is All You Need",

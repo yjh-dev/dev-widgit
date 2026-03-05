@@ -9,6 +9,6 @@ export default function robots(): MetadataRoute.Robots {
         disallow: "/widget/",
       },
     ],
-    sitemap: "https://widgit.vercel.app/sitemap.xml",
+    sitemap: "https://wiget-tree.vercel.app/sitemap.xml",
   };
 }

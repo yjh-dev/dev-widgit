@@ -2,7 +2,7 @@ import { ImageResponse } from "next/og";
 import { widgetMetadata } from "@/lib/widget-metadata";
 import { widgetLandings } from "@/lib/widget-landing";
 
-export const alt = "Widgit Widget";
+export const alt = "Wiget-Tree Widget";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -57,7 +57,7 @@ export default async function Image({ params }: { params: Promise<{ slug: string
             W
           </div>
           <span style={{ fontSize: "24px", fontWeight: 600, color: "#A1A1AA" }}>
-            Widgit
+            Wiget-Tree
           </span>
         </div>
 

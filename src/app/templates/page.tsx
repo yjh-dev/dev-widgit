@@ -145,7 +145,7 @@ function CompositeLayoutPreview({ template }: { template: Template }) {
   );
 }
 
-const LS_KEY = "widgit-short-url";
+const LS_KEY = "wiget-tree-short-url";
 
 export default function TemplatesPage() {
   const [mounted, setMounted] = useState(false);
@@ -277,7 +277,7 @@ export default function TemplatesPage() {
           <h2 className="text-xl font-bold">프리미엄 노션 템플릿</h2>
         </div>
         <p className="text-sm text-muted-foreground mb-6">
-          Widgit 위젯이 미리 세팅된 노션 템플릿을 구매하면 바로 사용할 수 있습니다.
+          Wiget-Tree 위젯이 미리 세팅된 노션 템플릿을 구매하면 바로 사용할 수 있습니다.
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {[
@@ -285,42 +285,42 @@ export default function TemplatesPage() {
               title: "학생 대시보드",
               desc: "D-Day · 시간표 · 투두리스트 · 뽀모도로가 세팅된 학생용 노션 템플릿",
               price: "₩3,900",
-              url: "https://widgit.lemonsqueezy.com",
+              url: "https://wiget-tree.lemonsqueezy.com",
               emoji: "📚",
             },
             {
               title: "독서 관리 시스템",
               desc: "읽기 진행률 · 목표 · 타임라인으로 독서 습관을 관리하는 템플릿",
               price: "₩3,900",
-              url: "https://widgit.lemonsqueezy.com",
+              url: "https://wiget-tree.lemonsqueezy.com",
               emoji: "📖",
             },
             {
               title: "프로젝트 트래커",
               desc: "목표 진행률 · 타임라인 · 습관 트래커 · 카운터로 프로젝트를 관리하는 템플릿",
               price: "₩4,900",
-              url: "https://widgit.lemonsqueezy.com",
+              url: "https://wiget-tree.lemonsqueezy.com",
               emoji: "🎯",
             },
             {
               title: "미니멀 홈 화면",
               desc: "시계 · 날씨 · 명언 · 미니 캘린더를 조합한 깔끔한 노션 홈 화면",
               price: "₩3,900",
-              url: "https://widgit.lemonsqueezy.com",
+              url: "https://wiget-tree.lemonsqueezy.com",
               emoji: "🏠",
             },
             {
               title: "감성 다이어리",
               desc: "메모지 · 명언 · 그라데이션 · 타이프라이터로 꾸민 감성 일기장",
               price: "₩3,900",
-              url: "https://widgit.lemonsqueezy.com",
+              url: "https://wiget-tree.lemonsqueezy.com",
               emoji: "🌸",
             },
             {
               title: "개발자 대시보드",
               desc: "GitHub 잔디 · 뽀모도로 · 스톱워치 · 플립 시계가 세팅된 개발자 홈 화면",
               price: "₩4,900",
-              url: "https://widgit.lemonsqueezy.com",
+              url: "https://wiget-tree.lemonsqueezy.com",
               emoji: "💻",
             },
           ].map((template) => (

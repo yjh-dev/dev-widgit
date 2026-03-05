@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
-export const alt = "Widgit — 노션 위젯 생성기";
+export const alt = "Wiget-Tree — 노션 위젯 생성기";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -51,7 +51,7 @@ export default function Image() {
               letterSpacing: "-1px",
             }}
           >
-            Widgit
+            Wiget-Tree
           </span>
         </div>
         <div

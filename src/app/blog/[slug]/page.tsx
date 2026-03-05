@@ -17,7 +17,7 @@ export async function generateMetadata({
   const article = getArticle(slug);
   if (!article) return {};
   return {
-    title: `${article.title} — Widgit 블로그`,
+    title: `${article.title} — Wiget-Tree 블로그`,
     description: article.description,
     openGraph: {
       title: article.title,
@@ -40,9 +40,9 @@ function NotionWidgetGuide() {
         다양한 기능을 노션 안에서 바로 사용할 수 있게 해줍니다.
       </p>
 
-      <h2>Widgit 소개</h2>
+      <h2>Wiget-Tree 소개</h2>
       <p>
-        Widgit은 <strong>53종 이상의 노션 전용 위젯</strong>을 제공하는 무료 서비스입니다.
+        Wiget-Tree은 <strong>53종 이상의 노션 전용 위젯</strong>을 제공하는 무료 서비스입니다.
         모든 설정이 URL에 담기는 무상태 구조라 회원가입이나 서버 비용 없이,
         URL 하나로 위젯이 동작합니다.
       </p>
@@ -58,7 +58,7 @@ function NotionWidgetGuide() {
       <ol>
         <li>
           <strong>위젯 만들기:</strong>{" "}
-          <Link href="/">Widgit 홈</Link>에서 원하는 위젯을 선택하고 에디터에서 설정을 조절합니다.
+          <Link href="/">Wiget-Tree 홈</Link>에서 원하는 위젯을 선택하고 에디터에서 설정을 조절합니다.
         </li>
         <li>
           <strong>URL 복사:</strong> 에디터 좌측의 &quot;URL 복사&quot; 버튼을 클릭합니다.
@@ -96,7 +96,7 @@ function NotionWidgetGuide() {
 
       <h2>시작해보세요</h2>
       <p>
-        지금 바로 <Link href="/">Widgit</Link>에서 첫 위젯을 만들어보세요.
+        지금 바로 <Link href="/">Wiget-Tree</Link>에서 첫 위젯을 만들어보세요.
         회원가입 없이, 무료로, 30초만에 나만의 노션 위젯을 완성할 수 있습니다.
       </p>
     </>
@@ -517,7 +517,7 @@ function ClockWidget() {
     <>
       <h2>노션 시계 위젯 4종 비교</h2>
       <p>
-        Widgit은 4가지 서로 다른 스타일의 시계 위젯을 제공합니다.
+        Wiget-Tree은 4가지 서로 다른 스타일의 시계 위젯을 제공합니다.
         각각의 특징과 어울리는 노션 페이지 스타일을 비교해보겠습니다.
       </p>
 

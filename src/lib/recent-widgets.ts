@@ -1,4 +1,4 @@
-const LS_KEY = "widgit-recent";
+const LS_KEY = "wiget-tree-recent";
 const MAX_RECENT = 5;
 
 export interface RecentWidget {

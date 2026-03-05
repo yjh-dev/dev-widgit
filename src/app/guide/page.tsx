@@ -47,7 +47,7 @@ export default function GuidePage() {
           노션 임베드 가이드
         </h1>
         <p className="text-muted-foreground max-w-md mx-auto">
-          Widgit 위젯을 노션에 임베드하는 방법을 알아보세요.
+          Wiget-Tree 위젯을 노션에 임베드하는 방법을 알아보세요.
         </p>
       </header>
 
@@ -235,7 +235,7 @@ export default function GuidePage() {
                 </AccordionTrigger>
                 <AccordionContent className="text-sm text-muted-foreground space-y-2">
                   <p>
-                    Widgit 위젯은 URL 파라미터로 색상을 직접 지정하므로,
+                    Wiget-Tree 위젯은 URL 파라미터로 색상을 직접 지정하므로,
                     노션의 다크 모드와 자동 연동되지 않습니다.
                   </p>
                   <p>
@@ -282,7 +282,7 @@ export default function GuidePage() {
                 </AccordionTrigger>
                 <AccordionContent className="text-sm text-muted-foreground">
                   <p>
-                    Widgit은 서버리스 방식으로 동작하지만, 위젯 페이지를 호스팅하는
+                    Wiget-Tree은 서버리스 방식으로 동작하지만, 위젯 페이지를 호스팅하는
                     서버가 필요합니다. 서버가 일시적으로 다운되면 위젯이 로드되지 않을 수 있으나,
                     모든 설정이 URL에 저장되어 있으므로 서버가 복구되면 자동으로 정상 표시됩니다.
                     별도의 재설정은 필요 없습니다.

@@ -26,8 +26,8 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://widgit.vercel.app"),
-  title: "Widgit — 노션 위젯 생성기",
+  metadataBase: new URL("https://wiget-tree.vercel.app"),
+  title: "Wiget-Tree — 노션 위젯 생성기",
   description:
     "URL 하나로 동작하는 노션 전용 위젯 생성 서비스. D-Day, 시계, 명언, 진행률 바 등 53종의 위젯을 무료로 만들어보세요.",
   keywords: [
@@ -47,16 +47,16 @@ export const metadata: Metadata = {
     { url: "/icons/icon.svg", type: "image/svg+xml" },
   ],
   openGraph: {
-    title: "Widgit — 노션 위젯 생성기",
+    title: "Wiget-Tree — 노션 위젯 생성기",
     description:
       "URL 하나로 동작하는 노션 전용 위젯. 서버 없이, 무한히 커스터마이징 가능합니다.",
     type: "website",
     locale: "ko_KR",
-    siteName: "Widgit",
+    siteName: "Wiget-Tree",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Widgit — 노션 위젯 생성기",
+    title: "Wiget-Tree — 노션 위젯 생성기",
     description:
       "URL 하나로 동작하는 노션 전용 위젯. 53종의 위젯을 무료로 만들어보세요.",
   },

@@ -1,6 +1,6 @@
 {
-  "name": "Widgit — 노션 위젯 생성기",
-  "short_name": "Widgit",
+  "name": "Wiget-Tree — 노션 위젯 생성기",
+  "short_name": "Wiget-Tree",
   "description": "URL 하나로 동작하는 노션 전용 위젯 생성 서비스",
   "start_url": "/",
   "display": "standalone",

@@ -32,7 +32,7 @@ const HeroWidgetShowcase = dynamic(
 import { getAllWidgets } from "@/lib/widget-categories";
 import { useLocale } from "@/components/LocaleProvider";
 
-const VISITED_KEY = "widgit-visited";
+const VISITED_KEY = "wiget-tree-visited";
 
 export default function IntroPage() {
   const { locale, t } = useLocale();
@@ -49,7 +49,7 @@ export default function IntroPage() {
         <div className="max-w-5xl mx-auto">
           {/* Top bar */}
           <div className="flex items-center justify-between mb-12">
-            <h1 className="text-2xl font-bold tracking-tight">Widgit</h1>
+            <h1 className="text-2xl font-bold tracking-tight">Wiget-Tree</h1>
             <div className="flex items-center gap-2">
               <ThemeToggle />
               <LocaleToggle />
@@ -205,7 +205,7 @@ export default function IntroPage() {
         <div className="max-w-5xl mx-auto px-6 py-10">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-6 text-sm text-muted-foreground">
-              <span className="font-semibold text-foreground">Widgit</span>
+              <span className="font-semibold text-foreground">Wiget-Tree</span>
               <span>{localAllWidgets.length} {t("footer.widgets")}</span>
               <span>{t("footer.serverless")}</span>
               <span>{t("footer.free")}</span>

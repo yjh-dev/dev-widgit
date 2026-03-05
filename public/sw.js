@@ -1,5 +1,5 @@
-// Widgit Service Worker — offline cache for static assets
-const CACHE_NAME = "widgit-v1";
+// Wiget-Tree Service Worker — offline cache for static assets
+const CACHE_NAME = "wiget-tree-v1";
 
 const PRECACHE_URLS = [
   "/",

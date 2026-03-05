@@ -10,7 +10,7 @@ export interface WidgetMeta {
  */
 export function createWidgetMetadata(widgetType: string): Metadata {
   const meta = widgetMetadata[widgetType] ?? { name: widgetType, desc: "노션 위젯" };
-  const title = `${meta.name} 만들기 — Widgit`;
+  const title = `${meta.name} 만들기 — Wiget-Tree`;
   return {
     title,
     description: meta.desc,
@@ -18,7 +18,7 @@ export function createWidgetMetadata(widgetType: string): Metadata {
     openGraph: {
       title,
       description: meta.desc,
-      siteName: "Widgit",
+      siteName: "Wiget-Tree",
       type: "website",
     },
     twitter: {

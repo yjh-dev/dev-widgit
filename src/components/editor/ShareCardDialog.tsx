@@ -85,7 +85,7 @@ export default function ShareCardDialog({
       ctx.fillStyle = "rgba(255,255,255,0.6)";
       ctx.font = "bold 24px system-ui, -apple-system, sans-serif";
       ctx.textAlign = "center";
-      ctx.fillText("Widgit — 노션 위젯 메이커", 600, 600);
+      ctx.fillText("Wiget-Tree — 노션 위젯 메이커", 600, 600);
 
       const dataUrl = canvas.toDataURL("image/png");
       setCardDataUrl(dataUrl);
@@ -112,7 +112,7 @@ export default function ShareCardDialog({
   const handleDownload = () => {
     if (!cardDataUrl) return;
     const a = document.createElement("a");
-    a.download = "widgit-share.png";
+    a.download = "wiget-tree-share.png";
     a.href = cardDataUrl;
     a.click();
     toast.success("이미지가 다운로드되었습니다!");
@@ -143,7 +143,7 @@ export default function ShareCardDialog({
   const handleShareX = () => {
     const editorUrl = widgetUrl.replace("/widget/", "/create/");
     const text = encodeURIComponent(
-      "Widgit으로 나만의 노션 위젯을 만들었어요!"
+      "Wiget-Tree으로 나만의 노션 위젯을 만들었어요!"
     );
     const url = encodeURIComponent(editorUrl);
     window.open(

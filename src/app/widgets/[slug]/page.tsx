@@ -17,7 +17,7 @@ export async function generateMetadata({
   const meta = widgetMetadata[slug];
   if (!meta) return {};
 
-  const title = `${meta.name} — 무료 노션 위젯 | Widgit`;
+  const title = `${meta.name} — 무료 노션 위젯 | Wiget-Tree`;
   const landing = widgetLandings[slug];
   const keywords = landing?.keywords ?? [];
 
@@ -28,9 +28,9 @@ export async function generateMetadata({
     openGraph: {
       title,
       description: meta.desc,
-      siteName: "Widgit",
+      siteName: "Wiget-Tree",
       type: "website",
-      url: `https://widgit.vercel.app/widgets/${slug}`,
+      url: `https://wiget-tree.vercel.app/widgets/${slug}`,
     },
     twitter: {
       card: "summary_large_image",
@@ -38,7 +38,7 @@ export async function generateMetadata({
       description: meta.desc,
     },
     alternates: {
-      canonical: `https://widgit.vercel.app/widgets/${slug}`,
+      canonical: `https://wiget-tree.vercel.app/widgets/${slug}`,
     },
   };
 }
@@ -57,9 +57,9 @@ export default async function WidgetLandingPage({
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    name: `${meta.name} — Widgit`,
+    name: `${meta.name} — Wiget-Tree`,
     description: meta.desc,
-    url: `https://widgit.vercel.app/widgets/${slug}`,
+    url: `https://wiget-tree.vercel.app/widgets/${slug}`,
     applicationCategory: "UtilitiesApplication",
     operatingSystem: "Web",
     offers: { "@type": "Offer", price: "0", priceCurrency: "KRW" },

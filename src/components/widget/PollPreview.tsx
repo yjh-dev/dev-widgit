@@ -104,7 +104,7 @@ export default function PollPreview({
 
   return (
     <div
-      className={`w-full h-full flex items-center justify-center ${fontStyle.className ?? ""}`}
+      className={`w-full h-full flex items-center justify-center overflow-hidden ${fontStyle.className ?? ""}`}
       style={{
         backgroundColor: transparentBg ? "transparent" : `#${bg}`,
         color: effectiveText ? `#${effectiveText}` : undefined,

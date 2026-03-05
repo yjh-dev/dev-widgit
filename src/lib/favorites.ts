@@ -1,4 +1,4 @@
-const LS_KEY = "widgit-favorites";
+const LS_KEY = "wiget-tree-favorites";
 
 export function getFavorites(): string[] {
   try {

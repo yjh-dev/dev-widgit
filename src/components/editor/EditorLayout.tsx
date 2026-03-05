@@ -137,7 +137,7 @@ function PreviewContainer({ aspect, children }: { aspect?: string; children: Rea
   );
 }
 
-const LS_PREVIEW_SIZE = "widgit-preview-size";
+const LS_PREVIEW_SIZE = "wiget-tree-preview-size";
 
 export default function EditorLayout({ title, children }: EditorLayoutProps) {
   const childArray = Children.toArray(children);

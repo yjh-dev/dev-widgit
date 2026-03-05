@@ -4,8 +4,8 @@ import { useEffect, useState, startTransition } from "react";
 import { Wrench, Trash2, X, RefreshCw, Cookie, Database, HardDrive, Download } from "lucide-react";
 import { toast } from "sonner";
 
-/** localStorage에서 widgit 관련 키만 추출 */
-function getWidgitKeys(): string[] {
+/** localStorage에서 wiget-tree 관련 키만 추출 */
+function getWigetTreeKeys(): string[] {
   const keys: string[] = [];
   for (let i = 0; i < localStorage.length; i++) {
     const key = localStorage.key(i);
@@ -26,13 +26,13 @@ export default function DevTools() {
       window.location.hostname === "0.0.0.0";
     startTransition(() => {
       setVisible(isDev);
-      if (isDev) setLsCount(getWidgitKeys().length);
+      if (isDev) setLsCount(getWigetTreeKeys().length);
     });
   }, []);
 
   if (!visible) return null;
 
-  const refreshCount = () => setLsCount(getWidgitKeys().length);
+  const refreshCount = () => setLsCount(getWigetTreeKeys().length);
 
   const clearLocalStorage = () => {
     const count = localStorage.length;

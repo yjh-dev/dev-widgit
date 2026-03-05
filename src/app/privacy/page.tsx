@@ -3,7 +3,7 @@ import { ArrowLeft } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "개인정보처리방침 — Widgit",
+  title: "개인정보처리방침 — Wiget-Tree",
 };
 
 export default function PrivacyPage() {
@@ -27,7 +27,7 @@ export default function PrivacyPage() {
         <section>
           <h2>1. 수집하는 개인정보</h2>
           <p>
-            Widgit은 사용자의 개인정보를 <strong>수집하지 않습니다</strong>.
+            Wiget-Tree은 사용자의 개인정보를 <strong>수집하지 않습니다</strong>.
             회원가입, 로그인, 이메일 수집 등의 과정이 없으며,
             서버에 사용자 데이터를 저장하지 않습니다.
           </p>
@@ -81,7 +81,7 @@ export default function PrivacyPage() {
         <section>
           <h2>4. 쿠키</h2>
           <p>
-            Widgit 자체는 쿠키를 사용하지 않습니다. 다만 Google Analytics 및 Google AdSense가
+            Wiget-Tree 자체는 쿠키를 사용하지 않습니다. 다만 Google Analytics 및 Google AdSense가
             활성화된 경우, 해당 서비스에서 쿠키를 사용할 수 있습니다.
             브라우저 설정에서 쿠키를 차단하거나 삭제할 수 있습니다.
           </p>

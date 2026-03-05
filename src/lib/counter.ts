@@ -7,7 +7,7 @@ export interface CounterConfig {
 }
 
 export function buildStorageKey(config: CounterConfig): string {
-  return `widgit-counter:${config.label}:${config.initial}:${config.step}`;
+  return `wiget-tree-counter:${config.label}:${config.initial}:${config.step}`;
 }
 
 export function loadCount(key: string, initial: number): number {

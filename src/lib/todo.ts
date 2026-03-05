@@ -4,7 +4,7 @@ export interface TodoItem {
   done: boolean;
 }
 
-const LS_KEY = "widgit-todo";
+const LS_KEY = "wiget-tree-todo";
 
 function storageKey(widgetId: string): string {
   return `${LS_KEY}-${widgetId}`;

@@ -163,7 +163,7 @@ export default function FortuneCookiePreview({
 
   return (
     <div
-      className="w-full h-full flex flex-col items-center justify-center gap-4"
+      className="w-full h-full flex flex-col items-center justify-center gap-4 overflow-hidden"
       style={{
         background: resolvedBg,
         borderRadius,

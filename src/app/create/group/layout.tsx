@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "위젯 그룹 만들기 — Widgit",
+  title: "위젯 그룹 만들기 — Wiget-Tree",
   description: "여러 위젯을 하나의 URL로 묶어 노션에 한 번에 임베드합니다.",
   openGraph: {
-    title: "위젯 그룹 만들기 — Widgit",
+    title: "위젯 그룹 만들기 — Wiget-Tree",
     description: "여러 위젯을 하나의 URL로 묶어 노션에 한 번에 임베드합니다.",
   },
 };

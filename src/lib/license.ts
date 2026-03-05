@@ -3,7 +3,7 @@
  * 일회성 구매 키를 localStorage에 저장하여 위젯 워터마크를 제거한다.
  */
 
-const LS_KEY = "widgit-license";
+const LS_KEY = "wiget-tree-license";
 
 export interface LicenseInfo {
   key: string;

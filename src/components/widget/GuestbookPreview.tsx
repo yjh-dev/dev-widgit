@@ -27,7 +27,7 @@ interface GuestbookPreviewProps {
 }
 
 function getStorageKey(title: string) {
-  return `widgit-guestbook-${title}`;
+  return `wiget-tree-guestbook-${title}`;
 }
 
 export default function GuestbookPreview({

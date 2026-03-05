@@ -1,6 +1,6 @@
 import type { WidgetType } from "@/lib/templates";
 
-const LS_KEY = "widgit-saved";
+const LS_KEY = "wiget-tree-saved";
 const MAX_SAVED = 50;
 
 export interface SavedWidget {

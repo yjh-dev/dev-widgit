@@ -24,7 +24,7 @@ import {
 } from "@/lib/license";
 
 
-const PURCHASE_URL = "https://widgit.lemonsqueezy.com";
+const PURCHASE_URL = "https://wiget-tree.lemonsqueezy.com";
 
 export default function SettingsPage() {
   const [mounted, setMounted] = useState(false);
@@ -40,11 +40,11 @@ export default function SettingsPage() {
       setLicenseInfo(getLicenseInfo());
       setRemoved(isWatermarkRemoved());
       try {
-        const savedSize = localStorage.getItem("widgit-preview-size");
+        const savedSize = localStorage.getItem("wiget-tree-preview-size");
         if (savedSize) setDefaultPreviewSize(savedSize);
-        const savedShort = localStorage.getItem("widgit-short-url");
+        const savedShort = localStorage.getItem("wiget-tree-short-url");
         if (savedShort === "true") setDefaultShortUrl(true);
-        const savedSkip = localStorage.getItem("widgit-visited");
+        const savedSkip = localStorage.getItem("wiget-tree-visited");
         if (savedSkip === "true") setSkipSplash(true);
       } catch { /* 무시 */ }
       setMounted(true);
@@ -99,7 +99,7 @@ export default function SettingsPage() {
             워터마크 제거
           </h2>
           <p className="text-sm text-muted-foreground mb-4">
-            위젯에 표시되는 &quot;Widgit&quot; 브랜딩을 제거합니다. 일회성 구매로 영구 적용됩니다.
+            위젯에 표시되는 &quot;Wiget-Tree&quot; 브랜딩을 제거합니다. 일회성 구매로 영구 적용됩니다.
           </p>
 
           {!mounted ? (
@@ -182,7 +182,7 @@ export default function SettingsPage() {
                 value={defaultPreviewSize}
                 onValueChange={(v) => {
                   setDefaultPreviewSize(v);
-                  try { localStorage.setItem("widgit-preview-size", v); } catch { /* 무시 */ }
+                  try { localStorage.setItem("wiget-tree-preview-size", v); } catch { /* 무시 */ }
                   toast.success("기본 프리뷰 크기가 변경되었습니다.");
                 }}
               >
@@ -214,7 +214,7 @@ export default function SettingsPage() {
                 onClick={() => {
                   const next = !defaultShortUrl;
                   setDefaultShortUrl(next);
-                  try { localStorage.setItem("widgit-short-url", String(next)); } catch { /* 무시 */ }
+                  try { localStorage.setItem("wiget-tree-short-url", String(next)); } catch { /* 무시 */ }
                   toast.success(next ? "짧은 URL이 기본으로 설정되었습니다." : "기본 URL이 기본으로 설정되었습니다.");
                 }}
                 className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
@@ -242,8 +242,8 @@ export default function SettingsPage() {
                   const next = !skipSplash;
                   setSkipSplash(next);
                   try {
-                    if (next) localStorage.setItem("widgit-visited", "true");
-                    else localStorage.removeItem("widgit-visited");
+                    if (next) localStorage.setItem("wiget-tree-visited", "true");
+                    else localStorage.removeItem("wiget-tree-visited");
                   } catch { /* 무시 */ }
                   toast.success(next ? "다음부터 위젯 목록으로 바로 이동합니다." : "다음 홈 접속 시 서비스 소개가 표시됩니다.");
                 }}
@@ -266,9 +266,9 @@ export default function SettingsPage() {
                 className="text-destructive hover:text-destructive"
                 onClick={() => {
                   try {
-                    localStorage.removeItem("widgit-preview-size");
-                    localStorage.removeItem("widgit-short-url");
-                    localStorage.removeItem("widgit-visited");
+                    localStorage.removeItem("wiget-tree-preview-size");
+                    localStorage.removeItem("wiget-tree-short-url");
+                    localStorage.removeItem("wiget-tree-visited");
                     setDefaultPreviewSize("free");
                     setDefaultShortUrl(false);
                     setSkipSplash(false);
@@ -284,7 +284,7 @@ export default function SettingsPage() {
 
         {/* Info */}
         <section className="rounded-xl border bg-card p-6 space-y-3">
-          <h2 className="text-lg font-semibold">Widgit은 무료입니다</h2>
+          <h2 className="text-lg font-semibold">Wiget-Tree은 무료입니다</h2>
           <ul className="space-y-2 text-sm text-muted-foreground">
             <li className="flex items-start gap-2">
               <Check className="w-4 h-4 text-green-500 mt-0.5 shrink-0" />

@@ -19,7 +19,7 @@ import { getCategories, getAllWidgets } from "@/lib/widget-categories";
 import { getFavorites, toggleFavorite } from "@/lib/favorites";
 import { useLocale } from "@/components/LocaleProvider";
 
-const VISITED_KEY = "widgit-visited";
+const VISITED_KEY = "wiget-tree-visited";
 
 export default function Home() {
   const { locale, t } = useLocale();
@@ -150,7 +150,7 @@ export default function Home() {
       {/* Header */}
       <header ref={headerRef} className={`border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 transition-transform duration-300 ${headerHidden ? "max-md:-translate-y-full" : ""}`}>
         <div className="max-w-5xl mx-auto px-6 py-3 flex items-center justify-between">
-          <Link href="/intro" className="text-xl font-bold tracking-tight">Widgit</Link>
+          <Link href="/intro" className="text-xl font-bold tracking-tight">Wiget-Tree</Link>
           <div className="flex items-center gap-2">
             <ThemeToggle />
             <LocaleToggle />
@@ -344,7 +344,7 @@ export default function Home() {
         <div className="max-w-5xl mx-auto px-6 py-10">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-6 text-sm text-muted-foreground">
-              <span className="font-semibold text-foreground">Widgit</span>
+              <span className="font-semibold text-foreground">Wiget-Tree</span>
               <span>{localAllWidgets.length} {t("footer.widgets")}</span>
               <span>{t("footer.serverless")}</span>
               <span>{t("footer.free")}</span>

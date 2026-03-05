@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 import { articles } from "@/lib/blog";
 
-export const alt = "Widgit Blog";
+export const alt = "Wiget-Tree Blog";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -56,7 +56,7 @@ export default async function Image({ params }: { params: Promise<{ slug: string
               W
             </div>
             <span style={{ fontSize: "24px", fontWeight: 600, color: "#A1A1AA" }}>
-              Widgit Blog
+              Wiget-Tree Blog
             </span>
           </div>
           <span style={{ fontSize: "18px", color: "#64748B" }}>

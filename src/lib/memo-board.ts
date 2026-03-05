@@ -7,7 +7,7 @@ export function serializeMemos(memos: string[]): string {
   return memos.map((t) => encodeURIComponent(t)).join("|");
 }
 
-const LS_KEY = "widgit-memo-board";
+const LS_KEY = "wiget-tree-memo-board";
 
 function storageKey(boardId: string): string {
   return `${LS_KEY}-${boardId}`;

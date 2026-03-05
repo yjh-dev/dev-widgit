@@ -50,7 +50,7 @@ export function getHomeThumbnailProps(type: WidgetType): Record<string, unknown>
     case "dice":
       return { ...common, mode: "dice", count: 1, sides: 6, color: "2563EB", textColor: "FFFFFF", bg: "FFFFFF", padding: 16 };
     case "qr-code":
-      return { ...common, data: "https://widgit.dev", fgColor: "1E1E1E", bgColor: "FFFFFF", size: "sm", padding: 16 };
+      return { ...common, data: "https://wiget-tree.dev", fgColor: "1E1E1E", bgColor: "FFFFFF", size: "sm", padding: 16 };
     case "typewriter":
       return { ...common, texts: ["타이핑 효과 위젯"], speed: 80, pause: 2000, cursor: "bar", bold: true, color: "1E1E1E", bg: "FFFFFF", padding: 24, fontSize: "md" };
     case "todo":
@@ -118,19 +118,19 @@ export function getHomeThumbnailProps(type: WidgetType): Record<string, unknown>
     case "book-goal":
       return { ...common, title: "2026 독서", current: 8, target: 24, color: "F59E0B", textColor: "1E1E1E", bg: "FFFFFF", padding: 16 };
     case "kanban":
-      return { ...common, title: "프로젝트", columns: [{ title: "할 일", items: ["디자인"] }, { title: "진행 중", items: ["개발"] }, { title: "완료", items: ["기획"] }], color: "6366F1", bg: "FFFFFF", padding: 12 };
+      return { ...common, title: "프로젝트", initialColumns: [{ title: "할 일", items: ["디자인"] }, { title: "진행 중", items: ["개발"] }, { title: "완료", items: ["기획"] }], color: "6366F1", bg: "FFFFFF", padding: 12 };
     case "routine-timer":
       return { ...common, steps: [{ name: "스트레칭", minutes: 5 }, { name: "명상", minutes: 10 }, { name: "독서", minutes: 20 }], color: "2563EB", bg: "FFFFFF", padding: 16 };
     case "memo-board":
-      return { ...common, memos: ["회의 준비", "장보기", "운동"], cols: 3, noteColor: "FBBF24", textColor: "1E1E1E", bg: "FFFFFF", padding: 12 };
+      return { ...common, initialMemos: ["회의 준비", "장보기", "운동"], cols: 3, noteColor: "FBBF24", textColor: "1E1E1E", bg: "FFFFFF", padding: 12 };
     case "password-gen":
       return { ...common, length: 16, upper: true, lower: true, numbers: true, symbols: false, color: "2563EB", bg: "FFFFFF", padding: 24 };
     case "social-counter":
       return { ...common, items: [{ platform: "YouTube", count: 1200 }, { platform: "Instagram", count: 850 }], layout: "row", color: "E11D48", textColor: "1E1E1E", bg: "FFFFFF", padding: 16 };
     case "guestbook":
-      return { ...common, title: "방명록", messages: [{ name: "익명", text: "안녕하세요!" }], color: "6366F1", bg: "FFFFFF", padding: 16 };
+      return { ...common, title: "방명록", color: "6366F1", bg: "FFFFFF", padding: 16 };
     case "poll":
-      return { ...common, question: "좋아하는 계절은?", options: [{ text: "봄", votes: 12 }, { text: "여름", votes: 8 }, { text: "가을", votes: 15 }, { text: "겨울", votes: 5 }], showPercent: true, color: "2563EB", bg: "FFFFFF", padding: 16 };
+      return { ...common, question: "좋아하는 계절은?", initialOptions: [{ text: "봄", votes: 12 }, { text: "여름", votes: 8 }, { text: "가을", votes: 15 }, { text: "겨울", votes: 5 }], showPercent: true, color: "2563EB", bg: "FFFFFF", padding: 16 };
     case "vocabulary":
       return { ...common, words: [{ word: "serendipity", meaning: "뜻밖의 행운" }], mode: "daily", color: "7C3AED", textColor: "1E1E1E", bg: "FFFFFF", padding: 24 };
     case "mini-gallery":

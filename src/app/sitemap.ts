@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 import { articles } from "@/lib/blog";
 
-const BASE_URL = "https://widgit.vercel.app";
+const BASE_URL = "https://wiget-tree.vercel.app";
 
 const widgetTypes = [
   "dday", "clock", "analog-clock", "mini-calendar", "timeline", "flip-clock",

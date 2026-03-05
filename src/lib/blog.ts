@@ -12,7 +12,7 @@ export const articles: BlogArticle[] = [
     slug: "notion-widget-guide",
     title: "노션 꾸미기: 위젯으로 노션 페이지 꾸미는 법",
     description:
-      "노션 위젯이 무엇인지, Widgit으로 위젯을 만들고 노션에 임베드하는 방법, 추천 위젯 조합까지 한 번에 알아보세요.",
+      "노션 위젯이 무엇인지, Wiget-Tree으로 위젯을 만들고 노션에 임베드하는 방법, 추천 위젯 조합까지 한 번에 알아보세요.",
     date: "2026-03-01",
     tags: ["노션", "위젯", "꾸미기", "임베드"],
     readTime: 5,
@@ -57,7 +57,7 @@ export const articles: BlogArticle[] = [
     slug: "notion-dday-widget",
     title: "노션 D-Day 위젯 만들기: 수능·시험·기념일 카운트다운",
     description:
-      "Widgit으로 D-Day 위젯을 만들고 노션에 임베드하는 방법을 단계별로 소개합니다. 시간 카운트다운, 프로그레스 바 등 고급 옵션도 다룹니다.",
+      "Wiget-Tree으로 D-Day 위젯을 만들고 노션에 임베드하는 방법을 단계별로 소개합니다. 시간 카운트다운, 프로그레스 바 등 고급 옵션도 다룹니다.",
     date: "2026-03-01",
     tags: ["노션", "D-Day", "카운트다운", "수능", "시험"],
     readTime: 5,
@@ -66,7 +66,7 @@ export const articles: BlogArticle[] = [
     slug: "notion-pomodoro-timer",
     title: "노션 뽀모도로 타이머 위젯: 집중력 높이는 시간관리법",
     description:
-      "뽀모도로 기법의 원리와 Widgit 뽀모도로 타이머 위젯을 노션에 임베드하여 집중·휴식 사이클을 관리하는 방법을 알려드립니다.",
+      "뽀모도로 기법의 원리와 Wiget-Tree 뽀모도로 타이머 위젯을 노션에 임베드하여 집중·휴식 사이클을 관리하는 방법을 알려드립니다.",
     date: "2026-03-01",
     tags: ["노션", "뽀모도로", "타이머", "집중", "시간관리"],
     readTime: 6,
@@ -75,7 +75,7 @@ export const articles: BlogArticle[] = [
     slug: "notion-clock-widget",
     title: "노션 시계 위젯 만들기: 미니멀·아날로그·플립 시계 총정리",
     description:
-      "Widgit이 제공하는 4가지 시계 위젯(미니멀, 아날로그, 플립, 세계 시계)의 특징과 커스터마이징 방법을 비교 소개합니다.",
+      "Wiget-Tree이 제공하는 4가지 시계 위젯(미니멀, 아날로그, 플립, 세계 시계)의 특징과 커스터마이징 방법을 비교 소개합니다.",
     date: "2026-03-01",
     tags: ["노션", "시계", "위젯", "미니멀", "아날로그"],
     readTime: 6,

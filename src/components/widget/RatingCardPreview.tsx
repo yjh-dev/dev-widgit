@@ -109,7 +109,7 @@ export default function RatingCardPreview({
 
   return (
     <div
-      className={`w-full h-full flex flex-col items-center justify-center gap-2 ${fontStyle.className ?? ""}`}
+      className={`w-full h-full flex flex-col items-center justify-center gap-2 overflow-hidden ${fontStyle.className ?? ""}`}
       style={{
         backgroundColor: transparentBg ? "transparent" : `#${bg}`,
         borderRadius,

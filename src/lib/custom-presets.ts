@@ -1,4 +1,4 @@
-const LS_PREFIX = "widgit-presets-";
+const LS_PREFIX = "wiget-tree-presets-";
 const MAX_PRESETS = 5;
 
 export interface CustomPreset {
