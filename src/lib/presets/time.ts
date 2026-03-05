@@ -514,3 +514,108 @@ export const timelinePresets: Preset[] = [
     },
   },
 ];
+
+// Anniversary
+export const anniversaryPresets: Preset[] = [
+  {
+    id: "anniversary-romantic",
+    name: "로맨틱 기념일",
+    data: {
+      title: "우리의 기념일",
+      color: "E11D48",
+      textColor: "FFFFFF",
+      bg: "1E1E1E",
+      showDays: true,
+      showWeeks: true,
+    },
+  },
+  {
+    id: "anniversary-pastel",
+    name: "파스텔 기념일",
+    data: {
+      color: "EC4899",
+      textColor: "831843",
+      bg: "FDF2F8",
+      showDays: true,
+      showMonths: true,
+    },
+  },
+];
+
+// Countup
+export const countupPresets: Preset[] = [
+  {
+    id: "countup-dark",
+    name: "다크 카운트업",
+    data: {
+      color: "22D3EE",
+      textColor: "E0E0E0",
+      bg: "0F172A",
+      showSeconds: true,
+    },
+  },
+  {
+    id: "countup-minimal",
+    name: "미니멀 카운트업",
+    data: {
+      color: "2563EB",
+      textColor: "1E1E1E",
+      bg: "FFFFFF",
+      showSeconds: false,
+    },
+  },
+];
+
+// Season Countdown
+export const seasonCountdownPresets: Preset[] = [
+  {
+    id: "season-festive",
+    name: "축제 시즌",
+    data: {
+      showIcon: true,
+      color: "E11D48",
+      textColor: "FFFFFF",
+      bg: "1E1E1E",
+    },
+  },
+  {
+    id: "season-pastel",
+    name: "파스텔 시즌",
+    data: {
+      showIcon: true,
+      color: "EC4899",
+      textColor: "831843",
+      bg: "FDF2F8",
+    },
+  },
+];
+
+// Dual Clock
+export const dualClockPresets: Preset[] = [
+  {
+    id: "dual-seoul-ny",
+    name: "서울 ↔ 뉴욕",
+    data: {
+      tz1: "Asia/Seoul",
+      tz2: "America/New_York",
+      label1: "서울",
+      label2: "뉴욕",
+      format: "24h",
+      color: "1E1E1E",
+      bg: "FFFFFF",
+    },
+  },
+  {
+    id: "dual-dark",
+    name: "다크 듀얼 시계",
+    data: {
+      tz1: "Asia/Seoul",
+      tz2: "Europe/London",
+      label1: "서울",
+      label2: "런던",
+      format: "24h",
+      color: "E0E0E0",
+      bg: "1A1A2E",
+    },
+  },
+];

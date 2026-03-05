@@ -640,3 +640,107 @@ export const stopwatchPresets: Preset[] = [
     },
   },
 ];
+
+// Password Gen
+export const passwordGenPresets: Preset[] = [
+  {
+    id: "pwgen-secure",
+    name: "고보안 비밀번호",
+    data: { length: 20, upper: true, lower: true, numbers: true, symbols: true, color: "E11D48", bg: "1E1E1E", textColor: "FFFFFF" },
+  },
+  {
+    id: "pwgen-simple",
+    name: "간단한 비밀번호",
+    data: { length: 12, upper: true, lower: true, numbers: true, symbols: false, color: "2563EB" },
+  },
+];
+
+// Kanban
+export const kanbanPresets: Preset[] = [
+  {
+    id: "kanban-project",
+    name: "프로젝트 보드",
+    data: { title: "프로젝트", color: "6366F1", bg: "FFFFFF" },
+  },
+  {
+    id: "kanban-dark",
+    name: "다크 칸반",
+    data: { title: "작업 보드", color: "7C3AED", bg: "1A1A2E", textColor: "E0E0E0" },
+  },
+];
+
+// Routine Timer
+export const routineTimerPresets: Preset[] = [
+  {
+    id: "routine-morning",
+    name: "아침 루틴",
+    data: {
+      steps: [{ name: "스트레칭", minutes: 5 }, { name: "명상", minutes: 10 }, { name: "독서", minutes: 20 }],
+      color: "F59E0B", autoNext: true,
+    },
+  },
+  {
+    id: "routine-study",
+    name: "공부 루틴",
+    data: {
+      steps: [{ name: "수학", minutes: 30 }, { name: "휴식", minutes: 5 }, { name: "영어", minutes: 30 }],
+      color: "2563EB", autoNext: true,
+    },
+  },
+];
+
+// Memo Board
+export const memoBoardPresets: Preset[] = [
+  {
+    id: "memo-classic",
+    name: "클래식 메모",
+    data: { noteColor: "FBBF24", textColor: "1E1E1E", cols: 3 },
+  },
+  {
+    id: "memo-pastel",
+    name: "파스텔 메모",
+    data: { noteColor: "FBCFE8", textColor: "831843", cols: 3, bg: "FDF2F8" },
+  },
+];
+
+// GPA Calculator
+export const gpaCalculatorPresets: Preset[] = [
+  {
+    id: "gpa-ring",
+    name: "링 스타일",
+    data: { current: 3.8, max: 4.5, style: "ring", color: "6366F1" },
+  },
+  {
+    id: "gpa-bar-dark",
+    name: "다크 바 스타일",
+    data: { current: 3.5, max: 4.5, style: "bar", color: "22D3EE", bg: "1A1A2E", textColor: "E0E0E0" },
+  },
+];
+
+// Savings Goal
+export const savingsGoalPresets: Preset[] = [
+  {
+    id: "savings-travel",
+    name: "여행 자금",
+    data: { title: "여행 자금", target: 2000000, currency: "₩", color: "22C55E", style: "bar" },
+  },
+  {
+    id: "savings-dark",
+    name: "다크 저축",
+    data: { title: "저축 목표", target: 5000000, currency: "₩", color: "F59E0B", bg: "1A1A2E", textColor: "E0E0E0", style: "ring" },
+  },
+];
+
+// Book Goal
+export const bookGoalPresets: Preset[] = [
+  {
+    id: "book-annual",
+    name: "연간 독서 24권",
+    data: { title: "2026 독서", target: 24, color: "F59E0B" },
+  },
+  {
+    id: "book-challenge",
+    name: "독서 챌린지",
+    data: { title: "독서 챌린지", target: 52, color: "6366F1", bg: "EDE9FE", textColor: "4C1D95" },
+  },
+];

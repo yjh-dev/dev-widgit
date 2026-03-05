@@ -994,3 +994,149 @@ export const changelogPresets: Preset[] = [
     },
   },
 ];
+
+// Social Counter
+export const socialCounterPresets: Preset[] = [
+  {
+    id: "social-creator",
+    name: "크리에이터",
+    data: {
+      items: [{ platform: "YouTube", count: 12000 }, { platform: "Instagram", count: 8500 }],
+      layout: "row", color: "E11D48",
+    },
+  },
+  {
+    id: "social-dev",
+    name: "개발자",
+    data: {
+      items: [{ platform: "GitHub", count: 500 }, { platform: "Blog", count: 1200 }],
+      layout: "row", color: "1E1E1E",
+    },
+  },
+];
+
+// Guestbook
+export const guestbookPresets: Preset[] = [
+  {
+    id: "guestbook-purple",
+    name: "보라 방명록",
+    data: { title: "방명록", color: "6366F1", maxItems: 10 },
+  },
+  {
+    id: "guestbook-dark",
+    name: "다크 방명록",
+    data: { title: "방명록", color: "7C3AED", bg: "1A1A2E", textColor: "E0E0E0" },
+  },
+];
+
+// Poll
+export const pollPresets: Preset[] = [
+  {
+    id: "poll-season",
+    name: "계절 투표",
+    data: { question: "좋아하는 계절은?", options: ["봄", "여름", "가을", "겨울"], color: "2563EB" },
+  },
+  {
+    id: "poll-dark",
+    name: "다크 투표",
+    data: { question: "선택하세요", color: "7C3AED", bg: "1A1A2E", textColor: "E0E0E0" },
+  },
+];
+
+// Vocabulary
+export const vocabularyPresets: Preset[] = [
+  {
+    id: "vocab-daily",
+    name: "오늘의 단어",
+    data: { mode: "daily", color: "7C3AED" },
+  },
+  {
+    id: "vocab-dark",
+    name: "다크 단어장",
+    data: { mode: "random", color: "22D3EE", bg: "0F172A", textColor: "E0E0E0" },
+  },
+];
+
+// Mini Gallery
+export const miniGalleryPresets: Preset[] = [
+  {
+    id: "gallery-fade",
+    name: "페이드 갤러리",
+    data: { transition: "fade", interval: 5, showDots: true },
+  },
+  {
+    id: "gallery-slide",
+    name: "슬라이드 갤러리",
+    data: { transition: "slide", interval: 3, showDots: true },
+  },
+];
+
+// ASCII Art
+export const asciiArtPresets: Preset[] = [
+  {
+    id: "ascii-terminal",
+    name: "터미널 스타일",
+    data: { text: "HELLO", font: "standard", color: "22C55E", bg: "0F172A" },
+  },
+  {
+    id: "ascii-banner",
+    name: "배너 스타일",
+    data: { text: "HI", font: "banner", color: "F59E0B", bg: "1E1E1E" },
+  },
+];
+
+// Noise BG
+export const noiseBgPresets: Preset[] = [
+  {
+    id: "noise-aurora",
+    name: "오로라",
+    data: { type: "gradient-flow", color1: "6366F1", color2: "06B6D4", speed: 1 },
+  },
+  {
+    id: "noise-sunset",
+    name: "석양",
+    data: { type: "waves", color1: "F59E0B", color2: "E11D48", speed: 1 },
+  },
+];
+
+// Daily Color
+export const dailyColorPresets: Preset[] = [
+  {
+    id: "daily-full",
+    name: "전체 정보",
+    data: { showHex: true, showRgb: true, showName: true },
+  },
+  {
+    id: "daily-minimal",
+    name: "미니멀",
+    data: { showHex: true, showRgb: false, showName: true, bg: "1E1E1E" },
+  },
+];
+
+// Mini Map
+export const miniMapPresets: Preset[] = [
+  {
+    id: "map-seoul",
+    name: "서울",
+    data: { lat: 37.5665, lon: 126.978, zoom: 13, label: "서울", color: "E11D48" },
+  },
+  {
+    id: "map-tokyo",
+    name: "도쿄",
+    data: { lat: 35.6762, lon: 139.6503, zoom: 12, label: "Tokyo", color: "2563EB" },
+  },
+];
+
+// Rating Card
+export const ratingCardPresets: Preset[] = [
+  {
+    id: "rating-gold",
+    name: "골드 별점",
+    data: { title: "평가", rating: 4.5, maxStars: 5, color: "F59E0B" },
+  },
+  {
+    id: "rating-dark",
+    name: "다크 별점",
+    data: { title: "리뷰", rating: 4.0, maxStars: 5, color: "F59E0B", bg: "1E1E1E", textColor: "FFFFFF" },
+  },
+];

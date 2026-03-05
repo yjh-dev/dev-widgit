@@ -12,6 +12,9 @@ const widgetTypes = [
   "world-clock", "countdown", "stats-card", "color-palette", "divider", "timetable", "flashcard", "water-tracker", "image-card", "currency",
   "age-calculator", "radar-chart", "pie-chart", "stepper", "battery", "testimonial", "emoji-rain", "changelog", "matrix", "multi-progress",
   "fortune-cookie", "badge", "group",
+  "anniversary", "season-countdown", "dual-clock", "gpa-calculator", "savings-goal", "book-goal",
+  "kanban", "routine-timer", "memo-board", "password-gen", "social-counter", "guestbook", "poll",
+  "vocabulary", "mini-gallery", "ascii-art", "noise-bg", "daily-color", "countup", "mini-map", "rating-card",
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {

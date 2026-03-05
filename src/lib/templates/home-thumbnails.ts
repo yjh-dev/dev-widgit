@@ -105,6 +105,48 @@ export function getHomeThumbnailProps(type: WidgetType): Record<string, unknown>
       return { ...common, items: [{ label: "프론트엔드", value: 80, max: 100, color: "6366F1" }, { label: "백엔드", value: 65, max: 100, color: "EC4899" }, { label: "디자인", value: 90, max: 100, color: "22C55E" }], bg: "FFFFFF", padding: 16 };
     case "fortune-cookie":
       return { ...common, customMessages: [], lang: "ko", style: "classic", cookieColor: "D97706", textColor: "1E1E1E", bg: "FFFFFF", padding: 24 };
+    case "anniversary":
+      return { ...common, title: "우리의 기념일", startDate: "2024-03-14", showDays: true, showWeeks: false, color: "E11D48", textColor: "FFFFFF", bg: "1E1E1E", padding: 24 };
+    case "season-countdown":
+      return { ...common, color: "2563EB", textColor: "1E1E1E", bg: "FFFFFF", showIcon: true, padding: 24 };
+    case "dual-clock":
+      return { ...common, tz1: "Asia/Seoul", tz2: "America/New_York", label1: "서울", label2: "뉴욕", format: "24h", color: "1E1E1E", bg: "FFFFFF", padding: 16 };
+    case "gpa-calculator":
+      return { ...common, current: 3.8, max: 4.5, target: 4.5, style: "ring", color: "6366F1", textColor: "1E1E1E", bg: "FFFFFF", padding: 24 };
+    case "savings-goal":
+      return { ...common, title: "여행 자금", current: 500000, target: 2000000, currency: "₩", style: "bar", color: "22C55E", textColor: "1E1E1E", bg: "FFFFFF", padding: 24 };
+    case "book-goal":
+      return { ...common, title: "2026 독서", current: 8, target: 24, color: "F59E0B", textColor: "1E1E1E", bg: "FFFFFF", padding: 16 };
+    case "kanban":
+      return { ...common, title: "프로젝트", columns: [{ title: "할 일", items: ["디자인"] }, { title: "진행 중", items: ["개발"] }, { title: "완료", items: ["기획"] }], color: "6366F1", bg: "FFFFFF", padding: 12 };
+    case "routine-timer":
+      return { ...common, steps: [{ name: "스트레칭", minutes: 5 }, { name: "명상", minutes: 10 }, { name: "독서", minutes: 20 }], color: "2563EB", bg: "FFFFFF", padding: 16 };
+    case "memo-board":
+      return { ...common, memos: ["회의 준비", "장보기", "운동"], cols: 3, noteColor: "FBBF24", textColor: "1E1E1E", bg: "FFFFFF", padding: 12 };
+    case "password-gen":
+      return { ...common, length: 16, upper: true, lower: true, numbers: true, symbols: false, color: "2563EB", bg: "FFFFFF", padding: 24 };
+    case "social-counter":
+      return { ...common, items: [{ platform: "YouTube", count: 1200 }, { platform: "Instagram", count: 850 }], layout: "row", color: "E11D48", textColor: "1E1E1E", bg: "FFFFFF", padding: 16 };
+    case "guestbook":
+      return { ...common, title: "방명록", messages: [{ name: "익명", text: "안녕하세요!" }], color: "6366F1", bg: "FFFFFF", padding: 16 };
+    case "poll":
+      return { ...common, question: "좋아하는 계절은?", options: [{ text: "봄", votes: 12 }, { text: "여름", votes: 8 }, { text: "가을", votes: 15 }, { text: "겨울", votes: 5 }], showPercent: true, color: "2563EB", bg: "FFFFFF", padding: 16 };
+    case "vocabulary":
+      return { ...common, words: [{ word: "serendipity", meaning: "뜻밖의 행운" }], mode: "daily", color: "7C3AED", textColor: "1E1E1E", bg: "FFFFFF", padding: 24 };
+    case "mini-gallery":
+      return { ...common, images: [], interval: 5, transition: "fade", showDots: true, bg: "F3F4F6", padding: 8 };
+    case "ascii-art":
+      return { ...common, text: "HI", font: "standard", color: "22C55E", bg: "0F172A", padding: 16 };
+    case "noise-bg":
+      return { ...common, type: "gradient-flow", color1: "6366F1", color2: "EC4899", speed: 1, opacity: 100, padding: 0 };
+    case "daily-color":
+      return { ...common, showHex: true, showRgb: false, showName: true, bg: "FFFFFF", padding: 24 };
+    case "countup":
+      return { ...common, title: "코딩 시작", startDate: "2024-01-01", showSeconds: false, color: "2563EB", textColor: "1E1E1E", bg: "FFFFFF", padding: 24 };
+    case "mini-map":
+      return { ...common, lat: 37.5665, lon: 126.978, zoom: 13, label: "서울", style: "standard", padding: 8 };
+    case "rating-card":
+      return { ...common, title: "영화 리뷰", rating: 4.5, maxStars: 5, label: "아주 좋음", color: "F59E0B", textColor: "1E1E1E", bg: "FFFFFF", padding: 24 };
     default:
       return common;
   }
