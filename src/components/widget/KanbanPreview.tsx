@@ -6,6 +6,7 @@ import type { FontSizeKey } from "@/lib/common-widget-options";
 import {
   loadKanban,
   saveKanban,
+  DEFAULT_COLUMNS,
   type KanbanColumn,
 } from "@/lib/kanban";
 
@@ -45,13 +46,13 @@ export default function KanbanPreview({
   font = "sans",
   widgetId,
 }: KanbanPreviewProps) {
-  const [columns, setColumns] = useState<KanbanColumn[]>(initialColumns);
+  const [columns, setColumns] = useState<KanbanColumn[]>(initialColumns ?? DEFAULT_COLUMNS);
   const [newItemText, setNewItemText] = useState("");
 
   // 에디터 프리뷰: initialColumns가 바뀌면 동기화
   useEffect(() => {
     if (!interactive) {
-      startTransition(() => setColumns(initialColumns));
+      startTransition(() => setColumns(initialColumns ?? DEFAULT_COLUMNS));
     }
   }, [interactive, initialColumns]);
 

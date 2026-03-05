@@ -43,13 +43,13 @@ export default function MemoBoardPreview({
   font = "sans",
   widgetId,
 }: MemoBoardPreviewProps) {
-  const [memos, setMemos] = useState<string[]>(initialMemos);
+  const [memos, setMemos] = useState<string[]>(initialMemos ?? ["메모 1", "메모 2", "메모 3"]);
   const [newMemo, setNewMemo] = useState("");
 
   // 에디터 프리뷰: initialMemos가 바뀌면 동기화
   useEffect(() => {
     if (!interactive) {
-      startTransition(() => setMemos(initialMemos));
+      startTransition(() => setMemos(initialMemos ?? []));
     }
   }, [interactive, initialMemos]);
 

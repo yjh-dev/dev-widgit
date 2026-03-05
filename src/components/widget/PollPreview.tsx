@@ -50,13 +50,13 @@ export default function PollPreview({
   font = "sans",
   widgetId,
 }: PollPreviewProps) {
-  const [options, setOptions] = useState<PollOption[]>(initialOptions);
+  const [options, setOptions] = useState<PollOption[]>(initialOptions ?? [{ text: "옵션 1", votes: 3 }, { text: "옵션 2", votes: 1 }]);
   const [voted, setVoted] = useState(false);
 
   // 에디터 프리뷰: initialOptions가 바뀌면 동기화
   useEffect(() => {
     if (!interactive) {
-      startTransition(() => setOptions(initialOptions));
+      startTransition(() => setOptions(initialOptions ?? []));
     }
   }, [interactive, initialOptions]);
 

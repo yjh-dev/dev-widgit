@@ -197,13 +197,6 @@ export default function FortuneCookiePreview({
         )}
       </button>
 
-      {/* Tap progress hint */}
-      {tapCount > 0 && tapCount < requiredTaps && !opened && (
-        <p className="text-xs opacity-60 tabular-nums">
-          {tapCount} / {requiredTaps}
-        </p>
-      )}
-
       {/* Fortune message */}
       <div
         className="text-center max-w-[280px] transition-all duration-300"

@@ -235,9 +235,8 @@ export default function CreateMiniMapPage() {
       </Card>
 
       <div className="flex items-center justify-center order-first md:order-last md:sticky md:top-8">
-        <div className="space-y-3 w-full max-w-[400px]">
-          <p className="text-xs text-muted-foreground text-center">미리보기</p>
-          <div className="border rounded-lg overflow-hidden aspect-[4/3]">
+        <div className="w-full max-w-[420px]">
+          <div className="border rounded-lg overflow-hidden aspect-video">
             <EditorEffectsPreview
               fx={fx} fxInt={fxInt} gbg={gbg} gbgDir={gbgDir}
               neonColor={neonColor} bshadow={bshadow} borderRadius={borderRadius}
