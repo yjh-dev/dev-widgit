@@ -21,7 +21,7 @@ import {
   Puzzle,
   ArrowRight,
 } from "lucide-react";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import ThemeToggle from "@/components/ui/theme-toggle";
 import LocaleToggle from "@/components/ui/locale-toggle";
@@ -32,9 +32,15 @@ const HeroWidgetShowcase = dynamic(
 import { getAllWidgets } from "@/lib/widget-categories";
 import { useLocale } from "@/components/LocaleProvider";
 
+const VISITED_KEY = "widgit-visited";
+
 export default function IntroPage() {
   const { locale, t } = useLocale();
   const localAllWidgets = useMemo(() => getAllWidgets(locale), [locale]);
+
+  useEffect(() => {
+    localStorage.setItem(VISITED_KEY, "true");
+  }, []);
 
   return (
     <div className="min-h-screen bg-background">

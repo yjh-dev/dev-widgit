@@ -8,6 +8,7 @@ import {
   X,
   History,
   Star,
+  ArrowUp,
 } from "lucide-react";
 import ThemeToggle from "@/components/ui/theme-toggle";
 import LocaleToggle from "@/components/ui/locale-toggle";
@@ -30,6 +31,7 @@ export default function Home() {
   const [recentTypes, setRecentTypes] = useState<string[]>([]);
   const [favoriteTypes, setFavoriteTypes] = useState<string[]>([]);
   const [headerHidden, setHeaderHidden] = useState(false);
+  const [showScrollTop, setShowScrollTop] = useState(false);
   const lastScrollY = useRef(0);
   const headerRef = useRef<HTMLElement>(null);
   const [headerH, setHeaderH] = useState(0);
@@ -40,7 +42,6 @@ export default function Home() {
 
   useEffect(() => {
     if (!localStorage.getItem(VISITED_KEY)) {
-      localStorage.setItem(VISITED_KEY, "true");
       router.replace("/intro");
       return;
     }
@@ -75,6 +76,7 @@ export default function Home() {
       } else if (y < lastScrollY.current) {
         setHeaderHidden(false);
       }
+      setShowScrollTop(y > 600);
       lastScrollY.current = y;
     };
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -323,6 +325,19 @@ export default function Home() {
           ))
         )}
       </main>
+
+      {/* Scroll to top FAB — mobile only */}
+      {showScrollTop && (
+        <button
+          type="button"
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          className="fixed bottom-6 right-4 z-40 md:hidden w-10 h-10 rounded-full bg-muted/80 backdrop-blur border shadow-md flex items-center justify-center active:scale-95 transition-all"
+          style={{ bottom: "calc(1.5rem + env(safe-area-inset-bottom, 0px))" }}
+          aria-label="맨 위로 이동"
+        >
+          <ArrowUp className="w-4 h-4" />
+        </button>
+      )}
 
       {/* Footer */}
       <footer className="border-t bg-muted/30">

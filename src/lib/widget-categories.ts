@@ -77,7 +77,6 @@ const rawCategories: RawCategory[] = [
       rw("countdown", "분·초 단위 카운트다운 타이머입니다", "A countdown timer in minutes and seconds", ["timer", "minute", "초"]),
       rw("flashcard", "앞·뒤 카드로 암기를 도와줍니다", "Helps memorize with front/back cards", ["study", "memory", "공부"]),
       rw("matrix", "아이젠하워 2×2 우선순위 매트릭스입니다", "Eisenhower 2×2 priority matrix", ["priority", "eisenhower", "우선순위"]),
-      rw("group", "여러 위젯을 하나로 합쳐 표시합니다", "Combines multiple widgets into one", ["combine", "layout", "합치기", "묶음"]),
     ],
   },
   {
@@ -115,7 +114,6 @@ const rawCategories: RawCategory[] = [
       rw("emoji-rain", "이모지가 떨어지는 장식 애니메이션입니다", "A decorative emoji rain animation", ["animation", "emoji", "이모지"]),
       rw("changelog", "버전별 변경 이력을 표시합니다", "Shows version-based changelog", ["version", "history", "변경", "업데이트"]),
       rw("fortune-cookie", "랜덤 포춘 메시지를 보여줍니다", "Shows random fortune messages", ["fortune", "random", "운세", "쿠키"]),
-      rw("badge", "텍스트 뱃지 라벨을 만듭니다", "Creates text badge labels", ["label", "tag", "뱃지", "라벨"]),
     ],
   },
 ];
