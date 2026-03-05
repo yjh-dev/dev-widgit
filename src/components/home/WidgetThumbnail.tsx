@@ -52,7 +52,7 @@ export default function WidgetThumbnail({ type }: WidgetThumbnailProps) {
   const props = getHomeThumbnailProps(type);
 
   return (
-    <div ref={ref} className="relative w-full aspect-[4/3] overflow-hidden rounded-t-xl bg-muted" aria-hidden="true">
+    <div ref={ref} className="relative w-full aspect-[4/3] overflow-hidden rounded-t-xl bg-muted isolate" aria-hidden="true">
       {!visible && (
         <Skeleton className="absolute inset-0 rounded-none" />
       )}

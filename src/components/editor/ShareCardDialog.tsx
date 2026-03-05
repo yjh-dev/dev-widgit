@@ -121,14 +121,22 @@ export default function ShareCardDialog({
   const handleCopyImage = async () => {
     if (!cardDataUrl) return;
     try {
-      const res = await fetch(cardDataUrl);
-      const blob = await res.blob();
-      await navigator.clipboard.write([
-        new ClipboardItem({ "image/png": blob }),
-      ]);
-      toast.success("이미지가 클립보드에 복사되었습니다!");
+      if (typeof ClipboardItem !== "undefined" && navigator.clipboard?.write) {
+        const res = await fetch(cardDataUrl);
+        const blob = await res.blob();
+        await navigator.clipboard.write([
+          new ClipboardItem({ "image/png": blob }),
+        ]);
+        toast.success("이미지가 클립보드에 복사되었습니다!");
+      } else {
+        // WebView fallback: 이미지 복사 미지원 시 자동 다운로드
+        handleDownload();
+        toast.success("이미지가 다운로드되었습니다! (클립보드 복사 미지원 환경)");
+      }
     } catch {
-      toast.error("이미지 복사에 실패했습니다. 다운로드를 이용하세요.");
+      // 실패 시에도 다운로드로 안내
+      handleDownload();
+      toast.success("이미지가 다운로드되었습니다! (클립보드 복사 미지원 환경)");
     }
   };
 

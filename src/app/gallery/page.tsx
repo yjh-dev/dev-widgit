@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ArrowLeft, ExternalLink, Copy, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { copyToClipboard } from "@/lib/clipboard";
 import ThemeToggle from "@/components/ui/theme-toggle";
 import {
   galleryShowcase,
@@ -23,7 +24,7 @@ export default function GalleryPage() {
 
   const handleCopyUrl = (url: string) => {
     const fullUrl = `${window.location.origin}${url}`;
-    navigator.clipboard.writeText(fullUrl).then(() => {
+    copyToClipboard(fullUrl).then(() => {
       toast.success("URL이 복사되었습니다!");
     });
   };
@@ -170,7 +171,7 @@ export default function GalleryPage() {
                   className="text-xs"
                   onClick={() => {
                     const urls = item.widgets.map((w) => `${window.location.origin}${w.url}`).join("\n");
-                    navigator.clipboard.writeText(urls).then(() => {
+                    copyToClipboard(urls).then(() => {
                       toast.success(`${item.title} — ${item.widgets.length}개 URL 복사 완료!`);
                     });
                   }}

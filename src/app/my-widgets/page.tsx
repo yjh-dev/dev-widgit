@@ -28,6 +28,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
+import { copyToClipboard } from "@/lib/clipboard";
 import ThemeToggle from "@/components/ui/theme-toggle";
 import {
   getSavedWidgets,
@@ -85,7 +86,7 @@ export default function MyWidgetsPage() {
 
   const handleCopy = (w: SavedWidget) => {
     const fullUrl = `${window.location.origin}${w.widgetUrl}`;
-    navigator.clipboard.writeText(fullUrl).then(() => {
+    copyToClipboard(fullUrl).then(() => {
       toast.success("URL이 복사되었습니다!");
     });
   };
@@ -135,7 +136,7 @@ export default function MyWidgetsPage() {
       const fullUrl = `${origin}${w.widgetUrl}`;
       return `<!-- ${w.name} -->\n<iframe src="${fullUrl}" style="border:none;width:100%;height:300px;" loading="lazy"></iframe>`;
     }).join("\n\n");
-    navigator.clipboard.writeText(embedCodes).then(() => {
+    copyToClipboard(embedCodes).then(() => {
       toast.success(`${list.length}개 위젯 임베드 코드가 복사되었습니다!`);
     });
   };

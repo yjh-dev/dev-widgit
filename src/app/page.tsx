@@ -284,7 +284,7 @@ export default function Home() {
                 className="text-lg font-semibold mb-4 sticky z-40 bg-background py-2 -mx-6 px-6 md:static md:mx-0 md:px-0 md:py-0 transition-[top] duration-300"
                 style={{ top: headerHidden ? 0 : headerH }}
               >{category.title}</h2>
-              <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5">
+              <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
                 {category.widgets.map((w) => {
                   const Icon = w.icon;
                   return (
@@ -294,7 +294,7 @@ export default function Home() {
                       className="group rounded-xl border bg-card overflow-hidden transition-all duration-200 hover:-translate-y-1 hover:shadow-lg relative"
                     >
                       <WidgetThumbnail type={w.type} />
-                      <div className="p-3 sm:p-4 flex items-start gap-2 sm:gap-3">
+                      <div className="p-2.5 sm:p-4 flex items-start gap-2 sm:gap-3">
                         <Icon className="w-4 h-4 sm:w-5 sm:h-5 text-primary mt-0.5 shrink-0" />
                         <div className="flex-1 min-w-0">
                           <p className="font-semibold text-card-foreground text-sm sm:text-base">{highlight(w.name)}</p>

@@ -22,7 +22,7 @@ export default function NotionPageMockup({ children }: NotionPageMockupProps) {
       </div>
 
       {/* Page content area */}
-      <div className="px-12 py-8 space-y-4">
+      <div className="px-4 sm:px-12 py-6 sm:py-8 space-y-4">
         {/* Page title */}
         <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 select-none">
           My Page

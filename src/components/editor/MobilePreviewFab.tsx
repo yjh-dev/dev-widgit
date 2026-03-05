@@ -75,7 +75,8 @@ export default function MobilePreviewFab({ children, aspect }: MobilePreviewFabP
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="fixed bottom-20 right-4 z-40 md:hidden w-12 h-12 rounded-full bg-primary text-primary-foreground shadow-lg flex items-center justify-center active:scale-95 transition-transform"
+        className="fixed right-4 z-40 md:hidden w-12 h-12 rounded-full bg-primary text-primary-foreground shadow-lg flex items-center justify-center active:scale-95 transition-transform"
+        style={{ bottom: "calc(5rem + env(safe-area-inset-bottom, 0px))" }}
         title="미리보기"
         aria-label="미리보기 열기"
       >
@@ -98,7 +99,7 @@ export default function MobilePreviewFab({ children, aspect }: MobilePreviewFabP
             role="dialog"
             aria-modal="true"
             aria-label="미리보기"
-            className="absolute bottom-0 inset-x-0 bg-background rounded-t-2xl max-h-[70vh] flex flex-col animate-in slide-in-from-bottom duration-300"
+            className="absolute bottom-0 inset-x-0 bg-background rounded-t-2xl max-h-[85vh] flex flex-col animate-in slide-in-from-bottom duration-300"
           >
             {/* Handle bar */}
             <div className="flex justify-center pt-3 pb-1">
@@ -120,10 +121,10 @@ export default function MobilePreviewFab({ children, aspect }: MobilePreviewFabP
             </div>
 
             {/* Preview content */}
-            <div className="flex-1 overflow-auto px-4 pb-6">
+            <div className="flex-1 overflow-auto px-3" style={{ paddingBottom: "calc(1.5rem + env(safe-area-inset-bottom, 0px))" }}>
               <div
                 className="w-full bg-muted/30 rounded-lg overflow-hidden flex items-center justify-center"
-                style={{ aspectRatio: aspect || undefined, minHeight: aspect ? undefined : 280 }}
+                style={{ aspectRatio: aspect || undefined, minHeight: aspect ? undefined : 320 }}
               >
                 {children}
               </div>

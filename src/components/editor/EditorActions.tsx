@@ -28,6 +28,7 @@ import EditorActionSaveWidget from "./EditorActionSaveWidget";
 import ShareCardDialog from "./ShareCardDialog";
 import GallerySubmitButton from "./GallerySubmitButton";
 import { trackCopyUrl, trackCopyEmbed, trackCopyShareLink, trackExportImage } from "@/lib/analytics";
+import { copyToClipboard } from "@/lib/clipboard";
 import { useLocale } from "@/components/LocaleProvider";
 
 const LS_KEY = "widgit-short-url";
@@ -119,7 +120,7 @@ export default function EditorActions({
   const wrappedOnCopy = useCallback(() => {
     trackCopyUrl(widgetType);
     if (shortUrl) {
-      navigator.clipboard.writeText(displayUrl).then(() => {
+      copyToClipboard(displayUrl).then(() => {
         toast.success(t("editor.shortUrlCopied"));
       });
     } else {
@@ -216,7 +217,7 @@ export default function EditorActions({
           className="flex-1 h-8 text-xs"
           onClick={() => {
             const iframe = `<iframe src="${displayUrl}" width="100%" height="300" style="border:none;" loading="lazy"></iframe>`;
-            navigator.clipboard.writeText(iframe).then(() => {
+            copyToClipboard(iframe).then(() => {
               trackCopyEmbed(widgetType);
               toast.success(t("editor.embedCopied"));
             });
@@ -231,7 +232,7 @@ export default function EditorActions({
           className="flex-1 h-8 text-xs"
           onClick={() => {
             const editorUrl = displayUrl.replace("/widget/", "/create/");
-            navigator.clipboard.writeText(editorUrl).then(() => {
+            copyToClipboard(editorUrl).then(() => {
               trackCopyShareLink(widgetType);
               toast.success(t("editor.shareLinkCopied"));
             });
