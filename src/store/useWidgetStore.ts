@@ -77,9 +77,9 @@ interface DdayWidgetState {
 const initialState = {
   title: "D-Day",
   targetDate: "",
-  bgColor: "1E1E1E",
-  textColor: "FFFFFF",
-  isDarkMode: true,
+  bgColor: "FFFFFF",
+  textColor: "1E1E1E",
+  isDarkMode: false,
   calcType: "down" as CalcType,
   isAnnual: false,
   layout: "default" as LayoutType,

@@ -342,47 +342,34 @@ export default function Home() {
       {/* Footer */}
       <footer className="border-t bg-muted/30">
         <div className="max-w-5xl mx-auto px-6 py-10">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-6 text-sm text-muted-foreground">
-              <span className="font-semibold text-foreground">Wiget-Tree</span>
-              <span>{localAllWidgets.length} {t("footer.widgets")}</span>
-              <span>{t("footer.serverless")}</span>
-              <span>{t("footer.free")}</span>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 text-sm">
+            <div>
+              <p className="font-semibold text-foreground mb-3">Wiget-Tree</p>
+              <p className="text-muted-foreground text-xs leading-relaxed">
+                {localAllWidgets.length} {t("footer.widgets")} · {t("footer.serverless")} · {t("footer.free")}
+              </p>
             </div>
-            <div className="flex items-center gap-4 text-sm text-muted-foreground flex-wrap">
-              <Link href="/intro" className="hover:text-foreground transition-colors">
-                {t("nav.intro")}
-              </Link>
-              <Link href="/guide" className="hover:text-foreground transition-colors">
-                {t("nav.guide")}
-              </Link>
-              <Link href="/templates" className="hover:text-foreground transition-colors">
-                {t("nav.templates")}
-              </Link>
-              <Link href="/gallery" className="hover:text-foreground transition-colors">
-                {t("nav.gallery")}
-              </Link>
-              <Link href="/my-widgets" className="hover:text-foreground transition-colors">
-                {t("nav.myWidgets")}
-              </Link>
-              <Link href="/blog" className="hover:text-foreground transition-colors">
-                {t("nav.blog")}
-              </Link>
-              <Link href="/feedback" className="hover:text-foreground transition-colors">
-                {t("nav.feedback")}
-              </Link>
-              <Link href="/terms" className="hover:text-foreground transition-colors">
-                {t("nav.terms")}
-              </Link>
-              <Link href="/privacy" className="hover:text-foreground transition-colors">
-                {t("nav.privacy")}
-              </Link>
-              <Link href="/settings" className="hover:text-foreground transition-colors">
-                {t("nav.settings")}
-              </Link>
+            <div className="flex flex-col gap-2 text-muted-foreground">
+              <p className="font-medium text-foreground text-xs uppercase tracking-wider mb-1">서비스</p>
+              <Link href="/intro" className="hover:text-foreground transition-colors">{t("nav.intro")}</Link>
+              <Link href="/guide" className="hover:text-foreground transition-colors">{t("nav.guide")}</Link>
+              <Link href="/templates" className="hover:text-foreground transition-colors">{t("nav.templates")}</Link>
+              <Link href="/gallery" className="hover:text-foreground transition-colors">{t("nav.gallery")}</Link>
+            </div>
+            <div className="flex flex-col gap-2 text-muted-foreground">
+              <p className="font-medium text-foreground text-xs uppercase tracking-wider mb-1">도구</p>
+              <Link href="/my-widgets" className="hover:text-foreground transition-colors">{t("nav.myWidgets")}</Link>
+              <Link href="/blog" className="hover:text-foreground transition-colors">{t("nav.blog")}</Link>
+              <Link href="/feedback" className="hover:text-foreground transition-colors">{t("nav.feedback")}</Link>
+              <Link href="/settings" className="hover:text-foreground transition-colors">{t("nav.settings")}</Link>
+            </div>
+            <div className="flex flex-col gap-2 text-muted-foreground">
+              <p className="font-medium text-foreground text-xs uppercase tracking-wider mb-1">정보</p>
+              <Link href="/terms" className="hover:text-foreground transition-colors">{t("nav.terms")}</Link>
+              <Link href="/privacy" className="hover:text-foreground transition-colors">{t("nav.privacy")}</Link>
             </div>
           </div>
-          <p className="text-center text-xs text-muted-foreground mt-6">
+          <p className="text-center text-xs text-muted-foreground mt-10 pt-6 border-t">
             {t("footer.desc")}
           </p>
         </div>

@@ -19,7 +19,7 @@ import { toast } from "sonner";
 import { trackFeedbackSubmit } from "@/lib/analytics";
 
 
-const GITHUB_REPO = "https://github.com/wiget-tree-app/wiget-tree";
+const GITHUB_REPO = "https://github.com/yjh-dev/dev-widgit";
 
 const categories = [
   { value: "widget-request", label: "위젯 요청" },

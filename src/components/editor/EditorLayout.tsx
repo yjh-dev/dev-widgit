@@ -3,7 +3,7 @@
 import { type ReactNode, Children, Suspense, useEffect, useState, useRef, useCallback, startTransition } from "react";
 import Link from "next/link";
 import { useSearchParams, usePathname } from "next/navigation";
-import { ArrowLeft, LayoutGrid, RectangleHorizontal, Square, RectangleVertical, Maximize, AppWindow, Smartphone, Info } from "lucide-react";
+import { ArrowLeft, LayoutGrid, RectangleHorizontal, Square, Maximize, AppWindow } from "lucide-react";
 import ThemeToggle from "@/components/ui/theme-toggle";
 import { EditorActionsProvider } from "./EditorActionsContext";
 import MobileBottomBar from "./MobileBottomBar";
@@ -12,20 +12,15 @@ import AdBanner from "@/components/AdBanner";
 import NotionPageMockup from "./NotionPageMockup";
 import OnboardingTour from "./OnboardingTour";
 import { addRecentWidget } from "@/lib/recent-widgets";
-import { getSizeGuide } from "@/lib/widget-size-guide";
 import { trackEditorVisit } from "@/lib/analytics";
 import { useLocale } from "@/components/LocaleProvider";
 
 import dynamic from "next/dynamic";
 const EditorWidgetNav = dynamic(() => import("./EditorWidgetNav"), { ssr: false });
 
-type PreviewSize = "free" | "square" | "wide" | "tall" | "mobile" | "notion-full" | "notion-half" | "notion";
+type PreviewSize = "free" | "notion-full" | "notion-half" | "notion";
 const previewSizes: { key: PreviewSize; label: string; icon: typeof Square; aspect?: string }[] = [
   { key: "free", label: "자유", icon: Maximize },
-  { key: "square", label: "1:1", icon: Square, aspect: "1/1" },
-  { key: "wide", label: "2:1", icon: RectangleHorizontal, aspect: "2/1" },
-  { key: "tall", label: "1:2", icon: RectangleVertical, aspect: "1/2" },
-  { key: "mobile", label: "모바일", icon: Smartphone, aspect: "9/16" },
   { key: "notion-full", label: "전체폭", icon: RectangleHorizontal, aspect: "16/5" },
   { key: "notion-half", label: "반폭", icon: Square, aspect: "4/5" },
   { key: "notion", label: "노션", icon: AppWindow, aspect: "4/3" },
@@ -74,15 +69,17 @@ function PreviewContainer({ aspect, children }: { aspect?: string; children: Rea
   const [layout, setLayout] = useState({ scale: 1, offsetX: 0, offsetY: 0 });
   const [ready, setReady] = useState(false);
 
+  const INSET = 16;
+
   const measure = useCallback(() => {
     const outer = outerRef.current;
     const inner = innerRef.current;
     if (!outer || !inner) return;
 
-    // 스케일 초기화해서 자연 크기 측정
     inner.style.transform = "none";
-    const ow = outer.clientWidth;
-    const oh = outer.clientHeight;
+    // 패딩 없는 컨테이너이므로 clientWidth/Height가 전체 크기
+    const ow = outer.clientWidth - INSET * 2;
+    const oh = outer.clientHeight - INSET * 2;
     const iw = inner.scrollWidth;
     const ih = inner.scrollHeight;
 
@@ -95,8 +92,8 @@ function PreviewContainer({ aspect, children }: { aspect?: string; children: Rea
     }
 
     const s = Math.min(ow / iw, oh / ih, 1);
-    const offsetX = (ow - iw * s) / 2;
-    const offsetY = (oh - ih * s) / 2;
+    const offsetX = INSET + (ow - iw * s) / 2;
+    const offsetY = INSET + (oh - ih * s) / 2;
     inner.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(${s})`;
     startTransition(() => {
       setLayout({ scale: s, offsetX, offsetY });
@@ -121,7 +118,7 @@ function PreviewContainer({ aspect, children }: { aspect?: string; children: Rea
     <div
       id="widget-preview"
       ref={outerRef}
-      className="relative overflow-hidden"
+      className="relative overflow-hidden rounded-lg border border-dashed border-muted-foreground/20 bg-muted/30"
       style={{ aspectRatio: aspect, opacity: ready ? 1 : 0 }}
     >
       <div
@@ -172,8 +169,6 @@ export default function EditorLayout({ title, children }: EditorLayoutProps) {
   }, [pathname]);
 
   const sizeConfig = previewSizes.find((s) => s.key === previewSize)!;
-  const widgetType = pathname.replace("/create/", "");
-  const sizeGuide = widgetType !== pathname ? getSizeGuide(widgetType) : undefined;
 
   const renderPreview = (panel: ReactNode) => {
     if (previewSize === "notion") {
@@ -248,12 +243,6 @@ export default function EditorLayout({ title, children }: EditorLayoutProps) {
                   );
                 })}
               </div>
-              {sizeGuide && (
-                <div className="flex items-start gap-1.5 mb-2 text-xs text-muted-foreground">
-                  <Info className="w-3.5 h-3.5 mt-0.5 shrink-0" />
-                  <span>추천: <strong className="text-foreground">{sizeGuide.recommended}</strong> — {sizeGuide.tip}</span>
-                </div>
-              )}
               {renderPreview(previewPanel)}
             </div>
           </div>

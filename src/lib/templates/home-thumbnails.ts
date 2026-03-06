@@ -4,7 +4,7 @@ export function getHomeThumbnailProps(type: WidgetType): Record<string, unknown>
   const common = { borderRadius: 0, fontSize: "sm" as const };
   switch (type) {
     case "dday":
-      return { ...common, title: "수능", targetDate: "2026-11-19", bgColor: "1E1E1E", textColor: "FFFFFF", padding: 24 };
+      return { ...common, title: "수능", targetDate: "2026-11-19", bgColor: "FFFFFF", textColor: "1E1E1E", padding: 24 };
     case "life-calendar":
       return { ...common, birthdate: "2000-01-01", lifespan: 80, color: "2563EB", bg: "FFFFFF", showStats: false, padding: 12, cellSize: "sm" };
     case "time-progress":

@@ -35,7 +35,7 @@ export default function NotionPageMockup({ children }: NotionPageMockupProps) {
         </div>
 
         {/* Embedded widget */}
-        <div className="rounded border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <div className="overflow-hidden">
           {children}
         </div>
 

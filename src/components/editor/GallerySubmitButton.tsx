@@ -35,7 +35,7 @@ export default function GallerySubmitButton({
 
     trackGallerySubmit(widgetType);
     window.open(
-      `https://github.com/wiget-tree-app/wiget-tree/issues/new?title=${title}&body=${body}&labels=gallery`,
+      `https://github.com/yjh-dev/dev-widgit/issues/new?title=${title}&body=${body}&labels=gallery`,
       "_blank"
     );
   };

@@ -4,7 +4,6 @@ import {
   CheckSquare,
   Clock,
   CloudSun,
-  Gauge,
   Grid3X3,
   Hash,
   Calendar,
@@ -83,7 +82,7 @@ interface WidgetMeta {
 const widgetMetaMap: Record<WidgetType, WidgetMeta> = {
   dday: { name: "D-Day 위젯", nameEn: "D-Day", icon: CalendarDays },
   clock: { name: "미니멀 시계", nameEn: "Minimal Clock", icon: Clock },
-  "analog-clock": { name: "아날로그 시계", nameEn: "Analog Clock", icon: Gauge },
+  "analog-clock": { name: "아날로그 시계", nameEn: "Analog Clock", icon: AlarmClock },
   "mini-calendar": { name: "미니 캘린더", nameEn: "Mini Calendar", icon: Calendar },
   timeline: { name: "타임라인", nameEn: "Timeline", icon: ListTodo },
   "flip-clock": { name: "플립 시계", nameEn: "Flip Clock", icon: FlipVertical },

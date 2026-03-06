@@ -27,7 +27,7 @@ export default function BlogPage() {
         </p>
       </header>
 
-      <main className="max-w-3xl mx-auto px-6 pb-20 space-y-4">
+      <main className="max-w-3xl mx-auto px-6 pb-20 flex flex-col gap-4">
         {articles.map((article) => (
           <Link key={article.slug} href={`/blog/${article.slug}`}>
             <Card className="hover:border-foreground/20 transition-colors cursor-pointer">
