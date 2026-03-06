@@ -24,9 +24,9 @@ import { goalPresets } from "@/lib/presets";
 import { useWidgetUrl } from "@/lib/use-widget-url";
 import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
-import type { GoalStyle } from "@/lib/goal";
+import type { GoalStyle, GoalIcon } from "@/lib/goal";
 import { parseCommonParams } from "@/lib/common-params";
-import { addBgParam, addCommonStyleParams, addEffectParams, addExtraStyleParams, buildUrl } from "@/lib/url-builder-utils";
+import { addBgParam, addCommonStyleParams, addEffectParams, addExtraStyleParams, addEntranceParams, buildUrl } from "@/lib/url-builder-utils";
 import EffectOptions from "@/components/editor/EffectOptions";
 import EditorEffectsPreview from "@/components/editor/EditorEffectsPreview";
 import EffectPresetSelector from "@/components/editor/EffectPresetSelector";
@@ -37,13 +37,16 @@ export default function CreateGoalPage() {
     title, current, target, unit, style, showValue,
     color, textColor, font, bg, transparentBg,
     borderRadius, padding, fontSize,
+    icon, year,
     setTitle, setCurrent, setTarget, setUnit, setStyle, setShowValue,
     setColor, setTextColor, setFont, setBg, setTransparentBg,
     setBorderRadius, setPadding, setFontSize,
+    setIcon, setYear,
     fx, fxInt, gbg, gbgDir, neonColor, bshadow,
     setFx, setFxInt, setGbg, setGbgDir, setNeonColor, setBshadow,
     tshadow, bw, bc, opacity, ls,
     setTshadow, setBw, setBc, setOpacity, setLs,
+    entrance, entranceDelay, setEntrance, setEntranceDelay,
     loadPreset, reset,
   } = useGoalStore();
 
@@ -54,6 +57,8 @@ export default function CreateGoalPage() {
       ...(p.has("target") && { target: Number(p.get("target")) }),
       ...(p.has("unit") && { unit: p.get("unit")! }),
       ...(p.has("style") && { style: p.get("style") as GoalStyle }),
+      ...(p.has("icon") && { icon: p.get("icon") as GoalIcon }),
+      ...(p.has("year") && { year: p.get("year")! }),
       ...(p.has("showValue") && { showValue: p.get("showValue") !== "false" }),
       ...(p.has("color") && { color: p.get("color")! }),
       ...(p.has("textColor") && { textColor: p.get("textColor")! }),
@@ -63,6 +68,8 @@ export default function CreateGoalPage() {
       ...(p.has("bc") && { bc: p.get("bc")! }),
       ...(p.has("opacity") && { opacity: p.get("opacity")! }),
       ...(p.has("ls") && { ls: p.get("ls")! }),
+      ...(p.has("entrance") && { entrance: p.get("entrance")! }),
+      ...(p.has("ed") && { entranceDelay: p.get("ed")! }),
       ...parseCommonParams(p),
     });
   });
@@ -75,6 +82,8 @@ export default function CreateGoalPage() {
     if (target !== 100) params.set("target", String(target));
     if (unit) params.set("unit", unit);
     if (style !== "bar") params.set("style", style);
+    if (icon) params.set("icon", icon);
+    if (year) params.set("year", year);
     if (!showValue) params.set("showValue", "false");
     if (color !== "2563EB") params.set("color", color);
     if (textColor) params.set("textColor", textColor);
@@ -83,8 +92,9 @@ export default function CreateGoalPage() {
     addCommonStyleParams(params, borderRadius, padding, fontSize);
     addEffectParams(params, fx, fxInt, gbg, gbgDir, neonColor, bshadow);
     addExtraStyleParams(params, tshadow, bw, bc, opacity, ls);
+    addEntranceParams(params, entrance, entranceDelay);
     return buildUrl(base, params);
-  }, [title, current, target, unit, style, showValue, color, textColor, font, bg, transparentBg, borderRadius, padding, fontSize, fx, fxInt, gbg, gbgDir, neonColor, bshadow, tshadow, bw, bc, opacity, ls]);
+  }, [title, current, target, unit, style, showValue, color, textColor, font, bg, transparentBg, borderRadius, padding, fontSize, icon, year, fx, fxInt, gbg, gbgDir, neonColor, bshadow, tshadow, bw, bc, opacity, ls, entrance, entranceDelay]);
 
   const handleCopy = async () => {
     await copyToClipboard(buildWidgetUrl());
@@ -149,9 +159,31 @@ export default function CreateGoalPage() {
                         <SelectContent>
                           <SelectItem value="bar">바</SelectItem>
                           <SelectItem value="ring">링</SelectItem>
+                          <SelectItem value="icons">아이콘</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
+                    {style === "icons" && (
+                      <>
+                        <div className="space-y-2">
+                          <Label>아이콘 모양</Label>
+                          <Select value={icon || "circle"} onValueChange={(v) => setIcon(v as GoalIcon)}>
+                            <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="circle">동그라미</SelectItem>
+                              <SelectItem value="book">책</SelectItem>
+                              <SelectItem value="star">별</SelectItem>
+                              <SelectItem value="heart">하트</SelectItem>
+                              <SelectItem value="check">체크</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="year">연도 (비우면 표시 안 함)</Label>
+                          <Input id="year" value={year} onChange={(e) => setYear(e.target.value)} placeholder="2026" />
+                        </div>
+                      </>
+                    )}
                     <div className="space-y-2">
                       <Label>폰트</Label>
                       <Select value={font} onValueChange={setFont}>
@@ -213,6 +245,8 @@ export default function CreateGoalPage() {
                     tshadow={tshadow} bw={bw} bc={bc} opacity={opacity} ls={ls}
                     onTshadowChange={setTshadow} onBwChange={setBw} onBcChange={setBc}
                     onOpacityChange={setOpacity} onLsChange={setLs}
+                    entrance={entrance} entranceDelay={entranceDelay}
+                    onEntranceChange={setEntrance} onEntranceDelayChange={setEntranceDelay}
                   />
                 ),
               },
@@ -237,7 +271,7 @@ export default function CreateGoalPage() {
               title={title} current={current} target={target} unit={unit}
               style={style} showValue={showValue} color={color} textColor={textColor}
               font={font} bg={bg} transparentBg={transparentBg} borderRadius={borderRadius}
-              padding={padding} fontSize={fontSize}
+              padding={padding} fontSize={fontSize} icon={icon} year={year}
             />
             </EditorEffectsPreview>
           </div>

@@ -21,6 +21,7 @@ function WaterTrackerWidgetContent() {
   const borderRadius = parseBorderRadius(searchParams.get("radius"));
   const padding = parsePadding(searchParams.get("pad"));
   const fontSize = parseFontSize(searchParams.get("fsize"));
+  const celebrate = searchParams.get("celebrate") !== "false";
 
   return (
     <WidgetScreen>
@@ -35,6 +36,7 @@ function WaterTrackerWidgetContent() {
         borderRadius={borderRadius}
         padding={padding}
         fontSize={fontSize}
+        celebrate={celebrate}
       />
     </WidgetScreen>
   );

@@ -25,6 +25,7 @@ function TodoWidgetContent() {
   const padding = parsePadding(searchParams.get("pad"));
   const fontSize = parseFontSize(searchParams.get("fsize"));
   const font = searchParams.get("font") || "sans";
+  const celebrate = searchParams.get("celebrate") !== "false";
 
   // widgetId for localStorage persistence (hash of items param)
   const widgetId = rawItems ? btoa(rawItems).slice(0, 12) : "default";
@@ -46,6 +47,7 @@ function TodoWidgetContent() {
         padding={padding}
         fontSize={fontSize}
         widgetId={widgetId}
+        celebrate={celebrate}
       />
     </WidgetScreen>
   );

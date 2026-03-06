@@ -1,13 +1,11 @@
 "use client";
 
 import { useWidgetParams } from "@/lib/use-widget-params";
-import SavingsGoalPreview from "@/components/widget/SavingsGoalPreview";
+import GoalPreview from "@/components/widget/GoalPreview";
 import WidgetPage, { WidgetScreen } from "@/components/widget/WidgetPage";
 import { parseBgParam } from "@/lib/common-params";
 import { parseBorderRadius, parsePadding, parseFontSize, parseHexColor } from "@/lib/common-widget-options";
-import type { SavingsStyle } from "@/lib/savings-goal";
-
-const VALID_STYLES: SavingsStyle[] = ["bar", "ring"];
+import { VALID_STYLES, type GoalStyle } from "@/lib/goal";
 
 function SavingsGoalWidgetContent() {
   const searchParams = useWidgetParams();
@@ -18,8 +16,8 @@ function SavingsGoalWidgetContent() {
   const currency = searchParams.get("currency") || "₩";
 
   const rawStyle = searchParams.get("style");
-  const style: SavingsStyle = VALID_STYLES.includes(rawStyle as SavingsStyle)
-    ? (rawStyle as SavingsStyle)
+  const style: GoalStyle = VALID_STYLES.includes(rawStyle as GoalStyle)
+    ? (rawStyle as GoalStyle)
     : "bar";
 
   const showValue = searchParams.get("showValue") !== "false";
@@ -35,11 +33,11 @@ function SavingsGoalWidgetContent() {
 
   return (
     <WidgetScreen>
-      <SavingsGoalPreview
+      <GoalPreview
         title={title}
         current={current}
         target={target}
-        currency={currency}
+        unit={currency}
         style={style}
         showValue={showValue}
         color={color}

@@ -1,12 +1,15 @@
 "use client";
 
 import { useWidgetParams } from "@/lib/use-widget-params";
-import MemoBoardPreview from "@/components/widget/MemoBoardPreview";
+import StickyNotePreview from "@/components/widget/StickyNotePreview";
 import WidgetPage, { WidgetScreen } from "@/components/widget/WidgetPage";
-import { parseBgParam } from "@/lib/common-params";
-import { parseMemos } from "@/lib/memo-board";
 import { parseBorderRadius, parsePadding, parseFontSize, parseHexColor } from "@/lib/common-widget-options";
+import { parseMemos } from "@/lib/sticky-note";
 
+/**
+ * Compatibility page: renders memo-board URLs via StickyNotePreview mode="board".
+ * Parses legacy memo-board URL params and delegates to the unified sticky-note component.
+ */
 function MemoBoardWidgetContent() {
   const searchParams = useWidgetParams();
 
@@ -16,30 +19,28 @@ function MemoBoardWidgetContent() {
 
   const noteColor = parseHexColor(searchParams.get("noteColor"), "FBBF24");
   const textColor = parseHexColor(searchParams.get("textColor"), "1E1E1E");
-  const { bg, transparentBg } = parseBgParam(searchParams.get("bg"));
+  const font = searchParams.get("font") || "sans";
 
   const borderRadius = parseBorderRadius(searchParams.get("radius"));
   const padding = parsePadding(searchParams.get("pad"));
   const fontSize = parseFontSize(searchParams.get("fsize"));
-  const font = searchParams.get("font") || "sans";
 
   // widgetId for localStorage persistence
   const widgetId = rawMemos ? btoa(rawMemos).slice(0, 12) : "default";
 
   return (
     <WidgetScreen>
-      <MemoBoardPreview
+      <StickyNotePreview
+        mode="board"
         initialMemos={initialMemos}
         interactive={true}
         cols={cols}
         noteColor={noteColor}
         textColor={textColor}
-        bg={bg}
-        transparentBg={transparentBg}
+        font={font}
         borderRadius={borderRadius}
         padding={padding}
         fontSize={fontSize}
-        font={font}
         widgetId={widgetId}
       />
     </WidgetScreen>

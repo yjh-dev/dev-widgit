@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo, useCallback, startTransition } from "react";
-import { Copy, RotateCcw, ExternalLink, ChevronDown, Download, Import, Code, Share2, Image } from "lucide-react";
+import { Copy, RotateCcw, ExternalLink, ChevronDown, Download, Import, Code, Share2, Image, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   AlertDialog,
@@ -16,6 +16,12 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { useEditorActions } from "./EditorActionsContext";
 import { compressWidgetUrl, decompressToParams } from "@/lib/url-compression";
@@ -61,6 +67,11 @@ export default function EditorActions({
   const [showImport, setShowImport] = useState(false);
   const [importUrl, setImportUrl] = useState("");
   const [shareOpen, setShareOpen] = useState(false);
+  const [embedOpen, setEmbedOpen] = useState(false);
+  const [embedMode, setEmbedMode] = useState<"fixed" | "responsive">("fixed");
+  const [embedHeight, setEmbedHeight] = useState("300");
+  const [embedRatio, setEmbedRatio] = useState("16/9");
+  const [embedCopied, setEmbedCopied] = useState(false);
   const { register } = useEditorActions();
   const { t } = useLocale();
 
@@ -131,6 +142,13 @@ export default function EditorActions({
   useEffect(() => {
     register({ widgetUrl: displayUrl, onCopy: wrappedOnCopy, onReset });
   }, [displayUrl, wrappedOnCopy, onReset, register]);
+
+  const embedCode = useMemo(() => {
+    if (embedMode === "fixed") {
+      return `<iframe src="${displayUrl}" width="100%" height="${embedHeight}" style="border:none;" loading="lazy"></iframe>`;
+    }
+    return `<div style="position:relative;width:100%;aspect-ratio:${embedRatio};">\n  <iframe src="${displayUrl}" style="position:absolute;inset:0;width:100%;height:100%;border:none;" loading="lazy"></iframe>\n</div>`;
+  }, [displayUrl, embedMode, embedHeight, embedRatio]);
 
   return (
     <div className="space-y-4">
@@ -215,13 +233,7 @@ export default function EditorActions({
           variant="outline"
           size="sm"
           className="flex-1 h-8 text-xs"
-          onClick={() => {
-            const iframe = `<iframe src="${displayUrl}" width="100%" height="300" style="border:none;" loading="lazy"></iframe>`;
-            copyToClipboard(iframe).then(() => {
-              trackCopyEmbed(widgetType);
-              toast.success(t("editor.embedCopied"));
-            });
-          }}
+          onClick={() => setEmbedOpen(true)}
         >
           <Code className="w-3.5 h-3.5 mr-1.5" />
           {t("editor.embedCode")}
@@ -259,6 +271,96 @@ export default function EditorActions({
         )}
       </div>
       <ShareCardDialog open={shareOpen} onOpenChange={setShareOpen} widgetUrl={displayUrl} />
+
+      <Dialog open={embedOpen} onOpenChange={setEmbedOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>임베드 코드</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="flex gap-2">
+              <Button
+                variant={embedMode === "fixed" ? "default" : "outline"}
+                size="sm"
+                className="flex-1 text-xs"
+                onClick={() => setEmbedMode("fixed")}
+              >
+                고정 높이
+              </Button>
+              <Button
+                variant={embedMode === "responsive" ? "default" : "outline"}
+                size="sm"
+                className="flex-1 text-xs"
+                onClick={() => setEmbedMode("responsive")}
+              >
+                비율 반응형
+              </Button>
+            </div>
+
+            {embedMode === "fixed" ? (
+              <div className="space-y-2">
+                <Label htmlFor="embed-height">높이 (px)</Label>
+                <input
+                  id="embed-height"
+                  type="number"
+                  min={100}
+                  max={1000}
+                  value={embedHeight}
+                  onChange={(e) => setEmbedHeight(e.target.value)}
+                  className="w-full rounded-md border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                />
+              </div>
+            ) : (
+              <div className="space-y-2">
+                <Label>비율 프리셋</Label>
+                <div className="grid grid-cols-4 gap-1.5">
+                  {[
+                    { value: "16/9", label: "16:9" },
+                    { value: "4/3", label: "4:3" },
+                    { value: "16/5", label: "16:5" },
+                    { value: "1/1", label: "1:1" },
+                  ].map((r) => (
+                    <Button
+                      key={r.value}
+                      variant={embedRatio === r.value ? "default" : "outline"}
+                      size="sm"
+                      className="text-xs"
+                      onClick={() => setEmbedRatio(r.value)}
+                    >
+                      {r.label}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <textarea
+              readOnly
+              value={embedCode}
+              rows={embedMode === "responsive" ? 4 : 2}
+              className="w-full rounded-md border bg-muted px-3 py-2 text-xs text-muted-foreground break-all resize-none font-mono focus:outline-none focus:ring-2 focus:ring-ring"
+            />
+
+            <Button
+              className="w-full"
+              onClick={() => {
+                copyToClipboard(embedCode).then(() => {
+                  trackCopyEmbed(widgetType);
+                  setEmbedCopied(true);
+                  toast.success(t("editor.embedCopied"));
+                  setTimeout(() => setEmbedCopied(false), 2000);
+                });
+              }}
+            >
+              {embedCopied ? (
+                <><Check className="w-4 h-4 mr-2" />복사됨</>
+              ) : (
+                <><Copy className="w-4 h-4 mr-2" />코드 복사</>
+              )}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       <div className="flex flex-wrap gap-x-3 gap-y-1">
         <button

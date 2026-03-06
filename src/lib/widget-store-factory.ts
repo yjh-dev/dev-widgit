@@ -4,6 +4,8 @@ import type {
   BorderWidthKey,
   OpacityKey,
   LetterSpacingKey,
+  EntranceType,
+  EntranceDelayKey,
 } from "@/lib/common-widget-options";
 import type { EffectType, EffectIntensity, BoxShadowPreset } from "@/lib/widget-effects";
 
@@ -26,6 +28,8 @@ export interface CommonStyleState {
   bc: string;
   opacity: OpacityKey;
   ls: LetterSpacingKey;
+  entrance: EntranceType;
+  entranceDelay: EntranceDelayKey;
   setBg: (bg: string) => void;
   setTransparentBg: (transparentBg: boolean) => void;
   setBorderRadius: (borderRadius: number) => void;
@@ -42,6 +46,8 @@ export interface CommonStyleState {
   setBc: (bc: string) => void;
   setOpacity: (opacity: OpacityKey) => void;
   setLs: (ls: LetterSpacingKey) => void;
+  setEntrance: (entrance: EntranceType) => void;
+  setEntranceDelay: (entranceDelay: EntranceDelayKey) => void;
 }
 
 export const commonStyleDefaults = {
@@ -61,6 +67,8 @@ export const commonStyleDefaults = {
   bc: "D1D5DB",
   opacity: "100" as OpacityKey,
   ls: "normal" as LetterSpacingKey,
+  entrance: "none" as EntranceType,
+  entranceDelay: "0" as EntranceDelayKey,
 };
 
 /* ─── Simple Factory ─── */
@@ -107,6 +115,8 @@ export function widgetStoreCreator<D extends Record<string, any>, S extends Reco
     setBc: (bc: string) => set({ bc }),
     setOpacity: (opacity: OpacityKey) => set({ opacity }),
     setLs: (ls: LetterSpacingKey) => set({ ls }),
+    setEntrance: (entrance: EntranceType) => set({ entrance }),
+    setEntranceDelay: (entranceDelay: EntranceDelayKey) => set({ entranceDelay }),
     // Widget-specific setters
     ...widgetSetters(set),
     // loadPreset / reset

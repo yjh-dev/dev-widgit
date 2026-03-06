@@ -22,7 +22,7 @@ import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
 import { serializeEvents, parseEvents } from "@/lib/timeline";
 import { parseCommonParams } from "@/lib/common-params";
-import { addBgParam, addCommonStyleParams, addEffectParams, addExtraStyleParams, buildUrl } from "@/lib/url-builder-utils";
+import { addBgParam, addCommonStyleParams, addEffectParams, addExtraStyleParams, addEntranceParams, buildUrl } from "@/lib/url-builder-utils";
 import EffectOptions from "@/components/editor/EffectOptions";
 import EditorEffectsPreview from "@/components/editor/EditorEffectsPreview";
 import EffectPresetSelector from "@/components/editor/EffectPresetSelector";
@@ -39,6 +39,7 @@ export default function CreateTimelinePage() {
     setFx, setFxInt, setGbg, setGbgDir, setNeonColor, setBshadow,
     tshadow, bw, bc, opacity, ls,
     setTshadow, setBw, setBc, setOpacity, setLs,
+    entrance, entranceDelay, setEntrance, setEntranceDelay,
     loadPreset, reset,
   } = useTimelineStore();
 
@@ -53,6 +54,8 @@ export default function CreateTimelinePage() {
       ...(p.has("bc") && { bc: p.get("bc")! }),
       ...(p.has("opacity") && { opacity: p.get("opacity")! }),
       ...(p.has("ls") && { ls: p.get("ls")! }),
+      ...(p.has("entrance") && { entrance: p.get("entrance")! }),
+      ...(p.has("ed") && { entranceDelay: p.get("ed")! }),
       ...parseCommonParams(p),
     });
   });
@@ -78,8 +81,9 @@ export default function CreateTimelinePage() {
     addCommonStyleParams(params, borderRadius, padding, fontSize);
     addEffectParams(params, fx, fxInt, gbg, gbgDir, neonColor, bshadow);
     addExtraStyleParams(params, tshadow, bw, bc, opacity, ls);
+    addEntranceParams(params, entrance, entranceDelay);
     return buildUrl(base, params);
-  }, [events, showPast, color, pastColor, bg, transparentBg, borderRadius, padding, fontSize, fx, fxInt, gbg, gbgDir, neonColor, bshadow, tshadow, bw, bc, opacity, ls]);
+  }, [events, showPast, color, pastColor, bg, transparentBg, borderRadius, padding, fontSize, fx, fxInt, gbg, gbgDir, neonColor, bshadow, tshadow, bw, bc, opacity, ls, entrance, entranceDelay]);
 
   const handleCopy = async () => {
     await copyToClipboard(buildWidgetUrl());
@@ -186,6 +190,8 @@ export default function CreateTimelinePage() {
                     tshadow={tshadow} bw={bw} bc={bc} opacity={opacity} ls={ls}
                     onTshadowChange={setTshadow} onBwChange={setBw} onBcChange={setBc}
                     onOpacityChange={setOpacity} onLsChange={setLs}
+                    entrance={entrance} entranceDelay={entranceDelay}
+                    onEntranceChange={setEntrance} onEntranceDelayChange={setEntranceDelay}
                   />
                 ),
               },

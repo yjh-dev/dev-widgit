@@ -1,10 +1,20 @@
 "use client";
 
 import { useWidgetParams } from "@/lib/use-widget-params";
-import CountupPreview from "@/components/widget/CountupPreview";
+import DdayWidgetPreview from "@/components/widget/DdayWidgetPreview";
 import WidgetPage, { WidgetScreen } from "@/components/widget/WidgetPage";
-import { parseBgParam } from "@/lib/common-params";
 import { parseBorderRadius, parsePadding, parseFontSize, parseHexColor } from "@/lib/common-widget-options";
+import { parseBgParam } from "@/lib/common-params";
+import type { FontKey } from "@/lib/fonts";
+
+const VALID_FONTS: FontKey[] = [
+  "noto-sans-kr",
+  "jua",
+  "do-hyeon",
+  "gothic-a1",
+  "gaegu",
+  "black-han-sans",
+];
 
 function CountupWidgetContent() {
   const searchParams = useWidgetParams();
@@ -13,8 +23,11 @@ function CountupWidgetContent() {
   const date = searchParams.get("date") || "";
   const showSeconds = searchParams.get("showSeconds") !== "false";
   const color = parseHexColor(searchParams.get("color"), "2563EB");
-  const textColor = parseHexColor(searchParams.get("textColor"), "");
-  const font = searchParams.get("font") || "sans";
+  const textColor = parseHexColor(searchParams.get("textColor"), "") || color;
+  const rawFont = searchParams.get("font") || "noto-sans-kr";
+  const font = VALID_FONTS.includes(rawFont as FontKey)
+    ? (rawFont as FontKey)
+    : "noto-sans-kr";
   const { bg, transparentBg } = parseBgParam(searchParams.get("bg"));
 
   const borderRadius = parseBorderRadius(searchParams.get("radius"));
@@ -23,18 +36,18 @@ function CountupWidgetContent() {
 
   return (
     <WidgetScreen>
-      <CountupPreview
+      <DdayWidgetPreview
         title={title}
-        date={date}
-        showSeconds={showSeconds}
-        color={color}
+        targetDate={date}
+        bgColor={bg}
         textColor={textColor}
+        isTransparent={transparentBg}
         font={font}
-        bg={bg}
-        transparentBg={transparentBg}
         borderRadius={borderRadius}
         padding={padding}
         fontSize={fontSize}
+        displayMode="elapsed"
+        showSeconds={showSeconds}
       />
     </WidgetScreen>
   );

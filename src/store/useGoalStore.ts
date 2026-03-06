@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import type { GoalStyle } from "@/lib/goal";
+import type { GoalStyle, GoalIcon } from "@/lib/goal";
 import { widgetStoreCreator, type CommonStyleState } from "@/lib/widget-store-factory";
 
 const widgetDefaults = {
@@ -12,6 +12,8 @@ const widgetDefaults = {
   color: "2563EB",
   textColor: "",
   font: "sans",
+  icon: "" as GoalIcon,
+  year: "",
 };
 
 interface GoalState extends CommonStyleState {
@@ -24,6 +26,8 @@ interface GoalState extends CommonStyleState {
   color: string;
   textColor: string;
   font: string;
+  icon: GoalIcon;
+  year: string;
   setTitle: (v: string) => void;
   setCurrent: (v: number) => void;
   setTarget: (v: number) => void;
@@ -33,6 +37,8 @@ interface GoalState extends CommonStyleState {
   setColor: (v: string) => void;
   setTextColor: (v: string) => void;
   setFont: (v: string) => void;
+  setIcon: (v: GoalIcon) => void;
+  setYear: (v: string) => void;
   loadPreset: (preset: Record<string, unknown>) => void;
   reset: () => void;
 }
@@ -48,5 +54,7 @@ export const useGoalStore = create<GoalState>(
     setColor: (v: string) => set({ color: v }),
     setTextColor: (v: string) => set({ textColor: v }),
     setFont: (v: string) => set({ font: v }),
+    setIcon: (v: GoalIcon) => set({ icon: v }),
+    setYear: (v: string) => set({ year: v }),
   })),
 );

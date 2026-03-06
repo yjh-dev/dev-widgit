@@ -1,9 +1,10 @@
 import { create } from "zustand";
-import type { StickyPinType, StickyLineHeight } from "@/lib/sticky-note";
-import type { FontSizeKey, TextShadowKey, BorderWidthKey, OpacityKey, LetterSpacingKey } from "@/lib/common-widget-options";
+import type { StickyPinType, StickyLineHeight, StickyNoteMode } from "@/lib/sticky-note";
+import type { FontSizeKey, TextShadowKey, BorderWidthKey, OpacityKey, LetterSpacingKey, EntranceType, EntranceDelayKey } from "@/lib/common-widget-options";
 import type { EffectType, EffectIntensity, BoxShadowPreset } from "@/lib/widget-effects";
 
 interface StickyNoteState {
+  /* single mode */
   text: string;
   noteColor: string;
   textColor: string;
@@ -21,6 +22,12 @@ interface StickyNoteState {
   gbgDir: number;
   neonColor: string;
   bshadow: BoxShadowPreset;
+
+  /* board mode (absorbed from memo-board) */
+  mode: StickyNoteMode;
+  memos: string;       // pipe-delimited, URI-encoded
+  cols: number;
+  interactive: boolean;
 
   setText: (v: string) => void;
   setNoteColor: (v: string) => void;
@@ -49,6 +56,14 @@ interface StickyNoteState {
   setBc: (v: string) => void;
   setOpacity: (v: OpacityKey) => void;
   setLs: (v: LetterSpacingKey) => void;
+  setMode: (v: StickyNoteMode) => void;
+  setMemos: (v: string) => void;
+  setCols: (v: number) => void;
+  setInteractive: (v: boolean) => void;
+  entrance: EntranceType;
+  entranceDelay: EntranceDelayKey;
+  setEntrance: (v: EntranceType) => void;
+  setEntranceDelay: (v: EntranceDelayKey) => void;
   loadPreset: (preset: Record<string, unknown>) => void;
   reset: () => void;
 }
@@ -76,6 +91,13 @@ const initialState = {
   bc: "D1D5DB",
   opacity: "100" as OpacityKey,
   ls: "normal" as LetterSpacingKey,
+  entrance: "none" as EntranceType,
+  entranceDelay: "0" as EntranceDelayKey,
+  /* board mode defaults */
+  mode: "single" as StickyNoteMode,
+  memos: "회의 준비|장보기|운동",
+  cols: 3,
+  interactive: true,
 };
 
 export const useStickyNoteStore = create<StickyNoteState>((set) => ({
@@ -103,6 +125,12 @@ export const useStickyNoteStore = create<StickyNoteState>((set) => ({
   setBc: (bc) => set({ bc }),
   setOpacity: (opacity) => set({ opacity }),
   setLs: (ls) => set({ ls }),
+  setMode: (mode) => set({ mode }),
+  setMemos: (memos) => set({ memos }),
+  setCols: (cols) => set({ cols }),
+  setInteractive: (interactive) => set({ interactive }),
+  setEntrance: (entrance) => set({ entrance }),
+  setEntranceDelay: (entranceDelay) => set({ entranceDelay }),
   loadPreset: (preset) => set({ ...initialState, ...preset }),
   reset: () => set(initialState),
 }));

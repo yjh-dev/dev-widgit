@@ -24,7 +24,7 @@ import { useWidgetUrl } from "@/lib/use-widget-url";
 import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
 import { parseCommonParams } from "@/lib/common-params";
-import { addBgParam, addCommonStyleParams, addEffectParams, addExtraStyleParams, buildUrl } from "@/lib/url-builder-utils";
+import { addBgParam, addCommonStyleParams, addEffectParams, addExtraStyleParams, addEntranceParams, buildUrl } from "@/lib/url-builder-utils";
 import { TIMEZONE_OPTIONS, CLOCK_DATE_FORMAT_OPTIONS, type ClockFormat, type ClockDateFormat } from "@/lib/clock";
 import { CLOCK_FONT_OPTIONS } from "@/lib/fonts";
 import EffectOptions from "@/components/editor/EffectOptions";
@@ -43,6 +43,7 @@ export default function CreateClockPage() {
     setFx, setFxInt, setGbg, setGbgDir, setNeonColor, setBshadow,
     tshadow, bw, bc, opacity, ls,
     setTshadow, setBw, setBc, setOpacity, setLs,
+    entrance, entranceDelay, setEntrance, setEntranceDelay,
     loadPreset, reset,
   } = useClockStore();
 
@@ -63,6 +64,8 @@ export default function CreateClockPage() {
       ...(p.has("bc") && { bc: p.get("bc")! }),
       ...(p.has("opacity") && { opacity: p.get("opacity")! }),
       ...(p.has("ls") && { ls: p.get("ls")! }),
+      ...(p.has("entrance") && { entrance: p.get("entrance")! }),
+      ...(p.has("ed") && { entranceDelay: p.get("ed")! }),
     });
   });
 
@@ -77,13 +80,14 @@ export default function CreateClockPage() {
     addCommonStyleParams(params, borderRadius, padding, fontSize);
     addEffectParams(params, fx, fxInt, gbg, gbgDir, neonColor, bshadow);
     addExtraStyleParams(params, tshadow, bw, bc, opacity, ls);
+    addEntranceParams(params, entrance, entranceDelay);
     if (!showSeconds) params.set("seconds", "false");
     if (showDate) params.set("date", "true");
     if (!blink) params.set("blink", "false");
     if (dateColor) params.set("dateColor", dateColor);
     if (dateFmt !== "kr") params.set("dateFmt", dateFmt);
     return buildUrl(base, params);
-  }, [timezone, format, font, color, bg, transparentBg, borderRadius, padding, fontSize, showSeconds, showDate, blink, dateColor, dateFmt, fx, fxInt, gbg, gbgDir, neonColor, bshadow, tshadow, bw, bc, opacity, ls]);
+  }, [timezone, format, font, color, bg, transparentBg, borderRadius, padding, fontSize, showSeconds, showDate, blink, dateColor, dateFmt, fx, fxInt, gbg, gbgDir, neonColor, bshadow, tshadow, bw, bc, opacity, ls, entrance, entranceDelay]);
 
   const handleCopy = async () => {
     await copyToClipboard(buildWidgetUrl());
@@ -216,6 +220,8 @@ export default function CreateClockPage() {
                     tshadow={tshadow} bw={bw} bc={bc} opacity={opacity} ls={ls}
                     onTshadowChange={setTshadow} onBwChange={setBw} onBcChange={setBc}
                     onOpacityChange={setOpacity} onLsChange={setLs}
+                    entrance={entrance} entranceDelay={entranceDelay}
+                    onEntranceChange={setEntrance} onEntranceDelayChange={setEntranceDelay}
                   />
                 ),
               },

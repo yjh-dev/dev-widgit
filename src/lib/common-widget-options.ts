@@ -22,6 +22,37 @@ export const PADDING_OPTIONS: { value: number; label: string }[] = [
   { value: 32, label: "매우 넓게" },
 ];
 
+/* ─── 진입 애니메이션 ─── */
+
+export type EntranceType = "none" | "fade" | "slide-up" | "scale";
+export type EntranceDelayKey = "0" | "200" | "400" | "600";
+
+export const ENTRANCE_OPTIONS: { value: EntranceType; label: string }[] = [
+  { value: "none", label: "없음" },
+  { value: "fade", label: "페이드 인" },
+  { value: "slide-up", label: "슬라이드 업" },
+  { value: "scale", label: "스케일" },
+];
+
+export const ENTRANCE_DELAY_OPTIONS: { value: EntranceDelayKey; label: string }[] = [
+  { value: "0", label: "즉시" },
+  { value: "200", label: "0.2초" },
+  { value: "400", label: "0.4초" },
+  { value: "600", label: "0.6초" },
+];
+
+export function parseEntrance(raw: string | null): EntranceType {
+  if (!raw) return "none";
+  const valid: EntranceType[] = ["none", "fade", "slide-up", "scale"];
+  return valid.includes(raw as EntranceType) ? (raw as EntranceType) : "none";
+}
+
+export function parseEntranceDelay(raw: string | null): EntranceDelayKey {
+  if (!raw) return "0";
+  const valid: EntranceDelayKey[] = ["0", "200", "400", "600"];
+  return valid.includes(raw as EntranceDelayKey) ? (raw as EntranceDelayKey) : "0";
+}
+
 /* ─── 새로운 공통 스타일 옵션 ─── */
 
 export type TextShadowKey = "none" | "sm" | "md" | "lg";

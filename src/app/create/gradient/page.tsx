@@ -32,7 +32,7 @@ import { parseCommonParams } from "@/lib/common-params";
 import EffectOptions from "@/components/editor/EffectOptions";
 import EditorEffectsPreview from "@/components/editor/EditorEffectsPreview";
 import EffectPresetSelector from "@/components/editor/EffectPresetSelector";
-import { addCommonStyleParams, addEffectParams, addExtraStyleParams, buildUrl } from "@/lib/url-builder-utils";
+import { addCommonStyleParams, addEffectParams, addExtraStyleParams, addEntranceParams, buildUrl } from "@/lib/url-builder-utils";
 
 export default function CreateGradientPage() {
   const {
@@ -44,6 +44,7 @@ export default function CreateGradientPage() {
     setFx, setFxInt, setGbg, setGbgDir, setNeonColor, setBshadow,
     tshadow, bw, bc, opacity, ls,
     setTshadow, setBw, setBc, setOpacity, setLs,
+    entrance, entranceDelay, setEntrance, setEntranceDelay,
     loadPreset, reset,
   } = useGradientStore();
 
@@ -61,6 +62,8 @@ export default function CreateGradientPage() {
       ...(p.has("bc") && { bc: p.get("bc")! }),
       ...(p.has("opacity") && { opacity: p.get("opacity")! }),
       ...(p.has("ls") && { ls: p.get("ls")! }),
+      ...(p.has("entrance") && { entrance: p.get("entrance")! }),
+      ...(p.has("ed") && { entranceDelay: p.get("ed")! }),
       ...parseCommonParams(p),
     });
   });
@@ -94,8 +97,9 @@ export default function CreateGradientPage() {
     addCommonStyleParams(params, borderRadius, padding, fontSize);
     addEffectParams(params, fx, fxInt, gbg, gbgDir, neonColor, bshadow);
     addExtraStyleParams(params, tshadow, bw, bc, opacity, ls);
+    addEntranceParams(params, entrance, entranceDelay);
     return buildUrl(base, params);
-  }, [colors, dir, type, animate, speed, text, textColor, borderRadius, padding, fontSize, fx, fxInt, gbg, gbgDir, neonColor, bshadow, tshadow, bw, bc, opacity, ls]);
+  }, [colors, dir, type, animate, speed, text, textColor, borderRadius, padding, fontSize, fx, fxInt, gbg, gbgDir, neonColor, bshadow, tshadow, bw, bc, opacity, ls, entrance, entranceDelay]);
 
   const handleCopy = async () => {
     await copyToClipboard(buildWidgetUrl());
@@ -278,6 +282,8 @@ export default function CreateGradientPage() {
                     tshadow={tshadow} bw={bw} bc={bc} opacity={opacity} ls={ls}
                     onTshadowChange={setTshadow} onBwChange={setBw} onBcChange={setBc}
                     onOpacityChange={setOpacity} onLsChange={setLs}
+                    entrance={entrance} entranceDelay={entranceDelay}
+                    onEntranceChange={setEntrance} onEntranceDelayChange={setEntranceDelay}
                   />
                 ),
               },

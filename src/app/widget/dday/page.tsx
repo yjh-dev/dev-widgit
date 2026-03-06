@@ -4,11 +4,13 @@ import { useWidgetParams } from "@/lib/use-widget-params";
 import DdayWidgetPreview from "@/components/widget/DdayWidgetPreview";
 import WidgetPage, { WidgetScreen } from "@/components/widget/WidgetPage";
 import type { DdayDateFormat } from "@/components/widget/DdayWidgetPreview";
+import type { DdayDisplayMode } from "@/lib/dday";
 import type { FontKey } from "@/lib/fonts";
 import { parseBorderRadius, parsePadding, parseFontSize, parseHexColor } from "@/lib/common-widget-options";
 
 const VALID_CALC_TYPES = ["down", "up"] as const;
 const VALID_LAYOUTS = ["default", "progress"] as const;
+const VALID_DISPLAY_MODES: DdayDisplayMode[] = ["default", "anniversary", "elapsed"];
 const VALID_FONTS: FontKey[] = [
   "noto-sans-kr",
   "jua",
@@ -62,6 +64,17 @@ function DdayWidgetContent() {
     ? (rawDateFmt as DdayDateFormat)
     : "full";
 
+  const rawDisplayMode = searchParams.get("displayMode");
+  const displayMode: DdayDisplayMode = VALID_DISPLAY_MODES.includes(rawDisplayMode as DdayDisplayMode)
+    ? (rawDisplayMode as DdayDisplayMode)
+    : "default";
+
+  const showWeeks = searchParams.get("showWeeks") === "true";
+  const showMonths = searchParams.get("showMonths") === "true";
+  const accentColor = parseHexColor(searchParams.get("accentColor"), "");
+  const showSeconds = searchParams.get("showSeconds") !== "false";
+  const hideOnDone = searchParams.get("hideOnDone") === "true";
+
   return (
     <WidgetScreen>
       <DdayWidgetPreview
@@ -83,6 +96,12 @@ function DdayWidgetContent() {
         doneMsg={doneMsg}
         barColor={barColor}
         dateFmt={dateFmt}
+        displayMode={displayMode}
+        showWeeks={showWeeks}
+        showMonths={showMonths}
+        accentColor={accentColor}
+        showSeconds={showSeconds}
+        hideOnDone={hideOnDone}
       />
     </WidgetScreen>
   );

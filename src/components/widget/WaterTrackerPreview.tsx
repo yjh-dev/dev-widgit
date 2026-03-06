@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { calculateProgress, formatMl, formatTotalMl } from "@/lib/water-tracker";
 import type { FontSizeKey } from "@/lib/common-widget-options";
+import { useCelebration } from "@/hooks/useCelebration";
+import Celebration from "@/components/widget/Celebration";
 
 const FONT_SIZE_MAP: Record<FontSizeKey, { title: string; progress: string; label: string }> = {
   sm: { title: "text-sm", progress: "text-xs", label: "text-xs" },
@@ -55,6 +57,7 @@ interface WaterTrackerPreviewProps {
   borderRadius?: number;
   padding?: number;
   fontSize?: FontSizeKey;
+  celebrate?: boolean;
 }
 
 export default function WaterTrackerPreview({
@@ -68,6 +71,7 @@ export default function WaterTrackerPreview({
   borderRadius = 16,
   padding = 24,
   fontSize = "md",
+  celebrate = true,
 }: WaterTrackerPreviewProps) {
   const [filled, setFilled] = useState(0);
 
@@ -81,6 +85,7 @@ export default function WaterTrackerPreview({
   };
 
   const pct = calculateProgress(filled, goal);
+  const showCelebration = useCelebration(filled >= goal, celebrate);
   const sizeConfig = FONT_SIZE_MAP[fontSize];
   const iconSize = fontSize === "sm" ? 32 : fontSize === "xl" ? 44 : 38;
 
@@ -89,13 +94,14 @@ export default function WaterTrackerPreview({
 
   return (
     <div
-      className="w-full h-full flex flex-col items-center justify-center gap-3"
+      className="relative w-full h-full flex flex-col items-center justify-center gap-3"
       style={{
         backgroundColor: transparentBg ? "transparent" : `#${bg}`,
         borderRadius,
         padding,
       }}
     >
+      <Celebration active={showCelebration} color={color} />
       {/* Title */}
       <p
         className={`${sizeConfig.title} font-bold`}

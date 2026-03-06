@@ -590,32 +590,5 @@ export const seasonCountdownPresets: Preset[] = [
   },
 ];
 
-// Dual Clock
-export const dualClockPresets: Preset[] = [
-  {
-    id: "dual-seoul-ny",
-    name: "서울 ↔ 뉴욕",
-    data: {
-      tz1: "Asia/Seoul",
-      tz2: "America/New_York",
-      label1: "서울",
-      label2: "뉴욕",
-      format: "24h",
-      color: "1E1E1E",
-      bg: "FFFFFF",
-    },
-  },
-  {
-    id: "dual-dark",
-    name: "다크 듀얼 시계",
-    data: {
-      tz1: "Asia/Seoul",
-      tz2: "Europe/London",
-      label1: "서울",
-      label2: "런던",
-      format: "24h",
-      color: "E0E0E0",
-      bg: "1A1A2E",
-    },
-  },
-];
+// Dual Clock (deprecated — mapped to world-clock format)
+export const dualClockPresets: Preset[] = [];

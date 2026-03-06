@@ -9,6 +9,13 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import ColorPicker from "@/components/ui/color-picker";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import FlashcardPreview from "@/components/widget/FlashcardPreview";
 import EditorLayout from "@/components/editor/EditorLayout";
 import EditorActions from "@/components/editor/EditorActions";
@@ -17,29 +24,30 @@ import CommonStyleOptions from "@/components/editor/CommonStyleOptions";
 import PresetSelector from "@/components/editor/PresetSelector";
 import { useFlashcardStore } from "@/store/useFlashcardStore";
 import { serializeCards, deserializeCards } from "@/lib/flashcard";
+import type { DisplayStyle, CardMode, FlashCard } from "@/lib/flashcard";
 import { flashcardPresets } from "@/lib/presets";
 import { useWidgetUrl } from "@/lib/use-widget-url";
 import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
 import type { FontSizeKey } from "@/lib/common-widget-options";
-import type { FlashCard } from "@/lib/flashcard";
-import { addEffectParams, addExtraStyleParams } from "@/lib/url-builder-utils";
+import { addEffectParams, addExtraStyleParams , addEntranceParams } from "@/lib/url-builder-utils";
 import EffectOptions from "@/components/editor/EffectOptions";
 import EditorEffectsPreview from "@/components/editor/EditorEffectsPreview";
 import EffectPresetSelector from "@/components/editor/EffectPresetSelector";
 
 export default function CreateFlashcardPage() {
   const {
-    cards, showCount, autoFlip,
+    cards, showCount, autoFlip, displayStyle, mode,
     accentColor, color, bg, transparentBg,
     borderRadius, padding, fontSize,
-    setCards, setShowCount, setAutoFlip,
+    setCards, setShowCount, setAutoFlip, setDisplayStyle, setMode,
     setAccentColor, setColor, setBg, setTransparentBg,
     setBorderRadius, setPadding, setFontSize,
     fx, fxInt, gbg, gbgDir, neonColor, bshadow,
     setFx, setFxInt, setGbg, setGbgDir, setNeonColor, setBshadow,
     tshadow, bw, bc, opacity, ls,
     setTshadow, setBw, setBc, setOpacity, setLs,
+    entrance, entranceDelay, setEntrance, setEntranceDelay,
     loadPreset, reset,
   } = useFlashcardStore();
 
@@ -49,6 +57,8 @@ export default function CreateFlashcardPage() {
       ...(p.has("cards") && { cards: deserializeCards(p.get("cards")!) }),
       ...(p.has("showCount") && { showCount: p.get("showCount") !== "false" }),
       ...(p.has("autoFlip") && { autoFlip: p.get("autoFlip") === "true" }),
+      ...(p.has("display") && { displayStyle: p.get("display") as DisplayStyle }),
+      ...(p.has("mode") && { mode: p.get("mode") as CardMode }),
       ...(p.has("accent") && { accentColor: p.get("accent")! }),
       ...(p.has("color") && { color: p.get("color")! }),
       ...(bgVal === "transparent"
@@ -64,6 +74,8 @@ export default function CreateFlashcardPage() {
       ...(p.has("bc") && { bc: p.get("bc")! }),
       ...(p.has("opacity") && { opacity: p.get("opacity")! }),
       ...(p.has("ls") && { ls: p.get("ls")! }),
+      ...(p.has("entrance") && { entrance: p.get("entrance")! }),
+      ...(p.has("ed") && { entranceDelay: p.get("ed")! }),
     });
   });
 
@@ -96,6 +108,8 @@ export default function CreateFlashcardPage() {
     }
     if (!showCount) params.set("showCount", "false");
     if (autoFlip) params.set("autoFlip", "true");
+    if (displayStyle !== "flip") params.set("display", displayStyle);
+    if (mode !== "sequential") params.set("mode", mode);
     if (accentColor !== "7C3AED") params.set("accent", accentColor);
     if (color !== "1E1E1E") params.set("color", color);
     if (transparentBg) {
@@ -108,9 +122,10 @@ export default function CreateFlashcardPage() {
     if (fontSize !== "md") params.set("fsize", fontSize);
     addEffectParams(params, fx, fxInt, gbg, gbgDir, neonColor, bshadow);
     addExtraStyleParams(params, tshadow, bw, bc, opacity, ls);
+    addEntranceParams(params, entrance, entranceDelay);
     const qs = params.toString();
     return qs ? `${base}?${qs}` : base;
-  }, [cards, showCount, autoFlip, accentColor, color, bg, transparentBg, borderRadius, padding, fontSize, fx, fxInt, gbg, gbgDir, neonColor, bshadow, tshadow, bw, bc, opacity, ls]);
+  }, [cards, showCount, autoFlip, displayStyle, mode, accentColor, color, bg, transparentBg, borderRadius, padding, fontSize, fx, fxInt, gbg, gbgDir, neonColor, bshadow, tshadow, bw, bc, opacity, ls, entrance, entranceDelay]);
 
   const handleCopy = async () => {
     await copyToClipboard(buildWidgetUrl());
@@ -194,14 +209,36 @@ export default function CreateFlashcardPage() {
                 title: "표시 옵션",
                 children: (
                   <>
+                    <div className="space-y-2">
+                      <Label>표시 스타일</Label>
+                      <Select value={displayStyle} onValueChange={(v) => setDisplayStyle(v as DisplayStyle)}>
+                        <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="flip">플립 (앞뒤 뒤집기)</SelectItem>
+                          <SelectItem value="reveal">리빌 (단어+뜻 표시)</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>탐색 모드</Label>
+                      <Select value={mode} onValueChange={(v) => setMode(v as CardMode)}>
+                        <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="sequential">순서대로</SelectItem>
+                          <SelectItem value="random">랜덤</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
                     <div className="flex items-center justify-between">
                       <Label htmlFor="showCount">카드 번호 표시</Label>
                       <Switch id="showCount" checked={showCount} onCheckedChange={setShowCount} />
                     </div>
-                    <div className="flex items-center justify-between">
-                      <Label htmlFor="autoFlip">자동 뒤집기</Label>
-                      <Switch id="autoFlip" checked={autoFlip} onCheckedChange={setAutoFlip} />
-                    </div>
+                    {displayStyle === "flip" && (
+                      <div className="flex items-center justify-between">
+                        <Label htmlFor="autoFlip">자동 뒤집기</Label>
+                        <Switch id="autoFlip" checked={autoFlip} onCheckedChange={setAutoFlip} />
+                      </div>
+                    )}
                   </>
                 ),
               },
@@ -252,6 +289,8 @@ export default function CreateFlashcardPage() {
                     tshadow={tshadow} bw={bw} bc={bc} opacity={opacity} ls={ls}
                     onTshadowChange={setTshadow} onBwChange={setBw} onBcChange={setBc}
                     onOpacityChange={setOpacity} onLsChange={setLs}
+                    entrance={entrance} entranceDelay={entranceDelay}
+                    onEntranceChange={setEntrance} onEntranceDelayChange={setEntranceDelay}
                   />
                 ),
               },
@@ -276,6 +315,8 @@ export default function CreateFlashcardPage() {
               cards={cards}
               showCount={showCount}
               autoFlip={autoFlip}
+              displayStyle={displayStyle}
+              mode={mode}
               accentColor={accentColor}
               color={color}
               bg={bg}

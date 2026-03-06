@@ -27,8 +27,9 @@ import { useWidgetUrl } from "@/lib/use-widget-url";
 import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
 import { FONT_OPTIONS, type FontKey } from "@/lib/fonts";
-import { addCommonStyleParams, addEffectParams, addExtraStyleParams, buildUrl } from "@/lib/url-builder-utils";
+import { addCommonStyleParams, addEffectParams, addExtraStyleParams, addEntranceParams, buildUrl } from "@/lib/url-builder-utils";
 import type { FontSizeKey } from "@/lib/common-widget-options";
+import type { DdayDisplayMode } from "@/lib/dday";
 import EffectOptions from "@/components/editor/EffectOptions";
 import EditorEffectsPreview from "@/components/editor/EditorEffectsPreview";
 import EffectPresetSelector from "@/components/editor/EffectPresetSelector";
@@ -39,10 +40,12 @@ export default function CreateDdayPage() {
   const {
     title, targetDate, bgColor, textColor, isDarkMode, calcType, isAnnual,
     layout, startDate, isTransparent, font, borderRadius, padding, fontSize,
-    showTime, blink, doneMsg, barColor, dateFmt,
+    showTime, blink, doneMsg, barColor, dateFmt, displayMode,
     setTitle, setTargetDate, setBgColor, setTextColor, setIsDarkMode, setCalcType, setIsAnnual,
     setLayout, setStartDate, setIsTransparent, setFont, setBorderRadius, setPadding, setFontSize,
-    setShowTime, setBlink, setDoneMsg, setBarColor, setDateFmt,
+    setShowTime, setBlink, setDoneMsg, setBarColor, setDateFmt, setDisplayMode,
+    hideOnDone, setHideOnDone,
+    entrance, entranceDelay, setEntrance, setEntranceDelay,
     fx, fxInt, gbg, gbgDir, neonColor, bshadow,
     setFx, setFxInt, setGbg, setGbgDir, setNeonColor, setBshadow,
     tshadow, bw, bc, opacity, ls,
@@ -70,11 +73,15 @@ export default function CreateDdayPage() {
       ...(p.has("doneMsg") && { doneMsg: p.get("doneMsg")! }),
       ...(p.has("barColor") && { barColor: p.get("barColor")! }),
       ...(p.has("dateFmt") && { dateFmt: p.get("dateFmt") as DdayDateFormat }),
+      ...(p.has("hideOnDone") && { hideOnDone: p.get("hideOnDone") === "true" }),
+      ...(p.has("displayMode") && { displayMode: p.get("displayMode") as DdayDisplayMode }),
       ...(p.has("tshadow") && { tshadow: p.get("tshadow")! }),
       ...(p.has("bw") && { bw: p.get("bw")! }),
       ...(p.has("bc") && { bc: p.get("bc")! }),
       ...(p.has("opacity") && { opacity: p.get("opacity")! }),
       ...(p.has("ls") && { ls: p.get("ls")! }),
+      ...(p.has("entrance") && { entrance: p.get("entrance")! }),
+      ...(p.has("ed") && { entranceDelay: p.get("ed")! }),
     });
   });
 
@@ -85,6 +92,7 @@ export default function CreateDdayPage() {
     params.set("date", targetDate);
     params.set("bg", bgColor);
     params.set("text", textColor);
+    if (displayMode !== "default") params.set("displayMode", displayMode);
     if (calcType !== "down") params.set("calcType", calcType);
     if (isAnnual) params.set("annual", "true");
     if (layout !== "default") params.set("layout", layout);
@@ -94,13 +102,17 @@ export default function CreateDdayPage() {
     addCommonStyleParams(params, borderRadius, padding, fontSize);
     addEffectParams(params, fx, fxInt, gbg, gbgDir, neonColor, bshadow);
     addExtraStyleParams(params, tshadow, bw, bc, opacity, ls);
-    if (showTime) params.set("showTime", "true");
-    if (!blink) params.set("blink", "false");
-    if (doneMsg) params.set("doneMsg", doneMsg);
-    if (barColor) params.set("barColor", barColor);
-    if (dateFmt !== "full") params.set("dateFmt", dateFmt);
+    addEntranceParams(params, entrance, entranceDelay);
+    if (displayMode === "default") {
+      if (showTime) params.set("showTime", "true");
+      if (!blink) params.set("blink", "false");
+      if (doneMsg) params.set("doneMsg", doneMsg);
+      if (barColor) params.set("barColor", barColor);
+      if (dateFmt !== "full") params.set("dateFmt", dateFmt);
+      if (hideOnDone) params.set("hideOnDone", "true");
+    }
     return buildUrl(base, params);
-  }, [title, targetDate, bgColor, textColor, calcType, isAnnual, layout, startDate, isTransparent, font, borderRadius, padding, fontSize, showTime, blink, doneMsg, barColor, dateFmt, fx, fxInt, gbg, gbgDir, neonColor, bshadow, tshadow, bw, bc, opacity, ls]);
+  }, [title, targetDate, bgColor, textColor, calcType, isAnnual, layout, startDate, isTransparent, font, borderRadius, padding, fontSize, showTime, blink, doneMsg, barColor, dateFmt, hideOnDone, displayMode, fx, fxInt, gbg, gbgDir, neonColor, bshadow, tshadow, bw, bc, opacity, ls, entrance, entranceDelay]);
 
   const handleCopy = async () => {
     await copyToClipboard(buildWidgetUrl());
@@ -128,85 +140,108 @@ export default function CreateDdayPage() {
                       <Label htmlFor="targetDate">목표 날짜</Label>
                       <Input id="targetDate" type="date" value={targetDate} onChange={(e) => setTargetDate(e.target.value)} />
                     </div>
-                  </>
-                ),
-              },
-              {
-                id: "calc",
-                title: "계산 방식",
-                children: (
-                  <>
                     <div className="space-y-2">
-                      <Label>카운트 방식</Label>
-                      <Select value={calcType} onValueChange={(v) => setCalcType(v as "down" | "up")}>
+                      <Label>표시 모드</Label>
+                      <Select value={displayMode} onValueChange={(v) => setDisplayMode(v as DdayDisplayMode)}>
                         <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="down">카운트다운 (D-N)</SelectItem>
-                          <SelectItem value="up">카운트업 (N일째)</SelectItem>
+                          <SelectItem value="default">기본 (D-Day)</SelectItem>
+                          <SelectItem value="anniversary">기념일 (N일째)</SelectItem>
+                          <SelectItem value="elapsed">경과 시간 (실시간)</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
-                    <div className="flex items-center justify-between">
-                      <Label htmlFor="annual">매년 반복</Label>
-                      <Switch id="annual" checked={isAnnual} onCheckedChange={setIsAnnual} />
-                    </div>
                   </>
                 ),
               },
-              {
-                id: "display",
-                title: "표시 옵션",
-                children: (
-                  <>
-                    <div className="space-y-2">
-                      <Label>날짜 표시 형식</Label>
-                      <Select value={dateFmt} onValueChange={(v) => setDateFmt(v as DdayDateFormat)}>
-                        <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="full">전체 (2026.11.19 (목))</SelectItem>
-                          <SelectItem value="short">짧게 (11.19 (목))</SelectItem>
-                          <SelectItem value="dot">날짜만 (2026.11.19)</SelectItem>
-                          <SelectItem value="none">숨김</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <Label htmlFor="showTime">시간 카운트다운</Label>
-                      <Switch id="showTime" checked={showTime} onCheckedChange={setShowTime} />
-                    </div>
-                    {showTime && (
-                      <div className="flex items-center justify-between">
-                        <Label htmlFor="blink">구분자 깜빡임</Label>
-                        <Switch id="blink" checked={blink} onCheckedChange={setBlink} />
-                      </div>
-                    )}
-                    <div className="space-y-2">
-                      <Label htmlFor="doneMsg">완료 메시지</Label>
-                      <Input id="doneMsg" value={doneMsg} onChange={(e) => setDoneMsg(e.target.value)} placeholder="비우면 D+N 표시" />
-                    </div>
-                  </>
-                ),
-              },
+              ...(displayMode === "default"
+                ? [
+                    {
+                      id: "calc",
+                      title: "계산 방식",
+                      children: (
+                        <>
+                          <div className="space-y-2">
+                            <Label>카운트 방식</Label>
+                            <Select value={calcType} onValueChange={(v) => setCalcType(v as "down" | "up")}>
+                              <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="down">카운트다운 (D-N)</SelectItem>
+                                <SelectItem value="up">카운트업 (N일째)</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <Label htmlFor="annual">매년 반복</Label>
+                            <Switch id="annual" checked={isAnnual} onCheckedChange={setIsAnnual} />
+                          </div>
+                        </>
+                      ),
+                    },
+                    {
+                      id: "display",
+                      title: "표시 옵션",
+                      children: (
+                        <>
+                          <div className="space-y-2">
+                            <Label>날짜 표시 형식</Label>
+                            <Select value={dateFmt} onValueChange={(v) => setDateFmt(v as DdayDateFormat)}>
+                              <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="full">전체 (2026.11.19 (목))</SelectItem>
+                                <SelectItem value="short">짧게 (11.19 (목))</SelectItem>
+                                <SelectItem value="dot">날짜만 (2026.11.19)</SelectItem>
+                                <SelectItem value="none">숨김</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <Label htmlFor="showTime">시간 카운트다운</Label>
+                            <Switch id="showTime" checked={showTime} onCheckedChange={setShowTime} />
+                          </div>
+                          {showTime && (
+                            <div className="flex items-center justify-between">
+                              <Label htmlFor="blink">구분자 깜빡임</Label>
+                              <Switch id="blink" checked={blink} onCheckedChange={setBlink} />
+                            </div>
+                          )}
+                          <div className="space-y-2">
+                            <Label htmlFor="doneMsg">완료 메시지</Label>
+                            <Input id="doneMsg" value={doneMsg} onChange={(e) => setDoneMsg(e.target.value)} placeholder="비우면 D+N 표시" />
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <Label htmlFor="hideOnDone">완료 시 숨기기</Label>
+                            <Switch id="hideOnDone" checked={hideOnDone} onCheckedChange={setHideOnDone} />
+                          </div>
+                        </>
+                      ),
+                    },
+                  ]
+                : []),
               {
                 id: "layout",
                 title: "레이아웃",
                 children: (
                   <>
-                    <div className="space-y-2">
-                      <Label>레이아웃</Label>
-                      <Select value={layout} onValueChange={(v) => setLayout(v as "default" | "progress")}>
-                        <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="default">기본</SelectItem>
-                          <SelectItem value="progress">프로그레스 바</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    {layout === "progress" && (
-                      <div className="space-y-2">
-                        <Label htmlFor="startDate">시작 날짜</Label>
-                        <Input id="startDate" type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
-                      </div>
+                    {displayMode === "default" && (
+                      <>
+                        <div className="space-y-2">
+                          <Label>레이아웃</Label>
+                          <Select value={layout} onValueChange={(v) => setLayout(v as "default" | "progress")}>
+                            <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="default">기본</SelectItem>
+                              <SelectItem value="progress">프로그레스 바</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        {layout === "progress" && (
+                          <div className="space-y-2">
+                            <Label htmlFor="startDate">시작 날짜</Label>
+                            <Input id="startDate" type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+                          </div>
+                        )}
+                      </>
                     )}
                     <div className="space-y-2">
                       <Label>폰트</Label>
@@ -233,7 +268,7 @@ export default function CreateDdayPage() {
                   <>
                     <ColorPicker id="bgColor" label="배경색" value={bgColor} onChange={setBgColor} placeholder="1E1E1E" disabled={isTransparent} />
                     <ColorPicker id="textColor" label="글자색" value={textColor} onChange={setTextColor} placeholder="FFFFFF" />
-                    {layout === "progress" && (
+                    {displayMode === "default" && layout === "progress" && (
                       <ColorPicker id="barColor" label="바 색상 (비우면 글자색)" value={barColor} onChange={setBarColor} placeholder="비우면 글자색" />
                     )}
                     <div className="flex items-center gap-3">
@@ -271,6 +306,8 @@ export default function CreateDdayPage() {
                     tshadow={tshadow} bw={bw} bc={bc} opacity={opacity} ls={ls}
                     onTshadowChange={setTshadow} onBwChange={setBw} onBcChange={setBc}
                     onOpacityChange={setOpacity} onLsChange={setLs}
+                    entrance={entrance} entranceDelay={entranceDelay}
+                    onEntranceChange={setEntrance} onEntranceDelayChange={setEntranceDelay}
                   />
                 ),
               },
@@ -292,12 +329,12 @@ export default function CreateDdayPage() {
               tshadow={tshadow} bw={bw} bc={bc} opacity={opacity} ls={ls}
             >
               <DdayWidgetPreview
-            title={title} targetDate={targetDate} bgColor={bgColor} textColor={textColor}
-            calcType={calcType} isAnnual={isAnnual} layout={layout} startDate={startDate}
-            isTransparent={isTransparent} font={font} borderRadius={borderRadius} padding={padding}
-            fontSize={fontSize} showTime={showTime} blink={blink} doneMsg={doneMsg}
-            barColor={barColor} dateFmt={dateFmt}
-          />
+                title={title} targetDate={targetDate} bgColor={bgColor} textColor={textColor}
+                calcType={calcType} isAnnual={isAnnual} layout={layout} startDate={startDate}
+                isTransparent={isTransparent} font={font} borderRadius={borderRadius} padding={padding}
+                fontSize={fontSize} showTime={showTime} blink={blink} doneMsg={doneMsg}
+                barColor={barColor} dateFmt={dateFmt} displayMode={displayMode}
+              />
             </EditorEffectsPreview>
           </div>
         </div>

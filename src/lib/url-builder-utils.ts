@@ -3,7 +3,7 @@
  * 위젯별 비기본값 파라미터만 URL에 추가하는 패턴을 공통화한다.
  */
 
-import type { TextShadowKey, BorderWidthKey, OpacityKey, LetterSpacingKey } from "@/lib/common-widget-options";
+import type { TextShadowKey, BorderWidthKey, OpacityKey, LetterSpacingKey, EntranceType, EntranceDelayKey } from "@/lib/common-widget-options";
 
 /** 투명 배경 / 배경색 파라미터를 URL에 추가한다. */
 export function addBgParam(
@@ -65,6 +65,16 @@ export function addExtraStyleParams(
   if (bw !== "none" && bc !== "D1D5DB") params.set("bc", bc);
   if (opacity !== "100") params.set("opacity", opacity);
   if (ls !== "normal") params.set("ls", ls);
+}
+
+/** 진입 애니메이션 파라미터를 URL에 추가한다. 기본값이면 생략. */
+export function addEntranceParams(
+  params: URLSearchParams,
+  entrance: EntranceType,
+  entranceDelay: EntranceDelayKey,
+) {
+  if (entrance !== "none") params.set("entrance", entrance);
+  if (entrance !== "none" && entranceDelay !== "0") params.set("ed", entranceDelay);
 }
 
 /** base + params를 합쳐 최종 URL을 반환한다. */

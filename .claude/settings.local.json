@@ -140,7 +140,14 @@
       "Bash(git push:*)",
       "Bash(while read:*)",
       "Bash(do grep -c \"onTshadowChange\" \"$f\")",
-      "Bash(do grep -c \"tshadow={tshadow} bw={bw}\" \"$f\")"
+      "Bash(do grep -c \"tshadow={tshadow} bw={bw}\" \"$f\")",
+      "Bash(for file in use*.ts)",
+      "Bash(do if head -3 \"$file\")",
+      "Bash(then echo \"FACTORY: $file\" else echo \"DIRECT:  $file\" fi done)",
+      "Bash(do if ! grep -q \"import.*addEntranceParams\" \"$f\")",
+      "Bash(then echo \"$f\" fi done)",
+      "Bash(/tmp/fix-imports.mjs:*)",
+      "Bash(/tmp/fix-imports2.mjs << 'SCRIPT'\nimport { readFileSync, writeFileSync } from 'fs';\nimport { execSync } from 'child_process';\n\nconst files = execSync\\('grep -rl \"addEntranceParams\\(params,\" /Users/yjh/yjh_project/2026/dev_widgit/src/app/create/'\\).toString\\(\\).trim\\(\\).split\\('\\\\n'\\);\n\nlet fixed = 0;\nfor \\(const file of files\\) {\n  let content = readFileSync\\(file, 'utf-8'\\);\n  \n  // Skip if already imported\n  if \\(/import\\\\s*\\\\{[^}]*addEntranceParams[^}]*\\\\}\\\\s*from\\\\s*\"@\\\\/lib\\\\/url-builder-utils\"/.test\\(content\\)\\) continue;\n  \n  // Find the url-builder-utils import and add addEntranceParams\n  if \\(content.includes\\('from \"@/lib/url-builder-utils\"'\\)\\) {\n    // Replace: add addEntranceParams before the closing }\n    content = content.replace\\(\n      /\\(import\\\\s*\\\\{[^}]*\\)\\(}\\\\s*from\\\\s*\"@\\\\/lib\\\\/url-builder-utils\"\\)/,\n      '$1, addEntranceParams $2'\n    \\);\n    writeFileSync\\(file, content\\);\n    fixed++;\n    console.log\\('Fixed:', file.split\\('/create/'\\)[1]\\);\n  }\n}\n\nconsole.log\\(`Total fixed: ${fixed}`\\);\nSCRIPT)"
     ]
   }
 }

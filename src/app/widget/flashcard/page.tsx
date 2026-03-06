@@ -5,7 +5,7 @@ import FlashcardPreview from "@/components/widget/FlashcardPreview";
 import WidgetPage, { WidgetScreen } from "@/components/widget/WidgetPage";
 import { parseBgParam } from "@/lib/common-params";
 import { parseBorderRadius, parsePadding, parseFontSize, parseHexColor } from "@/lib/common-widget-options";
-import { deserializeCards } from "@/lib/flashcard";
+import { deserializeCards, parseDisplayStyle, parseCardMode } from "@/lib/flashcard";
 
 function FlashcardWidgetContent() {
   const searchParams = useWidgetParams();
@@ -15,6 +15,8 @@ function FlashcardWidgetContent() {
 
   const showCount = searchParams.get("showCount") !== "false";
   const autoFlip = searchParams.get("autoFlip") === "true";
+  const displayStyle = parseDisplayStyle(searchParams.get("display"));
+  const mode = parseCardMode(searchParams.get("mode"));
 
   const accentColor = parseHexColor(searchParams.get("accent"), "7C3AED");
   const color = parseHexColor(searchParams.get("color"), "1E1E1E");
@@ -31,6 +33,8 @@ function FlashcardWidgetContent() {
         cards={cards}
         showCount={showCount}
         autoFlip={autoFlip}
+        displayStyle={displayStyle}
+        mode={mode}
         accentColor={accentColor}
         color={color}
         bg={bg}

@@ -4,6 +4,8 @@ import { useState, useEffect, useCallback, startTransition } from "react";
 import { saveTodos, loadTodos, generateId, type TodoItem } from "@/lib/todo";
 import type { FontSizeKey } from "@/lib/common-widget-options";
 import { resolveFontStyle } from "@/lib/fonts";
+import { useCelebration } from "@/hooks/useCelebration";
+import Celebration from "@/components/widget/Celebration";
 
 const FONT_SIZE_MAP: Record<FontSizeKey, string> = {
   sm: "0.75rem",
@@ -27,6 +29,7 @@ interface TodoPreviewProps {
   fontSize: FontSizeKey;
   font?: string;
   widgetId?: string;
+  celebrate?: boolean;
 }
 
 export default function TodoPreview({
@@ -44,6 +47,7 @@ export default function TodoPreview({
   fontSize,
   font = "sans",
   widgetId,
+  celebrate = true,
 }: TodoPreviewProps) {
   const [items, setItems] = useState<TodoItem[]>(initialItems);
   const [newText, setNewText] = useState("");
@@ -93,16 +97,18 @@ export default function TodoPreview({
   const fSize = FONT_SIZE_MAP[fontSize];
   const effectiveText = textColor || (transparentBg ? "" : "1E1E1E");
   const fontStyle = resolveFontStyle(font);
+  const showCelebration = useCelebration(doneCount === totalCount && totalCount > 0, celebrate);
 
   return (
     <div
-      className={`w-full h-full flex items-center justify-center ${fontStyle.className ?? ""}`}
+      className={`relative w-full h-full flex items-center justify-center ${fontStyle.className ?? ""}`}
       style={{
         backgroundColor: transparentBg ? "transparent" : `#${bg}`,
         color: effectiveText ? `#${effectiveText}` : undefined,
         fontFamily: fontStyle.fontFamily,
       }}
     >
+      <Celebration active={showCelebration} color={color} />
       <div
         className="w-full"
         style={{

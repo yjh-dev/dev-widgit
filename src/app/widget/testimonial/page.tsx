@@ -17,6 +17,9 @@ function TestimonialWidgetContent() {
   const showAvatar = searchParams.get("showAvatar") !== "false";
   const showRole = searchParams.get("showRole") !== "false";
   const showQuoteMarks = searchParams.get("showQuoteMarks") !== "false";
+  const showRating = searchParams.get("showRating") === "true";
+  const rating = Math.max(0, Math.min(Number(searchParams.get("rating")) || 0, 10));
+  const maxStars = Math.max(1, Math.min(Number(searchParams.get("maxStars")) || 5, 10));
 
   const rawLayout = searchParams.get("layout");
   const layout: TestimonialLayout = VALID_LAYOUTS.includes(rawLayout as TestimonialLayout)
@@ -41,6 +44,9 @@ function TestimonialWidgetContent() {
         showAvatar={showAvatar}
         showRole={showRole}
         showQuoteMarks={showQuoteMarks}
+        showRating={showRating}
+        rating={rating}
+        maxStars={maxStars}
         layout={layout}
         accentColor={accentColor}
         textColor={textColor}

@@ -30,6 +30,15 @@ export function getTimezoneLabel(tz: string): string {
   return WORLD_CLOCK_TIMEZONE_OPTIONS.find((t) => t.value === tz)?.label ?? tz.split("/").pop() ?? tz;
 }
 
+export function serializeLabels(labels: string[]): string {
+  return labels.join("|");
+}
+
+export function deserializeLabels(raw: string): string[] {
+  if (!raw) return [];
+  return raw.split("|");
+}
+
 export function getWorldClockTime(
   tz: string,
   format: WorldClockFormat,
@@ -54,4 +63,19 @@ export function getWorldClockTime(
     seconds: s.padStart(2, "0"),
     ampm,
   };
+}
+
+export function getWorldClockDate(tz: string): string {
+  try {
+    const now = new Date();
+    const dateFmt = new Intl.DateTimeFormat("ko-KR", {
+      timeZone: tz,
+      month: "long",
+      day: "numeric",
+      weekday: "short",
+    });
+    return dateFmt.format(now);
+  } catch {
+    return "";
+  }
 }

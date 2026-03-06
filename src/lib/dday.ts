@@ -1,6 +1,7 @@
-import { differenceInDays, isValid } from "date-fns";
+import { differenceInDays, differenceInWeeks, differenceInMonths, differenceInYears, isValid } from "date-fns";
 
 type CalcType = "down" | "up";
+export type DdayDisplayMode = "default" | "anniversary" | "elapsed";
 
 interface DdayResult {
   dday: number | null;
@@ -114,4 +115,66 @@ export function calculateProgress(
   const percent = (elapsed / total) * 100;
 
   return Math.min(100, Math.round(percent));
+}
+
+/* ── Anniversary (기념일) 계산 ────────────────────────── */
+
+export interface AnniversaryResult {
+  days: number;
+  weeks: number;
+  months: number;
+  years: number;
+  nextHundred: number;
+}
+
+/**
+ * 시작 날짜로부터 오늘까지의 기념일 정보를 계산한다.
+ * 시작일 당일을 1일째로 카운트한다.
+ */
+export function calculateAnniversary(startDate: string): AnniversaryResult | null {
+  const start = toLocalDate(startDate);
+  if (!start) return null;
+
+  const today = todayLocal();
+  const rawDays = differenceInDays(today, start);
+  const days = rawDays + 1; // 시작일 = 1일째
+
+  const weeks = differenceInWeeks(today, start);
+  const months = differenceInMonths(today, start);
+  const years = differenceInYears(today, start);
+
+  // 다음 100일 단위 기념일 계산
+  const nextHundred = Math.ceil(days / 100) * 100;
+
+  return { days, weeks, months, years, nextHundred };
+}
+
+/* ── Elapsed (경과 시간) 계산 ────────────────────────── */
+
+export interface ElapsedResult {
+  days: number;
+  hours: number;
+  minutes: number;
+  seconds: number;
+}
+
+/**
+ * 시작 날짜로부터 현재까지 경과한 실시간 시간을 계산한다.
+ */
+export function calculateElapsed(startDate: string): ElapsedResult | null {
+  const start = toLocalDate(startDate);
+  if (!start) return null;
+
+  const now = new Date();
+  const diffMs = now.getTime() - start.getTime();
+
+  if (diffMs < 0) return null;
+
+  const totalSeconds = Math.floor(diffMs / 1000);
+  const days = Math.floor(totalSeconds / 86400);
+  const hours = Math.floor((totalSeconds % 86400) / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+
+  return { days, hours, minutes, seconds };
 }

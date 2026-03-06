@@ -1,27 +1,25 @@
 "use client";
 
 import { useWidgetParams } from "@/lib/use-widget-params";
-import ReadingPreview from "@/components/widget/ReadingPreview";
+import GoalPreview from "@/components/widget/GoalPreview";
 import WidgetPage, { WidgetScreen } from "@/components/widget/WidgetPage";
 import { parseBgParam } from "@/lib/common-params";
 import { parseBorderRadius, parsePadding, parseFontSize, parseHexColor } from "@/lib/common-widget-options";
-import type { ReadingStyle } from "@/lib/reading";
-
-const VALID_STYLES: ReadingStyle[] = ["bar", "ring"];
+import { VALID_STYLES, type GoalStyle } from "@/lib/goal";
 
 function ReadingWidgetContent() {
   const searchParams = useWidgetParams();
 
   const title = searchParams.get("title") || "";
-  const currentPage = Math.max(0, Number(searchParams.get("current")) || 0);
-  const totalPages = Math.max(1, Number(searchParams.get("total")) || 300);
+  const current = Math.max(0, Number(searchParams.get("current")) || 0);
+  const target = Math.max(1, Number(searchParams.get("total")) || 300);
 
   const rawStyle = searchParams.get("style");
-  const style: ReadingStyle = VALID_STYLES.includes(rawStyle as ReadingStyle)
-    ? (rawStyle as ReadingStyle)
+  const style: GoalStyle = VALID_STYLES.includes(rawStyle as GoalStyle)
+    ? (rawStyle as GoalStyle)
     : "bar";
 
-  const showPages = searchParams.get("pages") !== "false";
+  const showValue = searchParams.get("pages") !== "false";
 
   const color = parseHexColor(searchParams.get("color"), "2563EB");
   const textColor = parseHexColor(searchParams.get("textColor"), "");
@@ -34,12 +32,13 @@ function ReadingWidgetContent() {
 
   return (
     <WidgetScreen>
-      <ReadingPreview
+      <GoalPreview
         title={title}
-        currentPage={currentPage}
-        totalPages={totalPages}
+        current={current}
+        target={target}
+        unit="페이지"
         style={style}
-        showPages={showPages}
+        showValue={showValue}
         color={color}
         textColor={textColor}
         font={font}

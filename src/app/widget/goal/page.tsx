@@ -5,9 +5,7 @@ import GoalPreview from "@/components/widget/GoalPreview";
 import WidgetPage, { WidgetScreen } from "@/components/widget/WidgetPage";
 import { parseBgParam } from "@/lib/common-params";
 import { parseBorderRadius, parsePadding, parseFontSize, parseHexColor } from "@/lib/common-widget-options";
-import type { GoalStyle } from "@/lib/goal";
-
-const VALID_STYLES: GoalStyle[] = ["bar", "ring"];
+import { VALID_STYLES, VALID_ICONS, type GoalStyle, type GoalIcon } from "@/lib/goal";
 
 function GoalWidgetContent() {
   const searchParams = useWidgetParams();
@@ -22,7 +20,13 @@ function GoalWidgetContent() {
     ? (rawStyle as GoalStyle)
     : "bar";
 
+  const rawIcon = searchParams.get("icon");
+  const icon: GoalIcon = VALID_ICONS.includes(rawIcon as GoalIcon)
+    ? (rawIcon as GoalIcon)
+    : "";
+
   const showValue = searchParams.get("showValue") !== "false";
+  const year = searchParams.get("year") || "";
 
   const color = parseHexColor(searchParams.get("color"), "2563EB");
   const textColor = parseHexColor(searchParams.get("textColor"), "");
@@ -32,6 +36,7 @@ function GoalWidgetContent() {
   const padding = parsePadding(searchParams.get("pad"));
   const fontSize = parseFontSize(searchParams.get("fsize"));
   const font = searchParams.get("font") || "sans";
+  const celebrate = searchParams.get("celebrate") !== "false";
 
   return (
     <WidgetScreen>
@@ -50,6 +55,9 @@ function GoalWidgetContent() {
         borderRadius={borderRadius}
         padding={padding}
         fontSize={fontSize}
+        icon={icon}
+        year={year}
+        celebrate={celebrate}
       />
     </WidgetScreen>
   );

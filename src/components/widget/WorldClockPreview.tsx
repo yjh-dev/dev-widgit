@@ -3,11 +3,13 @@
 import { useEffect, useState, startTransition } from "react";
 import {
   getWorldClockTime,
+  getWorldClockDate,
   getTimezoneLabel,
   getTimezoneShort,
 } from "@/lib/world-clock";
 import type { WorldClockFormat } from "@/lib/world-clock";
 import type { FontSizeKey } from "@/lib/common-widget-options";
+import { resolveFontStyle } from "@/lib/fonts";
 
 const TIME_SIZE_MAP: Record<FontSizeKey, string> = {
   sm: "text-lg",
@@ -32,10 +34,14 @@ const SHORT_SIZE_MAP: Record<FontSizeKey, string> = {
 
 interface WorldClockPreviewProps {
   zones?: string[];
+  labels?: string[];
   format?: WorldClockFormat;
   showLabel?: boolean;
   showSeconds?: boolean;
+  showDate?: boolean;
   color?: string;
+  textColor?: string;
+  font?: string;
   bg?: string;
   transparentBg?: boolean;
   borderRadius?: number;
@@ -45,10 +51,14 @@ interface WorldClockPreviewProps {
 
 export default function WorldClockPreview({
   zones = ["Asia/Seoul", "America/New_York"],
+  labels = [],
   format = "24h",
   showLabel = true,
   showSeconds = false,
+  showDate = false,
   color = "1E1E1E",
+  textColor = "",
+  font = "mono",
   bg = "FFFFFF",
   transparentBg = false,
   borderRadius = 16,
@@ -59,28 +69,35 @@ export default function WorldClockPreview({
   const [times, setTimes] = useState<
     { hours: string; minutes: string; seconds: string; ampm: string }[]
   >([]);
+  const [dates, setDates] = useState<string[]>([]);
 
   useEffect(() => {
     startTransition(() => {
       setMounted(true);
       setTimes(zones.map((tz) => getWorldClockTime(tz, format)));
+      if (showDate) setDates(zones.map((tz) => getWorldClockDate(tz)));
     });
     const id = setInterval(() => {
       setTimes(zones.map((tz) => getWorldClockTime(tz, format)));
+      if (showDate) setDates(zones.map((tz) => getWorldClockDate(tz)));
     }, 1000);
     return () => clearInterval(id);
-  }, [zones, format]);
+  }, [zones, format, showDate]);
+
+  const resolvedTextColor = textColor || color;
+  const fontStyle = resolveFontStyle(font);
 
   if (!mounted) return <div className="w-full h-full" />;
 
   return (
     <div
-      className="w-full h-full flex items-center justify-center"
+      className={`w-full h-full flex items-center justify-center ${fontStyle.className ?? ""}`}
       style={{
         backgroundColor: transparentBg ? "transparent" : `#${bg}`,
         borderRadius,
         padding,
-        color: `#${color}`,
+        color: `#${resolvedTextColor}`,
+        fontFamily: fontStyle.fontFamily,
       }}
     >
       <div className="flex items-stretch justify-center gap-0 w-full">
@@ -90,12 +107,14 @@ export default function WorldClockPreview({
           const timeStr = showSeconds
             ? `${t.hours}:${t.minutes}:${t.seconds}`
             : `${t.hours}:${t.minutes}`;
+          const customLabel = labels[idx];
+          const displayLabel = customLabel || getTimezoneLabel(tz);
           return (
-            <div key={tz} className="flex items-stretch flex-1 min-w-0">
+            <div key={tz + idx} className="flex items-stretch flex-1 min-w-0">
               {idx > 0 && (
                 <div
                   className="w-px self-stretch shrink-0 mx-3"
-                  style={{ backgroundColor: `#${color}20` }}
+                  style={{ backgroundColor: `#${resolvedTextColor}20` }}
                 />
               )}
               <div className="flex flex-col items-center justify-center flex-1 min-w-0 gap-0.5">
@@ -104,11 +123,11 @@ export default function WorldClockPreview({
                     className={`${LABEL_SIZE_MAP[fontSize]} font-medium truncate max-w-full`}
                     style={{ opacity: 0.7 }}
                   >
-                    {getTimezoneLabel(tz)}
+                    {displayLabel}
                   </span>
                 )}
                 <span
-                  className={`${TIME_SIZE_MAP[fontSize]} font-bold tabular-nums font-mono whitespace-nowrap`}
+                  className={`${TIME_SIZE_MAP[fontSize]} font-bold tabular-nums whitespace-nowrap`}
                 >
                   {timeStr}
                 </span>
@@ -120,7 +139,15 @@ export default function WorldClockPreview({
                     {t.ampm}
                   </span>
                 )}
-                {showLabel && (
+                {showDate && dates[idx] && (
+                  <span
+                    className={`${SHORT_SIZE_MAP[fontSize]} tabular-nums`}
+                    style={{ opacity: 0.4 }}
+                  >
+                    {dates[idx]}
+                  </span>
+                )}
+                {showLabel && !showDate && (
                   <span
                     className={`${SHORT_SIZE_MAP[fontSize]} tabular-nums`}
                     style={{ opacity: 0.4 }}

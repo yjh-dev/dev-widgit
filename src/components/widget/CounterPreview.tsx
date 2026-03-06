@@ -11,6 +11,8 @@ import {
 } from "@/lib/counter";
 import type { FontSizeKey } from "@/lib/common-widget-options";
 import { resolveFontStyle } from "@/lib/fonts";
+import { useCelebration } from "@/hooks/useCelebration";
+import Celebration from "@/components/widget/Celebration";
 
 const NUM_SIZE_MAP: Record<FontSizeKey, string> = {
   sm: "text-3xl",
@@ -49,6 +51,7 @@ interface CounterPreviewProps {
   fontSize?: FontSizeKey;
   font?: string;
   persist?: boolean;
+  celebrate?: boolean;
 }
 
 export default function CounterPreview({
@@ -67,6 +70,7 @@ export default function CounterPreview({
   fontSize = "md",
   font = "sans",
   persist = false,
+  celebrate = true,
 }: CounterPreviewProps) {
   const storageKey = buildStorageKey({ label, initial, step, min, max });
 
@@ -104,10 +108,11 @@ export default function CounterPreview({
   const atMax = max !== undefined && count >= max;
 
   const fontStyle = resolveFontStyle(font);
+  const showCelebration = useCelebration(max !== undefined && count >= max, celebrate);
 
   return (
     <div
-      className={`w-full h-full flex flex-col items-center justify-center gap-3 ${fontStyle.className ?? ""}`}
+      className={`relative w-full h-full flex flex-col items-center justify-center gap-3 ${fontStyle.className ?? ""}`}
       style={{
         backgroundColor: transparentBg ? "transparent" : `#${bg}`,
         borderRadius,
@@ -116,6 +121,7 @@ export default function CounterPreview({
         fontFamily: fontStyle.fontFamily,
       }}
     >
+      <Celebration active={showCelebration} color={btnColor} />
       <p className={`${LABEL_SIZE_MAP[fontSize]} opacity-60 font-medium`}>{label}</p>
 
       <p className={`${NUM_SIZE_MAP[fontSize]} font-bold tabular-nums`}>

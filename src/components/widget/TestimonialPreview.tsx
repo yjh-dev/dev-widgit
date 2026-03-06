@@ -1,7 +1,7 @@
 "use client";
 
 import { User } from "lucide-react";
-import type { TestimonialLayout } from "@/lib/testimonial";
+import { renderStars, type StarType, type TestimonialLayout } from "@/lib/testimonial";
 import type { FontSizeKey } from "@/lib/common-widget-options";
 
 const QUOTE_SIZE_MAP: Record<FontSizeKey, string> = {
@@ -32,6 +32,57 @@ const AVATAR_SIZE_MAP: Record<FontSizeKey, number> = {
   xl: 56,
 };
 
+const STAR_SIZE_MAP: Record<FontSizeKey, number> = {
+  sm: 16,
+  md: 20,
+  lg: 24,
+  xl: 28,
+};
+
+const STAR_PATH =
+  "M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14l-5-4.87 6.91-1.01L12 2z";
+
+function Star({
+  type,
+  size,
+  color,
+  index,
+}: {
+  type: StarType;
+  size: number;
+  color: string;
+  index: number;
+}) {
+  if (type === "full") {
+    return (
+      <svg width={size} height={size} viewBox="0 0 24 24" fill={`#${color}`} stroke={`#${color}`} strokeWidth="1.5">
+        <path d={STAR_PATH} />
+      </svg>
+    );
+  }
+
+  if (type === "half") {
+    const clipId = `testimonial-half-star-${index}`;
+    return (
+      <svg width={size} height={size} viewBox="0 0 24 24">
+        <defs>
+          <clipPath id={clipId}>
+            <rect x="0" y="0" width="12" height="24" />
+          </clipPath>
+        </defs>
+        <path d={STAR_PATH} fill="none" stroke={`#${color}`} strokeWidth="1.5" opacity={0.3} />
+        <path d={STAR_PATH} fill={`#${color}`} stroke={`#${color}`} strokeWidth="1.5" clipPath={`url(#${clipId})`} />
+      </svg>
+    );
+  }
+
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={`#${color}`} strokeWidth="1.5" opacity={0.3}>
+      <path d={STAR_PATH} />
+    </svg>
+  );
+}
+
 interface TestimonialPreviewProps {
   quote?: string;
   author?: string;
@@ -40,6 +91,9 @@ interface TestimonialPreviewProps {
   showAvatar?: boolean;
   showRole?: boolean;
   showQuoteMarks?: boolean;
+  showRating?: boolean;
+  rating?: number;
+  maxStars?: number;
   layout?: TestimonialLayout;
   accentColor?: string;
   textColor?: string;
@@ -58,6 +112,9 @@ export default function TestimonialPreview({
   showAvatar = true,
   showRole = true,
   showQuoteMarks = true,
+  showRating = false,
+  rating = 0,
+  maxStars = 5,
   layout = "card",
   accentColor = "6366F1",
   textColor = "",
@@ -69,6 +126,16 @@ export default function TestimonialPreview({
 }: TestimonialPreviewProps) {
   const resolvedTextColor = textColor || "333333";
   const avatarSize = AVATAR_SIZE_MAP[fontSize];
+  const starSize = STAR_SIZE_MAP[fontSize];
+  const stars = showRating ? renderStars(rating, maxStars) : [];
+
+  const ratingEl = showRating ? (
+    <div className="flex items-center gap-0.5 mt-2">
+      {stars.map((type, i) => (
+        <Star key={i} type={type} size={starSize} color={accentColor} index={i} />
+      ))}
+    </div>
+  ) : null;
 
   const displayQuote = quote || "후기를 입력하세요";
   const displayAuthor = author || "작성자";
@@ -123,6 +190,7 @@ export default function TestimonialPreview({
           >
             {displayQuote}
           </p>
+          {ratingEl && <div className="flex justify-center">{ratingEl}</div>}
           <p
             className={`${AUTHOR_SIZE_MAP[fontSize]} mt-3 font-medium`}
             style={{ color: `#${resolvedTextColor}`, opacity: 0.7 }}
@@ -163,6 +231,7 @@ export default function TestimonialPreview({
           >
             {displayQuote}
           </p>
+          {ratingEl}
           <p
             className={`${AUTHOR_SIZE_MAP[fontSize]} mt-3 font-semibold`}
             style={{ color: `#${resolvedTextColor}` }}
@@ -210,6 +279,7 @@ export default function TestimonialPreview({
         >
           {displayQuote}
         </p>
+        {ratingEl}
         <div className="flex items-center gap-2 mt-3">
           {avatarEl}
           <div>

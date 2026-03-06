@@ -26,7 +26,7 @@ import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
 import type { TestimonialLayout } from "@/lib/testimonial";
 import type { FontSizeKey } from "@/lib/common-widget-options";
-import { addEffectParams, addExtraStyleParams } from "@/lib/url-builder-utils";
+import { addEffectParams, addExtraStyleParams , addEntranceParams } from "@/lib/url-builder-utils";
 import EffectOptions from "@/components/editor/EffectOptions";
 import EditorEffectsPreview from "@/components/editor/EditorEffectsPreview";
 import EffectPresetSelector from "@/components/editor/EffectPresetSelector";
@@ -35,16 +35,19 @@ export default function CreateTestimonialPage() {
   const {
     quote, author, role, avatarUrl,
     showAvatar, showRole, showQuoteMarks, layout,
+    showRating, rating, maxStars,
     accentColor, textColor, bg, transparentBg,
     borderRadius, padding, fontSize,
     setQuote, setAuthor, setRole, setAvatarUrl,
     setShowAvatar, setShowRole, setShowQuoteMarks, setLayout,
+    setShowRating, setRating, setMaxStars,
     setAccentColor, setTextColor, setBg, setTransparentBg,
     setBorderRadius, setPadding, setFontSize,
     fx, fxInt, gbg, gbgDir, neonColor, bshadow,
     setFx, setFxInt, setGbg, setGbgDir, setNeonColor, setBshadow,
     tshadow, bw, bc, opacity, ls,
     setTshadow, setBw, setBc, setOpacity, setLs,
+    entrance, entranceDelay, setEntrance, setEntranceDelay,
     loadPreset, reset,
   } = useTestimonialStore();
 
@@ -58,6 +61,9 @@ export default function CreateTestimonialPage() {
       ...(p.has("showRole") && { showRole: p.get("showRole") !== "false" }),
       ...(p.has("showQuoteMarks") && { showQuoteMarks: p.get("showQuoteMarks") !== "false" }),
       ...(p.has("layout") && { layout: p.get("layout") as TestimonialLayout }),
+      ...(p.has("showRating") && { showRating: p.get("showRating") === "true" }),
+      ...(p.has("rating") && { rating: Number(p.get("rating")) }),
+      ...(p.has("maxStars") && { maxStars: Number(p.get("maxStars")) }),
       ...(p.has("accentColor") && { accentColor: p.get("accentColor")! }),
       ...(p.has("textColor") && { textColor: p.get("textColor")! }),
       ...(p.has("bg") && {
@@ -73,6 +79,8 @@ export default function CreateTestimonialPage() {
       ...(p.has("bc") && { bc: p.get("bc")! }),
       ...(p.has("opacity") && { opacity: p.get("opacity")! }),
       ...(p.has("ls") && { ls: p.get("ls")! }),
+      ...(p.has("entrance") && { entrance: p.get("entrance")! }),
+      ...(p.has("ed") && { entranceDelay: p.get("ed")! }),
     });
   });
 
@@ -87,6 +95,9 @@ export default function CreateTestimonialPage() {
     if (!showRole) params.set("showRole", "false");
     if (!showQuoteMarks) params.set("showQuoteMarks", "false");
     if (layout !== "card") params.set("layout", layout);
+    if (showRating) params.set("showRating", "true");
+    if (showRating && rating !== 0) params.set("rating", String(rating));
+    if (showRating && maxStars !== 5) params.set("maxStars", String(maxStars));
     if (accentColor !== "6366F1") params.set("accentColor", accentColor);
     if (textColor) params.set("textColor", textColor);
     if (transparentBg) {
@@ -99,9 +110,10 @@ export default function CreateTestimonialPage() {
     if (fontSize !== "md") params.set("fsize", fontSize);
     addEffectParams(params, fx, fxInt, gbg, gbgDir, neonColor, bshadow);
     addExtraStyleParams(params, tshadow, bw, bc, opacity, ls);
+    addEntranceParams(params, entrance, entranceDelay);
     const qs = params.toString();
     return qs ? `${base}?${qs}` : base;
-  }, [quote, author, role, avatarUrl, showAvatar, showRole, showQuoteMarks, layout, accentColor, textColor, bg, transparentBg, borderRadius, padding, fontSize, fx, fxInt, gbg, gbgDir, neonColor, bshadow, tshadow, bw, bc, opacity, ls]);
+  }, [quote, author, role, avatarUrl, showAvatar, showRole, showQuoteMarks, layout, showRating, rating, maxStars, accentColor, textColor, bg, transparentBg, borderRadius, padding, fontSize, fx, fxInt, gbg, gbgDir, neonColor, bshadow, tshadow, bw, bc, opacity, ls, entrance, entranceDelay]);
 
   const handleCopy = async () => {
     await copyToClipboard(buildWidgetUrl());
@@ -174,6 +186,36 @@ export default function CreateTestimonialPage() {
                       <Label htmlFor="showQuoteMarks">따옴표 장식</Label>
                       <Switch id="showQuoteMarks" checked={showQuoteMarks} onCheckedChange={setShowQuoteMarks} />
                     </div>
+                    <div className="flex items-center justify-between">
+                      <Label htmlFor="showRating">별점 표시</Label>
+                      <Switch id="showRating" checked={showRating} onCheckedChange={setShowRating} />
+                    </div>
+                    {showRating && (
+                      <>
+                        <div className="space-y-2">
+                          <Label htmlFor="rating">별점 (0.5 단위)</Label>
+                          <Input
+                            id="rating" type="number" min={0} max={maxStars} step={0.5}
+                            value={rating}
+                            onChange={(e) => {
+                              const v = Number(e.target.value);
+                              if (v >= 0 && v <= maxStars) setRating(v);
+                            }}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="maxStars">최대 별 수</Label>
+                          <Input
+                            id="maxStars" type="number" min={1} max={10}
+                            value={maxStars}
+                            onChange={(e) => {
+                              const v = Number(e.target.value);
+                              if (v >= 1 && v <= 10) setMaxStars(v);
+                            }}
+                          />
+                        </div>
+                      </>
+                    )}
                   </>
                 ),
               },
@@ -220,6 +262,8 @@ export default function CreateTestimonialPage() {
                     tshadow={tshadow} bw={bw} bc={bc} opacity={opacity} ls={ls}
                     onTshadowChange={setTshadow} onBwChange={setBw} onBcChange={setBc}
                     onOpacityChange={setOpacity} onLsChange={setLs}
+                    entrance={entrance} entranceDelay={entranceDelay}
+                    onEntranceChange={setEntrance} onEntranceDelayChange={setEntranceDelay}
                   />
                 ),
               },
@@ -243,6 +287,7 @@ export default function CreateTestimonialPage() {
               <TestimonialPreview
               quote={quote} author={author} role={role} avatarUrl={avatarUrl}
               showAvatar={showAvatar} showRole={showRole} showQuoteMarks={showQuoteMarks}
+              showRating={showRating} rating={rating} maxStars={maxStars}
               layout={layout} accentColor={accentColor} textColor={textColor}
               bg={bg} transparentBg={transparentBg} borderRadius={borderRadius}
               padding={padding} fontSize={fontSize}

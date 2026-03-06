@@ -5,16 +5,16 @@ const BASE_URL = "https://wiget-tree.vercel.app";
 
 const widgetTypes = [
   "dday", "clock", "analog-clock", "mini-calendar", "timeline", "flip-clock",
-  "time-progress", "life-calendar", "reading", "goal",
+  "time-progress", "life-calendar", "goal",
   "pomodoro", "stopwatch", "counter", "habit", "qr-code", "dice",
   "quote", "banner", "bookmark", "music", "weather", "moon-phase",
   "sticky-note", "gradient", "typewriter", "todo", "github-contribution", "profile-card", "link-tree", "breathing",
   "world-clock", "countdown", "stats-card", "color-palette", "divider", "timetable", "flashcard", "water-tracker", "image-card", "currency",
   "age-calculator", "radar-chart", "pie-chart", "stepper", "battery", "testimonial", "emoji-rain", "changelog", "matrix", "multi-progress",
   "fortune-cookie", "badge", "group",
-  "anniversary", "season-countdown", "dual-clock", "gpa-calculator", "savings-goal", "book-goal",
-  "kanban", "routine-timer", "memo-board", "password-gen", "social-counter", "guestbook", "poll",
-  "vocabulary", "mini-gallery", "ascii-art", "noise-bg", "daily-color", "countup", "mini-map", "rating-card",
+  "season-countdown", "gpa-calculator",
+  "kanban", "routine-timer", "password-gen", "social-counter", "guestbook", "poll",
+  "mini-gallery", "ascii-art", "noise-bg", "daily-color", "mini-map",
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {

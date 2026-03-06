@@ -32,6 +32,7 @@ function CounterWidgetContent() {
   const padding = parsePadding(searchParams.get("pad"));
   const fontSize = parseFontSize(searchParams.get("fsize"));
   const font = searchParams.get("font") || "sans";
+  const celebrate = searchParams.get("celebrate") !== "false";
 
   return (
     <WidgetScreen>
@@ -51,6 +52,7 @@ function CounterWidgetContent() {
         padding={padding}
         fontSize={fontSize}
         persist={true}
+        celebrate={celebrate}
       />
     </WidgetScreen>
   );

@@ -17,11 +17,15 @@ import {
   BORDER_WIDTH_OPTIONS,
   OPACITY_OPTIONS,
   LETTER_SPACING_OPTIONS,
+  ENTRANCE_OPTIONS,
+  ENTRANCE_DELAY_OPTIONS,
   type FontSizeKey,
   type TextShadowKey,
   type BorderWidthKey,
   type OpacityKey,
   type LetterSpacingKey,
+  type EntranceType,
+  type EntranceDelayKey,
 } from "@/lib/common-widget-options";
 
 interface CommonStyleOptionsProps {
@@ -41,6 +45,10 @@ interface CommonStyleOptionsProps {
   onBcChange: (v: string) => void;
   onOpacityChange: (v: OpacityKey) => void;
   onLsChange: (v: LetterSpacingKey) => void;
+  entrance?: EntranceType;
+  entranceDelay?: EntranceDelayKey;
+  onEntranceChange?: (v: EntranceType) => void;
+  onEntranceDelayChange?: (v: EntranceDelayKey) => void;
 }
 
 export default function CommonStyleOptions({
@@ -60,6 +68,10 @@ export default function CommonStyleOptions({
   onBcChange,
   onOpacityChange,
   onLsChange,
+  entrance,
+  entranceDelay,
+  onEntranceChange,
+  onEntranceDelayChange,
 }: CommonStyleOptionsProps) {
   return (
     <>
@@ -198,6 +210,46 @@ export default function CommonStyleOptions({
           </SelectContent>
         </Select>
       </div>
+      {onEntranceChange && (
+        <div className="space-y-2">
+          <Label htmlFor="style-entrance">진입 애니메이션</Label>
+          <Select
+            value={entrance ?? "none"}
+            onValueChange={(v) => onEntranceChange(v as EntranceType)}
+          >
+            <SelectTrigger id="style-entrance" className="w-full">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {ENTRANCE_OPTIONS.map((opt) => (
+                <SelectItem key={opt.value} value={opt.value}>
+                  {opt.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      )}
+      {onEntranceDelayChange && entrance && entrance !== "none" && (
+        <div className="space-y-2">
+          <Label htmlFor="style-entrance-delay">진입 지연</Label>
+          <Select
+            value={entranceDelay ?? "0"}
+            onValueChange={(v) => onEntranceDelayChange(v as EntranceDelayKey)}
+          >
+            <SelectTrigger id="style-entrance-delay" className="w-full">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {ENTRANCE_DELAY_OPTIONS.map((opt) => (
+                <SelectItem key={opt.value} value={opt.value}>
+                  {opt.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      )}
     </>
   );
 }

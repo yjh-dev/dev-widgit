@@ -13,7 +13,11 @@ import {
   parseHexColor,
   parseOpacity,
   parseLetterSpacing,
+  parseEntrance,
+  parseEntranceDelay,
+  type EntranceType,
 } from "@/lib/common-widget-options";
+import { useScheduleVisibility } from "@/lib/widget-schedule";
 
 function Fallback() {
   return (
@@ -48,6 +52,13 @@ function parseExtraStyle(searchParams: URLSearchParams): ExtraStyleConfig {
   };
 }
 
+/** 진입 애니메이션 CSS animation 값을 반환한다. */
+function getEntranceAnimation(entrance: EntranceType, delay: string): string | undefined {
+  if (entrance === "none") return undefined;
+  const name = entrance === "fade" ? "wg-fade-in" : entrance === "slide-up" ? "wg-slide-up" : "wg-scale-in";
+  return `${name} 0.6s ease-out ${delay}ms both`;
+}
+
 /** 추가 스타일이 활성 상태인지 확인한다. */
 function hasActiveExtraStyle(es: ExtraStyleConfig): boolean {
   return es.tshadow !== "none" || es.bw !== "none" || es.opacity !== "100" || es.ls !== "normal";
@@ -61,8 +72,41 @@ export function WidgetScreen({ children }: { children: ReactNode }) {
   const extraStyle = parseExtraStyle(searchParams);
   const active = hasActiveEffects(effectConfig) || hasActiveExtraStyle(extraStyle);
 
+  // Entrance animation
+  const entrance = parseEntrance(searchParams.get("entrance"));
+  const entranceDelay = parseEntranceDelay(searchParams.get("ed"));
+
+  // Schedule visibility
+  const showFrom = searchParams.get("showFrom") || undefined;
+  const showUntil = searchParams.get("showUntil") || undefined;
+  const expireMsg = searchParams.get("expireMsg") || "";
+  const scheduleStatus = useScheduleVisibility(showFrom, showUntil);
+
+  if (scheduleStatus === "before") {
+    return <div className="w-screen h-screen" />;
+  }
+
+  if (scheduleStatus === "after") {
+    if (expireMsg) {
+      return (
+        <div className="w-screen h-screen flex items-center justify-center">
+          <p className="text-muted-foreground text-sm">{expireMsg}</p>
+        </div>
+      );
+    }
+    return <div className="w-screen h-screen" />;
+  }
+
+  const animStyle = getEntranceAnimation(entrance, entranceDelay);
+
   return (
-    <div className="w-screen h-screen" style={{ background: active ? "transparent" : undefined }}>
+    <div
+      className="w-screen h-screen"
+      style={{
+        background: active ? "transparent" : undefined,
+        animation: animStyle,
+      }}
+    >
       <WidgetEffectsWrapper config={effectConfig} borderRadius={borderRadius} extraStyle={extraStyle}>
         {children}
       </WidgetEffectsWrapper>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useWidgetParams } from "@/lib/use-widget-params";
-import BookGoalPreview from "@/components/widget/BookGoalPreview";
+import GoalPreview from "@/components/widget/GoalPreview";
 import WidgetPage, { WidgetScreen } from "@/components/widget/WidgetPage";
 import { parseBgParam } from "@/lib/common-params";
 import { parseBorderRadius, parsePadding, parseFontSize, parseHexColor } from "@/lib/common-widget-options";
@@ -25,11 +25,15 @@ function BookGoalWidgetContent() {
 
   return (
     <WidgetScreen>
-      <BookGoalPreview
+      <GoalPreview
         title={title}
         current={current}
         target={target}
+        unit="권"
+        style="icons"
+        icon="book"
         year={year}
+        showValue={true}
         color={color}
         textColor={textColor}
         font={font}

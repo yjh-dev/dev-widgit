@@ -1,7 +1,8 @@
 import { create } from "zustand";
 import type { FontKey } from "@/lib/fonts";
-import type { FontSizeKey, TextShadowKey, BorderWidthKey, OpacityKey, LetterSpacingKey } from "@/lib/common-widget-options";
+import type { FontSizeKey, TextShadowKey, BorderWidthKey, OpacityKey, LetterSpacingKey, EntranceType, EntranceDelayKey } from "@/lib/common-widget-options";
 import type { EffectType, EffectIntensity, BoxShadowPreset } from "@/lib/widget-effects";
+import type { DdayDisplayMode } from "@/lib/dday";
 
 type CalcType = "down" | "up";
 type LayoutType = "default" | "progress";
@@ -28,6 +29,7 @@ interface DdayWidgetState {
   doneMsg: string;
   barColor: string;
   dateFmt: DdayDateFormat;
+  displayMode: DdayDisplayMode;
   fx: EffectType;
   fxInt: EffectIntensity;
   gbg: string;
@@ -54,6 +56,7 @@ interface DdayWidgetState {
   setDoneMsg: (doneMsg: string) => void;
   setBarColor: (barColor: string) => void;
   setDateFmt: (dateFmt: DdayDateFormat) => void;
+  setDisplayMode: (displayMode: DdayDisplayMode) => void;
   setFx: (fx: EffectType) => void;
   setFxInt: (fxInt: EffectIntensity) => void;
   setGbg: (gbg: string) => void;
@@ -70,6 +73,12 @@ interface DdayWidgetState {
   setBc: (bc: string) => void;
   setOpacity: (opacity: OpacityKey) => void;
   setLs: (ls: LetterSpacingKey) => void;
+  hideOnDone: boolean;
+  entrance: EntranceType;
+  entranceDelay: EntranceDelayKey;
+  setHideOnDone: (hideOnDone: boolean) => void;
+  setEntrance: (entrance: EntranceType) => void;
+  setEntranceDelay: (entranceDelay: EntranceDelayKey) => void;
   loadPreset: (preset: Record<string, unknown>) => void;
   reset: () => void;
 }
@@ -94,6 +103,7 @@ const initialState = {
   doneMsg: "",
   barColor: "",
   dateFmt: "full" as DdayDateFormat,
+  displayMode: "default" as DdayDisplayMode,
   fx: "none" as EffectType,
   fxInt: 2 as EffectIntensity,
   gbg: "",
@@ -105,6 +115,9 @@ const initialState = {
   bc: "D1D5DB",
   opacity: "100" as OpacityKey,
   ls: "normal" as LetterSpacingKey,
+  hideOnDone: false,
+  entrance: "none" as EntranceType,
+  entranceDelay: "0" as EntranceDelayKey,
 };
 
 export const useDdayWidgetStore = create<DdayWidgetState>((set) => ({
@@ -134,6 +147,7 @@ export const useDdayWidgetStore = create<DdayWidgetState>((set) => ({
   setDoneMsg: (doneMsg) => set({ doneMsg }),
   setBarColor: (barColor) => set({ barColor }),
   setDateFmt: (dateFmt) => set({ dateFmt }),
+  setDisplayMode: (displayMode) => set({ displayMode }),
   setFx: (fx) => set({ fx }),
   setFxInt: (fxInt) => set({ fxInt }),
   setGbg: (gbg) => set({ gbg }),
@@ -145,6 +159,9 @@ export const useDdayWidgetStore = create<DdayWidgetState>((set) => ({
   setBc: (bc) => set({ bc }),
   setOpacity: (opacity) => set({ opacity }),
   setLs: (ls) => set({ ls }),
+  setHideOnDone: (hideOnDone) => set({ hideOnDone }),
+  setEntrance: (entrance) => set({ entrance }),
+  setEntranceDelay: (entranceDelay) => set({ entranceDelay }),
   loadPreset: (preset) => set({ ...initialState, ...preset }),
   reset: () => set(initialState),
 }));

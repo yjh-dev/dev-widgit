@@ -1,43 +1,51 @@
 "use client";
 
 import { useWidgetParams } from "@/lib/use-widget-params";
-import VocabularyPreview from "@/components/widget/VocabularyPreview";
+import FlashcardPreview from "@/components/widget/FlashcardPreview";
 import WidgetPage, { WidgetScreen } from "@/components/widget/WidgetPage";
 import { parseBgParam } from "@/lib/common-params";
 import { parseBorderRadius, parsePadding, parseFontSize, parseHexColor } from "@/lib/common-widget-options";
-import { parseWords, type VocabMode } from "@/lib/vocabulary";
+import type { FlashCard, CardMode } from "@/lib/flashcard";
 
-const VALID_MODES: VocabMode[] = ["daily", "random", "sequential"];
+function parseVocabWords(raw: string): FlashCard[] {
+  if (!raw) return [];
+  return raw.split("|").map((item) => {
+    const [word, meaning] = item.split("~");
+    return { front: word || "", back: meaning || "" };
+  }).filter((w) => w.front);
+}
 
-function VocabularyWidgetContent() {
+function mapVocabMode(raw: string | null): CardMode {
+  if (raw === "random") return "random";
+  return "sequential";
+}
+
+function VocabularyCompatContent() {
   const searchParams = useWidgetParams();
 
   const rawWords = searchParams.get("words") || "";
-  const words = parseWords(rawWords);
+  const cards = parseVocabWords(rawWords);
 
-  const rawMode = searchParams.get("mode");
-  const mode: VocabMode = VALID_MODES.includes(rawMode as VocabMode)
-    ? (rawMode as VocabMode)
-    : "daily";
+  const mode = mapVocabMode(searchParams.get("mode"));
 
-  const color = parseHexColor(searchParams.get("color"), "7C3AED");
-  const textColor = parseHexColor(searchParams.get("textColor"), "");
+  const accentColor = parseHexColor(searchParams.get("color"), "7C3AED");
+  const color = parseHexColor(searchParams.get("textColor"), "") || parseHexColor(searchParams.get("color"), "7C3AED");
 
   const { bg, transparentBg } = parseBgParam(searchParams.get("bg"));
 
   const borderRadius = parseBorderRadius(searchParams.get("radius"));
   const padding = parsePadding(searchParams.get("pad"));
   const fontSize = parseFontSize(searchParams.get("fsize"));
-  const font = searchParams.get("font") || "sans";
 
   return (
     <WidgetScreen>
-      <VocabularyPreview
-        words={words}
+      <FlashcardPreview
+        cards={cards}
+        showCount={true}
+        displayStyle="reveal"
         mode={mode}
+        accentColor={accentColor}
         color={color}
-        textColor={textColor}
-        font={font}
         bg={bg}
         transparentBg={transparentBg}
         borderRadius={borderRadius}
@@ -51,7 +59,7 @@ function VocabularyWidgetContent() {
 export default function WidgetVocabularyPage() {
   return (
     <WidgetPage>
-      <VocabularyWidgetContent />
+      <VocabularyCompatContent />
     </WidgetPage>
   );
 }

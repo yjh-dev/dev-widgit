@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import type { QRErrorCorrection, QRModuleStyle, QRSize } from "@/lib/qr-code";
-import type { FontSizeKey, TextShadowKey, BorderWidthKey, OpacityKey, LetterSpacingKey } from "@/lib/common-widget-options";
+import type { FontSizeKey, TextShadowKey, BorderWidthKey, OpacityKey, LetterSpacingKey, EntranceType, EntranceDelayKey } from "@/lib/common-widget-options";
 import type { EffectType, EffectIntensity, BoxShadowPreset } from "@/lib/widget-effects";
 
 interface QRCodeState {
@@ -47,6 +47,10 @@ interface QRCodeState {
   setBc: (v: string) => void;
   setOpacity: (v: OpacityKey) => void;
   setLs: (v: LetterSpacingKey) => void;
+  entrance: EntranceType;
+  entranceDelay: EntranceDelayKey;
+  setEntrance: (v: EntranceType) => void;
+  setEntranceDelay: (v: EntranceDelayKey) => void;
   loadPreset: (preset: Record<string, unknown>) => void;
   reset: () => void;
 }
@@ -73,6 +77,8 @@ const initialState = {
   bc: "D1D5DB",
   opacity: "100" as OpacityKey,
   ls: "normal" as LetterSpacingKey,
+  entrance: "none" as EntranceType,
+  entranceDelay: "0" as EntranceDelayKey,
 };
 
 export const useQRCodeStore = create<QRCodeState>((set) => ({
@@ -99,6 +105,8 @@ export const useQRCodeStore = create<QRCodeState>((set) => ({
   setBc: (bc) => set({ bc }),
   setOpacity: (opacity) => set({ opacity }),
   setLs: (ls) => set({ ls }),
+  setEntrance: (entrance) => set({ entrance }),
+  setEntranceDelay: (entranceDelay) => set({ entranceDelay }),
   loadPreset: (preset) => set({ ...initialState, ...preset }),
   reset: () => set(initialState),
 }));

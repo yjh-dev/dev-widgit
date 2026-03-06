@@ -2,6 +2,7 @@
 
 import { toast } from "sonner";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import ColorPicker from "@/components/ui/color-picker";
@@ -24,46 +25,56 @@ import { useWorldClockStore } from "@/store/useWorldClockStore";
 import {
   WORLD_CLOCK_TIMEZONE_OPTIONS,
   serializeZones,
+  serializeLabels,
   deserializeZones,
+  deserializeLabels,
 } from "@/lib/world-clock";
 import type { WorldClockFormat } from "@/lib/world-clock";
+import { CLOCK_FONT_OPTIONS } from "@/lib/fonts";
 import { worldClockPresets } from "@/lib/presets";
 import { useWidgetUrl } from "@/lib/use-widget-url";
 import { useInitFromUrl } from "@/lib/use-init-from-url";
 import { copyToClipboard } from "@/lib/clipboard";
 import { parseCommonParams } from "@/lib/common-params";
-import { addBgParam, addCommonStyleParams, addEffectParams, addExtraStyleParams, buildUrl } from "@/lib/url-builder-utils";
+import { addBgParam, addCommonStyleParams, addEffectParams, addExtraStyleParams, addEntranceParams, buildUrl } from "@/lib/url-builder-utils";
 import EffectOptions from "@/components/editor/EffectOptions";
 import EditorEffectsPreview from "@/components/editor/EditorEffectsPreview";
 import EffectPresetSelector from "@/components/editor/EffectPresetSelector";
 
 export default function CreateWorldClockPage() {
   const {
-    zones, format, showLabel, showSeconds,
-    color, bg, transparentBg,
+    zones, labels, format, showLabel, showSeconds, showDate,
+    color, textColor, font, bg, transparentBg,
     borderRadius, padding, fontSize,
-    setZones, setFormat, setShowLabel, setShowSeconds,
-    setColor, setBg, setTransparentBg,
+    setZones, setLabels, setFormat, setShowLabel, setShowSeconds, setShowDate,
+    setColor, setTextColor, setFont, setBg, setTransparentBg,
     setBorderRadius, setPadding, setFontSize,
     fx, fxInt, gbg, gbgDir, neonColor, bshadow,
     setFx, setFxInt, setGbg, setGbgDir, setNeonColor, setBshadow,
     tshadow, bw, bc, opacity, ls,
     setTshadow, setBw, setBc, setOpacity, setLs,
+    entrance, entranceDelay, setEntrance, setEntranceDelay,
     loadPreset, reset,
   } = useWorldClockStore();
 
   useInitFromUrl((p) => {
     loadPreset({
       ...(p.has("zones") && { zones: deserializeZones(p.get("zones")!) }),
+      ...(p.has("labels") && { labels: deserializeLabels(p.get("labels")!) }),
       ...(p.has("format") && { format: p.get("format") as WorldClockFormat }),
       ...(p.has("showLabel") && { showLabel: p.get("showLabel") !== "false" }),
       ...(p.has("showSec") && { showSeconds: p.get("showSec") === "true" }),
+      ...(p.has("showDate") && { showDate: p.get("showDate") === "true" }),
       ...(p.has("color") && { color: p.get("color")! }),
+      ...(p.has("textColor") && { textColor: p.get("textColor")! }),
+      ...(p.has("font") && { font: p.get("font")! }),
       ...(p.has("tshadow") && { tshadow: p.get("tshadow")! }),
       ...(p.has("bw") && { bw: p.get("bw")! }),
       ...(p.has("bc") && { bc: p.get("bc")! }),
       ...(p.has("opacity") && { opacity: p.get("opacity")! }),
       ...(p.has("ls") && { ls: p.get("ls")! }),
+      ...(p.has("entrance") && { entrance: p.get("entrance")! }),
+      ...(p.has("ed") && { entranceDelay: p.get("ed")! }),
       ...parseCommonParams(p),
     });
   });
@@ -75,16 +86,22 @@ export default function CreateWorldClockPage() {
     const zonesStr = serializeZones(zones);
     const defaultStr = serializeZones(defaultZones);
     if (zonesStr !== defaultStr) params.set("zones", zonesStr);
+    const labelsStr = serializeLabels(labels);
+    if (labelsStr) params.set("labels", labelsStr);
     if (format !== "24h") params.set("format", format);
     if (!showLabel) params.set("showLabel", "false");
     if (showSeconds) params.set("showSec", "true");
+    if (showDate) params.set("showDate", "true");
     if (color !== "1E1E1E") params.set("color", color);
+    if (textColor) params.set("textColor", textColor);
+    if (font !== "mono") params.set("font", font);
     addBgParam(params, transparentBg, bg);
     addCommonStyleParams(params, borderRadius, padding, fontSize);
     addEffectParams(params, fx, fxInt, gbg, gbgDir, neonColor, bshadow);
     addExtraStyleParams(params, tshadow, bw, bc, opacity, ls);
+    addEntranceParams(params, entrance, entranceDelay);
     return buildUrl(base, params);
-  }, [zones, format, showLabel, showSeconds, color, bg, transparentBg, borderRadius, padding, fontSize, fx, fxInt, gbg, gbgDir, neonColor, bshadow, tshadow, bw, bc, opacity, ls]);
+  }, [zones, labels, format, showLabel, showSeconds, showDate, color, textColor, font, bg, transparentBg, borderRadius, padding, fontSize, fx, fxInt, gbg, gbgDir, neonColor, bshadow, tshadow, bw, bc, opacity, ls, entrance, entranceDelay]);
 
   const handleCopy = async () => {
     await copyToClipboard(buildWidgetUrl());
@@ -93,22 +110,33 @@ export default function CreateWorldClockPage() {
 
   const addZone = () => {
     if (zones.length >= 4) return;
-    // Find a timezone not already in the list
     const available = WORLD_CLOCK_TIMEZONE_OPTIONS.find(
       (tz) => !zones.includes(tz.value),
     );
-    if (available) setZones([...zones, available.value]);
+    if (available) {
+      setZones([...zones, available.value]);
+      // Keep labels array in sync (pad with empty strings)
+      setLabels([...labels, ""]);
+    }
   };
 
   const removeZone = (index: number) => {
     if (zones.length <= 2) return;
     setZones(zones.filter((_, i) => i !== index));
+    setLabels(labels.filter((_, i) => i !== index));
   };
 
   const updateZone = (index: number, value: string) => {
     const updated = [...zones];
     updated[index] = value;
     setZones(updated);
+  };
+
+  const updateLabel = (index: number, value: string) => {
+    const updated = [...labels];
+    while (updated.length <= index) updated.push("");
+    updated[index] = value;
+    setLabels(updated);
   };
 
   return (
@@ -140,32 +168,40 @@ export default function CreateWorldClockPage() {
                         )}
                       </div>
                       {zones.map((tz, idx) => (
-                        <div key={idx} className="flex items-center gap-2">
-                          <Select
-                            value={tz}
-                            onValueChange={(v) => updateZone(idx, v)}
-                          >
-                            <SelectTrigger className="flex-1">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {WORLD_CLOCK_TIMEZONE_OPTIONS.map((opt) => (
-                                <SelectItem key={opt.value} value={opt.value}>
-                                  {opt.label} ({opt.short})
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          {zones.length > 2 && (
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="h-8 w-8 shrink-0"
-                              onClick={() => removeZone(idx)}
+                        <div key={idx} className="space-y-1.5">
+                          <div className="flex items-center gap-2">
+                            <Select
+                              value={tz}
+                              onValueChange={(v) => updateZone(idx, v)}
                             >
-                              <X className="w-4 h-4" />
-                            </Button>
-                          )}
+                              <SelectTrigger className="flex-1">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {WORLD_CLOCK_TIMEZONE_OPTIONS.map((opt) => (
+                                  <SelectItem key={opt.value} value={opt.value}>
+                                    {opt.label} ({opt.short})
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            {zones.length > 2 && (
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-8 w-8 shrink-0"
+                                onClick={() => removeZone(idx)}
+                              >
+                                <X className="w-4 h-4" />
+                              </Button>
+                            )}
+                          </div>
+                          <Input
+                            value={labels[idx] || ""}
+                            onChange={(e) => updateLabel(idx, e.target.value)}
+                            placeholder={`라벨 (비우면 자동: ${WORLD_CLOCK_TIMEZONE_OPTIONS.find((o) => o.value === tz)?.label ?? tz})`}
+                            className="text-sm"
+                          />
                         </div>
                       ))}
                     </div>
@@ -208,6 +244,25 @@ export default function CreateWorldClockPage() {
                         onCheckedChange={setShowSeconds}
                       />
                     </div>
+                    <div className="flex items-center justify-between">
+                      <Label htmlFor="showDate">날짜 표시</Label>
+                      <Switch
+                        id="showDate"
+                        checked={showDate}
+                        onCheckedChange={setShowDate}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>폰트</Label>
+                      <Select value={font} onValueChange={setFont}>
+                        <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          {CLOCK_FONT_OPTIONS.map((opt) => (
+                            <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </>
                 ),
               },
@@ -218,10 +273,17 @@ export default function CreateWorldClockPage() {
                   <>
                     <ColorPicker
                       id="color"
-                      label="글자 색상"
+                      label="메인 색상"
                       value={color}
                       onChange={setColor}
                       placeholder="1E1E1E"
+                    />
+                    <ColorPicker
+                      id="textColor"
+                      label="텍스트 색상 (비우면 메인 색상)"
+                      value={textColor}
+                      onChange={setTextColor}
+                      placeholder=""
                     />
                     <div className="flex items-center justify-between">
                       <Label htmlFor="transparent">투명 배경</Label>
@@ -273,6 +335,8 @@ export default function CreateWorldClockPage() {
                     tshadow={tshadow} bw={bw} bc={bc} opacity={opacity} ls={ls}
                     onTshadowChange={setTshadow} onBwChange={setBw} onBcChange={setBc}
                     onOpacityChange={setOpacity} onLsChange={setLs}
+                    entrance={entrance} entranceDelay={entranceDelay}
+                    onEntranceChange={setEntrance} onEntranceDelayChange={setEntranceDelay}
                   />
                 ),
               },
@@ -299,17 +363,21 @@ export default function CreateWorldClockPage() {
               tshadow={tshadow} bw={bw} bc={bc} opacity={opacity} ls={ls}
             >
               <WorldClockPreview
-              zones={zones}
-              format={format}
-              showLabel={showLabel}
-              showSeconds={showSeconds}
-              color={color}
-              bg={bg}
-              transparentBg={transparentBg}
-              borderRadius={borderRadius}
-              padding={padding}
-              fontSize={fontSize}
-            />
+                zones={zones}
+                labels={labels}
+                format={format}
+                showLabel={showLabel}
+                showSeconds={showSeconds}
+                showDate={showDate}
+                color={color}
+                textColor={textColor}
+                font={font}
+                bg={bg}
+                transparentBg={transparentBg}
+                borderRadius={borderRadius}
+                padding={padding}
+                fontSize={fontSize}
+              />
             </EditorEffectsPreview>
           </div>
         </div>

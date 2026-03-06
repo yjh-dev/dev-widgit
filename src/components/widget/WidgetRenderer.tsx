@@ -13,7 +13,6 @@ const MiniCalendarPreview = dynamic(() => import("./MiniCalendarPreview"));
 const AnalogClockPreview = dynamic(() => import("./AnalogClockPreview"));
 const CounterPreview = dynamic(() => import("./CounterPreview"));
 const WeatherPreview = dynamic(() => import("./WeatherPreview"));
-const ReadingPreview = dynamic(() => import("./ReadingPreview"));
 const HabitPreview = dynamic(() => import("./HabitPreview"));
 const TimelinePreview = dynamic(() => import("./TimelinePreview"));
 const BannerPreview = dynamic(() => import("./BannerPreview"));
@@ -54,27 +53,19 @@ const ChangelogPreview = dynamic(() => import("./ChangelogPreview"));
 const MatrixPreview = dynamic(() => import("./MatrixPreview"));
 const MultiProgressPreview = dynamic(() => import("./MultiProgressPreview"));
 const FortuneCookiePreview = dynamic(() => import("./FortuneCookiePreview"));
-const AnniversaryPreview = dynamic(() => import("./AnniversaryPreview"));
 const SeasonCountdownPreview = dynamic(() => import("./SeasonCountdownPreview"));
-const DualClockPreview = dynamic(() => import("./DualClockPreview"));
 const GpaCalculatorPreview = dynamic(() => import("./GpaCalculatorPreview"));
-const SavingsGoalPreview = dynamic(() => import("./SavingsGoalPreview"));
-const BookGoalPreview = dynamic(() => import("./BookGoalPreview"));
 const KanbanPreview = dynamic(() => import("./KanbanPreview"));
 const RoutineTimerPreview = dynamic(() => import("./RoutineTimerPreview"));
-const MemoBoardPreview = dynamic(() => import("./MemoBoardPreview"));
 const PasswordGenPreview = dynamic(() => import("./PasswordGenPreview"));
 const SocialCounterPreview = dynamic(() => import("./SocialCounterPreview"));
 const GuestbookPreview = dynamic(() => import("./GuestbookPreview"));
 const PollPreview = dynamic(() => import("./PollPreview"));
-const VocabularyPreview = dynamic(() => import("./VocabularyPreview"));
 const MiniGalleryPreview = dynamic(() => import("./MiniGalleryPreview"));
 const AsciiArtPreview = dynamic(() => import("./AsciiArtPreview"));
 const NoiseBgPreview = dynamic(() => import("./NoiseBgPreview"));
 const DailyColorPreview = dynamic(() => import("./DailyColorPreview"));
-const CountupPreview = dynamic(() => import("./CountupPreview"));
 const MiniMapPreview = dynamic(() => import("./MiniMapPreview"));
-const RatingCardPreview = dynamic(() => import("./RatingCardPreview"));
 
 interface WidgetRendererProps {
   type: WidgetType;
@@ -105,8 +96,6 @@ export default function WidgetRenderer({ type, props: p }: WidgetRendererProps) 
       return <CounterPreview {...a} />;
     case "weather":
       return <WeatherPreview {...a} />;
-    case "reading":
-      return <ReadingPreview {...a} />;
     case "habit":
       return <HabitPreview {...a} />;
     case "timeline":
@@ -187,24 +176,29 @@ export default function WidgetRenderer({ type, props: p }: WidgetRendererProps) 
       return <MultiProgressPreview {...a} />;
     case "fortune-cookie":
       return <FortuneCookiePreview {...a} />;
+    /* absorbed widgets — render via base widget */
     case "anniversary":
-      return <AnniversaryPreview {...a} />;
+      return <DdayWidgetPreview {...a} targetDate={a.date || a.startDate || a.targetDate || ""} bgColor={a.bg || a.bgColor || "1E1E1E"} accentColor={a.color || a.accentColor || "E11D48"} displayMode="anniversary" calcType="up" />;
+    case "countup":
+      return <DdayWidgetPreview {...a} targetDate={a.date || a.startDate || a.targetDate || ""} bgColor={a.bg || a.bgColor || "FFFFFF"} displayMode="elapsed" />;
     case "season-countdown":
       return <SeasonCountdownPreview {...a} />;
     case "dual-clock":
-      return <DualClockPreview {...a} />;
+      return <WorldClockPreview {...a} />;
     case "gpa-calculator":
       return <GpaCalculatorPreview {...a} />;
     case "savings-goal":
-      return <SavingsGoalPreview {...a} />;
+      return <GoalPreview {...a} />;
     case "book-goal":
-      return <BookGoalPreview {...a} />;
+      return <GoalPreview {...a} />;
+    case "reading":
+      return <GoalPreview {...a} />;
     case "kanban":
       return <KanbanPreview {...a} />;
     case "routine-timer":
       return <RoutineTimerPreview {...a} />;
     case "memo-board":
-      return <MemoBoardPreview {...a} />;
+      return <StickyNotePreview {...a} mode="board" />;
     case "password-gen":
       return <PasswordGenPreview {...a} />;
     case "social-counter":
@@ -214,7 +208,7 @@ export default function WidgetRenderer({ type, props: p }: WidgetRendererProps) 
     case "poll":
       return <PollPreview {...a} />;
     case "vocabulary":
-      return <VocabularyPreview {...a} />;
+      return <FlashcardPreview {...a} displayStyle="reveal" />;
     case "mini-gallery":
       return <MiniGalleryPreview {...a} />;
     case "ascii-art":
@@ -223,12 +217,10 @@ export default function WidgetRenderer({ type, props: p }: WidgetRendererProps) 
       return <NoiseBgPreview {...a} />;
     case "daily-color":
       return <DailyColorPreview {...a} />;
-    case "countup":
-      return <CountupPreview {...a} />;
     case "mini-map":
       return <MiniMapPreview {...a} />;
     case "rating-card":
-      return <RatingCardPreview {...a} />;
+      return <TestimonialPreview {...a} showRating={true} showAvatar={false} showQuoteMarks={false} layout="centered" />;
     default:
       return null;
   }

@@ -13,6 +13,9 @@ const widgetDefaults = {
   layout: "card" as TestimonialLayout,
   accentColor: "6366F1",
   textColor: "",
+  showRating: false,
+  rating: 0,
+  maxStars: 5,
 };
 
 interface TestimonialState extends CommonStyleState {
@@ -26,6 +29,9 @@ interface TestimonialState extends CommonStyleState {
   layout: TestimonialLayout;
   accentColor: string;
   textColor: string;
+  showRating: boolean;
+  rating: number;
+  maxStars: number;
 
   setQuote: (v: string) => void;
   setAuthor: (v: string) => void;
@@ -37,6 +43,9 @@ interface TestimonialState extends CommonStyleState {
   setLayout: (v: TestimonialLayout) => void;
   setAccentColor: (v: string) => void;
   setTextColor: (v: string) => void;
+  setShowRating: (v: boolean) => void;
+  setRating: (v: number) => void;
+  setMaxStars: (v: number) => void;
   loadPreset: (preset: Record<string, unknown>) => void;
   reset: () => void;
 }
@@ -53,5 +62,8 @@ export const useTestimonialStore = create<TestimonialState>(
     setLayout: (v: TestimonialLayout) => set({ layout: v }),
     setAccentColor: (v: string) => set({ accentColor: v }),
     setTextColor: (v: string) => set({ textColor: v }),
+    setShowRating: (v: boolean) => set({ showRating: v }),
+    setRating: (v: number) => set({ rating: v }),
+    setMaxStars: (v: number) => set({ maxStars: v }),
   })),
 );
